@@ -5,4 +5,4 @@ This project is in alpha status.  I am requesting comments to help shape it into
 
 I have broken down a series of critical Unix skills into belts that match my taekwondo school's progression.  I have a roadmap set down from white belt to black belt, but only the white belt exercises are ready.
 
-Please see the "readme" file in the distribution for information on how to prepare or install the scripts for your site.
+Please see the "readme" file in the distribution for a few options on how to best prepare or install the scripts for your site or workstation.
