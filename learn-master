@@ -1,0 +1,772 @@
+#!/bin/bash
+
+# This script was developed in a 130x30 terminal.
+
+# replace start 1acc396a-02a2-40b8-a427-f4685c20320e (see below for what this line does)
+#
+# This script is the master script for the learn script.  If you have site-specific changes that you don't want to share,
+# you can add a GUID in this script and use the "replace" script to merge this script with your site-specific changes
+# (in learn-replace) and create a site-specific learn script.  You can insert or replace portions of this code.
+#
+# If we didn't replace this text when we created the learn script, it would seem as though people should be making the changes
+# to the learn script and not this one.  See the replacement for 1acc396a-02a2-40b8-a427-f4685c20320e in learn-replace for more.
+#
+# Insert exercises or elements that are specific to your site with "# insert <GUID>".  If you put a space after the GUID,
+# you can add comments.  Replace parts with "# replace start <GUID>" and "# replace end <GUID>".  To remove sections,
+# replace the content with nothing.  Put the replacements in the learn-replace file.
+#
+# replace end 1acc396a-02a2-40b8-a427-f4685c20320e
+
+# Setting nounset is worth having to sometimes reference variables as ${VAR:-}.
+set -e -o nounset
+
+# insert 17fa07e6-24b8-4e35-bc1a-094427fd8699
+
+if [ `whoami` == "root" ]; then
+	echo "Run this script as yourself, not the root user.  (Don't use dzdo or sudo.)"
+	exit 1
+fi
+
+less_prompt_move_on="Press h for help;?e: Enter for more (line %lb of %L).?e q to move on."
+less_prompt_quit="Press h for help;?e: Enter for more (line %lb of %L).?e q to quit."
+
+file_clean_up_array=()
+
+clean_up() {
+	if [ -n "${file_clean_up_array:-}" ]; then
+		for item in $file_clean_up_array; do
+			rm -f $item
+		done
+	fi
+}
+
+# It's a trap!  Run the clean_up subroutine on normal or aborted exit.
+trap clean_up EXIT
+
+black_on_white="\033[30;107m"
+bright_white_on_black="\033[107;40m"
+yellow_on_black="\033[93;40m"
+green_on_black="\033[92;40m"
+blue_on_black="\033[94;40m"
+red_on_black="\033[91;40m"
+
+underline="\033[4m"
+no_underline="\033[m"
+
+nc='\033[0m' # No colour
+
+# Use an associative array to make it easy to reorder the exercises and add more in the middle.
+
+i=1
+declare -A exercises
+exercises["white_belt_$((i++))"]="what_execute_means"
+exercises["white_belt_$((i++))"]="cd_root"
+exercises["white_belt_$((i++))"]="ls_root"
+exercises["white_belt_$((i++))"]="common_root_directories"
+exercises["white_belt_$((i++))"]="set"
+exercises["white_belt_$((i++))"]="set_more"
+exercises["white_belt_$((i++))"]="set_less"
+exercises["white_belt_$((i++))"]="path_and_sourcing"
+
+i=1
+exercises["yellow_stripe_$((i++))"]="end"
+
+get_rows_and_columns() {
+	STTY_ROWS=`stty -a | grep -Po "(?<=rows )[0-9]*(?=;)"`
+	STTY_COLUMNS=`stty -a | grep -Po "(?<=columns )[0-9]*(?=;)"`
+	if (($STTY_ROWS > 50)); then
+		WIDTH=`expr $STTY_COLUMNS - 5`
+	else
+		WIDTH=$STTY_COLUMNS
+	fi
+}
+
+get_rows_and_columns
+
+resize_to_default() {
+	printf "\033[s\033[8;24;80t\033[u"
+
+	echo -n "Resizing..."
+	sleep 1
+
+	get_rows_and_columns
+
+	if (($STTY_ROWS < 24)) || (($STTY_COLUMNS < 80)); then
+		fmt -u --width=$WIDTH <<EOL
+It looks like the automatic resize didn't work.  Continue anyway (y/N)?
+EOL
+
+		if [[ ! "$CHOICE" =~ ^\s*[Yy].* ]]; then
+			exit 1
+		fi
+	fi
+}
+
+# The following function deals with matters relating to the terminal size.
+size_matters() {
+	get_rows_and_columns
+
+	# PuTTY uses a default size of 80x24, though 80x25 tends to be more of a standard (because of VT100 terminals).
+	# TODO:  handle both
+	if [ "$STTY_COLUMNS" == 80 ] && [ "$STTY_ROWS" == 24 ] && [ -z "${RESIZED_ALREADY:-}" ]; then
+		fmt -u --width=$WIDTH <<EOL
+It looks like your terminal is set to the default size of 80 columns and 24 rows.  This script is capable of using more.
+If you're able to change the size of the terminal, please do so, then press Enter to continue.
+EOL
+
+		echo ""
+		read
+
+		get_rows_and_columns
+
+		if (("$STTY_COLUMNS" < "80")) || (("$STTY_ROWS" < 24)); then
+			fmt -u --width=$WIDTH <<EOL
+Oh!  A wise guy!  How about we change that back to the default (Y/y)?
+EOL
+
+			read CHOICE
+
+			# We already know the terminal can support 80x24.  Time for a bit of fun.
+			if [ -n "${CHOICE:-}" ] && [[ ! "${CHOICE:-}" =~ ^\s*[Yy].* ]]; then
+				echo "That's a funny way to spell it but that will do just fine."
+			fi
+
+			resize_to_default
+			echo ""
+		else
+			TERM_SIZE="${STTY_COLUMNS}x$STTY_ROWS"
+
+			FMT_STRING=""
+
+			if (("$STTY_COLUMNS" >= "200")) && (("$STTY_ROWS" >= 40)); then
+				FMT_STRING="What, $TERM_SIZE?!  Seriously?  Now you're just showing off."
+			elif (("$STTY_COLUMNS" >= "170")) && (("$STTY_ROWS" >= 35)); then
+				FMT_STRING="Wow, $TERM_SIZE?  Luxurious!  There's plenty of room now."
+			elif (("$STTY_COLUMNS" >= "130")) && (("$STTY_ROWS" >= 30)); then
+				FMT_STRING="Wow, $TERM_SIZE?  Very spacious!"
+			elif (("$STTY_COLUMNS" >= "120")) && (("$STTY_ROWS" >= 30)); then
+				FMT_STRING="OK, $TERM_SIZE.  That's very respectable."
+			elif (("$STTY_COLUMNS" >= "120")) && (("$STTY_ROWS" >= 25)); then
+				FMT_STRING="Alright, $TERM_SIZE.  That will do just fine."
+			fi	
+
+			if [ -n "${FMT_STRING:-}" ]; then
+				fmt -u --width=$WIDTH <<EOL
+$FMT_STRING
+EOL
+			fi
+
+			echo ""
+		fi
+	fi
+}
+
+# Run "grep" on this file and pipe it to "wc" to count the number of exercises for the current belt.
+set_num_exercises() {
+	REGEX="'"
+	REGEX+="${RANK}_exercise_.*\(\)"
+	REGEX+="'"
+	NUM_EXERCISES=$(bash -c "grep -E ${REGEX} ~/bin/learn | wc -l")
+}
+
+print_rank() {
+	if [ "$RANK" == "white_belt" ]; then
+		printf "Your current rank is ${bright_white_on_black}white belt${nc}.\n"
+		# Use an extra ${nc} to fix an issue with PuTTY.
+		printf "You are working toward your ${yellow_on_black}yellow ${nc}${bright_white_on_black}stripe${nc}.\n\n"
+	elif [ "$RANK" == "yellow_stripe" ]; then
+		# Use an extra ${nc} to fix an issue with PuTTY.
+		printf "Your current rank is ${yellow_on_black}yellow ${nc}${bright_white_on_black}stripe${nc}.\n"
+		printf "You are working toward your ${yellow_on_black}yellow belt${nc}.\n\n"
+	fi
+}
+
+complete_exercise() {
+	less -R -P "$less_prompt_quit" $fmt_file
+
+	# Print the exercise (or the last part of the exercise) to the terminal.  Since "less" cleans up after itself, if we
+	# don't do this, the user has nothing to reference to finish the task.
+	cat $fmt_file
+}
+
+white_belt_exercise_what_execute_means() {
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+In the United States and Canada, grammar rules say to put the period inside the double quotes.
+
+    He told me, "You need to go to the store."
+
+We will follow https://en.wikipedia.org/wiki/Quotation_marks_in_English#Logical_quotation
+rules (also called British practice, British style, and logical punctuation).
+
+If this script says to execute "set", that means to type the letters s, e, t, and press Enter.  Don't type the double quotes.
+
+If an exercise asks you to execute "scp bcompcd101:/tmp/file.txt ." then the space and dot at the end, before the final
+double quote, are important and must be typed before pressing Enter.
+
+At the end of a sentence, you will see: "scp bcompcd101:/tmp/file.txt .".
+
+To see the overview again, execute "learn --welcome".
+
+Your first task is to execute ". check".
+EOL
+
+	complete_exercise
+}
+
+white_belt_exercise_cd_root() {
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+First things first:  you need to know how to navigate.
+
+All files and directories have a path which tells the operating system how to retrieve them.  You may be familiar with
+Microsoft Windows-style paths such as C:\\Windows\\System\\.  When you insert a USB drive, Windows usually assigns the drive
+letter E: to the new disk, unless it's already taken.  Unix doesn't have drive letters.  Instead, all disks (local disks,
+shared drives, and removeable disks) are in one unified filesystem.  In a future exercise, we'll look at how data is brought
+in from shared and removeable drives.
+
+In UNIX, paths use forward slashes ( / ) instead of backslashes.  The path to your home directory is $HOME.  Your home
+directory contains everything that's only for you:  configuration settings.  More generally, anything you're working on
+that isn't shared with other users will be in $HOME.
+
+You may have a $HOME/bin directory for programs that are only for you.  There are multiple directories called "bin" on a
+Unix system.  The one in your home directory contains programs (compiled binaries, scripts, and anything that runs) for your
+use only.  For example, some people set up a particular version of a common program that has different features.  You may
+want to have scripts that automate certain tasks that are too specific for other users to use, and they should go in $HOME/bin.
+
+Windows usually uses the term "folder" as an equivalent term for "directory".
+
+When you ran this script, you were in the `pwd` directory.
+
+Let's begin at the beginning:  the root directory.  (Not to be confused with the /root directory.)
+EOL
+
+	less -R -P "$less_prompt_move_on" $fmt_file
+
+	# Print the exercise to the terminal to retain context.
+	cat $fmt_file
+
+	echo ""
+
+	echo 'Execute "cd /".'
+	echo 'Then execute ". check"'
+}
+
+white_belt_exercise_ls_root() {
+	# If the user is coming back after needing to look at something else, they may now be in another directory.
+	if [[ `pwd` == "/" ]]; then
+		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+It's time to take a look around.  Execute "ls", read the names of the directories, and execute ". check".
+EOL
+	else
+		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+It's time to take a look around.  Execute "cd /", execute "ls", read the names of the directories, and execute ". check".
+EOL
+	fi
+
+	complete_exercise
+}
+
+white_belt_exercise_common_root_directories() {
+	# The existence of /opt can't be counted on, but it's hard to imagine the rest would be missing on any modern
+	# UNIX derivative.  Maybe this script is being run in a Docker container.  Handling missing directories, formatting
+	# to the TTY size, and paging the whole thing using a user independent temp dir was a chance to sharpen my skills.
+	# It's also a good reference for redirecting output from a program that already has a heredoc coming in.
+
+	set +e
+	ROOT_USERNAME=$(bash -c 'getent passwd "0" 2> /dev/null | cut -d: -f1')
+	set -e
+	ROOT_TEXT=""
+
+	if [ -n "${ROOT_USERNAME:-}" ] && [ "$ROOT_USERNAME" != "root" ]; then
+		ROOT_TEXT="On this system, the administrator account is called $ROOT_USERNAME."
+	fi
+
+	# $ROOT_TEXT should be at the end of the line so the formatting works out.
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+For the following notes, keep in mind that the root user (usually simply called "root") is the administrator account.  $ROOT_TEXT
+The root user has access to everything and is allowed to do everything, unless permissions have been deliberately given up.
+A simple example is making a file read only.  The root user can put up blocks to make things more difficult to do, but the
+root user could remove them at any time.
+EOL
+
+	printf "\nHere are some of the things you saw.\n" >> $fmt_file
+
+	if [ -d "/bin" ]; then
+		printf "\n${underline}/bin${no_underline}\n" >> $fmt_file
+		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+  Stands for BINaries (programs that aren't scripts).  The core binaries are here, like "ls". 
+EOL
+	fi
+
+	if [ -d "/etc" ]; then
+		printf "\n${underline}/etc${no_underline}\n" >> $fmt_file
+		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+  You'll find all system wide configuration here.
+EOL
+	fi
+
+	if [ -d "/home" ]; then
+		printf "\n${underline}/home${no_underline}\n" >> $fmt_file
+		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+  Each user's home directory is under here.  Your home directory (/home/$USER) contains everything that's only for you,
+  especially configuration files.  In most UNIX enviroments, your home directory is shared across multiple servers so your
+  configuration settings are available across multiple servers.  On Macs, this directory (if it exists) will usually be
+  empty, and all the users' home directories will be in /Users instead.
+EOL
+	fi
+
+	if [ -d "/opt" ]; then
+		printf "\n${underline}/opt${no_underline}\n" >> $fmt_file
+		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+  Sometimes seen on Red Hat Linux servers, the /opt directory is for OPTional software that's not part of the distribution.
+  (If you want, you can look up what a Linux distribution is.)  You might find an Oracle DB instance or a Dynatrace OneAgent
+  installed here.
+EOL
+	fi
+
+	if [ -d "/root" ]; then
+		printf "\n${underline}/root${no_underline}\n" >> $fmt_file
+		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+  The root user's home directory (set aside for the root user's personal use).  Depending on the installation, the /root
+  directory can sometimes be used in emergencies if other parts of the filesystem are full.
+EOL
+	fi
+
+	if [ -d "/sbin" ]; then
+		printf "\n${underline}/sbin${no_underline}\n" >> $fmt_file
+		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+  Stands for Secure BINaries.  Binary programs (not scripts) that are run only by privileged users go here.  For example,
+  the programs that change network configurations are here, as well as programs for other system maintenance and starting up the
+  operating system.
+EOL
+	fi
+
+	if [ -d "/tmp" ]; then
+		printf "\n${underline}/tmp${no_underline}\n" >> $fmt_file
+		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+  Short for TeMP, this directory is where any temporary files are created.  Well-behaved programs should clean up after
+  themselves.  Most systems are configured to delete any files that haven't been modified in a week (two weeks is also common).
+EOL
+	fi
+
+	if [ -d "/Users" ]; then
+		printf "\n${underline}/Users${no_underline}\n" >> $fmt_file
+		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+  Each user's home directory is under here.  On most flavors of Unix, home directories are under /home instead.
+  Your home directory ($HOME) contains everything that's only for you, particularly configuration files.  In most
+  UNIX enviroments, your home directory is shared across multiple servers so your configuration settings are available
+  across multiple servers.
+EOL
+	fi
+
+	if [ -d "/usr" ]; then
+		printf "\n${underline}/usr${no_underline}\n" >> $fmt_file
+		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+  Short for "user", i.e. for "regular" users and not the root user.  Most programs are under here somewhere (/usr/bin,
+  /usr/local/bin, /usr/sbin, /usr/local/sbin).
+EOL
+	fi
+
+	if [ -d "/var" ]; then
+		printf "\n${underline}/var${no_underline}\n" >> $fmt_file
+		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+  Short for VARiable, this directory is for things that are constantly changing, particularly:  log files, caches, mail, and
+  printer queues.
+EOL
+	fi
+
+	echo "" >> $fmt_file
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+For a full list, see https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard.
+
+EOL
+	
+
+	if [[ `pwd` == "$HOME" ]]; then
+		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+This exercise was going to ask you to go back to your home directory, but you're already there.  Use the "cd" command to
+change directory to somewhere else (like "cd /").  You can any one of the following commands to return to your home directory.
+Then execute ". check".
+EOL
+	else
+		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+Let's return to your home directory.  The following commands are equivalent.  Execute one of them, then execute ". check".
+EOL
+	fi
+
+	echo "" >> $fmt_file
+	echo "cd" >> $fmt_file
+	echo "cd ~" >> $fmt_file
+	echo "cd $HOME" >> $fmt_file
+	echo "cd ${HOME}/" >> $fmt_file
+
+	complete_exercise
+}
+
+white_belt_exercise_set() {
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+There are four ways to pass settings to programs:  environment variables, arguments, standard input, and configuration files.
+
+We will be looking at environment variables.  The "set" command will show you the current environment variables.
+If you run it as is, most of the output will scroll past, but go ahead anyway and execute "set".
+
+Remember to execute ". check" after.
+EOL
+
+	complete_exercise
+}
+
+white_belt_exercise_set_more() {
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+To go page by page, add "| more" to a command.  The pipe ( | ) can be used to send the output of one command to the input
+of another command.  We'll be going into more detail on pipes later.  The pipe character is rarely used outside
+of technical fields.  On many keyboard layouts, you can type it with Shift+Backslash.
+
+When you execute "set | more", you will be able to move a page at a time by pressing Space.  Move a line at a time by
+pressing Enter.  To quit before the end, press "q".  With some flavours of UNIX, if you quit before the end, you will see
+a warning about a broken pipe.  Execute "set | more" now and remember to execute ". check" after.
+EOL
+
+	complete_exercise
+}
+
+white_belt_exercise_set_less() {
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+The "more" command will only give you more.  If you want to back up, add "| less" to a command.  In many cases (but depending
+on your terminal settings) you will be able to move up and down with the cursor keys and use the Page Up and Page Down keys.
+As before, Space will go a page forward, Enter will show one more line, and "q" will quit.
+
+Execute "set | less" and remember to execute ". check" after.
+EOL
+
+	complete_exercise
+}
+
+white_belt_exercise_path_and_sourcing() {
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+We're going to look at one specific environment variable now:  \$PATH.  Environment variables are usually printed with a
+dollar sign ( \$ ) in front of them.  Currently, \$PATH is set to the following value.
+
+$PATH
+EOL
+
+	echo "" >> $fmt_file
+
+	# I copied this code from Stack Overflow.  It's probably overkill.
+	# https://stackoverflow.com/questions/4774054/reliable-way-for-a-bash-script-to-get-the-full-path-to-itself
+	script_path="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+	script_name=`basename $0`
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+\$PATH contains a list of paths where programs might be found (scripts, binaries, and anything that can be run).
+
+This script is in $script_path and the full path to it is $script_path/$script_name.  
+EOL
+
+	echo "" >> $fmt_file
+	# Use positive lookbehind and positive lookahead to match the exact path, whether it's at the beginning of the
+	# $PATH, the end, or in the middle.  This way, we can both highlight the exact path and # show the entire $PATH.
+	# It won't work if the path in $PATH has a trailing slash, but trailing slashes shouldn't be there.
+	printf '%s\n' "$PATH" | grep -P --color=always "(?<=^|:)${script_path}(?=:|\$)" >> $fmt_file
+	echo "" >> $fmt_file
+
+	less -R -P "$less_prompt_move_on" $fmt_file
+
+	fmt -u --width=$WIDTH <<EOL > $fmt_file
+The \$PATH environment variable lists all the directories where programs can be found.  On Windows, the current directory
+is always checked first for commands, operable programs, or batch files.  On UNIX, typically the current directory is never
+in the \$PATH.
+
+Consider the case where a friend or coworker has made their own /home/user/bin directory available for you to look at.
+If they prefer different versions of common tools, like "ls" to get a directory listing, then you will unwittingly run their
+version if you are in their /home/user/bin directory.  Normally, such cases are not malicious, but they may be surprising
+or confusing.  UNIX and all its derivatives are known for a philosophy that prioritizes consistency and security over
+convenience.
+
+If you want to run a command in the current directory and you have the appropriate permissions, you can add "./" to the
+beginning of it, but we're not going to do that right now.
+
+You've run the "learn" and "check" scripts from two different places (the root directory and your home directory) and
+neither one is where the scripts are.  The \$PATH environment variable provides your bin directory as one place to look
+for programs, so you can run anything found in your \$PATH wherever you are.
+EOL
+
+	echo "" >> $fmt_file
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+The last thing to teach you before you get your yellow stripe is why you need to add the dot and space at the beginning
+of the "check" script.  Normally, when you run a program, it runs in its own process.  The new instance of the program
+(the child) gets a copy of the current set of environment variables, and any environment variables that are changed are
+not reflected in the parent.
+
+By executing ". check" (or equivalently, "source check") instead of "check", the program runs as if it was typed in.
+This "sourcing" trick is how we can have scripts that set environment variables for other scripts.  It can also be used to
+get an up-to-date command history (which is normally inaccessible).  Since running the "set" command doesn't change anything,
+accessing the command history is the only way to verify that the correct command was issued.
+
+Once you have read and understood this text, execute ". check"
+EOL
+
+	complete_exercise
+}
+
+yellow_stripe_exercise_end() {
+	fmt -u --width=$WIDTH <<EOL
+This demo is concluded.  There are no more exercises at this time.
+EOL
+}
+
+ask_about_putty_font_size() {
+	fmt -u --width=$WIDTH <<EOL
+Was that text comfortable to read?  It looks like you're connected with SSH, so chances are, you're using PuTTY.
+If you're using PuTTY, would you like any help to increase the font size (y/N)?
+EOL
+
+	read CHOICE
+
+	if [[ "$CHOICE" =~ ^\s*[Yy].* ]]; then
+		fmt -u --width=$WIDTH <<EOL
+Right click on PuTTY's title bar and select "Change Settings".  In the left navigation pane, select Window >
+Appearance.  Click the "Change..." button about halfway down the right pane.  Select a new font size and
+click "OK".  Click "Apply".  When you're happy with the settings, right click on PuTTYs title bar, go to
+Session in the left navigation pane, select the session, and click "Save".
+EOL
+
+	size_matters
+
+	echo ""
+
+	fi
+}
+
+welcome() {
+	fmt_file=$(mktemp --suffix=_$(whoami))
+	file_clean_up_array+=($fmt_file)
+
+	fmt -u --width=$WIDTH <<EOL > $fmt_file
+When you see a prompt like "Press h for help; Enter for more", press Enter for one more line and Space for one more page.
+
+If there's more text than will fit in your terminal, the Up and Down arrow keys should work in addition to Enter and Space
+(but it depends on your terminal settings).  Press "h" for other alternatives.
+
+If all the text fits in your terminal, you'll immediately see a prompt to press "q".  Pressing Enter, Space, or the arrow
+keys will have no effect.
+
+At the bottom of the text (or immediately if all the text fits) the prompt will change, asking you to press "q" to move on
+(or quit if it's the end of the lesson).  Once you're done reading all the text (including right now) press "q".
+EOL
+
+	less -R -P "$less_prompt_move_on" $fmt_file
+
+	fmt -u --width=$WIDTH <<EOL > $fmt_file
+The following notes are an overview of what will be covered in this course.
+It's likely that you will only understand them if you already have some
+experience with them.  Consider them like chapter headings in a textbook you recently received.
+EOL
+
+	printf "\n${underline}Beginner and Intermediate Ranks${no_underline}\n" >> $fmt_file
+
+	printf "\n${bright_white_on_black}White Belt${nc}\n" >> $fmt_file
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+  In a martial arts club (or dojo) a student gets their white belt when they buy a uniform and sign up for classes.  In this
+  case, a student gets their white belt when they install the teaching script run it, and choose to get started.
+EOL
+
+	echo "" >> $fmt_file
+
+	# Use an extra ${nc} to fix an issue with PuTTY.
+	printf "${yellow_on_black}Yellow ${nc}${bright_white_on_black}Stripe${nc}\n" >> $fmt_file
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+  Understanding \$PATH and environment variables.
+EOL
+
+	echo "" >> $fmt_file
+	printf "${yellow_on_black}Yellow Belt${nc}\n" >> $fmt_file
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+  Creating directories; . and ..; pwd; cd
+EOL
+
+	echo "" >> $fmt_file
+	printf "${green_on_black}Green ${yellow_on_black}Stripe${nc}\n" >> $fmt_file
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+  File types; intermediate arguments to ls; mounts and disk space
+EOL
+
+	printf "\n\n${underline}Advanced Ranks${no_underline}\n" >> $fmt_file
+
+	printf "\n${green_on_black}Green Belt${nc}\n" >> $fmt_file
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+  Hidden files and directories; globbing; directory stacks
+EOL
+
+	echo "" >> $fmt_file
+	printf "${blue_on_black}Blue ${green_on_black}Stripe${nc}\n" >> $fmt_file
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+  Pipes; tee; redirection; head, tail, sort, grep
+EOL
+
+	echo "" >> $fmt_file
+	printf "${blue_on_black}Blue Belt${nc}\n" >> $fmt_file
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+  Finding large files and directories with du, sort, and head; rm; rmdir; mv
+EOL
+
+	echo "" >> $fmt_file
+	printf "${red_on_black}Red ${blue_on_black}Stripe${nc}\n" >> $fmt_file
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+  ZIP and tar archives
+EOL
+
+	echo "" >> $fmt_file
+	printf "${red_on_black}Red Belt${nc}\n" >> $fmt_file
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+  Signals; stopping processes; ps; pgrep vs grep
+EOL
+
+	echo "" >> $fmt_file
+	printf "${black_on_white}Black ${red_on_black}Stripe${nc}\n" >> $fmt_file
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+  Foreground and background tasks, jobs and &
+EOL
+
+	echo "" >> $fmt_file
+	printf "${black_on_white}Black Belt${nc}\n" >> $fmt_file
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+  User and group ownership; permissions; ls -ld; stat; namei
+EOL
+
+	echo "" >> $fmt_file
+
+	less -R -P "$less_prompt_move_on" $fmt_file
+
+	if [ ! -f ~/.learnUnix ]; then
+		if [ -n "${SSH_CONNECTION:-}" ] || [ -n "${SSH_TTY:-}" ]; then
+			ask_about_putty_font_size
+		fi
+
+		size_matters
+
+		fmt -u --width=$WIDTH <<EOL
+If you type "y" and press Enter, then you will be given your first task.
+EOL
+
+		echo -n "Are you ready to begin (y/n)? "
+		read CHOICE
+
+		if [ "$CHOICE" == "" ]; then
+			fmt -u --width=$WIDTH <<EOL
+Implict consent is not enough this time.  To begin, you must choose.
+EOL
+
+			echo -n "Are you ready to get started (y/n)? "
+			read CHOICE
+		fi
+
+		if [[ "$CHOICE" =~ ^\s*[Yy].* ]]; then
+			clear
+			RANK="white_belt"
+			echo "RANK=white_belt" > ~/.learnUnix
+			echo "EXERCISE=1" >> ~/.learnUnix
+
+			print_rank > $fmt_file
+
+			set_num_exercises
+
+			echo "Exercise 1/${NUM_EXERCISES}" >> $fmt_file
+			echo "" >> $fmt_file
+
+			exercise_name=${exercises["${RANK}_1"]}
+			function_name="${RANK}_exercise_${exercise_name}"
+			eval $function_name
+		fi
+	fi
+}
+
+# All the function definitions are done.  The script will begin executing here.
+
+if [ ! -f ~/.learnUnix ]; then
+	if (($STTY_ROWS < 24)) || (($STTY_COLUMNS < 80)); then
+		# We haven't introduced what Y/n means, but if the user has made a conscious choice to make their terminal smaller, they
+		# probably already know.
+		fmt -u --width=$WIDTH <<EOL
+A minimum of 80 columns and 24 rows is strongly recommended.  Would you like to automatically update the terminal size to
+the recommended minimum and continue (Y/n)?
+EOL
+
+		read CHOICE
+
+		if [[ "$CHOICE" =~ ^\s*[yY] ]] || [ -z "$CHOICE" ]; then
+			resize_to_default
+			RESIZED_ALREADY=1
+			clear
+		fi
+	fi
+
+	welcome
+	exit 0
+else
+	source ~/.learnUnix
+fi
+
+if [ "${1:-}" == "--welcome" ]; then
+	welcome
+
+	if [ "$RANK" != "" ]; then
+		print_rank
+	fi
+
+	exit 0
+fi
+
+if [ -z "${RANK:-}" ] || [ -z "${EXERCISE:-}" ]; then
+	fmt -u --width=$WIDTH <<EOL
+It looks like the ~/.learnUnix file has become corrupted.  If it can't be repaired, you may have no choice but to delete it
+and start over.  Sorry about that.
+EOL
+	exit 2
+fi
+
+if [[ ! "${RANK}" =~ ^(white|yellow|green|blue|red|black)_(stripe|belt)$ ]]; then
+	fmt -u --width=$WIDTH <<EOL
+It looks like the ~/.learnUnix file has become corrupted.  If it can't be repaired, you may have no choice but to delete it
+and start over.  Sorry about that.
+EOL
+	exit 2
+fi
+
+if [[ ! "${EXERCISE}" =~ ^[0-9]+$ ]]; then
+	fmt -u --width=$WIDTH <<EOL
+It looks like the ~/.learnUnix file has become corrupted.  If it can't be repaired, you may have no choice but to delete it
+and start over.  Sorry about that.
+EOL
+	exit 2
+fi
+
+if [ -z ${fmt_file:-} ]; then
+	fmt_file=$(mktemp --suffix=_$(whoami))
+	file_clean_up_array+=($fmt_file)
+fi
+
+# White belt exercise 4 does something different.
+print_rank > $fmt_file
+
+set_num_exercises
+
+echo "Exercise ${EXERCISE}/${NUM_EXERCISES}" >> $fmt_file
+echo "" >> $fmt_file
+
+exercise_name=${exercises["${RANK}_${EXERCISE}"]}
+function_name="${RANK}_exercise_${exercise_name}"
+eval $function_name
+

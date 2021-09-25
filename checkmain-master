@@ -1,0 +1,240 @@
+#!/bin/bash -i
+
+# This script was developed in a 130x30 terminal.
+
+# replace start b2074508-dd08-48be-bc6c-346c26349e4e (see below for what this line does)
+
+# This script is the master script for the checkmain script.  If you have site-specific changes that you don't want to share,
+# you can add a GUID in this script and use the "replace" script to merge this script with your site-specific changes
+# (in checkmain-replace) and create a site-specific learn script.  You can insert or replace portions of this code.
+
+# If we didn't replace this text when we created the "checkmain" script, it would seem as though people should be making
+# the changes to the "checkmain" script and not this one.  See the replacement for 1acc396a-02a2-40b8-a427-f4685c20320e in
+# checkmain-replace for more.
+
+# Insert exercises or elements that are specific to your site with "# insert <GUID>".  If you put a space after the GUID,
+# you can add comments.  Replace parts with "# replace start <GUID>" and "# replace end <GUID>".  To remove sections,
+# replace the content with nothing.  Put the replacements in the learn-replace file.
+#
+# replace end b2074508-dd08-48be-bc6c-346c26349e4e
+
+# In case this script needs to be moved back to being sourced, use a prefix on the environment variables to avoid messing
+# up other programs (Learn Unix Check or luc_).
+
+set -e -o nounset
+
+# insert 17fa07e6-24b8-4e35-bc1a-094427fd8699
+
+if [ `whoami` == "root" ]; then
+	echo "Run this script as yourself, not the root user."
+	exit 1
+fi
+
+if [ -z "${1:-}" ]; then
+	echo "This script is not meant to be run directly."
+	echo "Please execute '. check' to invoke the wrapper script."
+fi
+
+luc_history=()
+while read i; do
+	luc_history+=("$i")
+done
+
+luc_black_on_white="\033[30;100m"
+luc_bright_white_on_black="\033[107;40m"
+luc_yellow_on_black="\033[93;40m"
+luc_green_on_black="\033[92;40m"
+luc_blue_on_black="\033[94;40m"
+luc_red_on_black="\033[91;40m"
+
+luc_nc='\033[0m' # No colour
+
+luc_stty_rows=$(bash -c "stty -a -F$1 | grep -Po '(?<=rows )[0-9]*(?=;)'")
+luc_stty_columns=$(bash -c "stty -a -F$1 | grep -Po '(?<=columns )[0-9]*(?=;)'")
+luc_width=`expr $luc_stty_columns - 5`
+
+luc_good_work_array[0]="Good work!"
+luc_good_work_array[1]="Excellent!"
+luc_good_work_array[2]="Well done!"
+luc_good_work_array[3]="Brilliant!"
+luc_good_work_array[4]="Terrific!"
+
+luc_sorry_array[0]="Better luck next time."
+luc_sorry_array[1]="Unfortunately, no."
+luc_sorry_array[2]="Sorry, that's not it."
+luc_sorry_array[3]="That's not it.  Try again."
+
+good_work() {
+	size=${#luc_good_work_array[@]}
+	index=$(($RANDOM % $size))
+	echo ${luc_good_work_array[$index]}
+
+	EXERCISE=`expr $EXERCISE + 1`
+}
+
+sorry() {
+	size=${#luc_sorry_array[@]}
+	index=$(($RANDOM % $size))
+	echo ${luc_sorry_array[$index]}
+	echo "Run the learn script again if you need to."
+}
+
+white_belt_exercise_1() {
+	# For exercise 1, we're only confirming this script was run, so there's nothing to check.
+	good_work
+	echo ""
+	fmt -u --width=$luc_width <<EOL
+For each exercise, you'll run the learn and check scripts.  Execute "learn" for your next task or to pick up where you left off.
+EOL
+}
+
+white_belt_exercise_2() {
+	if [[ `pwd` == "/" ]]; then
+		good_work
+		echo ""
+		echo $'Execute "learn" when you\'re ready for the next exercise.'
+	else
+		sorry
+	fi
+}
+
+white_belt_exercise_3() {
+	# Chances are, "ls" is going to be in the history, so cheaters will get a pass on this one.
+	# We could generate history with a smaller size for this exercise, but it doesn't seem worthwhile.
+	# The list command is so basic that I'm not really concerned that something will be missed here.
+
+	good_work
+	echo ""
+	echo $'Execute "learn" when you\'re ready for the next exercise.'
+}
+
+white_belt_exercise_4() {
+	if [[ `pwd` == "$HOME" ]]; then
+		good_work
+		echo ""
+		echo $'Execute "learn" when you\'re ready for the next exercise.'
+	else
+		sorry
+	fi
+}
+
+white_belt_exercise_5() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*set([ ]|$) ]]; then
+			good_work
+			echo ""
+			echo $'Execute "learn" when you\'re ready for the next exercise.'
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
+white_belt_exercise_6() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*set[\ ]*\|[\ ]*more[\ ]*$ ]]; then
+			good_work
+			echo ""
+			echo $'Execute "learn" when you\'re ready for the next exercise.'
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
+white_belt_exercise_7() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*set[\ ]*\|[\ ]*less[\ ]*$ ]]; then
+			good_work
+			echo ""
+			echo $'Execute "learn" when you\'re ready for the next exercise.'
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
+white_belt_exercise_8() {
+	# For exercise 8, we're only confirming this script was run, so there's nothing to check.
+	good_work
+}
+
+# If this script is switched back to being sourced, we'll need to change the "exit"s below to returns.
+
+if [ ! -f ~/.learnUnix ]; then
+	echo 'Please run the "learn" script first.'
+	exit 1
+fi
+
+source ~/.learnUnix
+
+if [ -z "${RANK:-}" ] || [ -z "${EXERCISE:-}" ]; then
+	fmt -u --width=$luc_width <<EOL
+echo 'Please run the "learn" script first.'
+EOL
+	exit 1
+fi
+
+if [[ ! "${RANK}" =~ ^(white|yellow|green|blue|red|black)_(stripe|belt)$ ]]; then
+	fmt -u --width=$luc_width <<EOL
+It looks like the ~/.learnUnix file has become corrupted.  If it can't be repaired, you may have no choice but to delete it
+and start over.  Sorry about that.
+EOL
+	exit 2
+fi
+
+if [[ ! "${EXERCISE}" =~ ^[0-9]+$ ]]; then
+	fmt -u --width=$luc_width <<EOL
+It looks like the ~/.learnUnix file has become corrupted.  If it can't be repaired, you may have no choice but to delete it
+and start over.  Sorry about that.
+EOL
+	exit 2
+fi
+
+eval ${RANK}_exercise_${EXERCISE}
+
+luc_regex="'"
+luc_regex+="${RANK}_exercise_.*\(\)"
+luc_regex+="'"
+luc_num_exercises=$(bash -c "grep -E ${luc_regex} ~/bin/learn | wc -l")
+
+if (($EXERCISE > $luc_num_exercises)); then
+	echo ""
+
+	# Use an extra ${luc_nc} to fix an issue with PuTTY.
+	printf "Congratulations!  You have now attained your ${luc_yellow_on_black}yellow ${luc_nc}${luc_bright_white_on_black}stripe${luc_nc}.\n"
+	printf "You are now working toward your ${luc_yellow_on_black}yellow belt${luc_nc}.\n\n"
+
+	echo 'From here on out, there will be no reminder to execute "learn".'
+
+	echo "RANK=yellow_stripe" > ~/.learnUnix
+	echo "EXERCISE=1" >> ~/.learnUnix
+else
+	echo "RANK=$RANK" > ~/.learnUnix
+	echo "EXERCISE=$EXERCISE" >> ~/.learnUnix
+fi
+

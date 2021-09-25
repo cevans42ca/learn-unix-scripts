@@ -1,0 +1,14 @@
+# This file contains a list replacements for the "learn" script.
+# Create your own site-specific replacements and merge them with the "replace" script.
+# Generate GUIDs with uuidgen.
+
+
+# Make it clear not to make changes to the "learn" script.  Make the following replacement when it's created.
+
+# start 1acc396a-02a2-40b8-a427-f4685c20320e
+# This script is auto-generated.
+# 
+# If you want to add your own site-specific elements or exercises, take a look at learn-master, learn-replace, and replace.
+# If you want to share additional exercises, modify learn-master and submit a pull request.
+# end 1acc396a-02a2-40b8-a427-f4685c20320e
+

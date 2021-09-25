@@ -1,0 +1,47 @@
+#!/bin/bash -i
+
+# This script was developed in a 130x30 terminal.
+
+# replace start c751ee38-33af-4a92-80cd-cfe18c29bf9b (see below for what this line does)
+
+# This script is the master script for the learn script.  If you have site-specific changes that you don't want to share,
+# you can add a GUID in this script and use the "replace" script to merge this script with your site-specific changes
+# (in learn-replace) and create a site-specific learn script.  You can insert or replace portions of this code.
+
+# If we didn't replace this text when we created the learn script, it would seem as though people should be making the changes
+# to the learn script and not this one.  See the replacement for 1acc396a-02a2-40b8-a427-f4685c20320e in learn-replace for more.
+#
+# Insert exercises or elements that are specific to your site with "# insert <GUID>".  If you put a space after the GUID,
+# you can add comments.  Replace parts with "# replace start <GUID>" and "# replace end <GUID>".  To remove sections,
+# replace the content with nothing.  Put the replacements in the learn-replace file.
+#
+# replace end c751ee38-33af-4a92-80cd-cfe18c29bf9b
+
+# insert 17fa07e6-24b8-4e35-bc1a-094427fd8699
+
+if [ `whoami` == "root" ]; then
+	echo "Run this script as yourself, not the root user."
+	exit 1
+fi
+
+# Get around the unbound variable error with ${ZSH_EVAL_CONTEXT:-}.
+if ([[ -n "${ZSH_EVAL_CONTEXT:-}" && "${ZSH_EVAL_CONTEXT:-}" == "toplevel" ]] ||
+	[[ -n "${BASH_VERSION:-}" && "$0" == "${BASH_SOURCE:-}" ]]); then
+	echo "Run this script as '. check' not 'check'."
+	
+	exit 0
+fi
+
+# When we pipe the history to the checkmain script in through standard in, the TTY will be reset and we won't be able to
+# set the rows and columns.  By passing the TTY device in, we can still get the rows and columns.
+
+# We could make the entire script (check and checkmain) so it can be sourced but that would mean all the subroutines would
+# be added to the environment, and "set -e -o unset" would be problematic.
+
+LUC_TTY=$(tty)
+if [ "${HISTTIMEFORMAT:-}" == "%F %T " ]; then
+	history 5 | tr -s ' ' | cut -d" " -f5- | checkmain $LUC_TTY
+else
+	history 5 | tr -s ' ' | cut -d" " -f3- | checkmain $LUC_TTY
+fi
+

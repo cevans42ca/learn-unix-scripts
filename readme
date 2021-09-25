@@ -1,0 +1,104 @@
+This project contains a suite of scripts to teach various aspects of
+Unix.  Although the scripts are written in bash, I intend the exercises
+to be broad enough to work on FreeBSD, Macs, Linux, and any system that
+has bash installed or could have bash installed.
+
+The default Docker image lacks many important features, such as man,
+that should be expected on most systems.  However, it should be possible
+to install man, bash, and anything else lacking.  At some point, I
+expect to have something like a configure script that checks for
+dependencies.
+
+This readme file is for system administrators who want to make the
+learn Unix scripts available for users.
+
+I will use the term "student" to refer to anyone who will be using the
+scripts in this project to learn Unix.
+
+
+Student POV
+===========
+
+The scripts that students will be using are "learn" and "check".
+The "learn" script teaches some aspect of Unix and the "check" script
+verifies that the lesson has been completed.  Upon successful completion,
+the next invocation of the "learn" script will teach the next lesson.
+These scripts don't require arguments.  Progress is kept in a dot file
+in the user's home directory.
+
+
+Runtime Architecture
+====================
+
+The "check" script is a wrapper which provides the recent history to
+the "checkmain" script.  In some cases, the checkmain script
+looks at the command history to see if the lesson was completed correctly.
+Accessing the recent history is only possible in a sourced script.
+
+
+Site Specific Changes
+=====================
+
+The "learn", "check", and "checkmain" script have master versions.
+These scripts have been built in such a way that you can add your own
+site-specific or proprietary lessons or text.
+
+By adding a GUID in the master version of the file, you can insert or
+replace your own site-specific lessons or text at that point.  Only the
+GUID is public.  If you submit a pull request to add your GUID to the
+master files, you can stay up to date with the latest public version
+without having to constantly maintain your changes.  The "replace" script
+accepts multiple replacement files between the first and last argument.
+
+To prepare the scripts, run replace-all, which executes the following.
+
+replace learn-master learn-replace learn
+replace check-master check-replace check
+replace checkmain-master checkmain-replace checkmain
+
+The three scripts that are output are put in a "bin" directory.
+
+You'll need to put the following scripts in your $PATH.  Common places
+include your bin directory (/home/userID/bin/) and /usr/local/bin/.
+
+learn
+check
+checkmain
+
+Once you have all the scripts in your $PATH, start by running the
+"learn" script.
+
+
+List of Provided and Created Files
+==================================
+
+check:
+  A wrapper for the "checkmain" script, which does the real work of verifying
+  lessons have been completed.  Created by running the "replace" script.
+
+checkmain:
+  Verifies that lessons have been completed.  Created by running the
+  "replace" script.
+
+learn:
+  Provides the next lesson.  Created by running the "replace" script.
+
+replace:
+  A script that makes replacements in the master learn and check files
+  to produce the "learn" and "checkmain" scripts that will be run by users.
+
+learn-master:
+  The master version of the "learn" script, used by the "replace" script.
+
+check-master:
+  The master version of the "check" script, used by the "replace" script.
+
+checkmain-master:
+  The master version of the "checkmain" script, used by the "replace" script.
+
+check-replace:
+checkmain-replace:
+learn-replace:
+  Files containing an example replacement, used by the "replace" script.
+
+

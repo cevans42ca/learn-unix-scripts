@@ -1,0 +1,14 @@
+# This file contains a list replacements for the "checkmain" script.
+# Create your own site-specific replacements and merge them with the "replace" script.
+# Generate GUIDs with uuidgen.
+
+
+# Make it clear not to make changes to the "checkmain" script.  Make the following replacement when it's created.
+
+# start b2074508-dd08-48be-bc6c-346c26349e4e
+# This script is auto-generated.
+# 
+# If you want to add your own site-specific elements or exercises, take a look at checkmain-master, checkmain-replace,
+# and replace.  If you want to share additional exercises, modify checkmain-master and submit a pull request.
+# end b2074508-dd08-48be-bc6c-346c26349e4e
+

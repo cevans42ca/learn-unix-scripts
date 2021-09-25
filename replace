@@ -1,0 +1,128 @@
+#!/bin/bash
+
+set -e -o nounset
+
+declare -A map
+
+guid_list=()
+
+# State Constants:  with -o nounset we get verification that the spelling is correct
+looking=looking
+found=found
+
+state=$looking
+
+if [[ "$#" -lt "3" ]]; then
+	echo "Usage:  replace master_file replacement_file [more_replacement_files...] temp_output_file"
+	exit 1
+fi
+
+print_replacement() {
+	guid_to_replace="${BASH_REMATCH[1]}"
+	if [[ " ${guid_list[*]} " =~ " ${guid_to_replace} " ]]; then
+		line_num=0
+
+		while true; do
+			line=${map["${guid_to_replace}-$((line_num++))"]:-}
+			if [ -n "$line" ]; then
+				echo "$line" >> $temp_output_file
+			else
+				break
+			fi
+		done
+	fi
+}
+
+clean_up() {
+	if [ -n "${temp_output_file:-}" ]; then
+		rm -f $temp_output_file
+	fi
+}
+
+read_one_replacement_file() {
+	input_line_num=0
+
+	while IFS= read -r line
+	do
+		# I'm not sure why ((input_line_num++)) seems to cause the script to stop executing.
+		((input_line_num+=1))
+		lowercase_line=${line,,}
+		if [ "$state" == "$looking" ]; then
+			if [[ "$lowercase_line" =~ ^[[:space:]]*#[[:space:]]*start[[:space:]]*([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})([[:space:]].*|$) ]]; then
+				guid="${BASH_REMATCH[1]}"
+				state=$found
+				line_num=0
+
+			# If we find an end while we're looking for a start, that's no good.
+			elif [[ "$lowercase_line" =~ ^[[:space:]]*#[[:space:]]*end[[:space:]]*([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})([[:space:]].*|$) ]]; then
+				echo "Found end GUID ${BASH_REMATCH[1]} with no corresponding start GUID (learn-replace line $input_line_num)."
+				exit 5
+			fi
+		elif [ "$state" == "$found" ]; then
+			if [[ "$lowercase_line" =~ ^[[:space:]]*#[[:space:]]*end[[:space:]]*([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})([[:space:]].*|$) ]]; then
+				end_guid="${BASH_REMATCH[1]}"
+
+				if [[ "$guid" == "$end_guid" ]]; then
+					state=$looking
+					guid_list+=($guid)
+				else
+					echo "Start GUID $guid doesn't match end GUID $end_guid (learn-replace line $input_line_num)."
+					exit 2
+				fi
+
+			# If we find another start while we're looking for an end, that's a problem.
+			elif [[ "$lowercase_line" =~ ^[[:space:]]*#[[:space:]]*start[[:space:]]*([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})([[:space:]].*|$) ]]; then
+				echo "Start GUID $guid needs to be ended before another GUID can start (learn-replace line $input_line_num).  Replacements can't be nested."
+				exit 4
+			else
+				map["$guid-$((line_num++))"]=${line}
+			fi
+		else
+			echo "Internal error:  invalid state $state."
+			exit 10
+		fi
+	done < "$1"
+
+	if [ "$state" == "$found" ]; then
+		echo "Start GUID $guid didn't complete by the end of the file.  Please add a corresponding end GUID in the learn-replace file."
+		exit 3
+	fi
+}
+
+replacement_args=`expr $# - 2`
+for file in "${@:2:$replacement_args}"; do
+	read_one_replacement_file "$file"
+done
+
+temp_output_file=$(mktemp --suffix=_$(whoami))
+trap clean_up EXIT
+state=$looking
+input_line_num=0
+
+while IFS= read -r line
+do
+	# I'm not sure why ((input_line_num++)) seems to cause the script to stop executing.
+	((input_line_num+=1))
+	lowercase_line=${line,,}
+
+	if [[ "$lowercase_line" =~ ^[[:space:]]*#[[:space:]]*insert[[:space:]]*([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})([[:space:]].*|$) ]]; then
+		print_replacement
+		continue
+	elif [[ "$lowercase_line" =~ ^[[:space:]]*#[[:space:]]*replace[[:space:]]*start[[:space:]]*([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})([[:space:]].*|$) ]]; then
+		state=$found
+	elif [[ "$lowercase_line" =~ ^[[:space:]]*#[[:space:]]*replace[[:space:]]*end[[:space:]]*([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})([[:space:]].*|$) ]]; then
+		print_replacement
+		state=$looking
+		continue
+	fi
+
+	if [[ "$state" = "$looking" ]]; then
+		echo "$line" >> $temp_output_file
+	fi
+done < "$1"
+
+# The space is required to prevent the shell from processing it as ${@:- ...}.
+final_file="${@: -1:1}"
+mv $temp_output_file "$final_file"
+chmod u+x "$final_file"
+

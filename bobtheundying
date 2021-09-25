@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -e -o nounset
+
+if [ "${1:-}" != "--yes-really" ]; then
+	echo "Bob should only be awoken as part of the red belt exercises."
+	echo "If you're ready, run this script as 'bobtheundying --yes-really'."
+	exit 1
+fi
+
+exec bob --yes-really &
+
