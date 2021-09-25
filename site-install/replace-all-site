@@ -1,0 +1,10 @@
+#!/bin/bash
+
+script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+mkdir -p "$script_dir/bin"
+
+"$script_dir/../replace" "$script_dir/../learn-master" "$script_dir/../learn-replace" "$script_dir/site-replace" "$script_dir/bin/learn"
+"$script_dir/../replace" "$script_dir/../check-master" "$script_dir/../check-replace" "$script_dir/site-replace" "$script_dir/bin/check"
+"$script_dir/../replace" "$script_dir/../checkmain-master" "$script_dir/../checkmain-replace" "$script_dir/site-replace" "$script_dir/bin/checkmain"
+

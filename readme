@@ -36,19 +36,8 @@ looks at the command history to see if the lesson was completed correctly.
 Accessing the recent history is only possible in a sourced script.
 
 
-Site Specific Changes
-=====================
-
-The "learn", "check", and "checkmain" script have master versions.
-These scripts have been built in such a way that you can add your own
-site-specific or proprietary lessons or text.
-
-By adding a GUID in the master version of the file, you can insert or
-replace your own site-specific lessons or text at that point.  Only the
-GUID is public.  If you submit a pull request to add your GUID to the
-master files, you can stay up to date with the latest public version
-without having to constantly maintain your changes.  The "replace" script
-accepts multiple replacement files between the first and last argument.
+Preparing the Scripts Without Site-Specific Changes
+===================================================
 
 To prepare the scripts, run replace-all, which executes the following.
 
@@ -67,6 +56,26 @@ checkmain
 
 Once you have all the scripts in your $PATH, start by running the
 "learn" script.
+
+
+Site-Specific Changes
+=====================
+
+The "learn", "check", and "checkmain" script have master versions.
+These scripts have been built in such a way that you can add your own
+site-specific or proprietary lessons or text.
+
+By adding a GUID in the master version of the file, you can insert or
+replace your own site-specific lessons or text at that point.  Only the
+GUID is public.  If you submit a pull request to add your GUID to the
+master files, you can stay up to date with the latest public version
+without having to constantly maintain your changes.  The "replace" script
+accepts multiple replacement files between the first and last argument.
+
+To get started, copy the "site-install" directory to "site" and look
+at the replace script and replacement file.  The "site" directory is
+ignored in Git, so Git will not prompt you to push any changes you make
+there.
 
 
 List of Provided and Created Files
