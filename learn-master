@@ -449,7 +449,9 @@ white_belt_exercise_set_less() {
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 The "more" command will only give you more.  If you want to back up, add "| less" to a command.  In many cases (but depending
 on your terminal settings) you will be able to move up and down with the cursor keys and use the Page Up and Page Down keys.
-As before, Space will go a page forward, Enter will show one more line, and "q" will quit.
+As before, Space will go a page forward, Enter will show one more line, and "q" will quit.  Most commands will quit when you
+type Ctrl+C, but "less" doesn't quit by default with Ctrl+C.  When you press Ctrl+C in "less", it will stop whatever you're
+doing within "less" (by default).  You will need to press "q" to quit.
 
 Execute "set | less" and remember to execute ". check" after.
 EOL
