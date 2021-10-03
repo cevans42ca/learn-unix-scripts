@@ -62,6 +62,26 @@ luc_red_on_black="\033[91;40m"
 
 luc_nc='\033[0m' # No colour
 
+# Use an associative array to make it easy to reorder the exercises and add more in the middle.
+
+i=1
+declare -A exercises
+exercises["white_belt_$((i++))"]="what_execute_means"
+exercises["white_belt_$((i++))"]="stuck"
+exercises["white_belt_$((i++))"]="cd_root"
+exercises["white_belt_$((i++))"]="ls_root"
+exercises["white_belt_$((i++))"]="common_root_directories"
+exercises["white_belt_$((i++))"]="frozen"
+exercises["white_belt_$((i++))"]="set"
+exercises["white_belt_$((i++))"]="set_more"
+exercises["white_belt_$((i++))"]="set_less"
+exercises["white_belt_$((i++))"]="path_and_sourcing"
+
+i=1
+#exercises["yellow_stripe_$((i++))"]="end"
+
+luc_tty=$1
+
 luc_stty_rows=$(bash -c "stty -a -F$1 | grep -Po '(?<=rows )[0-9]*(?=;)'")
 luc_stty_columns=$(bash -c "stty -a -F$1 | grep -Po '(?<=columns )[0-9]*(?=;)'")
 luc_width=`expr $luc_stty_columns - 5`
@@ -92,8 +112,57 @@ sorry() {
 	echo "Run the learn script again if you need to."
 }
 
-white_belt_exercise_1() {
-	# For exercise 1, we're only confirming this script was run, so there's nothing to check.
+process_choice() {
+	luc_processed_choice=0
+
+	if [[ -z "${luc_choice:-}" ]]; then
+		return
+	fi
+
+	# Use the ${ ,,} syntax to lowercase.
+	if [[ "${luc_choice,,}" =~ ^[\ ]*(one|1|i)[\ ]*$ ]]; then
+		luc_processed_choice=1
+	fi
+
+	if [[ "${luc_choice,,}" =~ ^[\ ]*(two|2|ii)[\ ]*$ ]]; then
+		luc_processed_choice=2
+	fi
+
+	if [[ "${luc_choice,,}" =~ ^[\ ]*(three|3|iii)[\ ]*$ ]]; then
+		luc_processed_choice=3
+	fi
+
+	if [[ "${luc_choice,,}" =~ ^[\ ]*(four|4|iiii|iv)[\ ]*$ ]]; then
+		luc_processed_choice=4
+	fi
+
+	if [[ "${luc_choice,,}" =~ ^[\ ]*(five|5|v)[\ ]*$ ]]; then
+		luc_processed_choice=5
+	fi
+
+	if [[ "${luc_choice,,}" =~ ^[\ ]*(six|6|vi)[\ ]*$ ]]; then
+		luc_processed_choice=6
+	fi
+
+	if [[ "${luc_choice,,}" =~ ^[\ ]*(seven|7|vii)[\ ]*$ ]]; then
+		luc_processed_choice=7
+	fi
+
+	if [[ "${luc_choice,,}" =~ ^[\ ]*(eight|8|viii)[\ ]*$ ]]; then
+		luc_processed_choice=8
+	fi
+
+	if [[ "${luc_choice,,}" =~ ^[\ ]*(nine|9|ix)[\ ]*$ ]]; then
+		luc_processed_choice=9
+	fi
+
+	if [[ "${luc_choice,,}" =~ ^[\ ]*(ten|10|x)[\ ]*$ ]]; then
+		luc_processed_choice=10
+	fi
+}
+
+white_belt_exercise_what_execute_means() {
+	# For this exercise, we're only confirming this script was run, so there's nothing to check.
 	good_work
 	echo ""
 	fmt -u --width=$luc_width <<EOL
@@ -101,7 +170,16 @@ For each exercise, you'll run the learn and check scripts.  Execute "learn" for 
 EOL
 }
 
-white_belt_exercise_2() {
+white_belt_exercise_stuck() {
+	# For this exercise, we're only confirming this script was run, so there's nothing to check.
+	good_work
+	echo ""
+	fmt -u --width=$luc_width <<EOL
+Execute "learn" for your next task or to pick up where you left off.
+EOL
+}
+
+white_belt_exercise_cd_root() {
 	if [[ `pwd` == "/" ]]; then
 		good_work
 		echo ""
@@ -111,7 +189,7 @@ white_belt_exercise_2() {
 	fi
 }
 
-white_belt_exercise_3() {
+white_belt_exercise_ls_root() {
 	# Chances are, "ls" is going to be in the history, so cheaters will get a pass on this one.
 	# We could generate history with a smaller size for this exercise, but it doesn't seem worthwhile.
 	# The list command is so basic that I'm not really concerned that something will be missed here.
@@ -121,7 +199,7 @@ white_belt_exercise_3() {
 	echo $'Execute "learn" when you\'re ready for the next exercise.'
 }
 
-white_belt_exercise_4() {
+white_belt_exercise_common_root_directories() {
 	if [[ `pwd` == "$HOME" ]]; then
 		good_work
 		echo ""
@@ -131,7 +209,7 @@ white_belt_exercise_4() {
 	fi
 }
 
-white_belt_exercise_5() {
+white_belt_exercise_set() {
 	IFS='
 '
 
@@ -151,7 +229,49 @@ white_belt_exercise_5() {
 	return
 }
 
-white_belt_exercise_6() {
+white_belt_exercise_frozen() {
+	fmt -u --width=$luc_width <<EOL
+Question 1/1
+
+Your terminal is frozen!  What do you do first?
+
+EOL
+
+	luc_answers=( 'Give up and go back to Windows' 'Type Ctrl+q' 'Type Ctrl+s' 'Type Ctrl+u' 'Scream in panic' 'Open another terminal' )
+
+	luc_shuffled_answers=()
+	while read -r item; do
+	    luc_shuffled_answers+=("$item")
+	done < <(shuf -e "${luc_answers[@]}")
+
+	luc_correct_answer=0
+	luc_num=1
+	for item in "${luc_shuffled_answers[@]}"
+	do
+		echo "(${luc_num}) $item"
+		if [[ "$item" == "Type Ctrl+q" ]]; then
+			luc_correct_answer=$luc_num
+		fi
+		luc_num=$((luc_num+1))
+	done
+
+	echo ""
+	# Stdin has been redirected to pull in the command history, so we need an extra step to read from the terminal.
+	# There must be no space between < and /.
+	read -p "Your answer?  " luc_choice </dev/tty
+
+	process_choice
+
+	if [[ "$luc_processed_choice" == "$luc_correct_answer" ]]; then
+		good_work
+		echo ""
+		echo $'Execute "learn" when you\'re ready for the next exercise.'
+	else
+		sorry
+	fi
+}
+
+white_belt_exercise_set_more() {
 	IFS='
 '
 
@@ -171,7 +291,7 @@ white_belt_exercise_6() {
 	return
 }
 
-white_belt_exercise_7() {
+white_belt_exercise_set_less() {
 	IFS='
 '
 
@@ -191,8 +311,8 @@ white_belt_exercise_7() {
 	return
 }
 
-white_belt_exercise_8() {
-	# For exercise 8, we're only confirming this script was run, so there's nothing to check.
+white_belt_exercise_path_and_sourcing() {
+	# For this exercise, we're only confirming this script was run, so there's nothing to check.
 	good_work
 }
 
@@ -228,12 +348,14 @@ EOL
 	exit 2
 fi
 
-eval ${RANK}_exercise_${EXERCISE}
-
 luc_regex="'"
 luc_regex+="${RANK}_exercise_.*\(\)"
 luc_regex+="'"
 luc_num_exercises=$(bash -c "grep -E ${luc_regex} ~/bin/learn | wc -l")
+
+exercise_name=${exercises["${RANK}_${EXERCISE}"]}
+function_name="${RANK}_exercise_${exercise_name}"
+eval $function_name
 
 if (($EXERCISE > $luc_num_exercises)); then
 	echo ""

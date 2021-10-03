@@ -75,9 +75,11 @@ nc='\033[0m' # No colour
 i=1
 declare -A exercises
 exercises["white_belt_$((i++))"]="what_execute_means"
+exercises["white_belt_$((i++))"]="stuck"
 exercises["white_belt_$((i++))"]="cd_root"
 exercises["white_belt_$((i++))"]="ls_root"
 exercises["white_belt_$((i++))"]="common_root_directories"
+exercises["white_belt_$((i++))"]="frozen"
 exercises["white_belt_$((i++))"]="set"
 exercises["white_belt_$((i++))"]="set_more"
 exercises["white_belt_$((i++))"]="set_less"
@@ -223,6 +225,32 @@ At the end of a sentence, you will see: "scp bcompcd101:/tmp/file.txt .".
 To see the overview again, execute "learn --welcome".
 
 Your first task is to execute ". check".
+EOL
+
+	complete_exercise
+}
+
+white_belt_exercise_stuck() {
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+It's always a good idea to take notes, because it helps with recall.  But there a few things you're going to want to
+always have handy.  Take them down in whatever style you like (EverNote, a personal wiki, on your phone, Microsoft OneNote,
+a mind map, or good old pen and paper) but make sure it will be available whenever you're at a Unix terminal.
+
+The first thing you don't want to be caught by is Ctrl+q and Ctrl+s.  If you accidentally type Ctrl and "s", the terminal will
+freeze.  Ctrl+s is easy to type and is in common use in Windows programs as a keyboard shortcut for saving the current file.
+Depending on your background, it may be second nature to you to type it when you want to save something.
+
+If you find that your terminal is locked or frozen, the first thing you should try is typing Ctrl+q (Ctrl with a lowercase
+"q", or equivalently:  Ctrl, "q", but not shift).
+
+Ctrl+q and Ctrl+s are holdovers of an ancient age when it was more common to print output to a printer than a screen.
+Printers were much slower and needed time to catch up.
+
+Please make a note of these now.  There will be a question later about it.
+
+We'll look at the other things you should make a note about in future exercises.
+
+Execute ". check".
 EOL
 
 	complete_exercise
@@ -431,6 +459,14 @@ EOL
 	complete_exercise
 }
 
+white_belt_exercise_frozen() {
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+It's time for the first test.  Make sure your notes are handy and execute ". check".
+EOL
+
+	complete_exercise
+}
+
 white_belt_exercise_set_more() {
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 To go page by page, add "| more" to a command.  The pipe ( | ) can be used to send the output of one command to the input
@@ -587,7 +623,7 @@ EOL
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
   In a martial arts club (or dojo) a student gets their white belt when they buy a uniform and sign up for classes.  In this
-  case, a student gets their white belt when they install the teaching script run it, and choose to get started.
+  case, a student gets their white belt when they run the learn script and choose to get started.
 EOL
 
 	echo "" >> $fmt_file
