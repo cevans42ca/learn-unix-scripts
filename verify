@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# This file is part of the "learn-unix-scripts" project.
+#
+# The "learn-unix-scripts" project is free software: you can redistribute it and/or modify it under the terms of the GNU
+# General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option)
+# any later version.
+#
+# The "learn-unix-scripts" project is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License along with this project; if not, write to the
+# Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA, 02111-1307, USA.
+#
+# Copyright (C) 2021 Christopher Evans
+
+# This verify script's purpose is to help in confirming that all features and dependencies that the scripts use are
+# available.  This script should be run the same way students are expected to run these scripts (for example, if students
+# are expected to run these scripts by using PuTTY to SSH into an on-campus server, this script should be run the same
+# way).
+
+# This script was developed in a 130x30 terminal.
+
+parent_proc_name=`ps -p $PPID -o comm=`
+if [[ "bash" != "$parent_proc_name" ]]; then
+	echo "The scripts in this project are written in bash and require the user to use the bash shell."
+	echo "But they're open source, so feel free to use the lesson text and write your own."
+	exit 1
+fi
+
+if [[ "${BASH_VERSINFO:-0}" < "4" ]]; then
+	echo "Assosiative array support, added in Bash 4.0, is required."
+	exit 2
+fi 
+
+echo "Verify that some of the words in this sentence are red." | grep --color=always "some of the words"
+
+if stty --version 2>/dev/null | grep -q 'coreutils'; then
+    stty_options='-a'
+else
+    stty_options='everything'
+fi
+
+stty ${stty_options} | grep -q "intr = ^C"
+if [ $? -ne 0 ]; then
+	echo "The interrupt character is not Ctrl+C or could not be parsed from the output of stty."
+	exit 3
+fi
+
