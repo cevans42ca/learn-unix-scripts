@@ -1187,7 +1187,18 @@ if [[ "${all_args}" =~ (white|yellow|green|blue|red|black).*(stripe|belt)[^0-9]*
 	fi
 
 	new_belt_number=${belt_to_number[$new_rank]}
-	current_belt_number=${belt_to_number[$RANK]}
+
+	if [ -n "${SAVED_RANK:-}" ]; then
+		current_belt_number=${belt_to_number[$SAVED_RANK]}
+	else
+		current_belt_number=${belt_to_number[$RANK]}
+	fi
+
+	if [ -n "${SAVED_EXERCISE:-}" ]; then
+		current_exercise=${SAVED_EXERCISE}
+	else
+		current_exercise=$EXERCISE
+	fi
 
 	if (($new_belt_number > $current_belt_number)); then
 		fmt -u --width=$WIDTH <<EOL
@@ -1197,12 +1208,12 @@ EOL
 	fi
 
 	if (($new_belt_number == $current_belt_number)); then
-		if ((${new_exercise} > ${EXERCISE})); then
+		if ((${new_exercise} > $current_exercise)); then
 			fmt -u --width=$WIDTH <<EOL
 This feature is for reviewing previous exercises, not for skipping ahead.
 EOL
 			exit 3
-		elif ((${new_exercise} == ${EXERCISE})); then
+		elif ((${new_exercise} == $current_exercise)); then
 			fmt -u --width=$WIDTH <<EOL
 You're already working on that exercise.
 EOL
@@ -1247,6 +1258,16 @@ fi
 
 # White belt exercise 4 does something different.
 print_rank > $fmt_file
+
+if [ -z ${exercises["${RANK}_${EXERCISE}"]:-} ]; then
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+There are no more exercises at this time.  If you like, you can review exercises you've already completed by executing
+"learn white belt", "learn yellow stripe", or "learn white belt 6" to start review at a particular exercise.
+EOL
+	complete_exercise
+
+	exit 1
+fi
 
 set_num_exercises
 

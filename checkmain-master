@@ -491,7 +491,7 @@ if (($EXERCISE > $luc_num_exercises)); then
 
 		if [ -z "${SAVED_RANK}" ]; then
 			printf "Congratulations!  You have now attained your `getBeltWithColours yellow_belt`.\n"
-			printf "You are now working toward your `getBeltWithColours green_stripe`.\n\n"
+			printf "You would be working toward your `getBeltWithColours green_stripe`, but there are no more exercises.\n\n"
 		else
 			printf "You have reviewed all the exercises in `getBeltWithColours yellow_stripe`.\n"
 			printf "There are no more exercises at this time.\n"
