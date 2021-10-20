@@ -1,0 +1,95 @@
+# This file contains a list of replacements for both the "check" script and the "learn" script.
+# Create your own site-specific replacements and merge them with the "replace" script.  See site-install for examples.
+# Generate GUIDs with uuidgen.
+
+# start ffa9e74e-2b02-4d72-9c82-9f9db2915c62
+black_on_white="\033[30;107m"
+bright_white_on_black="\033[107;40m"
+yellow_on_black="\033[93;40m"
+green_on_black="\033[92;40m"
+blue_on_black="\033[94;40m"
+red_on_black="\033[91;40m"
+
+underline="\033[4m"
+no_underline="\033[m"
+
+nc='\033[0m' # No colour
+
+# Use an associative array to make it easy to reorder the exercises and add more in the middle.
+i=1
+declare -A exercises
+exercises["white_belt_$((i++))"]="what_execute_means"
+exercises["white_belt_$((i++))"]="stuck"
+exercises["white_belt_$((i++))"]="cd_root"
+exercises["white_belt_$((i++))"]="ls_root"
+exercises["white_belt_$((i++))"]="common_root_directories"
+exercises["white_belt_$((i++))"]="frozen"
+exercises["white_belt_$((i++))"]="set"
+exercises["white_belt_$((i++))"]="set_more"
+exercises["white_belt_$((i++))"]="set_less"
+exercises["white_belt_$((i++))"]="path_and_sourcing"
+
+i=1
+exercises["yellow_stripe_$((i++))"]="pwd"
+exercises["yellow_stripe_$((i++))"]="cd_dot_dot"
+exercises["yellow_stripe_$((i++))"]="special_characters"
+
+declare -A belt_to_number
+belt_to_number["white_belt"]=0
+belt_to_number["yellow_stripe"]=1
+belt_to_number["yellow_belt"]=2
+belt_to_number["green_stripe"]=3
+belt_to_number["green_belt"]=4
+belt_to_number["blue_stripe"]=5
+belt_to_number["blue_belt"]=6
+belt_to_number["red_stripe"]=7
+belt_to_number["red_belt"]=8
+belt_to_number["black_stripe"]=9
+belt_to_number["black_belt"]=10
+# end ffa9e74e-2b02-4d72-9c82-9f9db2915c62
+
+# start 37333148-8746-4468-826e-544e532f1ebc
+getBeltWithColours() {
+	if [[ "$1" == "white_belt" ]]; then
+		echo "${bright_white_on_black}white belt${nc}"
+	elif [[ "$1" == "yellow_stripe" ]]; then
+		echo "${yellow_on_black}yellow ${nc}${bright_white_on_black}stripe${nc}"
+	elif [[ "$1" == "yellow_belt" ]]; then
+		echo "${yellow_on_black}yellow belt${nc}"
+	elif [[ "$1" == "green_stripe" ]]; then
+		echo "${green_on_black}green ${yellow_on_black}stripe${luc_nc}"
+	fi
+}
+
+updateDotFile() {
+	if [ ! -f ~/.learnUnix ]; then
+		echo "RANK=$RANK" > ~/.learnUnix
+		echo "EXERCISE=$EXERCISE" >> ~/.learnUnix
+	else
+		if grep -q "RANK=" ~/.learnUnix; then
+			sed -i "s/RANK=.*/RANK=${RANK}/" ~/.learnUnix
+		else
+			echo "RANK=${RANK}" >> ~/.learnUnix
+		fi
+
+		if grep -q "EXERCISE=" ~/.learnUnix; then
+			sed -i "s/EXERCISE=.*/EXERCISE=${EXERCISE}/" ~/.learnUnix
+		else
+			echo "EXERCISE=${EXERCISE}" >> ~/.learnUnix
+		fi
+
+		if grep -q "SAVED_RANK=" ~/.learnUnix; then
+			sed -i "s/SAVED_RANK=.*/SAVED_RANK=${SAVED_RANK}/" ~/.learnUnix
+		else
+			echo "SAVED_RANK=${SAVED_RANK}" >> ~/.learnUnix
+		fi
+
+		if grep -q "SAVED_EXERCISE=" ~/.learnUnix; then
+			sed -i "s/SAVED_EXERCISE=.*/SAVED_EXERCISE=${SAVED_EXERCISE}/" ~/.learnUnix
+		else
+			echo "SAVED_EXERCISE=${SAVED_EXERCISE}" >> ~/.learnUnix
+		fi
+	fi	
+}
+# end 37333148-8746-4468-826e-544e532f1ebc
+

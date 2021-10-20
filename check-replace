@@ -1,14 +1,15 @@
-# This file contains a list replacements for the "check" script.
-# Create your own site-specific replacements and merge them with the "replace" script.
+# This file contains a list of replacements for the "check" script.
+# Create your own site-specific replacements and merge them with the "replace" script.  See site-install for examples.
 # Generate GUIDs with uuidgen.
 
 
-# Make it clear not to make changes to the "check" script.  Make the following replacement when it's created.
+# Make it clear not to make changes to the "check" script by making the following replacement when it's created.
 
 # start c751ee38-33af-4a92-80cd-cfe18c29bf9b
 # This script is auto-generated.
 # 
 # If you want to add your own site-specific elements or exercises, take a look at check-master, check-replace,
-# and replace.  If you want to share additional exercises, modify check-master and submit a pull request.
+# and replace.  If you want to share additional exercises, modify learn-master and check-master and submit a pull
+# request.
 # end c751ee38-33af-4a92-80cd-cfe18c29bf9b
 

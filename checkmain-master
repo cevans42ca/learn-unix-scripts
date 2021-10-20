@@ -53,34 +53,7 @@ while read i; do
 	luc_history+=("$i")
 done
 
-luc_black_on_white="\033[30;100m"
-luc_bright_white_on_black="\033[107;40m"
-luc_yellow_on_black="\033[93;40m"
-luc_green_on_black="\033[92;40m"
-luc_blue_on_black="\033[94;40m"
-luc_red_on_black="\033[91;40m"
-
-luc_nc='\033[0m' # No colour
-
-# Use an associative array to make it easy to reorder the exercises and add more in the middle.
-
-i=1
-declare -A exercises
-exercises["white_belt_$((i++))"]="what_execute_means"
-exercises["white_belt_$((i++))"]="stuck"
-exercises["white_belt_$((i++))"]="cd_root"
-exercises["white_belt_$((i++))"]="ls_root"
-exercises["white_belt_$((i++))"]="common_root_directories"
-exercises["white_belt_$((i++))"]="frozen"
-exercises["white_belt_$((i++))"]="set"
-exercises["white_belt_$((i++))"]="set_more"
-exercises["white_belt_$((i++))"]="set_less"
-exercises["white_belt_$((i++))"]="path_and_sourcing"
-
-i=1
-exercises["yellow_stripe_$((i++))"]="pwd"
-exercises["yellow_stripe_$((i++))"]="cd_dot_dot"
-exercises["yellow_stripe_$((i++))"]="special_characters"
+# insert ffa9e74e-2b02-4d72-9c82-9f9db2915c62 associative arrays for exercises and belt levels
 
 luc_tty=$1
 
@@ -165,24 +138,7 @@ process_choice() {
 	fi
 }
 
-updateDotFile() {
-	if [ ! -f ~/.learnUnix ]; then
-		echo "RANK=$RANK" > ~/.learnUnix
-		echo "EXERCISE=$EXERCISE" >> ~/.learnUnix
-	else
-		if grep -q "RANK=" ~/.learnUnix; then
-			sed -i "s/RANK=.*/RANK=${RANK}/" ~/.learnUnix
-		else
-			echo "RANK=${RANK}" >> ~/.learnUnix
-		fi
-
-		if grep -q "EXERCISE=" ~/.learnUnix; then
-			sed -i "s/EXERCISE=.*/EXERCISE=${EXERCISE}/" ~/.learnUnix
-		else
-			echo "EXERCISE=${EXERCISE}" >> ~/.learnUnix
-		fi
-	fi	
-}
+# insert 37333148-8746-4468-826e-544e532f1ebc updateDotFile, getBeltWithColours
 
 white_belt_exercise_what_execute_means() {
 	# For this exercise, we're only confirming this script was run, so there's nothing to check.
@@ -367,7 +323,7 @@ yellow_stripe_exercise_cd_dot_dot() {
 			luc_req_1=1
 		fi
 
-		if [[ "$item" =~ ^[\ ]*cd\s*..([ ]|$) ]]; then
+		if [[ "$item" =~ ^[\ ]*cd( )*\.\.( )*$ ]]; then
 			luc_req_2=1
 		fi
 	done
@@ -429,26 +385,59 @@ exercise_name=${exercises["${RANK}_${EXERCISE}"]}
 function_name="${RANK}_exercise_${exercise_name}"
 eval $function_name
 
+if [ "${EXERCISE:-}" == "${SAVED_EXERCISE:-}" ] && [ "${SAVED_RANK:-}" == "${RANK:-}" ]; then
+	SAVED_RANK=""
+	SAVED_EXERCISE=""
+	updateDotFile
+
+	fmt -u --width=$luc_width <<EOL
+You were reviewing past exercises and you're now caught up to where you were.  Execute "learn" to continue.
+EOL
+fi
+
 if (($EXERCISE > $luc_num_exercises)); then
-	# Use an extra ${luc_nc} to fix an issue with PuTTY.
 	if [ $RANK == "white_belt" ]; then
 		echo ""
 
-		printf "Congratulations!  You have now attained your ${luc_yellow_on_black}yellow ${luc_nc}${luc_bright_white_on_black}stripe${luc_nc}.\n"
-		printf "You are now working toward your ${luc_yellow_on_black}yellow belt${luc_nc}.\n\n"
+		if [ -z "${SAVED_RANK}" ]; then
+			printf "Congratulations!  You have now attained your `getBeltWithColours yellow_stripe`.\n"
+			printf "You are now working toward your `getBeltWithColours yellow_belt`.\n\n"
 
-		echo 'From here on out, there will be no reminder to execute "learn".'
+			echo 'From here on out, there will be no reminder to execute "learn".'
 
-		RANK=yellow_stripe
-		EXERCISE=1
+			RANK=yellow_stripe
+			EXERCISE=1
+		else
+			printf "You have reviewed all the exercises in `getBeltWithColours white_belt`.\n"
+			if [ "${SAVED_EXERCISE:-}" == "1" ] && [ "${SAVED_RANK:-}" == "yellow_stripe" ]; then
+				printf "You're all caught up.\n"
+				printf "Execute \"learn\" to begin the `getBeltWithColours yellow_stripe` exercises.\n"
+
+				SAVED_RANK=""
+				SAVED_EXERCISE=""
+			else			
+				printf "Execute \"learn\" to start reviewing the `getBeltWithColours yellow_stripe` exercises.\n"
+			fi
+
+			RANK=yellow_stripe
+			EXERCISE=1
+		fi
 	elif [ $RANK == "yellow_stripe" ]; then
-		echo ""
-
-		printf "Congratulations!  You have now attained your ${luc_yellow_on_black}yellow belt${luc_nc}.\n"
-		printf "You are now working toward your ${green_on_black}green ${yellow_on_black}stripe${luc_nc}.\n\n"
-
 		RANK=yellow_belt
 		EXERCISE=1
+
+		echo ""
+
+		if [ -z "${SAVED_RANK}" ]; then
+			printf "Congratulations!  You have now attained your `getBeltWithColours yellow_belt`.\n"
+			printf "You are now working toward your `getBeltWithColours green_stripe`.\n\n"
+		else
+			printf "You have reviewed all the exercises in `getBeltWithColours yellow_stripe`.\n"
+			printf "There are no more exercises at this time.\n"
+
+			SAVED_RANK=""
+			SAVED_EXERCISE=""
+		fi
 	fi
 fi
 

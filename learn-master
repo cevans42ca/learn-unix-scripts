@@ -58,43 +58,13 @@ clean_up() {
 # It's a trap!  Run the clean_up subroutine on normal or aborted exit.
 trap clean_up EXIT
 
-black_on_white="\033[30;107m"
-bright_white_on_black="\033[107;40m"
-yellow_on_black="\033[93;40m"
-green_on_black="\033[92;40m"
-blue_on_black="\033[94;40m"
-red_on_black="\033[91;40m"
-
-underline="\033[4m"
-no_underline="\033[m"
-
-nc='\033[0m' # No colour
-
 if stty --version 2>/dev/null | grep -q 'coreutils'; then
     stty_options='-a'
 else
     stty_options='everything'
 fi
 
-# Use an associative array to make it easy to reorder the exercises and add more in the middle.
-
-i=1
-declare -A exercises
-exercises["white_belt_$((i++))"]="what_execute_means"
-exercises["white_belt_$((i++))"]="stuck"
-exercises["white_belt_$((i++))"]="cd_root"
-exercises["white_belt_$((i++))"]="ls_root"
-exercises["white_belt_$((i++))"]="common_root_directories"
-exercises["white_belt_$((i++))"]="frozen"
-exercises["white_belt_$((i++))"]="set"
-exercises["white_belt_$((i++))"]="set_more"
-exercises["white_belt_$((i++))"]="set_less"
-exercises["white_belt_$((i++))"]="path_and_sourcing"
-
-i=1
-exercises["yellow_stripe_$((i++))"]="pwd"
-exercises["yellow_stripe_$((i++))"]="cd_dot_dot"
-exercises["yellow_stripe_$((i++))"]="special_characters"
+# insert ffa9e74e-2b02-4d72-9c82-9f9db2915c62 associative arrays for exercises and belt levels
 
 get_rows_and_columns() {
 	STTY_ROWS=`stty ${stty_options} | grep -Po "(?<=rows )[0-9]*(?=;)"`
@@ -201,18 +171,6 @@ set_num_exercises_for_review() {
 	NUM_REVIEW_EXERCISES=$(bash -c "grep -E ${regex} ~/bin/learn | wc -l")
 }
 
-getBeltWithColours() {
-	if [[ "$1" == "white_belt" ]]; then
-		echo "${bright_white_on_black}white belt${nc}"
-	elif [[ "$1" == "yellow_stripe" ]]; then
-		echo "${yellow_on_black}yellow ${nc}${bright_white_on_black}stripe${nc}"
-	elif [[ "$1" == "yellow_belt" ]]; then
-		echo "${yellow_on_black}yellow belt${nc}"
-	elif [[ "$1" == "green_stripe" ]]; then
-		echo "${green_on_black}green ${yellow_on_black}stripe${luc_nc}"
-	fi
-}
-
 print_rank() {
 	# Use an extra ${nc} to fix an issue with PuTTY.
 	if [ -n "${SAVED_RANK:-}" ]; then
@@ -227,7 +185,7 @@ print_rank() {
 			printf "You are working toward your `getBeltWithColours green_stripe`.\n\n"
 		fi
 
-		belt=$(getBeltWithColours $SAVED_RANK)
+		belt=$(getBeltWithColours $RANK)
 		printf "You are reviewing the exercises for ${belt}.  "
 		printf 'To return to where you were, execute "learn --return".\n\n'
 	else
@@ -252,36 +210,7 @@ complete_exercise() {
 	cat $fmt_file
 }
 
-updateDotFile() {
-	if [ ! -f ~/.learnUnix ]; then
-		echo "RANK=$RANK" > ~/.learnUnix
-		echo "EXERCISE=$EXERCISE" >> ~/.learnUnix
-	else
-		if grep -q "RANK=" ~/.learnUnix; then
-			sed -i "s/RANK=.*/RANK=${RANK}/" ~/.learnUnix
-		else
-			echo "RANK=${RANK}" >> ~/.learnUnix
-		fi
-
-		if grep -q "EXERCISE=" ~/.learnUnix; then
-			sed -i "s/EXERCISE=.*/EXERCISE=${EXERCISE}/" ~/.learnUnix
-		else
-			echo "EXERCISE=${EXERCISE}" >> ~/.learnUnix
-		fi
-
-		if grep -q "SAVED_RANK=" ~/.learnUnix; then
-			sed -i "s/SAVED_RANK=.*/SAVED_RANK=${SAVED_RANK}/" ~/.learnUnix
-		else
-			echo "SAVED_RANK=${SAVED_RANK}" >> ~/.learnUnix
-		fi
-
-		if grep -q "SAVED_EXERCISE=" ~/.learnUnix; then
-			sed -i "s/SAVED_EXERCISE=.*/SAVED_EXERCISE=${SAVED_EXERCISE}/" ~/.learnUnix
-		else
-			echo "SAVED_EXERCISE=${SAVED_EXERCISE}" >> ~/.learnUnix
-		fi
-	fi	
-}
+# insert 37333148-8746-4468-826e-544e532f1ebc updateDotFile, getBeltWithColours
 
 white_belt_exercise_what_execute_means() {
 	yellow_stripe="${yellow_on_black}yellow ${nc}${bright_white_on_black}stripe${nc}"
@@ -1074,7 +1003,8 @@ EOL
 fi
 
 all_args="$*"
-if [[ "${all_args,,}" =~ (white|yellow|green|blue|red|black).*(stripe|belt)[^0-9]*([0-9]*) ]]; then
+all_args=${all_args,,}
+if [[ "${all_args}" =~ (white|yellow|green|blue|red|black).*(stripe|belt)[^0-9]*([0-9]*) ]]; then
 	# The ~/.learnUnix file must exist.  If it didn't, we would be running welcome().
 
 	new_rank="${BASH_REMATCH[1]}_${BASH_REMATCH[2]}"
@@ -1096,6 +1026,30 @@ if [[ "${all_args,,}" =~ (white|yellow|green|blue|red|black).*(stripe|belt)[^0-9
 	if [[ "${new_exercise}" =~ 0[0-9]+ ]]; then
 		echo "Please don't add leading zeros to the exercise number."
 		exit 3
+	fi
+
+	new_belt_number=${belt_to_number[$new_rank]}
+	current_belt_number=${belt_to_number[$RANK]}
+
+	if (($new_belt_number > $current_belt_number)); then
+		fmt -u --width=$WIDTH <<EOL
+This feature is for reviewing previous exercises, not for skipping ahead.
+EOL
+		exit 3
+	fi
+
+	if (($new_belt_number == $current_belt_number)); then
+		if ((${new_exercise} > ${EXERCISE})); then
+			fmt -u --width=$WIDTH <<EOL
+This feature is for reviewing previous exercises, not for skipping ahead.
+EOL
+			exit 3
+		elif ((${new_exercise} == ${EXERCISE})); then
+			fmt -u --width=$WIDTH <<EOL
+You're already working on that exercise.
+EOL
+			exit 3
+		fi
 	fi
 
 	set_num_exercises_for_review
