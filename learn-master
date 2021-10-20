@@ -92,7 +92,9 @@ exercises["white_belt_$((i++))"]="set_less"
 exercises["white_belt_$((i++))"]="path_and_sourcing"
 
 i=1
-exercises["yellow_stripe_$((i++))"]="end"
+exercises["yellow_stripe_$((i++))"]="pwd"
+exercises["yellow_stripe_$((i++))"]="cd_dot_dot"
+exercises["yellow_stripe_$((i++))"]="special_characters"
 
 get_rows_and_columns() {
 	STTY_ROWS=`stty ${stty_options} | grep -Po "(?<=rows )[0-9]*(?=;)"`
@@ -186,21 +188,59 @@ EOL
 
 # Run "grep" on this file and pipe it to "wc" to count the number of exercises for the current belt.
 set_num_exercises() {
-	REGEX="'"
-	REGEX+="${RANK}_exercise_.*\(\)"
-	REGEX+="'"
-	NUM_EXERCISES=$(bash -c "grep -E ${REGEX} ~/bin/learn | wc -l")
+	regex="'"
+	regex+="${RANK}_exercise_.*\(\)"
+	regex+="'"
+	NUM_EXERCISES=$(bash -c "grep -E ${regex} ~/bin/learn | wc -l")
+}
+
+set_num_exercises_for_review() {
+	regex="'"
+	regex+="${new_rank}_exercise_.*\(\)"
+	regex+="'"
+	NUM_REVIEW_EXERCISES=$(bash -c "grep -E ${regex} ~/bin/learn | wc -l")
+}
+
+getBeltWithColours() {
+	if [[ "$1" == "white_belt" ]]; then
+		echo "${bright_white_on_black}white belt${nc}"
+	elif [[ "$1" == "yellow_stripe" ]]; then
+		echo "${yellow_on_black}yellow ${nc}${bright_white_on_black}stripe${nc}"
+	elif [[ "$1" == "yellow_belt" ]]; then
+		echo "${yellow_on_black}yellow belt${nc}"
+	elif [[ "$1" == "green_stripe" ]]; then
+		echo "${green_on_black}green ${yellow_on_black}stripe${luc_nc}"
+	fi
 }
 
 print_rank() {
-	if [ "$RANK" == "white_belt" ]; then
-		printf "Your current rank is ${bright_white_on_black}white belt${nc}.\n"
-		# Use an extra ${nc} to fix an issue with PuTTY.
-		printf "You are working toward your ${yellow_on_black}yellow ${nc}${bright_white_on_black}stripe${nc}.\n\n"
-	elif [ "$RANK" == "yellow_stripe" ]; then
-		# Use an extra ${nc} to fix an issue with PuTTY.
-		printf "Your current rank is ${yellow_on_black}yellow ${nc}${bright_white_on_black}stripe${nc}.\n"
-		printf "You are working toward your ${yellow_on_black}yellow belt${nc}.\n\n"
+	# Use an extra ${nc} to fix an issue with PuTTY.
+	if [ -n "${SAVED_RANK:-}" ]; then
+		if [ "$SAVED_RANK" == "white_belt" ]; then
+			printf "Your current rank is `getBeltWithColours white_belt`.\n"
+			printf "You are working toward your `getBeltWithColours yellow_stripe`.\n\n"
+		elif [ "$SAVED_RANK" == "yellow_stripe" ]; then
+			printf "Your current rank is `getBeltWithColours yellow_stripe`.\n"
+			printf "You are working toward your `getBeltWithColours yellow_belt`.\n\n"
+		elif [ "$SAVED_RANK" == "yellow_belt" ]; then
+			printf "Your current rank is `getBeltWithColours yellow_belt`.\n"
+			printf "You are working toward your `getBeltWithColours green_stripe`.\n\n"
+		fi
+
+		belt=$(getBeltWithColours $SAVED_RANK)
+		printf "You are reviewing the exercises for ${belt}.  "
+		printf 'To return to where you were, execute "learn --return".\n\n'
+	else
+		if [ "$RANK" == "white_belt" ]; then
+			printf "Your current rank is `getBeltWithColours white_belt`.\n"
+			printf "You are working toward your `getBeltWithColours yellow_stripe`.\n\n"
+		elif [ "$RANK" == "yellow_stripe" ]; then
+			printf "Your current rank is `getBeltWithColours yellow_stripe`.\n"
+			printf "You are working toward your `getBeltWithColours yellow_belt`.\n\n"
+		elif [ "$RANK" == "yellow_belt" ]; then
+			printf "Your current rank is `getBeltWithColours yellow_belt`.\n"
+			printf "You are working toward your `getBeltWithColours green_stripe`.\n\n"
+		fi
 	fi
 }
 
@@ -210,6 +250,37 @@ complete_exercise() {
 	# Print the exercise (or the last part of the exercise) to the terminal.  Since "less" cleans up after itself, if we
 	# don't do this, the user has nothing to reference to finish the task.
 	cat $fmt_file
+}
+
+updateDotFile() {
+	if [ ! -f ~/.learnUnix ]; then
+		echo "RANK=$RANK" > ~/.learnUnix
+		echo "EXERCISE=$EXERCISE" >> ~/.learnUnix
+	else
+		if grep -q "RANK=" ~/.learnUnix; then
+			sed -i "s/RANK=.*/RANK=${RANK}/" ~/.learnUnix
+		else
+			echo "RANK=${RANK}" >> ~/.learnUnix
+		fi
+
+		if grep -q "EXERCISE=" ~/.learnUnix; then
+			sed -i "s/EXERCISE=.*/EXERCISE=${EXERCISE}/" ~/.learnUnix
+		else
+			echo "EXERCISE=${EXERCISE}" >> ~/.learnUnix
+		fi
+
+		if grep -q "SAVED_RANK=" ~/.learnUnix; then
+			sed -i "s/SAVED_RANK=.*/SAVED_RANK=${SAVED_RANK}/" ~/.learnUnix
+		else
+			echo "SAVED_RANK=${SAVED_RANK}" >> ~/.learnUnix
+		fi
+
+		if grep -q "SAVED_EXERCISE=" ~/.learnUnix; then
+			sed -i "s/SAVED_EXERCISE=.*/SAVED_EXERCISE=${SAVED_EXERCISE}/" ~/.learnUnix
+		else
+			echo "SAVED_EXERCISE=${SAVED_EXERCISE}" >> ~/.learnUnix
+		fi
+	fi	
 }
 
 white_belt_exercise_what_execute_means() {
@@ -604,10 +675,158 @@ EOL
 	complete_exercise
 }
 
-yellow_stripe_exercise_end() {
-	fmt -u --width=$WIDTH <<EOL
-This demo is concluded.  There are no more exercises at this time.
+yellow_stripe_exercise_pwd() {
+	if [[ `pwd` == "/" ]]; then
+		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+To begin this exericse, you can't be in the root directory.  Execute "cd", then execute "learn".
 EOL
+		complete_exercise
+		exit 0
+	fi
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+The theme of the yellow stripe exericses is creating files and directories, and in particular, characters that should be avoided.
+We will also be looking at the special directories "." and "..".
+
+As you rise through the ranks, fewer steps will be directly stated.  You should be familiar with pressing "q" to quit the
+lesson so you can go back to a prompt and continue, and executing ". check" to confirm that you can go on to the next
+exercise.  In between will be whatever the lesson requires, which will generally be to execute a command of some sort.
+
+Before we move around, you should have a better sense of where you are.  The "pwd" command stands for "Print Working
+Directory" and tells you the full path to your current working directory.  Try it now.
+EOL
+
+	complete_exercise
+}
+
+yellow_stripe_exercise_cd_dot_dot() {
+	if [[ `pwd` == "/" ]]; then
+		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+To begin this exericse, you can't be in the root directory.  Execute "cd", then execute "learn".
+EOL
+		complete_exercise
+		exit 0
+	fi
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+The directory "." is a special directory that refers to the current directory.  All directories have a "." directory and
+it cannot be removed.  The following paths all reference the same directory.
+
+EOL
+
+	echo "$HOME" >> $fmt_file
+	echo "$HOME/." >> $fmt_file
+	echo "$HOME/./." >> $fmt_file
+	echo "$HOME/././." >> $fmt_file
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+
+The "." directory can be useful to provide as a source or destination.
+
+For example, the secure copy "scp" program securely copies files and folders between computers.  It requires at least one
+source and exactly one destination.
+
+scp user@othercomputer:/home/user/fileToGet .
+
+The command above copies the file /home/user/fileToGet into the current directory.
+EOL
+
+printf "\n\n${underline}The Parent Rescue${no_underline}\n\n" >> $fmt_file
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+The special directory ".." refers to the parent directory.  The following paths point to the same directory.
+
+EOL
+
+	echo "/home/" >> $fmt_file
+	echo "/home/example/.." >> $fmt_file
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+
+All of these following paths also point to the same directory (a different one than the one above).
+
+EOL
+
+echo "/home/example/" >> $fmt_file
+echo "/home/example/../example/" >> $fmt_file
+echo "/home/example/../example/../example/" >> $fmt_file
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+
+In the white belt exercises, you went from your home directory to the root directory, then back.  This
+time, we'll look at each step along the way.  To go one directory up, execute "cd ..".  In many cases,
+"cd.." will also work.  Execute "pwd", then "cd ..", then "pwd", then "cd ..".  If you're not in the root directory by
+then, continue until you are.
+EOL
+
+	complete_exercise
+}
+
+yellow_stripe_exercise_special_characters() {
+	if [ ! -d $LUS_HOME ]; then
+		mkdir $LUS_HOME
+	fi
+	
+	if [ -f $LUS_HOME/yellow ]; then
+		less -R -P "$less_prompt_move_on" $fmt_file
+	
+		fmt -u --width=$WIDTH <<EOL
+This exercise involves creating the file $LUS_HOME/yellow, which already exists.  Delete it (y/n)?
+EOL
+
+		read CHOICE
+
+		if [[ "$CHOICE" =~ ^\s*[Yy].* ]]; then
+			rm -f $LUS_HOME/yellow
+		else
+			exit 2
+		fi
+	fi
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+Windows is up front about the characters that you're not allowed to use in a file or directory name.  They are as follows.
+
+\ / : * ? " < > |
+
+Unix will let you use any character on the keyboard in a file or directory name, except for "/", which is used to create paths.
+Problems crop up later.
+
+If you use a colon ":" in a file or directory name, you won't be able to add it to your \$PATH, though it's not a big deal
+in most cases.  Historically, Macs used colon ":" for the same purpose as Unix uses "/", so various programs will accept
+one and not the other.  Programs will convert between them.  Avoid colons on Macs.  If a Mac program lets you use
+a slash "/" in a file or directory name, don't.
+
+Spaces in file and directory names can also be problematic.  It takes more effort to write scripts that handle files with
+spaces in them, so it's not hard to find scripts that were never written to handle them.
+
+Files starting with a dash are particularly difficult to handle.  Unix programs almost always take options that start with
+a dash.  For example, the copy command "cp" takes an argument "-R" for copying a directory and everything under it to a
+new location.  The "R" stands for recursive.
+
+cp -R /tmp/foo /tmp/bar
+
+If you want to copy a file called "-R" and a file called "foo" in "/tmp/" to "/tmp/bar" then you could use the following command.
+
+cp -- -R /tmp/foo /tmp/bar
+
+The core tools (like copy "cp", move "mv", and remove "rm") support the "--" argument to indicate all the options are done
+and everything after that is a file or directory.  Don't expect other programs will be able to work with files that start
+with a dash.
+
+The other special characters that aren't allowed on Windows are a little easier to work with, though you'll need to put the
+file name in single quotes (not double quotes).  We'll do more with single quotes and double quotes soon.
+
+Another thing to keep in mind is that Unix filesystems are usually case-sensitive.  If you create a file called test and try
+to open a file called Test, you will receive an error that the file cannot be found.
+
+Execute the following commands, remembering that Unix is case sensitive.  It will create a new file with the filename "yellow".
+
+EOL
+
+	echo "cd $LUS_HOME" >> $fmt_file
+	echo 'echo "Test text" > yellow' >> $fmt_file
+
+	complete_exercise
 }
 
 ask_about_putty_font_size() {
@@ -744,7 +963,7 @@ EOL
 
 	less -R -P "$less_prompt_move_on" $fmt_file
 
-	if [ ! -f ~/.learnUnix ]; then
+	if [ ! -f ~/.learnUnix ] || [ -z "${RANK:-}" ] || [ -z "${EXERCISE:-}" ]; then
 		if [ -n "${SSH_CONNECTION:-}" ] || [ -n "${SSH_TTY:-}" ]; then
 			ask_about_putty_font_size
 		fi
@@ -770,8 +989,8 @@ EOL
 		if [[ "$CHOICE" =~ ^\s*[Yy].* ]]; then
 			clear
 			RANK="white_belt"
-			echo "RANK=white_belt" > ~/.learnUnix
-			echo "EXERCISE=1" >> ~/.learnUnix
+			EXERCISE="1"
+			updateDotFile
 
 			print_rank > $fmt_file
 
@@ -789,10 +1008,14 @@ EOL
 
 # All the function definitions are done.  The script will begin executing here.
 
-if [ ! -f ~/.learnUnix ]; then
+if [ -f ~/.learnUnix ]; then
+	source ~/.learnUnix
+fi
+
+if [ ! -f ~/.learnUnix ] || [ -z "${RANK:-}" ] || [ -z "${EXERCISE:-}" ]; then
 	if (($STTY_ROWS < 24)) || (($STTY_COLUMNS < 80)); then
-		# We haven't introduced what Y/n means, but if the user has made a conscious choice to make their terminal smaller, they
-		# probably already know.
+		# We haven't introduced what Y/n means, but if the user has made a conscious choice to make their terminal
+		# smaller, they probably already know.
 		fmt -u --width=$WIDTH <<EOL
 A minimum of 80 columns and 24 rows is strongly recommended.  Would you like to automatically update the terminal size to
 the recommended minimum and continue (Y/n)?
@@ -809,26 +1032,29 @@ EOL
 
 	welcome
 	exit 0
-else
-	source ~/.learnUnix
 fi
 
 if [ "${1:-}" == "--welcome" ]; then
 	welcome
 
-	if [ "$RANK" != "" ]; then
+	if [ -z "${RANK:-}" ]; then
 		print_rank
 	fi
 
 	exit 0
 fi
 
-if [ -z "${RANK:-}" ] || [ -z "${EXERCISE:-}" ]; then
-	fmt -u --width=$WIDTH <<EOL
-It looks like the ~/.learnUnix file has become corrupted.  If it can't be repaired, you may have no choice but to delete it
-and start over.  Sorry about that.
-EOL
-	exit 2
+if [ "${1:-}" == "--return" ]; then
+	if [ -z "${SAVED_RANK:-}" ] || [ -z "${SAVED_EXERCISE:-}" ]; then
+		echo "There is no saved progress to return to."
+		exit 3
+	else
+		RANK=$SAVED_RANK
+		EXERCISE=$SAVED_EXERCISE
+		SAVED_RANK=""
+		SAVED_EXERCISE=""
+		updateDotFile
+	fi
 fi
 
 if [[ ! "${RANK}" =~ ^(white|yellow|green|blue|red|black)_(stripe|belt)$ ]]; then
@@ -845,6 +1071,61 @@ It looks like the ~/.learnUnix file has become corrupted.  If it can't be repair
 and start over.  Sorry about that.
 EOL
 	exit 2
+fi
+
+all_args="$*"
+if [[ "${all_args,,}" =~ (white|yellow|green|blue|red|black).*(stripe|belt)[^0-9]*([0-9]*) ]]; then
+	# The ~/.learnUnix file must exist.  If it didn't, we would be running welcome().
+
+	new_rank="${BASH_REMATCH[1]}_${BASH_REMATCH[2]}"
+
+	# No underscore.
+	new_rank_for_echo="${BASH_REMATCH[1]} ${BASH_REMATCH[2]}"
+
+	new_exercise="${BASH_REMATCH[3]}"
+
+	if [ "${new_exercise}" == "" ]; then
+		new_exercise=1
+	fi
+
+	if [ "${new_exercise}" == "0" ]; then
+		echo "The first exercise of each rank is exercise 1."
+		exit 3
+	fi
+
+	if [[ "${new_exercise}" =~ 0[0-9]+ ]]; then
+		echo "Please don't add leading zeros to the exercise number."
+		exit 3
+	fi
+
+	set_num_exercises_for_review
+
+	if [ "$NUM_REVIEW_EXERCISES" == "0" ]; then
+		echo "There aren't any exercises for ${new_rank_for_echo} yet."
+		exit 3
+	fi
+
+	if (( $new_exercise > $NUM_REVIEW_EXERCISES )); then
+		echo "There are only $NUM_REVIEW_EXERCISES exercises in ${new_rank_for_echo}."
+		exit 3
+	fi
+
+	# Only set saved rank and saved exercise if they're currently unset, otherwise students could use this feature to
+	# skip ahead.
+	if [ -z "${SAVED_RANK:-}" ]; then
+		SAVED_RANK=$RANK
+	fi
+
+	if [ -z "${SAVED_EXERCISE:-}" ]; then
+		SAVED_EXERCISE=$EXERCISE
+	fi
+
+	RANK=$new_rank
+	EXERCISE=$new_exercise
+
+	updateDotFile
+
+	# Fall out of the if and continue with the requested lesson.
 fi
 
 if [ -z ${fmt_file:-} ]; then

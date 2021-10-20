@@ -78,7 +78,9 @@ exercises["white_belt_$((i++))"]="set_less"
 exercises["white_belt_$((i++))"]="path_and_sourcing"
 
 i=1
-#exercises["yellow_stripe_$((i++))"]="end"
+exercises["yellow_stripe_$((i++))"]="pwd"
+exercises["yellow_stripe_$((i++))"]="cd_dot_dot"
+exercises["yellow_stripe_$((i++))"]="special_characters"
 
 luc_tty=$1
 
@@ -161,6 +163,25 @@ process_choice() {
 	if [[ "${luc_choice,,}" =~ ^[\ ]*(ten|10|x)[\ ]*$ ]]; then
 		luc_processed_choice=10
 	fi
+}
+
+updateDotFile() {
+	if [ ! -f ~/.learnUnix ]; then
+		echo "RANK=$RANK" > ~/.learnUnix
+		echo "EXERCISE=$EXERCISE" >> ~/.learnUnix
+	else
+		if grep -q "RANK=" ~/.learnUnix; then
+			sed -i "s/RANK=.*/RANK=${RANK}/" ~/.learnUnix
+		else
+			echo "RANK=${RANK}" >> ~/.learnUnix
+		fi
+
+		if grep -q "EXERCISE=" ~/.learnUnix; then
+			sed -i "s/EXERCISE=.*/EXERCISE=${EXERCISE}/" ~/.learnUnix
+		else
+			echo "EXERCISE=${EXERCISE}" >> ~/.learnUnix
+		fi
+	fi	
 }
 
 white_belt_exercise_what_execute_means() {
@@ -323,6 +344,50 @@ white_belt_exercise_path_and_sourcing() {
 	good_work
 }
 
+yellow_stripe_exercise_pwd() {
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*pwd([ ]|$) ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+}
+
+yellow_stripe_exercise_cd_dot_dot() {
+	luc_req_1=0
+	luc_req_2=0
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*pwd([ ]|$) ]]; then
+			luc_req_1=1
+		fi
+
+		if [[ "$item" =~ ^[\ ]*cd\s*..([ ]|$) ]]; then
+			luc_req_2=1
+		fi
+	done
+	unset IFS
+
+	if [ $luc_req_1 == "1" ] && [ $luc_req_2 == "1" ] && [[ `pwd` == "/" ]]; then
+		good_work
+	else
+		sorry
+	fi
+}
+
+yellow_stripe_exercise_special_characters() {
+	if [ -f $LUS_HOME/yellow ]; then
+		good_work
+	else
+		sorry
+	fi
+}
+
 # If this script is switched back to being sourced, we'll need to change the "exit"s below to returns.
 
 if [ ! -f ~/.learnUnix ]; then
@@ -334,7 +399,7 @@ source ~/.learnUnix
 
 if [ -z "${RANK:-}" ] || [ -z "${EXERCISE:-}" ]; then
 	fmt -u --width=$luc_width <<EOL
-echo 'Please run the "learn" script first.'
+Please run the "learn" script first.
 EOL
 	exit 1
 fi
@@ -365,18 +430,27 @@ function_name="${RANK}_exercise_${exercise_name}"
 eval $function_name
 
 if (($EXERCISE > $luc_num_exercises)); then
-	echo ""
-
 	# Use an extra ${luc_nc} to fix an issue with PuTTY.
-	printf "Congratulations!  You have now attained your ${luc_yellow_on_black}yellow ${luc_nc}${luc_bright_white_on_black}stripe${luc_nc}.\n"
-	printf "You are now working toward your ${luc_yellow_on_black}yellow belt${luc_nc}.\n\n"
+	if [ $RANK == "white_belt" ]; then
+		echo ""
 
-	echo 'From here on out, there will be no reminder to execute "learn".'
+		printf "Congratulations!  You have now attained your ${luc_yellow_on_black}yellow ${luc_nc}${luc_bright_white_on_black}stripe${luc_nc}.\n"
+		printf "You are now working toward your ${luc_yellow_on_black}yellow belt${luc_nc}.\n\n"
 
-	echo "RANK=yellow_stripe" > ~/.learnUnix
-	echo "EXERCISE=1" >> ~/.learnUnix
-else
-	echo "RANK=$RANK" > ~/.learnUnix
-	echo "EXERCISE=$EXERCISE" >> ~/.learnUnix
+		echo 'From here on out, there will be no reminder to execute "learn".'
+
+		RANK=yellow_stripe
+		EXERCISE=1
+	elif [ $RANK == "yellow_stripe" ]; then
+		echo ""
+
+		printf "Congratulations!  You have now attained your ${luc_yellow_on_black}yellow belt${luc_nc}.\n"
+		printf "You are now working toward your ${green_on_black}green ${yellow_on_black}stripe${luc_nc}.\n\n"
+
+		RANK=yellow_belt
+		EXERCISE=1
+	fi
 fi
+
+updateDotFile
 
