@@ -797,8 +797,7 @@ EOL
 	fi
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
-We're going to change focus now from ".", "..", and relative paths.  Now, we're going to look at files, file types, and
-looking at file contents.
+We're going to switch focus to filenames, file types, and how to look at file contents.
 
 Windows is up front about the characters that you're not allowed to use in a file or directory name.  They are as follows.
 
@@ -986,7 +985,7 @@ EOL
 	printf "${yellow_on_black}Yellow Belt${nc}\n" >> $fmt_file
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
-  Creating directories; . and ..; pwd; cd
+  Creating and deleting directories; . and ..; pwd; cd
 EOL
 
 	echo "" >> $fmt_file
