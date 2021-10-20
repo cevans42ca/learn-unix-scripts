@@ -3,7 +3,7 @@ A set of bash scripts for teaching Unix in general in an interactive way
 
 This project is in alpha status.  I am requesting comments to help shape it into something useful to many people.
 
-I have broken down a series of critical Unix skills into belts that match my taekwondo school's progression.  I have a roadmap set down from white belt to black belt, but only the white belt exercises are complete.
+I have broken down a series of critical Unix skills into belts that match my taekwondo school's progression.  I have a roadmap set down from white belt to black belt, but only the white belt and yellow stripe exercises are complete.
 
 I will use the term "student" loosely to refer to someone who wants to use these scripts to learn Unix concepts and programs.
 
