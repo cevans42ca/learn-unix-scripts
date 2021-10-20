@@ -83,15 +83,15 @@ updateDotFile() {
 		fi
 
 		if grep -q "SAVED_RANK=" ~/.learnUnix; then
-			sed -i "s/SAVED_RANK=.*/SAVED_RANK=${SAVED_RANK}/" ~/.learnUnix
+			sed -i "s/SAVED_RANK=.*/SAVED_RANK=${SAVED_RANK:-}/" ~/.learnUnix
 		else
-			echo "SAVED_RANK=${SAVED_RANK}" >> ~/.learnUnix
+			echo "SAVED_RANK=${SAVED_RANK:-}" >> ~/.learnUnix
 		fi
 
 		if grep -q "SAVED_EXERCISE=" ~/.learnUnix; then
-			sed -i "s/SAVED_EXERCISE=.*/SAVED_EXERCISE=${SAVED_EXERCISE}/" ~/.learnUnix
+			sed -i "s/SAVED_EXERCISE=.*/SAVED_EXERCISE=${SAVED_EXERCISE:-}/" ~/.learnUnix
 		else
-			echo "SAVED_EXERCISE=${SAVED_EXERCISE}" >> ~/.learnUnix
+			echo "SAVED_EXERCISE=${SAVED_EXERCISE:-}" >> ~/.learnUnix
 		fi
 	fi	
 }

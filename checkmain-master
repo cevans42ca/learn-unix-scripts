@@ -405,6 +405,7 @@ yellow_stripe_exercise_cat_less() {
 	fi
 }
 
+# All the function definitions are done.  The script will begin executing here.
 # If this script is switched back to being sourced, we'll need to change the "exit"s below to returns.
 
 if [ ! -f ~/.learnUnix ]; then
@@ -413,6 +414,10 @@ if [ ! -f ~/.learnUnix ]; then
 fi
 
 source ~/.learnUnix
+
+if [ -z "${LUS_HOME:-}" ]; then
+	LUS_HOME=$HOME/lus
+fi
 
 if [ -z "${RANK:-}" ] || [ -z "${EXERCISE:-}" ]; then
 	fmt -u --width=$luc_width <<EOL
@@ -460,7 +465,7 @@ if (($EXERCISE > $luc_num_exercises)); then
 	if [ $RANK == "white_belt" ]; then
 		echo ""
 
-		if [ -z "${SAVED_RANK}" ]; then
+		if [ -z "${SAVED_RANK:-}" ]; then
 			printf "Congratulations!  You have now attained your `getBeltWithColours yellow_stripe`.\n"
 			printf "You are now working toward your `getBeltWithColours yellow_belt`.\n\n"
 
@@ -489,7 +494,7 @@ if (($EXERCISE > $luc_num_exercises)); then
 
 		echo ""
 
-		if [ -z "${SAVED_RANK}" ]; then
+		if [ -z "${SAVED_RANK:-}" ]; then
 			printf "Congratulations!  You have now attained your `getBeltWithColours yellow_belt`.\n"
 			printf "You would be working toward your `getBeltWithColours green_stripe`, but there are no more exercises.\n\n"
 		else

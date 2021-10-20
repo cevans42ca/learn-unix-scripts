@@ -1099,6 +1099,10 @@ if [ -f ~/.learnUnix ]; then
 	source ~/.learnUnix
 fi
 
+if [ -z "${LUS_HOME:-}" ]; then
+	LUS_HOME=$HOME/lus
+fi
+
 if [ ! -f ~/.learnUnix ] || [ -z "${RANK:-}" ] || [ -z "${EXERCISE:-}" ]; then
 	if (($STTY_ROWS < 24)) || (($STTY_COLUMNS < 80)); then
 		# We haven't introduced what Y/n means, but if the user has made a conscious choice to make their terminal
