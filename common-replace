@@ -32,7 +32,11 @@ exercises["white_belt_$((i++))"]="path_and_sourcing"
 i=1
 exercises["yellow_stripe_$((i++))"]="pwd"
 exercises["yellow_stripe_$((i++))"]="cd_dot_dot"
+exercises["yellow_stripe_$((i++))"]="mkdir_and_relative_paths"
+exercises["yellow_stripe_$((i++))"]="rmdir"
 exercises["yellow_stripe_$((i++))"]="special_characters"
+exercises["yellow_stripe_$((i++))"]="file"
+exercises["yellow_stripe_$((i++))"]="cat_less"
 
 declare -A belt_to_number
 belt_to_number["white_belt"]=0
@@ -57,7 +61,7 @@ getBeltWithColours() {
 	elif [[ "$1" == "yellow_belt" ]]; then
 		echo "${yellow_on_black}yellow belt${nc}"
 	elif [[ "$1" == "green_stripe" ]]; then
-		echo "${green_on_black}green ${yellow_on_black}stripe${luc_nc}"
+		echo "${green_on_black}green ${yellow_on_black}stripe${nc}"
 	fi
 }
 

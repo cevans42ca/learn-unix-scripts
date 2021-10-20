@@ -336,8 +336,69 @@ yellow_stripe_exercise_cd_dot_dot() {
 	fi
 }
 
+yellow_stripe_exercise_mkdir_and_relative_paths() {
+	if [ ! -d $LUS_HOME/parent ]; then
+		sorry
+	fi
+
+	if [ ! -d $LUS_HOME/parent/one ] || [ ! -d $LUS_HOME/parent/two ] || [ ! -d $LUS_HOME/parent/three ]; then
+		sorry
+	fi
+
+	good_work
+}
+
+yellow_stripe_exercise_rmdir() {
+	if [ ! -d $LUS_HOME/parent ]; then
+		good_work
+	else
+		sorry
+	fi
+}
+
 yellow_stripe_exercise_special_characters() {
 	if [ -f $LUS_HOME/yellow ]; then
+		good_work
+	else
+		sorry
+	fi
+}
+
+yellow_stripe_exercise_file() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*file( )*yellow[\ ]*$ ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
+yellow_stripe_exercise_cat_less() {
+	luc_req_1=0
+	luc_req_2=0
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*cat( )*yellow([ ]|$) ]]; then
+			luc_req_1=1
+		fi
+
+		if [[ "$item" =~ ^[\ ]*less( )*yellow([ ]|$) ]]; then
+			luc_req_2=1
+		fi
+	done
+	unset IFS
+
+	if [ $luc_req_1 == "1" ] && [ $luc_req_2 == "1" ]; then
 		good_work
 	else
 		sorry

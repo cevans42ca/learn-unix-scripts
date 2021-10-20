@@ -691,6 +691,90 @@ EOL
 	complete_exercise
 }
 
+yellow_stripe_exercise_mkdir_and_relative_paths() {
+	if [ ! -d $LUS_HOME ]; then
+		mkdir $LUS_HOME
+	fi
+	
+	if [ -d $LUS_HOME/parent ]; then
+		less -R -P "$less_prompt_move_on" $fmt_file
+	
+		fmt -u --width=$WIDTH <<EOL
+This exercise involves creating the directory $LUS_HOME/parent, which already exists.  You will need to move it or rename
+it by executing "mv $LUS_HOME/parent newname", then executing "learn" again.
+EOL
+
+		exit 2
+	fi
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+The "mkdir" command creates directories.  Given what you know about "." and "..", think about the following commands.
+
+EOL
+
+	echo "cd $LUS_HOME" >> $fmt_file
+	echo "mkdir parent" >> $fmt_file
+	echo "cd parent" >> $fmt_file
+	echo "mkdir one" >> $fmt_file
+	echo "cd one" >> $fmt_file
+	echo "mkdir ../two" >> $fmt_file
+	echo "mkdir ../three" >> $fmt_file
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+
+Once you've thought about it, execute the commands.  Please be careful when entering them.  If you get it wrong, you'll
+have to rename the parent directory and start from the beginning.  You can delete your attempts later when you have
+more experience.
+
+Use "cd" and "ls" to go through the directories and take a look at what you've done.  See if you were right about what
+they would look like.  If they look different than you expected, think about why.  (And when you're all done with all of that,
+execute ". check".)
+EOL
+
+	complete_exercise
+}
+
+yellow_stripe_exercise_rmdir() {
+	if [ ! -d $LUS_HOME ]; then
+		mkdir $LUS_HOME
+	fi
+	
+	if [ ! -d $LUS_HOME/parent ] || [ ! -d $LUS_HOME/parent/one ] || [ ! -d $LUS_HOME/parent/two ] || [ ! -d $LUS_HOME/parent/three ]; then
+		fmt -u --width=$WIDTH <<EOL
+This exercise involves removing directories created in a previous exercise.  At least one of them doesn't exist.  Create them (y/n)?
+EOL
+		if [[ "$CHOICE" =~ ^\s*[Yy].* ]]; then
+			mkdir -p $LUS_HOME/parent/one
+			mkdir -p $LUS_HOME/parent/two
+			mkdir -p $LUS_HOME/parent/three
+		else
+			exit 2
+		fi
+	fi
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+The "rmdir" command removes directories.  The directory must be empty for "rmdir" to work.  We will look at deleting whole
+trees of directories later.  Read these commands and see if you can follow what they do.
+
+EOL
+
+	echo "cd $LUS_HOME" >> $fmt_file
+	echo "rmdir parent/one" >> $fmt_file
+	echo "cd parent" >> $fmt_file
+	echo "rmdir two" >> $fmt_file
+	echo "rmdir three" >> $fmt_file
+	echo "cd .." >> $fmt_file
+	echo "rmdir parent" >> $fmt_file
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+
+Once you've thought about it, execute the commands.  Please be careful when entering them.  If you get it wrong, when you
+run "learn" again, you can choose to create any missing directories so you can try again.
+EOL
+
+	complete_exercise
+}
+
 yellow_stripe_exercise_special_characters() {
 	if [ ! -d $LUS_HOME ]; then
 		mkdir $LUS_HOME
@@ -713,6 +797,9 @@ EOL
 	fi
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+We're going to change focus now from ".", "..", and relative paths.  Now, we're going to look at files, file types, and
+looking at file contents.
+
 Windows is up front about the characters that you're not allowed to use in a file or directory name.  They are as follows.
 
 \ / : * ? " < > |
@@ -753,7 +840,78 @@ Execute the following commands, remembering that Unix is case sensitive.  It wil
 EOL
 
 	echo "cd $LUS_HOME" >> $fmt_file
-	echo 'echo "Test text" > yellow' >> $fmt_file
+	echo 'echo "Hello world." > yellow' >> $fmt_file
+
+	complete_exercise
+}
+
+yellow_stripe_exercise_file() {
+	if [ ! -d $LUS_HOME ]; then
+		mkdir $LUS_HOME
+	fi
+	
+	if [ ! -f $LUS_HOME/yellow ]; then
+		less -R -P "$less_prompt_move_on" $fmt_file
+	
+		fmt -u --width=$WIDTH <<EOL
+The previous exercise involves creating the file $LUS_HOME/yellow, but it doesn't exist.  Create it (y/n)?
+EOL
+
+		read CHOICE
+
+		if [[ "$CHOICE" =~ ^\s*[Yy].* ]]; then
+			echo "Hello world." > $LUS_HOME/yellow
+		else
+			exit 2
+		fi
+	fi
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+Now that you've created the file $LUS_HOME/yellow, let's look at ways to see what's in it.
+
+Windows popularized the idea of file extensions (foo.bat is a batch file, foo.txt is a text file, foo.doc is a Microsoft
+Word document, etc.)  Unix doesn't require extensions, though it's quite common to see them.  Instead of using a file
+extension, Unix uses the first few bytes of a file to tell what kind of file it is.  This file type detection process
+is called "file magic" or sometimes "magic".  The file that stores the bytes and mappings is usually named "magic".
+The program that can check a file's type is named "file".
+
+Execute "cd $LUS_HOME", then execute "file yellow".
+EOL
+
+	complete_exercise
+}
+
+yellow_stripe_exercise_cat_less() {
+	if [ ! -d $LUS_HOME ]; then
+		mkdir $LUS_HOME
+	fi
+	
+	if [ ! -f $LUS_HOME/yellow ]; then
+		less -R -P "$less_prompt_move_on" $fmt_file
+	
+		fmt -u --width=$WIDTH <<EOL
+A previous exercise involves creating the file $LUS_HOME/yellow, but it doesn't exist.  Create it (y/n)?
+EOL
+
+		read CHOICE
+
+		if [[ "$CHOICE" =~ ^\s*[Yy].* ]]; then
+			echo "Hello world." > $LUS_HOME/yellow
+		else
+			exit 2
+		fi
+	fi
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+The simplest way to see what's in a file is with the "cat" command (which is short for conCATenate).  Before you use "cat"
+you need to know that it's a small file.  (We'll look at file sizes later.)  If you accidentally "cat" a large file, your
+terminal may be stuck for a while.
+
+In a previous exercise, you executed "set | less", but you can also provide an argument to "less" to use "less" to look at a file.
+It's safe to use "less" on large files.  Remember that you need to press "q" to quit less.
+
+Execute "cd $LUS_HOME", then execute "cat yellow", then execute "less yellow".
+EOL
 
 	complete_exercise
 }
