@@ -140,6 +140,44 @@ process_choice() {
 
 # insert 37333148-8746-4468-826e-544e532f1ebc updateDotFile, getBeltWithColours
 
+handle_answer() {
+	luc_shuffled_answers=()
+	while read -r item; do
+	    luc_shuffled_answers+=("$item")
+	done < <(shuf -e "${luc_answers[@]}")
+
+	luc_correct_answer=0
+	luc_num=1
+	for item in "${luc_shuffled_answers[@]}"
+	do
+		echo "(${luc_num}) $item"
+		if [[ "$item" == "${1}" ]]; then
+			luc_correct_answer=$luc_num
+		fi
+		luc_num=$((luc_num+1))
+	done
+
+	echo ""
+	# Stdin has been redirected to pull in the command history, so we need an extra step to read from the terminal.
+	# There must be no space between < and /.
+	read -p "Your answer (1-${#luc_answers[@]})?  " luc_choice </dev/tty
+
+	process_choice
+
+	echo ""
+
+	if [[ "$luc_processed_choice" == "$luc_correct_answer" ]]; then
+		good_work
+		echo ""
+		echo $'Execute "learn" when you\'re ready for the next exercise.'
+	elif [[ "$luc_processed_choice" == "0" ]]; then
+		echo "Your answer should be a number from 1 to 6."
+		echo 'Execute "learn" to review the exerice or execute ". check" to try again.'
+	else
+		sorry
+	fi
+}
+
 white_belt_exercise_what_execute_means() {
 	# For this exercise, we're only confirming this script was run, so there's nothing to check.
 	good_work
@@ -218,41 +256,7 @@ EOL
 
 	luc_answers=( 'Give up and go back to Windows' 'Type Ctrl+q' 'Type Ctrl+s' 'Type Ctrl+u' 'Scream in panic' 'Open another terminal' )
 
-	luc_shuffled_answers=()
-	while read -r item; do
-	    luc_shuffled_answers+=("$item")
-	done < <(shuf -e "${luc_answers[@]}")
-
-	luc_correct_answer=0
-	luc_num=1
-	for item in "${luc_shuffled_answers[@]}"
-	do
-		echo "(${luc_num}) $item"
-		if [[ "$item" == "Type Ctrl+q" ]]; then
-			luc_correct_answer=$luc_num
-		fi
-		luc_num=$((luc_num+1))
-	done
-
-	echo ""
-	# Stdin has been redirected to pull in the command history, so we need an extra step to read from the terminal.
-	# There must be no space between < and /.
-	read -p "Your answer (1-6)?  " luc_choice </dev/tty
-
-	process_choice
-
-	echo ""
-
-	if [[ "$luc_processed_choice" == "$luc_correct_answer" ]]; then
-		good_work
-		echo ""
-		echo $'Execute "learn" when you\'re ready for the next exercise.'
-	elif [[ "$luc_processed_choice" == "0" ]]; then
-		echo "Your answer should be a number from 1 to 6."
-		echo 'Execute "learn" to review the exerice or execute ". check" to try again.'
-	else
-		sorry
-	fi
+	handle_answer "Type Ctrl+q"
 }
 
 white_belt_exercise_set_more() {
@@ -334,6 +338,30 @@ yellow_stripe_exercise_cd_dot_dot() {
 	else
 		sorry
 	fi
+}
+
+yellow_stripe_exercise_no_news_is_good_news() {
+	fmt -u --width=$luc_width <<EOL
+Question 1/1
+
+Your coworker is confused that they input a command to create a directory and only got a prompt back.
+
+EOL
+
+	fmt -u -s --width=$luc_width <<EOL
+user@example:~/lus$ mkdir one
+user@example:~/lus$ 
+EOL
+
+	fmt -u --width=$luc_width <<EOL
+
+What happened here?
+EOL
+
+	luc_answers=( 'The directory was created.' 'Nothing happened.' 'Something went wrong.' 'A stray cosmic ray flipped a bit in memory.  Reboot!' )
+
+	handle_answer 'The directory was created.'
+
 }
 
 yellow_stripe_exercise_mkdir_and_relative_paths() {

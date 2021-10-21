@@ -691,6 +691,20 @@ EOL
 	complete_exercise
 }
 
+yellow_stripe_exercise_no_news_is_good_news() {
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+When it comes to Unix, always remember:  no news is good news.
+
+The oldest and most core programs ("cp, "mv", "rm", etc.) will only print something if there was a problem.
+If you get a prompt and nothing more, the program did as you asked.  If something went wrong, the program
+or your shell would've told you.
+
+Although this point is easy to explain, it's quite important, and so it has its own exercise.
+EOL
+
+	complete_exercise
+}
+
 yellow_stripe_exercise_mkdir_and_relative_paths() {
 	if [ ! -d $LUS_HOME ]; then
 		mkdir $LUS_HOME

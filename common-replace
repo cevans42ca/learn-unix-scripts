@@ -32,6 +32,7 @@ exercises["white_belt_$((i++))"]="path_and_sourcing"
 i=1
 exercises["yellow_stripe_$((i++))"]="pwd"
 exercises["yellow_stripe_$((i++))"]="cd_dot_dot"
+exercises["yellow_stripe_$((i++))"]="no_news_is_good_news"
 exercises["yellow_stripe_$((i++))"]="mkdir_and_relative_paths"
 exercises["yellow_stripe_$((i++))"]="rmdir"
 exercises["yellow_stripe_$((i++))"]="special_characters"
