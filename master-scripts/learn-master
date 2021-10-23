@@ -989,7 +989,25 @@ means exactly what it is (and not a direction to the shell to connect two progra
 and you need to put a literal double quote, then you use the backslash character ( \\ ).  On most keyboards, it's above the
 Enter key.  It's usually on the same key as pipe ( | ).
 
-Try the following.
+You should expect pretty much every punctuation character to have some kind of special meaning to your shell.
+
+You can also turn spaces into literal spaces with a backslash.  If you're working with a file that has spaces in it,
+you can escape the spaces with backslashes rather than putting the whole thing in double quotes.  For example,
+the following two command lines produce the same result.
+EOL
+
+	fmt -u -s --width=$WIDTH <<EOL >> $fmt_file
+
+echo "Hello world." > "file with spaces"
+echo "Hello world." > file\\ with\\ spaces
+
+EOL
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+You can try them out, but keep in mind that you won't be told if you're overwriing an existing file.  Make sure you're not
+overwriting anything important first.
+
+Try the following just before executing ". check".
 
 EOL
 

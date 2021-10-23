@@ -483,6 +483,51 @@ yellow_stripe_exercise_escaping_quotes() {
 	sorry
 }
 
+yellow_stripe_exercise_quote_finale() {
+	luc_correct_answers=0
+
+	fmt -u --width=$luc_width <<EOL
+Question 1/3
+
+A misbehaving process has created a file called "!@#$".  What is the shortest command line that will successfully rename it?
+
+EOL
+
+	luc_answers=( 'mv !@#$ newname' 'mv !@#'"'"'$'"'"' newname' 'mv '"'"'!@#$'"'"' newname' 'mv "!@#$" newname' 'Open Windows Explorer, click the file, and press F2.' )
+	handle_answer 'mv '"'"'!@#$'"'"' newname'
+
+	fmt -u --width=$luc_width <<EOL
+Question 2/3
+
+A cat walked across your keyboard while you had a Unix terminal open.  Due to bad luck, you had typed part of a command
+line and a single quote before the cat struck.  Due to worse luck, it pressed the single quote key and then Enter.
+You now have a file called "kASjiczkskflopd;[f".  Which command will successfully rename it?
+
+EOL
+
+	luc_answers=( 'mv '"'"'kASjiczkskflopd;[f'"'"' newname' 'mv "kASjiczkskflopd;[f" newname' 'mv kASjiczkskflopd\;\[f newname' 'All the mv command lines will work' 'Impossible!  Cats are banned from my workstation.' )
+	handle_answer 'All the mv command lines will work'
+
+	fmt -u --width=$luc_width <<EOL
+Question 3/3
+
+You need to deal with a file that has multiple spaces and one single quote.  What's the shortest way to write it for your
+shell that will work?
+
+EOL
+
+	luc_answers=( 'Put the whole thing in double quotes' 'Put it in single quotes with a backslash before the literal single quote' 'Put a backslash in front of all the spaces and the single quote' 'Funny answer TBD' )
+	handle_answer 'Put the whole thing in double quotes'
+
+	if [ "$luc_correct_answers" == "3" ]; then
+		good_work
+	else
+		echo "Results:  $luc_correct_answers/2 correct"
+		echo ""
+		sorry
+	fi
+}
+
 # All the function definitions are done.  The script will begin executing here.
 # If this script is switched back to being sourced, we'll need to change the "exit"s below to returns.
 
