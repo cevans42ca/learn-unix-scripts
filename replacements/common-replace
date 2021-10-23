@@ -38,6 +38,9 @@ exercises["yellow_stripe_$((i++))"]="rmdir"
 exercises["yellow_stripe_$((i++))"]="special_characters"
 exercises["yellow_stripe_$((i++))"]="file"
 exercises["yellow_stripe_$((i++))"]="cat_less"
+exercises["yellow_stripe_$((i++))"]="quotes"
+exercises["yellow_stripe_$((i++))"]="escaping_quotes"
+exercises["yellow_stripe_$((i++))"]="quote_finale"
 
 declare -A belt_to_number
 belt_to_number["white_belt"]=0
@@ -95,6 +98,19 @@ updateDotFile() {
 			echo "SAVED_EXERCISE=${SAVED_EXERCISE:-}" >> ~/.learnUnix
 		fi
 	fi	
+}
+
+trim() {
+	# remove leading whitespace characters
+	temp="${1#"${1%%[![:space:]]*}"}"
+	# remove trailing whitespace characters
+	temp="${temp%"${temp##*[![:space:]]}"}"   
+	echo "$temp"
+}
+
+# The shell does all the work of removing the extra spaces.  It only works with one argument.
+simple_trim() {
+	echo "$1"
 }
 # end 37333148-8746-4468-826e-544e532f1ebc
 

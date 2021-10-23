@@ -245,8 +245,10 @@ Your current prompt is as follows.
 
 ${x%exit}
 
-When you see your prompt (or see it again) it's an indication that the previous commands have completed and your shell is
-ready for another command.  We'll be going into more detail on shells later.
+When you see your prompt, that means that the previous commands have completed and your shell is ready for another command.
+(We'll be going into more detail on shells later.)  Prompts are one of the most heavily customized aspects of Unix, ranging
+from a simple dollar sign to multi-line creations.  You should expect your prompt to look similar across different computers
+(or hosts) run by the same people, but different as you move elsewhere.
 EOL
 
 	printf "\n\n${underline}I'm Stuck!${no_underline}\n\n" >> $fmt_file
@@ -924,6 +926,105 @@ In a previous exercise, you executed "set | less", but you can also provide an a
 It's safe to use "less" on large files.  Remember that you need to press "q" to quit less.
 
 Execute "cd $LUS_HOME", then execute "cat yellow", then execute "less yellow".
+EOL
+
+	complete_exercise
+}
+
+yellow_stripe_exercise_quotes() {
+	set +o nounset
+	x="$(PS1=\"$PS1\" echo -n | bash -i 2>&1)"
+	PS2=$(bash -ci 'echo $PS2')
+	set -o nounset
+
+	non_default_PS2=""
+	if [ "$(simple_trim $PS2)" != ">" ]; then
+		non_default_PS2="(On your system, it's different.)  "
+	fi
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+We're going to change focus one more time and look at single and double quotes.
+
+Double quotes are one way to work with filenames that have spaces in them.  Single quotes are one way to work with filenames
+that have special characters in them.  But before we look at how they can be helpful, let's look at what can happen when
+things go wrong.
+
+For example, let's assume you've typed "echo", followed by a space, and then a double quote, and finally press Enter.
+You'll see the following.
+
+${x%exit} echo "
+EOL
+
+	echo "$PS2" >> $fmt_file
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+
+In most cases, the character on the second line is a right angle bracket ( > ).  ${non_default_PS2}Single quotes
+and double quotes must have a matching single or double quote.  (Experts:  we'll look at escaping shortly.)  The right
+angle bracket or other prompt tells you that you started some quoted text but didn't finish it.  The shell is letting you
+finish it.  The Enter you typed will be part of the final string you're making.  In most cases, this situation is a mistake.
+Ctrl+c to the rescue!
+
+We're going to use the "echo" command for these examples, but remember that you can use these strings of characters in a
+lot of different situations.  Try out the following.
+
+EOL
+
+	fmt -u -s --width=$WIDTH <<EOL >> $fmt_file
+echo "HOME"
+echo "\$HOME"
+echo '\$HOME'
+EOL
+
+	complete_exercise
+}
+
+yellow_stripe_exercise_escaping_quotes() {
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+Double quotes let you use environment variables.   If you want to work with a file that has a dollar sign, you need to
+use single quotes.  Now is a good time to talk about literals.  Your shell treats a lot of characters in a special way.
+The pipe ( | ) is used to connect two programs together.  The right angle bracket ( > ) sends a program's output to a file.
+But what if you want to use them exactly as they are?  Then you need them to be literals.  A literal pipe is a pipe that
+means exactly what it is (and not a direction to the shell to connect two programs together).  If you're using double quotes
+and you need to put a literal double quote, then you use the backslash character ( \\ ).  On most keyboards, it's above the
+Enter key.  It's usually on the same key as pipe ( | ).
+
+Try the following.
+
+EOL
+
+	fmt -u -s --width=$WIDTH <<EOL >> $fmt_file
+echo "\"HOME\""
+echo "\"\$HOME\""
+echo "'\$HOME'"
+EOL
+
+	complete_exercise
+}
+
+yellow_stripe_exercise_quote_finale() {
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+You might think that you could also escape a single quote to use it inside single quotes.  There are some shells that handle
+it, but you shouldn't expect it.  What you can do instead is end the single quote, put a single quote in double quotes, and
+then start the single quote again.
+
+When it's broken out, it looks like this.
+
+'First section' "'" 'Second section'
+
+But that's a list of three arguments.  If you need to refer to a filename, you'll need to remove the spaces.  (Yes, it's
+difficult to read.)
+
+'First section'"'"'Second section'
+
+If you need to work with a filename that has single quotes, it's best to put the whole thing in double quotes.
+
+"First section'Second section"
+
+If you have single quotes, double quotes, and other special characters like dollar sign ( $ ), you may be better off using
+the trick above.
+
+Execute ". check" for your final exam.
 EOL
 
 	complete_exercise
