@@ -511,18 +511,18 @@ EOL
 	fmt -u --width=$luc_width <<EOL
 Question 3/3
 
-You need to deal with a file that has multiple spaces and one single quote.  What's the shortest way to write it for your
-shell that will work?
+You need to deal with a file that has multiple spaces and one single quote.  What's the shortest way to quote it that
+will work?
 
 EOL
 
-	luc_answers=( 'Put the whole thing in double quotes' 'Put it in single quotes with a backslash before the literal single quote' 'Put a backslash in front of all the spaces and the single quote' 'Funny answer TBD' )
-	handle_answer 'Put the whole thing in double quotes'
+	luc_answers=( '"Monday'"'"'s TPS Report for John"' '"Monday\'"'"'s TPS Report for John"' 'Monday\'"'"'s\ TPS\ Report\ for\ John' 'Funny answer TBD' )
+	handle_answer "Monday's TPS Report for John"
 
 	if [ "$luc_correct_answers" == "3" ]; then
 		good_work
 	else
-		echo "Results:  $luc_correct_answers/2 correct"
+		echo "Results:  $luc_correct_answers/3 correct"
 		echo ""
 		sorry
 	fi
