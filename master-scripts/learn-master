@@ -1104,16 +1104,34 @@ ready to properly quote a filename.  If you need notes for it, keep them with yo
 
 You can use tab completion to complete filenames, directory names, program names, and in a few cases, command line arguments.
 
+Before we do tab completion of a filename, we'll look at what you can do if it's not available.
+
 Go to $LUS_HOME and execute "ls".  There is a file there with a single quote in it and multiple spaces.  Type "file Mon"
-(without the quotes).  Press Tab.  Do you see how the shell escaped the filename?
-
-If your shell didn't escape the filename for you, you'll need to type an asterisk ( * ) which is usually Shift-8.
-
-Either way, press Enter.  As usual, source the check script to move on.
+(without the quotes).  Type an asterisk ( * ) which is usually Shift+8.  Press Enter.
 EOL
 
 	complete_exercise
 }
+
+yellow_belt_exercise_unquoted_tab_completion() {
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+Make sure you're in $LUS_HOME.  Type "file Mon" (without the quotes).  Press Tab.  Do you see how the shell escaped the filename
+with backslashes?
+
+If nothing happened when you pressed Tab, type an asterisk.
+
+If you saw some garbage characters show up when you you pressed Tab, press Backspace until they're all gone, then type
+an asterisk.
+
+Whatever happened, press Enter.  As usual, source the check script to move on.
+EOL
+
+	complete_exercise
+}
+
+####################
+# End of exercises #
+####################
 
 ask_about_putty_font_size() {
 	fmt -u --width=$WIDTH <<EOL
@@ -1292,7 +1310,11 @@ EOL
 	fi
 }
 
-# All the function definitions are done.  The script will begin executing here.
+###############################
+# End of function definitions #
+###############################
+
+# Script execution will begin here.
 
 if [ -f ~/.learnUnix ]; then
 	source ~/.learnUnix

@@ -67,6 +67,10 @@ luc_good_work_array[2]="Well done!"
 luc_good_work_array[3]="Brilliant!"
 luc_good_work_array[4]="Terrific!"
 
+luc_continue_array[0]="Keep going!"
+luc_continue_array[1]="Keep at it!"
+luc_continue_array[2]="Keep it up!"
+
 luc_sorry_array[0]="Better luck next time."
 luc_sorry_array[1]="Unfortunately, no."
 luc_sorry_array[2]="Sorry, that's not it."
@@ -76,6 +80,14 @@ good_work() {
 	size=${#luc_good_work_array[@]}
 	index=$(($RANDOM % $size))
 	echo ${luc_good_work_array[$index]}
+
+	EXERCISE=`expr $EXERCISE + 1`
+}
+
+keep_going() {
+	size=${#luc_continue_array[@]}
+	index=$(($RANDOM % $size))
+	echo ${luc_continue_array[$index]}
 
 	EXERCISE=`expr $EXERCISE + 1`
 }
@@ -529,6 +541,10 @@ EOL
 }
 
 yellow_belt_exercise_speed_and_lists() {
+	keep_going
+}
+
+yellow_belt_exercise_unquoted_tab_completion() {
 	fmt -u --width=$luc_width <<EOL
 Question 1/1
 
