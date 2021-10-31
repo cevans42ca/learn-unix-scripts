@@ -528,6 +528,26 @@ EOL
 	fi
 }
 
+yellow_belt_exercise_speed_and_lists() {
+	fmt -u --width=$luc_width <<EOL
+Question 1/1
+
+What kind of file is Monday's TPS Report for John?
+
+EOL
+
+	luc_correct_answers=0
+	luc_answers=( 'empty' 'Microsoft Word' 'text file' 'Martian cartographic data' )
+
+	handle_answer 'empty'
+
+	if [ "$luc_correct_answers" == "1" ]; then
+		good_work
+	else
+		sorry
+	fi
+}
+
 # All the function definitions are done.  The script will begin executing here.
 # If this script is switched back to being sourced, we'll need to change the "exit"s below to returns.
 

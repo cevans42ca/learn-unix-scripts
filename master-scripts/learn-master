@@ -258,6 +258,10 @@ call out for you to make a note of, things you're always going to want to have h
 like (Evernote, a personal wiki, on your phone, Microsoft OneNote, a mind map, or good old pen and paper) but make sure it
 will be available whenever you're at a Unix terminal.
 
+Characters include letters, numbers, and punctuation.  Space is a character.  There are non-printable characters like
+tab, carriage return, and Ctrl+a through Ctrl+z.  We're not going to get into Chinese, Japanese, and Korean, where things
+are even more complicated.
+
 Your interrupt character is Ctrl+c (don't type it now, but in order to type it, hold one of the Ctrl keys down and press
 the "c" key.  Do not use either Shift key.)  There are only a few cases where typing Ctrl+c will not stop what's happening
 and return you to a prompt.  We will be covering two of these soon.  Make a note of it.
@@ -592,13 +596,15 @@ EOL
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 The last thing to teach you before you get your yellow stripe is why you need to add the dot and space at the beginning
 of the "check" script.  Normally, when you run a program, it runs in its own process.  The new instance of the program
-(the child) gets a copy of the current set of environment variables, and any environment variables that are changed are
-not reflected in the parent.
+(the child) gets a copy of the current set of environment variables, and any environment variables that are changed while
+the child runs are not reflected in the parent.
 
-By executing ". check" (or equivalently, "source check") instead of "check", the program runs as if it was typed in.
-This "sourcing" trick is how we can have scripts that set environment variables for other scripts.  It can also be used to
-get an up-to-date command history (which is normally inaccessible).  Since running the "set" command doesn't change anything,
-accessing the command history is the only way to verify that the correct command was issued.
+Executing ". check" is a short form for "source check".  When you source a script, the script runs as if it was typed in.
+(If you're familiar with Windows batch files, all batch files run as if they were typed in.  Another way to say it is
+that Windows batch files are always sourced.)  This "sourcing" trick is how we can have scripts that set environment
+variables for other scripts.  It can also be used to get an up-to-date command history (which is normally inaccessible).
+Since running the "set" command doesn't change anything, accessing the command history is the only way to verify that the
+correct command was issued.
 
 Once you have read and understood this text, execute ". check"
 EOL
@@ -920,7 +926,7 @@ EOL
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 The simplest way to see what's in a file is with the "cat" command (which is short for conCATenate).  Before you use "cat"
 you need to know that it's a small file.  (We'll look at file sizes later.)  If you accidentally "cat" a large file, your
-terminal may be stuck for a while.
+terminal may be stuck for a while, even if you type Ctrl+c.
 
 In a previous exercise, you executed "set | less", but you can also provide an argument to "less" to use "less" to look at a file.
 It's safe to use "less" on large files.  Remember that you need to press "q" to quit less.
@@ -1043,6 +1049,67 @@ If you have single quotes, double quotes, and other special characters like doll
 the trick above.
 
 Execute ". check" for your final exam.
+EOL
+
+	complete_exercise
+}
+
+yellow_belt_exercise_speed_and_lists() {
+	if [ ! -d $LUS_HOME ]; then
+		mkdir $LUS_HOME
+	fi
+
+	touch "$LUS_HOME/Monday's TPS Report for John"
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+To get your green stripe, we will be looking at two things:  speed, and more about file listings.
+
+The speed part will be partly up to you, for a few reasons.  It's not possible for a script to check that you're doing them
+correctly.  It's time for you to take it on yourself.  All the exercises so far will work on many different versions and
+flavours of Unix with different terminals and different shells, but some of these exercises may not work the same way for you.
+
+We've been using the words "terminal" and "shell" without defining them, since the exact meaning wasn't necessary to understand.
+Perhaps you looked them up.  In the 1970s, it was easy to tell the difference between a terminal and a shell, because
+the terminal was a big box that sat on a desk with a keyboard and screen.  Now, both are software.
+
+Your terminal:
+EOL
+
+	fmt -u --prefix="  * " --width=$WIDTH <<EOL >> $fmt_file
+  * Has a size measured in rows and columns
+
+  * Controls the font and font size (how the characters look)
+
+  * Sends what you type to your shell and displays the output from your shell
+
+  * Accepts special sequences of characters that change the $(tput setaf 2)colour$(tput sgr0) or $(tput smul)formatting$(tput rmul)
+
+Your shell:
+  * Accepts characters from your terminal and figures out what you're asking it to do
+
+  * Runs any programs you asked it to run
+
+  * Sends the output from those programs to your terminal so you can see it (or gives you another prompt if there was no output)
+
+Different shells are almost always available, but these scripts only work with the "bash" shell (short for "Bourne Again
+Shell").  Depending on what Unix system you're using and how you're connecting to it, you may have a choice of terminal.
+
+What you type is interpreted by your terminal before it gets to your shell.  Since these scripts require you to use the
+bash shell, if these don't work, it's likely due to your terminal or your terminal settings, so you will need to find someone
+knowledgable in the terminal you're using or have to use.
+
+The first way to boost your speed is tab completion.  In many cases, tab completion can eliminate the need for quoting a
+file name.  After going through those tricky questions in the last belt, are you angry?  Annoyed?  Relieved?  Always be
+ready to properly quote a filename.  If you need notes for it, keep them with you.  It could come up when you least expect it.
+
+You can use tab completion to complete filenames, directory names, program names, and in a few cases, command line arguments.
+
+Go to $LUS_HOME and execute "ls".  There is a file there with a single quote in it and multiple spaces.  Type "file Mon"
+(without the quotes).  Press Tab.  Do you see how the shell escaped the filename?
+
+If your shell didn't escape the filename for you, you'll need to type an asterisk ( * ) which is usually Shift-8.
+
+Either way, press Enter.  As usual, source the check script to move on.
 EOL
 
 	complete_exercise
@@ -1408,7 +1475,6 @@ if [ -z "${fmt_file:-}" ]; then
 	file_clean_up_array+=($fmt_file)
 fi
 
-# White belt exercise 4 does something different.
 print_rank > $fmt_file
 
 if [ -z ${exercises["${RANK}_${EXERCISE}"]:-} ]; then

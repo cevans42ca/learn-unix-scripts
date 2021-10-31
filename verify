@@ -30,7 +30,7 @@ if [[ "bash" != "$parent_proc_name" ]]; then
 fi
 
 if [[ "${BASH_VERSINFO:-0}" < "4" ]]; then
-	echo "Assosiative array support, added in Bash 4.0, is required."
+	echo "Associative array support, added in Bash 4.0, is required."
 	exit 2
 fi 
 
@@ -46,5 +46,10 @@ stty ${stty_options} | grep -q "intr = ^C"
 if [ $? -ne 0 ]; then
 	echo "The interrupt character is not Ctrl+C or could not be parsed from the output of stty."
 	exit 3
+fi
+
+if ! which tput > /dev/null; then
+	echo "tput is not installed.  It's part of ncurses."
+	exit 4
 fi
 
