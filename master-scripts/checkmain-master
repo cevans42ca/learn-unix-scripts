@@ -612,7 +612,17 @@ luc_regex+="${RANK}_exercise_.*\(\)"
 luc_regex+="'"
 luc_num_exercises=$(bash -c "grep -E ${luc_regex} ~/bin/learn | wc -l")
 
-exercise_name=${exercises["${RANK}_${EXERCISE}"]}
+exercise_name=${exercises["${RANK}_${EXERCISE}"]:-}
+
+if [ -z "$exercise_name" ]; then
+	fmt -u --width=$luc_width <<EOL
+There are no more exercises at this time.  If you like, you can review exercises you've already completed by executing
+"learn white belt", "learn yellow stripe", or "learn white belt 6" to start review at a particular exercise.
+EOL
+
+	exit 1
+fi
+
 function_name="${RANK}_exercise_${exercise_name}"
 eval $function_name
 
