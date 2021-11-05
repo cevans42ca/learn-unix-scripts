@@ -725,12 +725,12 @@ yellow_stripe_exercise_mkdir_and_relative_paths() {
 	fi
 	
 	if [ -d $LUS_HOME/parent ]; then
-		less -R -P "$less_prompt_move_on" $fmt_file
-	
-		fmt -u --width=$WIDTH <<EOL
+		fmt -u --width=$WIDTH <<EOL >> $fmt_file
 This exercise involves creating the directory $LUS_HOME/parent, which already exists.  You will need to move it or rename
 it by executing "mv $LUS_HOME/parent newname", then executing "learn" again.
 EOL
+
+		less -R -P "$less_prompt_move_on" $fmt_file
 
 		exit 2
 	fi
@@ -1524,6 +1524,7 @@ if [ -z ${exercises["${RANK}_${EXERCISE}"]:-} ]; then
 There are no more exercises at this time.  If you like, you can review exercises you've already completed by executing
 "learn white belt", "learn yellow stripe", or "learn white belt 6" to start review at a particular exercise.
 EOL
+
 	complete_exercise
 
 	exit 1
