@@ -629,8 +629,12 @@ As you rise through the ranks, fewer steps will be directly stated.  You should 
 lesson so you can go back to a prompt and continue, and executing ". check" to confirm that you can go on to the next
 exercise.  In between will be whatever the lesson requires, which will generally be to execute a command of some sort.
 
+In these exercises, you'll be creating files and directories under $LUS_HOME.  Please leave this directory for the exercises.
+If you want to try out the commands you're learning and it's not part of an exercise, please do it in a different directory.
+
 Before we move around, you should have a better sense of where you are.  The "pwd" command stands for "Print Working
-Directory" and tells you the full path to your current working directory.  Try it now.
+Directory" and tells you the full path to your current working directory.  Try it now.  When you're done, remember to execute
+". check".
 EOL
 
 	complete_exercise
@@ -708,6 +712,8 @@ If you get a prompt and nothing more, the program did as you asked.  If somethin
 or your shell would've told you.
 
 Although this point is easy to explain, it's quite important, and so it has its own exercise.
+
+Execute ". check" for a one question quiz.
 EOL
 
 	complete_exercise
@@ -757,15 +763,18 @@ EOL
 }
 
 yellow_stripe_exercise_rmdir() {
-	if [ ! -d $LUS_HOME ]; then
-		mkdir $LUS_HOME
+	if [ ! -d "$LUS_HOME" ]; then
+		mkdir "$LUS_HOME"
 	fi
-	
-	if [ ! -d $LUS_HOME/parent ] || [ ! -d $LUS_HOME/parent/one ] || [ ! -d $LUS_HOME/parent/two ] || [ ! -d $LUS_HOME/parent/three ]; then
+
+	if [ ! -d "$LUS_HOME/parent" ] || [ ! -d "$LUS_HOME/parent/one" ] || [ ! -d "$LUS_HOME/parent/two" ] || [ ! -d "$LUS_HOME/parent/three" ]; then
 		fmt -u --width=$WIDTH <<EOL
 This exercise involves removing directories created in a previous exercise.  At least one of them doesn't exist.  Create them (y/n)?
 EOL
-		if [[ "$CHOICE" =~ ^\s*[Yy].* ]]; then
+
+		read CHOICE
+
+		if [[ "${CHOICE:-}" =~ ^\s*[Yy].* ]]; then
 			mkdir -p $LUS_HOME/parent/one
 			mkdir -p $LUS_HOME/parent/two
 			mkdir -p $LUS_HOME/parent/three
@@ -1055,11 +1064,9 @@ EOL
 }
 
 yellow_belt_exercise_speed_and_lists() {
-	if [ ! -d $LUS_HOME ]; then
-		mkdir $LUS_HOME
+	if [ ! -d "$LUS_HOME/complete" ]; then
+		mkdir -p "$LUS_HOME/complete"
 	fi
-
-	touch "$LUS_HOME/Monday's TPS Report for John"
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 To get your green stripe, we will be looking at two things:  speed, and more about file listings.
@@ -1106,24 +1113,37 @@ You can use tab completion to complete filenames, directory names, program names
 
 Before we do tab completion of a filename, we'll look at what you can do if it's not available.
 
-Go to $LUS_HOME and execute "ls".  There is a file there with a single quote in it and multiple spaces.  Type "file Mon"
-(without the quotes).  Type an asterisk ( * ) which is usually Shift+8.  Press Enter.
+Go to $LUS_HOME and execute "ls".  From there you're going to cd to the "complete" directory, but you're not going
+to type all the letters.  Type "cd", a space, the letter "c", and an asterisk ( * ) which is usually Shift+8.  Press Enter.
+You can use this trick with files and directories (but not commands or command line arguments).
+
+Remember to execute ". check".
 EOL
 
 	complete_exercise
 }
 
 yellow_belt_exercise_unquoted_tab_completion() {
+	if [ ! -d "$LUS_HOME/complete" ]; then
+		mkdir -p "$LUS_HOME/complete"
+	fi
+
+	touch "$LUS_HOME/complete/Monday's TPS Report for John"
+
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
-Make sure you're in $LUS_HOME.  Type "file Mon" (without the quotes).  Press Tab.  Do you see how the shell escaped the filename
-with backslashes?
+Now that you know how to speed up no matter the circumstances (with asterisk), let's see if tab completion works for you.
+
+Make sure you're in $LUS_HOME/complete.  Type "file Mon" (without the quotes).  Press Tab.
 
 If nothing happened when you pressed Tab, type an asterisk.
 
-If you saw some garbage characters show up when you you pressed Tab, press Backspace until they're all gone, then type
+If you saw some garbage characters show up when you pressed Tab, press Backspace until they're all gone, then type
 an asterisk.
 
-Whatever happened, press Enter.  As usual, source the check script to move on.
+If you saw your shell escape the filename with backslashes, breathe a sigh of relief.
+
+Whatever happened, press Enter and read the results of the command you executed.  Do you remember what the "file" command
+does?  What does this output mean?  As usual, source the check script to move on.
 EOL
 
 	complete_exercise

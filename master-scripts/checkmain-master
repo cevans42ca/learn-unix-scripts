@@ -528,8 +528,8 @@ will work?
 
 EOL
 
-	luc_answers=( '"Monday'"'"'s TPS Report for John"' '"Monday\'"'"'s TPS Report for John"' 'Monday\'"'"'s\ TPS\ Report\ for\ John' 'Funny answer TBD' )
-	handle_answer "Monday's TPS Report for John"
+	luc_answers=( '"Monday'"'"'s TPS Report for John"      (30 characters)' '"Monday\'"'"'s TPS Report for John"     (31 characters)' 'Monday\'"'"'s\ TPS\ Report\ for\ John   (33 characters)' 'Funny answer TBD                    (16 characters)' )
+	handle_answer '"Monday'"'"'s TPS Report for John"      (30 characters)'
 
 	if [ "$luc_correct_answers" == "3" ]; then
 		good_work
@@ -541,7 +541,13 @@ EOL
 }
 
 yellow_belt_exercise_speed_and_lists() {
-	keep_going
+	if [[ `pwd` == "$LUS_HOME/complete" ]]; then
+		good_work
+		echo ""
+		echo $'Execute "learn" when you\'re ready for the next exercise.'
+	else
+		sorry
+	fi
 }
 
 yellow_belt_exercise_unquoted_tab_completion() {
@@ -628,7 +634,13 @@ if (($EXERCISE > $luc_num_exercises)); then
 			printf "Congratulations!  You have now attained your `getBeltWithColours yellow_stripe`.\n"
 			printf "You are now working toward your `getBeltWithColours yellow_belt`.\n\n"
 
-			echo 'From here on out, there will be no reminder to execute "learn".'
+			fmt -u --width=$luc_width <<EOL
+If you don't consider yourself to be detail oriented, the last few yellow stripe exercises may be challenging.  If you need
+caffeine, a good night's sleep, or a hearty breakfast to be on top of your game, consider doing that.  If you're a morning
+person (or a night owl) and you can do the exercises in the morning (or at night), consider doing that.
+
+From here on out, only the first exercise of each belt will prompt you to execute "learn" and ". check".
+EOL
 
 			RANK=yellow_stripe
 			EXERCISE=1
@@ -655,10 +667,18 @@ if (($EXERCISE > $luc_num_exercises)); then
 
 		if [ -z "${SAVED_RANK:-}" ]; then
 			printf "Congratulations!  You have now attained your `getBeltWithColours yellow_belt`.\n"
-			printf "You would be working toward your `getBeltWithColours green_stripe`, but there are no more exercises.\n\n"
+			printf "You're working toward your `getBeltWithColours green_stripe`.\n\n"
 		else
 			printf "You have reviewed all the exercises in `getBeltWithColours yellow_stripe`.\n"
-			printf "There are no more exercises at this time.\n"
+			printf "Execute \"learn\" to start reviewing the `getBeltWithColours green_stripe` exercises.\n\n"
+		fi
+	elif [ $RANK == "yellow_belt" ]; then
+		if [ -z "${SAVED_RANK:-}" ]; then
+			printf "Congratulations!  You have now attained your `getBeltWithColours green_stripe`.\n"
+			printf "You would be working toward your `getBeltWithColours green_belt`, but there are no more exercises.\n\n"
+		else
+			printf "You have reviewed all the exercises in `getBeltWithColours yellow_belt`.\n"
+			printf "There are no more exercises at this time.\n\n"
 
 			SAVED_RANK=""
 			SAVED_EXERCISE=""
