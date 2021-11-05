@@ -933,7 +933,7 @@ EOL
 	fi
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
-The simplest way to see what's in a file is with the "cat" command (which is short for conCATenate).  Before you use "cat"
+The simplest way to see what's in a file is with the "cat" command (which is short for conCATenate).  Before you use "cat",
 you need to know that it's a small file.  (We'll look at file sizes later.)  If you accidentally "cat" a large file, your
 terminal may be stuck for a while, even if you type Ctrl+c.
 
@@ -1075,6 +1075,12 @@ The speed part will be partly up to you, for a few reasons.  It's not possible f
 correctly.  It's time for you to take it on yourself.  All the exercises so far will work on many different versions and
 flavours of Unix with different terminals and different shells, but some of these exercises may not work the same way for you.
 
+Since it's not possible to build a check script to check the things you're doing in this belt, be extra careful that you
+don't execute ". check" multiple times in a row, or you could skip exercises.  Not all the exercises have something to be
+checked.  If you accidentally skip an exercise, you can review a previous exercise with "learn yellow belt 4" for exercise 4
+(for example).  If you complete all the exercises up to the one you're on, you'll see a message, and your progress will be
+tracked from that point.
+
 We've been using the words "terminal" and "shell" without defining them, since the exact meaning wasn't necessary to understand.
 Perhaps you looked them up.  In the 1970s, it was easy to tell the difference between a terminal and a shell, because
 the terminal was a big box that sat on a desk with a keyboard and screen.  Now, both are software.
@@ -1130,6 +1136,22 @@ yellow_belt_exercise_unquoted_tab_completion() {
 
 	touch "$LUS_HOME/complete/Monday's TPS Report for John"
 
+	files=$(ls -1 "$LUS_HOME/complete"/Mon* | wc -l)
+	if [ ! "$files" == "1" ]; then
+		fmt -u --width=$WIDTH <<EOL
+There are extra files in $LUS_HOME/complete.  Is it OK to delete them (y/n)?
+EOL
+
+		read CHOICE
+
+		if [[ "$CHOICE" =~ ^\s*[Yy].* ]]; then
+			rm -f "$LUS_HOME/complete"/Mon*
+			touch "$LUS_HOME/complete/Monday's TPS Report for John"
+		else
+			exit 2
+		fi
+	fi
+
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 Now that you know how to speed up no matter the circumstances (with asterisk), let's see if tab completion works for you.
 
@@ -1137,13 +1159,123 @@ Make sure you're in $LUS_HOME/complete.  Type "file Mon" (without the quotes).  
 
 If nothing happened when you pressed Tab, type an asterisk.
 
-If you saw some garbage characters show up when you pressed Tab, press Backspace until they're all gone, then type
-an asterisk.
+If you saw some garbage characters show up when you pressed Tab, press Backspace until the garbage characters are gone,
+then type an asterisk.
 
 If you saw your shell escape the filename with backslashes, breathe a sigh of relief.
 
 Whatever happened, press Enter and read the results of the command you executed.  Do you remember what the "file" command
 does?  What does this output mean?  As usual, source the check script to move on.
+EOL
+
+	complete_exercise
+}
+
+yellow_belt_exercise_unquoted_tab_completion_two_options() {
+	if [ ! -d "$LUS_HOME/complete" ]; then
+		mkdir -p "$LUS_HOME/complete"
+	fi
+
+	touch "$LUS_HOME/complete/Monday's TPS Report for John"
+
+	if [ -f "$LUS_HOME/complete/Monday's TPS Report for Fred" ]; then
+		chars=$(cat "$LUS_HOME/complete/Monday's TPS Report for Fred" | wc -c)
+		if [ ! "$chars" == "4" ]; then
+			fmt -u --width=$WIDTH <<EOL
+Monday's TPS Report for Fred has been modified.  Is it OK to overwrite it (y/n)?
+EOL
+
+			read CHOICE
+
+			if [[ ! "$CHOICE" =~ ^\s*[Yy].* ]]; then
+				exit 2
+			fi
+		fi
+	fi
+
+	echo "TBW" > "$LUS_HOME/complete/Monday's TPS Report for Fred"
+
+	files=$(ls -1 "$LUS_HOME/complete"/Mon* | wc -l)
+	if [ ! "$files" == "2" ]; then
+		fmt -u --width=$WIDTH <<EOL
+There are extra files in $LUS_HOME/complete.  Is it OK to delete them (y/n)?
+EOL
+
+		read CHOICE
+
+		if [[ "$CHOICE" =~ ^\s*[Yy].* ]]; then
+			rm -f "$LUS_HOME/complete"/Mon*
+			touch "$LUS_HOME/complete/Monday's TPS Report for John"
+			echo "TBW" > "$LUS_HOME/complete/Monday's TPS Report for Fred"
+		else
+			exit 2
+		fi
+	fi
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+Make sure you're in $LUS_HOME/complete.  Type "file Mon" (without the quotes).  Press Tab.  This time, if tab completion
+is working, part of the file will be filled in.  That's because there are now two files that start with "Mon".
+
+If tab completion is working, press Tab and press Tab again to see the options.  Type F, then Tab, then Enter.
+
+If you saw some garbage characters show up when you pressed Tab, press Backspace until the garbage characters are gone,
+then type an asterisk, then type "Fred" (without the quotes).  You should now have "file Mon*Fred" ready to execute.
+Press Enter to execute it.
+
+If nothing happened, type an asterisk, then type "Fred" (without the quotes).  You should now have "file Mon*Fred"
+ready to execute.  Press Enter to execute it.
+
+Read the results of the command you executed.
+EOL
+
+	complete_exercise
+}
+
+yellow_belt_exercise_up() {
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+There are a few ways you can run a previous command.  The simplest way is with the up arrow.  Depending on your
+terminal settings, the most likely thing to happen is that you'll see the previous command you ran (which will
+be "learn").  If that works, you can press Up or Down to go through your previous commands.  You'll also be
+able to press Left and Right, Del, Backspace, and make any changes you want to.  Press Enter to execute your
+current command (even if you're not at the end).
+
+The second most likely thing to happen is that you'll see this: "^]]A".  There are a couple of things you can do.  You can
+try to get help from someone who knows the kind of terminal you're using and fix your terminal settings, you can use Ctrl+p
+for the previous command and Ctrl+n for the next one, or there are other alternatives, which we'll get to.
+
+If nothing happens, you can try Ctrl+p and Ctrl+n as above and continue with the exercises for alternatives.
+
+After you press "q" to quit (as usual) try typing Up, Down, Left, and Right.
+
+If they don't work, try Ctrl+p and Ctrl+n.  Ctrl+f is forward one character.  Ctrl+b is backward one character.  If a
+single one works, you can hold down the Control key and type the other letter multiple times.
+
+If you get lost in your history and don't want to execute anything, you can go to the end of the line and hold down Backspace
+to wipe everything out.
+EOL
+
+	complete_exercise
+}
+
+yellow_belt_exercise_home_and_end() {
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+We're going to look at two more keys before we look at other ways to run previous commands.  These are Home and End.
+If you have a terminal with the right settings, pressing Home will take you to the beginning of your command line,
+and End will take you to the end.
+
+If not, Home will dump ^[[H into your command line and End will dump ^[[F into your command line.  In that case,
+use Ctrl+a to go to the beginning of the command line ("a" is the first letter in the alphabet).
+Use Ctrl+e to go to the end.
+
+There are more key combinations to go to the beginning and end of words, and delete to the beginning and end of words,
+but it's not necessary to memorize them.
+
+The pound sign ( # ) is a comment.  Pound signs and everything after them are ignored (unless the pound sign is quoted
+or escaped).  The fastest way to "wipe out" what you're doing and get a fresh command line is by typing Home (or Ctrl+a),
+then "#", then Enter.
+
+Try Home, End, Ctrl+a, and Ctrl+e now with everything you learned in the previous exercise.  Try the pound trick in the
+previous paragraph, and immediately execute ". check".
 EOL
 
 	complete_exercise

@@ -45,6 +45,9 @@ exercises["yellow_stripe_$((i++))"]="quote_finale"
 i=1
 exercises["yellow_belt_$((i++))"]="speed_and_lists"
 exercises["yellow_belt_$((i++))"]="unquoted_tab_completion"
+exercises["yellow_belt_$((i++))"]="unquoted_tab_completion_two_options"
+exercises["yellow_belt_$((i++))"]="up"
+exercises["yellow_belt_$((i++))"]="home_and_end"
 
 declare -A belt_to_number
 belt_to_number["white_belt"]=0

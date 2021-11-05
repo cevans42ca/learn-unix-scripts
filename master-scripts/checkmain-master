@@ -570,7 +570,40 @@ EOL
 	fi
 }
 
-# All the function definitions are done.  The script will begin executing here.
+yellow_belt_exercise_unquoted_tab_completion_two_options() {
+	fmt -u --width=$luc_width <<EOL
+Question 1/1
+
+What kind of file is Monday's TPS Report for Fred?
+
+EOL
+
+	luc_correct_answers=0
+	luc_answers=( 'empty' 'Microsoft Excel' 'ASCII text' 'Open Office Presentation' )
+
+	handle_answer 'ASCII text'
+
+	if [ "$luc_correct_answers" == "1" ]; then
+		good_work
+	else
+		sorry
+	fi
+}
+
+yellow_belt_up() {
+	keep_going
+}
+
+yellow_belt_home_and_end() {
+	keep_going
+}
+
+###############################
+# End of function definitions #
+###############################
+
+# Script execution will begin here.
+
 # If this script is switched back to being sourced, we'll need to change the "exit"s below to returns.
 
 if [ ! -f ~/.learnUnix ]; then
