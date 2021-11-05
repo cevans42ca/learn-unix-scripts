@@ -70,6 +70,20 @@ getBeltWithColours() {
 		echo "${yellow_on_black}yellow belt${nc}"
 	elif [[ "$1" == "green_stripe" ]]; then
 		echo "${green_on_black}green ${yellow_on_black}stripe${nc}"
+	elif [[ "$1" == "green_belt" ]]; then
+		echo "${green_on_black}green belt${nc}"
+	elif [[ "$1" == "blue_stripe" ]]; then
+		echo "${blue_on_black}blue ${green_on_black}stripe${nc}"
+	elif [[ "$1" == "blue_belt" ]]; then
+		echo "${blue_on_black}blue belt${nc}"
+	elif [[ "$1" == "red_stripe" ]]; then
+		echo "${red_on_black}red ${blue_on_black}stripe${nc}"
+	elif [[ "$1" == "red_belt" ]]; then
+		echo "${red_on_black}red belt${nc}"
+	elif [[ "$1" == "black_stripe" ]]; then
+		echo "${black_on_white}black ${red_on_black}stripe${nc}"
+	elif [[ "$1" == "black_belt" ]]; then
+		echo "${black_on_white}black belt${nc}"
 	fi
 }
 
