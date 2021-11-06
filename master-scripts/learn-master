@@ -1280,7 +1280,25 @@ EOL
 yellow_belt_exercise_tab_is_context_sensitive() {
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
-It matters where in the command line you press Tab.  TODO
+It matters where in the command line you press Tab.  The first thing on a command line must be a program or alias (we'll look
+at aliases later).
+
+Let's say you have a program called "myprogram" in your home directory.  Let's say your home directory is not in your \$PATH
+(it usually isn't).  If you type "myprog" and press Tab, nothing will happen, because the first thing on a command line must
+be a program, and "myprogram" isn't in your \$PATH, so it doesn't count.
+
+But if you type "file myprog" and press Tab, then your shell will complete it, because in this case, any file is good here.
+
+For your shell to complete something at the beginning of a command line (assuming it's not an alias) it needs to be in your
+path and you need to have permission to read it and run it.
+
+If you have permission to read it and run it, you can get around the \$PATH issue by starting with "./".  If you type
+"./myprog" (with or without the quotes) and Tab, your shell will complete it for you.  
+
+If you're trying to run a program and the shell is not completing the name for you, it's an indication that it's not in
+your \$PATH or the permissions could be wrong.  We'll look at permissions later.
+
+There's nothing to complete for this exercise before executing ". check".
 EOL
 
 	complete_exercise
@@ -1298,18 +1316,18 @@ The second most likely thing to happen is that you'll see this: "^]]A".  There a
 try to get help from someone who knows the kind of terminal you're using and fix your terminal settings, you can use Ctrl+p
 for the previous command and Ctrl+n for the next one, or there are other alternatives, which we'll get to.
 
-If nothing happens, you can try Ctrl+p and Ctrl+n as above and continue with the exercises for alternatives.
+If nothing happens, you can try Ctrl+p and Ctrl+n as above.  We'll look at other options shortly.
 
 After you press "q" to quit (as usual) try typing Up, Down, Left, and Right.
 
 If they don't work, try Ctrl+p and Ctrl+n.  Ctrl+f is forward one character.  Ctrl+b is backward one character.  If a
-single one works, you can hold down the Control key and type the other letter multiple times.
+single one works, you can hold down the Control key and type the letter multiple times.
 
 If you get lost in your history and don't want to execute anything, you have a few options.  (1) You can go to the end of the
 line, then hold down Backspace to wipe everything out.  (2) You can type Ctrl+C, your trusty get-me-out-of-here key combination.
 (3) You can hold the Down key until you get out of your history (which may not always work, and in some cases, if you hold
 it too long, you'll get a stream of noise from your terminal).  (4) You can go to the beginning of the line, type a pound
-sign ( # ) and Enter. 
+sign ( # ) and press Enter. 
 EOL
 
 	complete_exercise

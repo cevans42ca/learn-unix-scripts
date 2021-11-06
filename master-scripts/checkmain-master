@@ -610,20 +610,15 @@ EOL
 	fi
 }
 
-yellow_belt_tab_is_context_sensitive() {
+yellow_belt_exercise_tab_is_context_sensitive() {
 	keep_going
 }
 
-yellow_belt_up() {
+yellow_belt_exercise_up() {
 	keep_going
 }
 
-
-yellow_belt_up() {
-	keep_going
-}
-
-yellow_belt_home_and_end() {
+yellow_belt_exercise_home_and_end() {
 	keep_going
 }
 
