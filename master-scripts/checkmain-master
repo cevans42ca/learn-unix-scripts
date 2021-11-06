@@ -590,6 +590,35 @@ EOL
 	fi
 }
 
+yellow_belt_exercise_quoted_tab_completion() {
+	fmt -u --width=$luc_width <<EOL
+Question 1/1
+
+What's inside Monday's TPS Report for Fred?
+
+EOL
+
+	luc_correct_answers=0
+	luc_answers=( 'TBA' 'TBD' 'TBW' 'Top-secret Space Station Plans' )
+
+	handle_answer 'TBW'
+
+	if [ "$luc_correct_answers" == "1" ]; then
+		good_work
+	else
+		sorry
+	fi
+}
+
+yellow_belt_tab_is_context_sensitive() {
+	keep_going
+}
+
+yellow_belt_up() {
+	keep_going
+}
+
+
 yellow_belt_up() {
 	keep_going
 }

@@ -1171,11 +1171,7 @@ EOL
 	complete_exercise
 }
 
-yellow_belt_exercise_unquoted_tab_completion_two_options() {
-	if [ ! -d "$LUS_HOME/complete" ]; then
-		mkdir -p "$LUS_HOME/complete"
-	fi
-
+create_two_TPS_reports() {
 	touch "$LUS_HOME/complete/Monday's TPS Report for John"
 
 	if [ -f "$LUS_HOME/complete/Monday's TPS Report for Fred" ]; then
@@ -1211,6 +1207,14 @@ EOL
 			exit 2
 		fi
 	fi
+}
+
+yellow_belt_exercise_unquoted_tab_completion_two_options() {
+	if [ ! -d "$LUS_HOME/complete" ]; then
+		mkdir -p "$LUS_HOME/complete"
+	fi
+
+	create_two_TPS_reports
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 Make sure you're in $LUS_HOME/complete.  Type "file Mon" (without the quotes).  Press Tab.  This time, if tab completion
@@ -1226,6 +1230,57 @@ If nothing happened, type an asterisk, then type "Fred" (without the quotes).  Y
 ready to execute.  Press Enter to execute it.
 
 Read the results of the command you executed.
+EOL
+
+	complete_exercise
+}
+
+yellow_belt_exercise_quoted_tab_completion() {
+	create_two_TPS_reports
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+When you pressed Tab before, you had typed part of a filename but you didn't use a single or double quote.  In this
+exercise, you're going to see what happens if you do.
+
+If you start a filename with a single or double quote, it's likely that your shell won't help you finish the filename like
+it did before, nor will it tell you what the valid options are.  In other words, if you start with a double quote, your
+shell won't be as helpful.  Worse, if you put an asterisk ( * ) inside a quotation, your shell will treat it as a literal
+asterisk, so you can't use it as a filename short cut unless you first close the quotation you started with another quote.
+
+That's what you should do if you run into that situation.
+
+If you start the filename with a single or double quote and press Tab, and your shell fills in part of the filename,
+you should type a matching quote and press Tab.  Your shell will convert the quotation to a series of escapes instead,
+and now your shell will be a little more helpful letting you finish the filename.
+
+If pressing Tab hasn't done anything at all, you can use an asterisk to complete part of the filename, just make sure it's
+not in either kind of quotes.
+
+Make sure you're in $LUS_HOME/complete.  Type in each command line below and then press Tab three times.
+
+EOL
+
+			echo "file Mon" >> $fmt_file
+			echo "file "'"'"Mon" >> $fmt_file
+			echo "file 'Mon" >> $fmt_file
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+
+If you started with a double quote, use another double quote at the end to close the quotation.  Then try pressing Tab again.
+Press Tab two more times to see your options.
+
+When you execute any of these commands, you'll see the file's type again.  Now, use what you've learned to take a look at what's
+inside the file "Monday's TPS Report for Fred" without typing the whole filename and letting your shell do all the work.
+(Hint:  the file is very small.)
+EOL
+
+	complete_exercise
+}
+
+yellow_belt_exercise_tab_is_context_sensitive() {
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+It matters where in the command line you press Tab.  TODO
 EOL
 
 	complete_exercise
@@ -1250,8 +1305,11 @@ After you press "q" to quit (as usual) try typing Up, Down, Left, and Right.
 If they don't work, try Ctrl+p and Ctrl+n.  Ctrl+f is forward one character.  Ctrl+b is backward one character.  If a
 single one works, you can hold down the Control key and type the other letter multiple times.
 
-If you get lost in your history and don't want to execute anything, you can go to the end of the line and hold down Backspace
-to wipe everything out.
+If you get lost in your history and don't want to execute anything, you have a few options.  (1) You can go to the end of the
+line, then hold down Backspace to wipe everything out.  (2) You can type Ctrl+C, your trusty get-me-out-of-here key combination.
+(3) You can hold the Down key until you get out of your history (which may not always work, and in some cases, if you hold
+it too long, you'll get a stream of noise from your terminal).  (4) You can go to the beginning of the line, type a pound
+sign ( # ) and Enter. 
 EOL
 
 	complete_exercise
@@ -1270,12 +1328,23 @@ Use Ctrl+e to go to the end.
 There are more key combinations to go to the beginning and end of words, and delete to the beginning and end of words,
 but it's not necessary to memorize them.
 
-The pound sign ( # ) is a comment.  Pound signs and everything after them are ignored (unless the pound sign is quoted
-or escaped).  The fastest way to "wipe out" what you're doing and get a fresh command line is by typing Home (or Ctrl+a),
-then "#", then Enter.
+I recommend memorizing Ctrl+a, Ctrl+e, Ctrl+f, and Ctrl+b, for two reasons.  They are much faster than typing Home, End,
+and the cursor keys.  In some cases, you may need to use a misconfigured or old terminal, and the cursor keys and Home and
+End won't work.
+
+You could memorize Ctrl+p and Ctrl+n, but I'd rather you memorize Ctrl+r, which we'll get to shortly.  Ctrl+r will do what
+Ctrl+p and Ctrl+n will do and more.
+
+Pound signs ( # ) and everything after them are ignored (unless the pound sign is quoted or escaped).  Using a pound sign at
+the beginning of a line is a good way to keep something in your recent command history if you aren't ready to execute it yet.
+If you're familiar with Windows Batch files, putting a pound sign at the beginning of a command line is exactly like putting
+REM at the beginning of a line of a batch file.  If you're familiar with a programming language, the pound sign starts a comment.
+ 
+To keep something in your recent history without executing it, press Home (or Ctrl+a), then a pound sign, then Enter.
+The pound sign is usually typed with Shift+3.
 
 Try Home, End, Ctrl+a, and Ctrl+e now with everything you learned in the previous exercise.  Try the pound trick in the
-previous paragraph, and immediately execute ". check".
+previous paragraph with a command from your history, and immediately execute ". check".
 EOL
 
 	complete_exercise
