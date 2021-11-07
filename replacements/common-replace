@@ -49,7 +49,9 @@ exercises["yellow_belt_$((i++))"]="unquoted_tab_completion_two_options"
 exercises["yellow_belt_$((i++))"]="quoted_tab_completion"
 exercises["yellow_belt_$((i++))"]="tab_is_context_sensitive"
 exercises["yellow_belt_$((i++))"]="up"
-exercises["yellow_belt_$((i++))"]="home_and_end"
+exercises["yellow_belt_$((i++))"]="home_end_and_pound"
+exercises["yellow_belt_$((i++))"]="ctrl_r"
+exercises["yellow_belt_$((i++))"]="history_bang"
 
 declare -A belt_to_number
 belt_to_number["white_belt"]=0

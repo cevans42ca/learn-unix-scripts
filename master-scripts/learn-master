@@ -1333,7 +1333,7 @@ EOL
 	complete_exercise
 }
 
-yellow_belt_exercise_home_and_end() {
+yellow_belt_exercise_home_end_and_pound() {
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 We're going to look at two more keys before we look at other ways to run previous commands.  These are Home and End.
 If you have a terminal with the right settings, pressing Home will take you to the beginning of your command line,
@@ -1363,6 +1363,103 @@ The pound sign is usually typed with Shift+3.
 
 Try Home, End, Ctrl+a, and Ctrl+e now with everything you learned in the previous exercise.  Try the pound trick in the
 previous paragraph with a command from your history, and immediately execute ". check".
+EOL
+
+	complete_exercise
+}
+
+yellow_belt_exercise_ctrl_r() {
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+It's time to look at Ctrl+r.  This keystoke lets you search for a command that's in your history, make changes to it if
+you want, and then save it for later or execute it.  If you execute it, it will also be added to your history.
+
+To search for a command you've already run, type Ctrl+r.  Then type as many keystrokes as you need to to find what you're
+looking for.  If you make a mistake, you can press Backspace.  You don't have to start at the beginning.  If you're looking
+for the command line "cat Monday's\\ TPS\\ Report\\ for\\ Fred" in your history, you can type Ctrl+r and then type "Fred"
+(without quotes).
+
+Once you've found the command you want, you have multiple options.
+
+EOL
+
+	fmt -u -c --width=$WIDTH <<EOL >> $fmt_file
+  * You can run the command as is right now (which will also add it to your history as the last command run).  To do that,
+    simply press enter.
+
+  * You can add the command line as the last command line in your history (to make it easier to find) and without running
+    it by making it a comment.  To do that, go to the beginning of the line, type the pound sign, and press Enter.
+    When you find it later, if you want to run it, you'll need to remove the pound sign with the Delete key or the Backspace
+    key.
+
+  * You can make changes to it.  Type any keystroke that will let you move around (without going up or down) like Left, Right,
+    Ctrl+a, Ctrl+e, Ctrl+f, or Ctrl+b.  After you do that you'll be out of search mode and you can change anything you like.
+    To execute it, press Enter.  To save it for later, go the beginning of the line, type a pound sign, and press Enter.
+
+  * You can change your mind.  Type Ctrl+c and the search will stop, whatever you found so far will be gone, and you'll
+    get a fresh new prompt.  You can also get out of search mode with Ctrl+g, but Ctrl+c is easier to remember.
+EOL
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+
+You can also type Ctrl+r again (and again).  Each time you type it, you'll see the previous command line that matches what
+you typed.  You can search forward again with Ctrl+s, but if you start over, you only have to remember Ctrl+r.
+
+Try all of these things with Ctrl+r now.  You can execute "learn" to see the current lesson as many times as you want.
+EOL
+
+	complete_exercise
+}
+
+yellow_belt_exercise_history_bang() {
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+There are a truly staggering number of ways to speed up typing things.  For example, you can refer to the third
+argument of the fifth last command you typed.
+
+EOL
+
+	fmt -u --width=$WIDTH -s <<EOL >> $fmt_file
+[user@host:~]$ echo 1 2 3
+1 2 3
+[user@host:~]$ echo 4 5 6
+4 5 6
+[user@host:~]$ echo 7 8 9
+7 8 9
+[user@host:~]$ echo 10 11 12
+10 11 12
+[user@host:~]$ echo 13 14 15
+13 14 15
+[user@host:~]$ echo !-5:3
+echo 3
+3
+EOL
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+
+Your shell will print the full command (in this case, "echo 3") then execute it.
+
+What we've gone through so far will speed up pretty much any situation, although there's one last thing that comes up often
+enough to make it into these exercises.  There's a way to refer to the last argument of the last command line that's quite
+short, though it's hard to remember.  It can be helpful when you create a directory and then want to "cd" to it.
+
+EOL
+
+	fmt -u --width=$WIDTH -s <<EOL >> $fmt_file
+[user@host:~]$ mkdir dirname
+[user@host:~]$ cd !$
+cd dirname
+[user@host:dirname]$
+EOL
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+
+The exclamation point ( ! ) means you want to fill something in from your history.  The dollar sign ( $ ) means you want
+the last argument filled in.  It can be tricky to remember, and you can always fall back on Ctrl+r, Ctrl+p, or Up and then
+change "mkdir" to "cd".
+
+If you want to verify the command line first, use "echo !$".  Since the last argument is the same, you can still use "cd !$"
+after "echo !$".
+
+Try out "!$" now.
 EOL
 
 	complete_exercise

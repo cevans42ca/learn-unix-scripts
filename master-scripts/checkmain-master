@@ -618,7 +618,27 @@ yellow_belt_exercise_up() {
 	keep_going
 }
 
-yellow_belt_exercise_home_and_end() {
+yellow_belt_exercise_home_end_and_pound() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*# ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+}
+
+yellow_belt_exercise_ctrl_r() {
+	keep_going
+}
+
+yellow_belt_exercise_history_bang() {
 	keep_going
 }
 
