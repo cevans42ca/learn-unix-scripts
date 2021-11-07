@@ -53,3 +53,8 @@ if ! which tput > /dev/null; then
 	exit 4
 fi
 
+if ! which man > /dev/null; then
+	echo "man is not installed."
+	exit 5
+fi
+
