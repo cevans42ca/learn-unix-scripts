@@ -1504,40 +1504,88 @@ discontinued.
 
 All of the operating systems above are "BSD or BSD-like".
 
-Next, we'll go through the set of commerical non-BSD Unixes (the ones you have to pay for).  All of these use research and
-development from the original work on Unix at Bell Labs and are still around as of this writing:  Solaris, HP-UX, IBM AIX.
+Next, we'll list the commerical non-BSD Unixes (the ones you have to pay for).  All of these were based on the original
+work on Unix at Bell Labs and are still around as of this writing:  Solaris, HP-UX, IBM AIX.
 
 Last (but certainly not least) is Linux in all of its many shapes and sizes.  It runs phones (Android) and supercomputers
 (all of the fastest 500 as of November 2017).  Linux cannot trace its ancestry back to the original Unix because that was the
 whole point.  When it was written, Unix cost a lot of money.  All of the core tools ("cp", "mv", "ls", etc.) were provided
-by GNU.
+by GNU to make Linux a complete and fully--functioning operating system.
 
-GNU, BSD, and the commerical Unixes do things differently.  In particular, long options don't appear very often in BSD tools.
+GNU, BSD, and the commerical Unixes do things differently.
 
-Even within a group like "GNU", programmers can do short and long options however they want.  Some Linux programs don't
-have any short options and long options have one dash, not two (like Java).  Some programs don't have any options at all
-and only take mandatory arguments (like most scripts).  Some programs only have long options (like this script).  A lot of
-programs require you to put all the options first, but some let you put them anywhere.
+The history lesson ends now.
 
-As we mentioned earlier, some programs allow you to give "--" as an argument.  Anything after that will be treated as a
-filename and not an option, which lets you use filenames that start with a hyphen.  For programs that don't support "--",
-you can't use them with filenames that start with a hyphen, or you need to use tricks like asterisk (unless they don't
-support options at all).
+If you're using a Mac (now, or you plan to fully immerse yourself in using the command line) this would be a good time to
+take note that Macs are based on BSD and won't work the same way Linux does.  In particular, long options don't appear very
+often in BSD tools.  If don't want to use the command line features of Macs, that's certainly an option as well.
+
+No matter which platform you're using or will be using, programmers can still do short and long options however they want.
+Some Linux programs don't have any short options and long options have one dash, not two (like Java).  Some programs
+don't have any options at all and only take mandatory arguments (like most scripts).  Some programs only have long options
+(like this script).  A lot of programs require you to put all the options first, but some let you put them anywhere.
+
+As we mentioned quite a bit earlier, some programs allow you to give "--" as an argument.  Anything after that will be
+treated as a filename and not an option, which lets you use filenames that start with a hyphen.  For programs that don't
+support "--", you can't use them with filenames that start with a hyphen, or you need to use tricks like asterisk (unless
+they don't support options at all, in which case it doesn't matter).
 
 The tool that shows what programs are running is "ps".  Many versions of "ps" behave more like the BSD version when you don't
-start with a hyphen and more like the GNU version when you do.  (Although BSD did and does have hyphens on short options.
+start with a hyphen and more like the GNU version when you do.  (Although, BSD did and does have hyphens on short options.
 The full story is not really important here.)
 
-Even though programmers can do whatever they want, there is a lot of standarization.  You will need to remember the programs
-you use on a regular basis that are different.
+Even though programmers can write programs to take arguments however they want, there is a lot of standarization.  You will
+need to remember the programs you use on a regular basis that are different, or at least remember how to get the basic help
+information.  GNU tools accept the "--help" long option.  Many other tools support "-h" for basic help.
 
-If you have a BSD-like system, chances are, "ls --version" is not going to work.
+If you have a BSD-like system, chances are, "ls --version" and "ls --help" are not going to work.
 
-It's time to use your first resource.  You can access the manual pages (or man pages) for the "ls" command by executing
+It's time to use your first resource.  You can access the manual page (or "man page") for the "ls" command by executing
 "man ls".  Just like this script, "man" automatically uses the "less" program so you can see a page of information at a time.
 The "ls" command supports a truly staggering number of options.  It's unlikely that anyone would know all of them.  For now,
 get some experience using the "man" command.  The check script looks at your last few commands, so make sure you execute
 "man ls" and ". check" without too many commands in between.
+EOL
+
+	complete_exercise
+}
+
+yellow_belt_exercise_ls() {
+	if [ ! -d $LUS_HOME ]; then
+		mkdir $LUS_HOME
+	fi
+	
+	if [ -f $LUS_HOME/list ]; then
+		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+This exercise involves creating the directory $LUS_HOME/list, which already exists.  You will need to move it or rename
+it by executing "mv $LUS_HOME/list newname", then executing "learn" again.
+EOL
+
+		less -R -P "$less_prompt_move_on" $fmt_file
+
+		exit 2
+	fi
+
+	if [ ! -d "$LUS_HOME/list/ord" ]; then
+		mkdir -p "$LUS_HOME/list/ord"
+		touch "$LUS_HOME/list/ord/first"
+		touch "$LUS_HOME/list/ord/second"
+		touch "$LUS_HOME/list/ord/third"
+	fi
+
+	if [ ! -d "$LUS_HOME/list/count" ]; then
+		mkdir -p "$LUS_HOME/list/count"
+		# I'd like to make these relative to the time they're made, but it's hard to do that in a portable way.
+		touch -t 202101010000 "$LUS_HOME/list/count/one"
+		touch -t 202101020000 "$LUS_HOME/list/count/two"
+		touch -t 202101030000 "$LUS_HOME/list/count/three"
+	fi
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+List the files in $LUS_HOME/list/ord and $LUS_HOME/list/count.  There a ton of different ways to do that.  You can "cd"
+to these directories a bunch of different ways, you could list the contents of these directories without "cd" by providing
+each directory as an argument to "ls", either one at a time, or together on the same command line.  You could also try
+using the copy and paste features of your terminal.  Explore different ways to list these files.
 EOL
 
 	complete_exercise

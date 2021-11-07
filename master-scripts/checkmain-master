@@ -650,8 +650,6 @@ yellow_belt_exercise_command_line_options() {
 	do
 		if [[ "$item" =~ ^[\ ]*man( )*ls([ ]|$) ]]; then
 			good_work
-			echo ""
-			echo $'Execute "learn" when you\'re ready for the next exercise.'
 			unset IFS
 			return
 		fi
@@ -660,6 +658,26 @@ yellow_belt_exercise_command_line_options() {
 	sorry
 	unset IFS
 	return
+}
+
+yellow_belt_exercise_ls() {
+	fmt -u --width=$luc_width <<EOL
+Question 1/1
+
+Did you notice anything odd about the file listings?
+
+EOL
+
+	luc_correct_answers=0
+	luc_answers=( 'The files "one", "two", and "three" were in alphabetical order, which was odd.' 'There was no file called "two".' 'The files "first", "second", and "third" were out of order.' 'Oh, a squirrel.' )
+
+	handle_answer 'The files "one", "two", and "three" were in alphabetical order, which was odd.'
+
+	if [ "$luc_correct_answers" == "1" ]; then
+		good_work
+	else
+		sorry
+	fi
 }
 
 ###############################
