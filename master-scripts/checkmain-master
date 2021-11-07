@@ -642,6 +642,26 @@ yellow_belt_exercise_history_bang() {
 	keep_going
 }
 
+yellow_belt_exercise_command_line_options() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*man( )*ls([ ]|$) ]]; then
+			good_work
+			echo ""
+			echo $'Execute "learn" when you\'re ready for the next exercise.'
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
 ###############################
 # End of function definitions #
 ###############################

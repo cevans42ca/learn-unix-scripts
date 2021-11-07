@@ -1477,6 +1477,72 @@ EOL
 	complete_exercise
 }
 
+yellow_belt_exercise_command_line_options() {
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+Before we get into the various ways you can list files, we'll have to go through short options and long options.
+Short options are single characters.  Long options are full words, and sometimes multiple words.
+
+We looked at "cp -R" earlier.  The single letter "R" is a short option.  It comes after a hyphen ( - ).  Sometimes, a
+hyphen is used as a negative sign or as a dash.
+
+cp -R source destination
+
+Here's an example of a long option.  Long options start with two dashes.
+
+cp --version
+
+The "version" long option tells "cp" to print information about when it was made (and by who).
+
+Who made it can give you some insight into how it can be used.  It's time for a (very short) history lesson.  (Don't
+worry, it's not on the test.)
+
+The Mac OS X operating system is based on NeXTSTEP, which is based on BSD, which is based on research at Bell Labs (which
+is where Unix came from).
+
+BSD also "gave birth" to FreeBSD, NetBSD, and OpenBSD, which are still popular.  They're also free.  NeXTSTEP has been
+discontinued.
+
+All of the operating systems above are "BSD or BSD-like".
+
+Next, we'll go through the set of commerical non-BSD Unixes (the ones you have to pay for).  All of these use research and
+development from the original work on Unix at Bell Labs and are still around as of this writing:  Solaris, HP-UX, IBM AIX.
+
+Last (but certainly not least) is Linux in all of its many shapes and sizes.  It runs phones (Android) and supercomputers
+(all of the fastest 500 as of November 2017).  Linux cannot trace its ancestry back to the original Unix because that was the
+whole point.  When it was written, Unix cost a lot of money.  All of the core tools ("cp", "mv", "ls", etc.) were provided
+by GNU.
+
+GNU, BSD, and the commerical Unixes do things differently.  In particular, long options don't appear very often in BSD tools.
+
+Even within a group like "GNU", programmers can do short and long options however they want.  Some Linux programs don't
+have any short options and long options have one dash, not two (like Java).  Some programs don't have any options at all
+and only take mandatory arguments (like most scripts).  Some programs only have long options (like this script).  A lot of
+programs require you to put all the options first, but some let you put them anywhere.
+
+As we mentioned earlier, some programs allow you to give "--" as an argument.  Anything after that will be treated as a
+filename and not an option, which lets you use filenames that start with a hyphen.  For programs that don't support "--",
+you can't use them with filenames that start with a hyphen, or you need to use tricks like asterisk (unless they don't
+support options at all).
+
+The tool that shows what programs are running is "ps".  Many versions of "ps" behave more like the BSD version when you don't
+start with a hyphen and more like the GNU version when you do.  (Although BSD did and does have hyphens on short options.
+The full story is not really important here.)
+
+Even though programmers can do whatever they want, there is a lot of standarization.  You will need to remember the programs
+you use on a regular basis that are different.
+
+If you have a BSD-like system, chances are, "ls --version" is not going to work.
+
+It's time to use your first resource.  You can access the manual pages (or man pages) for the "ls" command by executing
+"man ls".  Just like this script, "man" automatically uses the "less" program so you can see a page of information at a time.
+The "ls" command supports a truly staggering number of options.  It's unlikely that anyone would know all of them.  For now,
+get some experience using the "man" command.  The check script looks at your last few commands, so make sure you execute
+"man ls" and ". check" without too many commands in between.
+EOL
+
+	complete_exercise
+}
+
 ####################
 # End of exercises #
 ####################
