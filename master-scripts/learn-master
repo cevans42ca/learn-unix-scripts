@@ -1123,7 +1123,13 @@ Go to $LUS_HOME and execute "ls".  From there you're going to cd to the "complet
 to type all the letters.  Type "cd", a space, the letter "c", and an asterisk ( * ) which is usually Shift+8.  Press Enter.
 You can use this trick with files and directories (but not commands or command line arguments).
 
-Remember to execute ". check".
+If there are other directories that start with "c" and you type "cd c*", then your shell will change your current directory
+to the first one in alphabetical order.  Tab is better than asterisk, because you get to see where you're going before you
+go and change your mind.
+
+Here, we're using an asterisk to speed up putting in a single file name.  Later, we'll look at using it for multiple filenames.
+
+After trying all that out, remember to execute ". check".
 EOL
 
 	complete_exercise
@@ -1289,6 +1295,8 @@ be a program, and "myprogram" isn't in your \$PATH, so it doesn't count.
 
 But if you type "file myprog" and press Tab, then your shell will complete it, because in this case, any file is good here.
 
+If you type "cd myprog" and press Tab, nothing will happen, because "myprogram" is not a directory.
+
 For your shell to complete something at the beginning of a command line (assuming it's not an alias) it needs to be in your
 path and you need to have permission to read it and run it.
 
@@ -1296,7 +1304,8 @@ If you have permission to read it and run it, you can get around the \$PATH issu
 "./myprog" (with or without the quotes) and Tab, your shell will complete it for you.  
 
 If you're trying to run a program and the shell is not completing the name for you, it's an indication that it's not in
-your \$PATH or the permissions could be wrong.  We'll look at permissions later.
+your \$PATH or the permissions could be wrong.  We'll look at permissions later.  If you're trying to "cd" to a directory
+and your shell is not completing it, it might not be a directory, or you might have the name wrong.
 
 There's nothing to complete for this exercise before executing ". check".
 EOL
@@ -1418,28 +1427,32 @@ argument of the fifth last command you typed.
 EOL
 
 	fmt -u --width=$WIDTH -s <<EOL >> $fmt_file
-[user@host:~]$ echo 1 2 3
-1 2 3
-[user@host:~]$ echo 4 5 6
-4 5 6
-[user@host:~]$ echo 7 8 9
-7 8 9
-[user@host:~]$ echo 10 11 12
-10 11 12
-[user@host:~]$ echo 13 14 15
-13 14 15
+[user@host:~]$ echo 100 98 96
+100 98 96
+[user@host:~]$ echo 94 92 90
+94 92 90
+[user@host:~]$ echo 88 86 84
+88 86 84
+[user@host:~]$ echo 82 80 78
+82 80 78
+[user@host:~]$ echo 76 74 72
+76 74 72
 [user@host:~]$ echo !-5:3
-echo 3
-3
+echo 96
+96
 EOL
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 
-Your shell will print the full command (in this case, "echo 3") then execute it.
+Your shell will print the full command (in this case, "echo 96") then execute it.
+
+We would not expect very many people in the world to know how to do that.  The depth of what's available to speed up typing
+is staggering, and you're likely to use only a fraction of it even if you become a Unix admin as a career.
 
 What we've gone through so far will speed up pretty much any situation, although there's one last thing that comes up often
 enough to make it into these exercises.  There's a way to refer to the last argument of the last command line that's quite
-short, though it's hard to remember.  It can be helpful when you create a directory and then want to "cd" to it.
+short, though it's hard to remember.  It can be helpful when you create a directory and then want to "cd" to it, especially
+if the directory name is long or it's a full path (which is long).
 
 EOL
 
@@ -1456,10 +1469,9 @@ The exclamation point ( ! ) means you want to fill something in from your histor
 the last argument filled in.  It can be tricky to remember, and you can always fall back on Ctrl+r, Ctrl+p, or Up and then
 change "mkdir" to "cd".
 
-If you want to verify the command line first, use "echo !$".  Since the last argument is the same, you can still use "cd !$"
-after "echo !$".
+If you want to check it first, use "echo !$".  Since the last argument is the same, you can still use "cd !$" after "echo !$".
 
-Try out "!$" now.
+Try out "!$" now.  If you create any directories under $LUS_HOME, please remove them before continuing.
 EOL
 
 	complete_exercise
