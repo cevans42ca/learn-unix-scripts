@@ -1127,7 +1127,7 @@ If there are other directories that start with "c" and you type "cd c*", then yo
 to the first one in alphabetical order.  Tab is better than asterisk, because you get to see where you're going before you
 go and change your mind.
 
-Here, we're using an asterisk to speed up putting in a single file name.  Later, we'll look at using it for multiple filenames.
+Here, we're using an asterisk to speed up typing a single file name.  Later, we'll look at using it for multiple filenames.
 
 After trying all that out, remember to execute ". check".
 EOL
@@ -1262,7 +1262,8 @@ and now your shell will be a little more helpful letting you finish the filename
 If pressing Tab hasn't done anything at all, you can use an asterisk to complete part of the filename, just make sure it's
 not in either kind of quotes.
 
-Make sure you're in $LUS_HOME/complete.  Type in each command line below and then press Tab three times.
+Make sure you're in $LUS_HOME/complete.  Type in each command line below and then press Tab three times.  To go onto the
+next one, hold down Backspace until it's all gone or press Ctrl+c.
 
 EOL
 
@@ -1272,12 +1273,20 @@ EOL
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 
-If you started with a double quote, use another double quote at the end to close the quotation.  Then try pressing Tab again.
-Press Tab two more times to see your options.
+Do you see how starting with a quote will finish part of the filename but won't help you after that?
 
-When you execute any of these commands, you'll see the file's type again.  Now, use what you've learned to take a look at what's
-inside the file "Monday's TPS Report for Fred" without typing the whole filename and letting your shell do all the work.
-(Hint:  the file is very small.)
+Try the two kinds of quotes again, but this time, if you started with a double quote, use another double quote at the end
+to close the quotation (and the same for single quotes).  Then try pressing Tab again.  Press Tab two more times to see
+your options.  Suddenly, your shell is helpful again, offering options and finishing it off once you indicate which
+one you want (with an "F" or a "J").
+
+When you execute any of these commands, you'll see the file's type again.  If you run any of them with a starting quote and no
+finishing quote, the shell won't give you another standard prompt until you end the quote or press Ctrl+c.  That's how you
+create filenames with line breaks in them (please don't).
+
+Now, use what you've learned to take a look at what's inside the file "Monday's TPS Report for Fred" without typing the
+whole filename and letting your shell do all the work.  This time, instead of getting the file's type, we're looking for
+the file's contents.  (Hint:  the file is very small.)
 EOL
 
 	complete_exercise
@@ -1685,7 +1694,23 @@ EOL
 	complete_exercise
 }
 
-yellow_belt_exercise_df() {
+yellow_belt_exercise_ls_dash_h() {
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+Try out "ls -lh" in or on different directories.  If you're on a BSD or GNU system, it will give you file listings in long
+format with "human readable" file sizes.
+
+If you're not, it's anyone's guess.  It may give you an error, do nothing, or do something else.  If you like, check the
+man page before you try it.  Once you're done, execute ". check" for your final exam.
+EOL
+
+	complete_exercise
+}
+
+####################
+# End of exercises #
+####################
+
+blue_stripe_exercise_df() {
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 The last thing in yellow belt is the "df" command.  But before we go into what it does, we'll have to go over mounts.
 
@@ -1706,9 +1731,9 @@ EOL
 	complete_exercise
 }
 
-####################
-# End of exercises #
-####################
+#########################
+# End of held exercises #
+#########################
 
 ask_about_putty_font_size() {
 	fmt -u --width=$WIDTH <<EOL

@@ -499,6 +499,8 @@ yellow_stripe_exercise_quote_finale() {
 	luc_correct_answers=0
 
 	fmt -u --width=$luc_width <<EOL
+If you press Ctrl+c, you will get back to a prompt, but your progress through the questions will not be saved.
+
 Question 1/3
 
 A misbehaving process has created a file called "!@#$".  What is the shortest command line that will successfully rename it?
@@ -718,7 +720,55 @@ yellow_belt_exercise_ls_explore() {
 	return
 }
 
-yellow_belt_exercise_df() {
+yellow_belt_exercise_ls_dash_h() {
+	luc_correct_answers=0
+
+	fmt -u --width=$luc_width <<EOL
+If you press Ctrl+c, you will get back to a prompt, but your progress through the questions will not be saved.
+
+Question 1/3
+
+If you found a command in your history with Ctrl+r but you need to make a change to it first, what should you do?
+
+EOL
+
+	luc_answers=( 'Type Ctrl+c' 'Type Ctrl+g' 'Start typing the desired changes' 'Press Left, Right, Ctrl+b, or Ctrl+f' 'Ask the audience' )
+	handle_answer 'Press Left, Right, Ctrl+b, or Ctrl+f'
+
+	fmt -u --width=$luc_width <<EOL
+Question 2/3
+
+You want to see a long-format file list with the most recent files at the bottom.  Which options will do that?
+
+EOL
+
+	luc_answers=( 'ls -lh' 'ls -ltr' 'ls -Al' 'ls -lt' 'ls -ohno' )
+	handle_answer 'ls -ltr'
+
+	fmt -u --width=$luc_width <<EOL
+Question 3/3
+
+You want to see a long-format file list with the oldest files at the bottom.  Which options will do that?
+
+EOL
+
+	luc_answers=( 'ls -lh' 'ls -lt' 'ls -Al' 'ls -ltr' 'Ctrl+c! Ctrl+c!!' )
+	handle_answer 'ls -lt'
+
+	if [ "$luc_correct_answers" == "3" ]; then
+		good_work
+	else
+		echo "Results:  $luc_correct_answers/3 correct"
+		echo ""
+		sorry
+	fi
+}
+
+####################
+# End of exercises #
+####################
+
+blue_stripe_exercise_df() {
 	IFS='
 '
 
@@ -803,11 +853,29 @@ if [ "${EXERCISE:-}" == "${SAVED_EXERCISE:-}" ] && [ "${SAVED_RANK:-}" == "${RAN
 	updateDotFile
 
 	fmt -u --width=$luc_width <<EOL
-You were reviewing past exercises and you're now caught up to where you were.  Execute "learn" to continue.
+You were reviewing past exercises and you've caught up to where you were.  Execute "learn" to continue.
 EOL
 fi
 
 if (($EXERCISE > $luc_num_exercises)); then
+	new_belt_number=`expr 1 + ${belt_to_number[$RANK]}`
+	new_belt=${number_to_belt[$new_belt_number]}
+
+	if [[ "$new_belt" == "${SAVED_RANK:-}" && "${SAVED_EXERCISE:-}" == "1" ]]; then
+		printf "\nYou have reviewed all the exercises in `getBeltWithColours $RANK`.\n"
+		printf "You're all caught up.\n"
+		printf "Execute \"learn\" to begin the `getBeltWithColours $new_belt` exercises.\n"
+
+		RANK=$SAVED_RANK
+		EXERCISE=1
+		SAVED_RANK=""
+		SAVED_EXERCISE=""
+
+		updateDotFile
+
+		exit 0
+	fi
+
 	if [ $RANK == "white_belt" ]; then
 		echo ""
 
@@ -820,22 +888,15 @@ If you don't consider yourself to be detail oriented, the last few yellow stripe
 caffeine, a good night's sleep, or a hearty breakfast to be on top of your game, consider doing that.  If you're a morning
 person (or a night owl) and you can do the exercises in the morning (or at night), consider doing that.
 
-From here on out, only the first exercise of each belt will prompt you to execute "learn" and ". check".
+From here on out, only the first exercise of each belt will prompt you to execute "learn" and ". check", unless it's needed
+for clarity.
 EOL
 
 			RANK=yellow_stripe
 			EXERCISE=1
 		else
 			printf "You have reviewed all the exercises in `getBeltWithColours white_belt`.\n"
-			if [ "${SAVED_EXERCISE:-}" == "1" ] && [ "${SAVED_RANK:-}" == "yellow_stripe" ]; then
-				printf "You're all caught up.\n"
-				printf "Execute \"learn\" to begin the `getBeltWithColours yellow_stripe` exercises.\n"
-
-				SAVED_RANK=""
-				SAVED_EXERCISE=""
-			else			
-				printf "Execute \"learn\" to start reviewing the `getBeltWithColours yellow_stripe` exercises.\n"
-			fi
+			printf "Execute \"learn\" to start reviewing the `getBeltWithColours yellow_stripe` exercises.\n"
 
 			RANK=yellow_stripe
 			EXERCISE=1
@@ -854,6 +915,9 @@ EOL
 			printf "Execute \"learn\" to start reviewing the `getBeltWithColours green_stripe` exercises.\n\n"
 		fi
 	elif [ $RANK == "yellow_belt" ]; then
+		RANK=green_stripe
+		EXERCISE=1
+
 		if [ -z "${SAVED_RANK:-}" ]; then
 			printf "Congratulations!  You have now attained your `getBeltWithColours green_stripe`.\n"
 			printf "You would be working toward your `getBeltWithColours green_belt`, but there are no more exercises.\n\n"

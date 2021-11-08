@@ -56,7 +56,7 @@ exercises["yellow_belt_$((i++))"]="command_line_options"
 exercises["yellow_belt_$((i++))"]="ls"
 exercises["yellow_belt_$((i++))"]="ls_dash_l"
 exercises["yellow_belt_$((i++))"]="ls_explore"
-exercises["yellow_belt_$((i++))"]="df"
+exercises["yellow_belt_$((i++))"]="ls_dash_h"
 
 declare -A belt_to_number
 belt_to_number["white_belt"]=0
@@ -70,6 +70,19 @@ belt_to_number["red_stripe"]=7
 belt_to_number["red_belt"]=8
 belt_to_number["black_stripe"]=9
 belt_to_number["black_belt"]=10
+
+declare -A number_to_belt
+number_to_belt[0]="white_belt"
+number_to_belt[1]="yellow_stripe"
+number_to_belt[2]="yellow_belt"
+number_to_belt[3]="green_stripe"
+number_to_belt[4]="green_belt"
+number_to_belt[5]="blue_stripe"
+number_to_belt[6]="blue_belt"
+number_to_belt[7]="red_stripe"
+number_to_belt[8]="red_belt"
+number_to_belt[9]="black_stripe"
+number_to_belt[10]="black_belt"
 # end ffa9e74e-2b02-4d72-9c82-9f9db2915c62
 
 # start 37333148-8746-4468-826e-544e532f1ebc
