@@ -54,6 +54,9 @@ exercises["yellow_belt_$((i++))"]="ctrl_r"
 exercises["yellow_belt_$((i++))"]="history_bang"
 exercises["yellow_belt_$((i++))"]="command_line_options"
 exercises["yellow_belt_$((i++))"]="ls"
+exercises["yellow_belt_$((i++))"]="ls_dash_l"
+exercises["yellow_belt_$((i++))"]="ls_explore"
+exercises["yellow_belt_$((i++))"]="df"
 
 declare -A belt_to_number
 belt_to_number["white_belt"]=0

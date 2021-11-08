@@ -1329,7 +1329,7 @@ If nothing happens, you can try Ctrl+p and Ctrl+n as above.  We'll look at other
 
 After you press "q" to quit (as usual) try typing Up, Down, Left, and Right.
 
-If they don't work, try Ctrl+p and Ctrl+n.  Ctrl+f is forward one character.  Ctrl+b is backward one character.  If a
+If they don't work, try Ctrl+p and Ctrl+n.  Ctrl+f moves forward one character.  Ctrl+b goes backward one character.  If a
 single one works, you can hold down the Control key and type the letter multiple times.
 
 If you get lost in your history and don't want to execute anything, you have a few options.  (1) You can go to the end of the
@@ -1348,18 +1348,23 @@ We're going to look at two more keys before we look at other ways to run previou
 If you have a terminal with the right settings, pressing Home will take you to the beginning of your command line,
 and End will take you to the end.
 
-If not, Home will dump ^[[H into your command line and End will dump ^[[F into your command line.  In that case,
-use Ctrl+a to go to the beginning of the command line ("a" is the first letter in the alphabet).
-Use Ctrl+e to go to the end.
+If not, Home will dump ^[[H into your command line and End will dump ^[[F into your command line.  In that case, use Ctrl+a
+to go to the beginning of the command line ("a" is the first letter in the alphabet).  Use Ctrl+e to go to the end.
 
-There are more key combinations to go to the beginning and end of words, and delete to the beginning and end of words,
-but it's not necessary to memorize them.
+There are more key combinations to go to the beginning and end of words, to delete to the beginning and end of words,
+and more.  We do not recommend memorizing them.
 
-I recommend memorizing Ctrl+a, Ctrl+e, Ctrl+f, and Ctrl+b, for two reasons.  They are much faster than typing Home, End,
-and the cursor keys.  In some cases, you may need to use a misconfigured or old terminal, and the cursor keys and Home and
-End won't work.
+We recommend memorizing Ctrl+a, Ctrl+e, for two reasons.  They are much faster than picking up your hands, finding the Home
+or End key, pressing it, and returning your hands to the home row.  In some cases, you may need to use a misconfigured or
+old terminal, and Home and End won't work.
 
-You could memorize Ctrl+p and Ctrl+n, but I'd rather you memorize Ctrl+r, which we'll get to shortly.  Ctrl+r will do what
+If you're used to moving quickly back and forth between the cursor keys and the home row, memorizing Ctrl+f and Ctrl+b
+may not be of much use.  In the worst case, if you have no choice but to use a misconfigured terminal, you'll still be
+able to enter commands, but you'll be slower.  It might never come up.  You might look them up if and when you need them.
+If takes a long time for you to move your hands to the cursor keys and back, you might benefit from memorizing Ctrl+f and
+Ctrl+b.
+
+You could memorize Ctrl+p and Ctrl+n, but we'd rather you memorize Ctrl+r, which we'll get to shortly.  Ctrl+r will do what
 Ctrl+p and Ctrl+n will do and more.
 
 Pound signs ( # ) and everything after them are ignored (unless the pound sign is quoted or escaped).  Using a pound sign at
@@ -1550,7 +1555,7 @@ EOL
 	complete_exercise
 }
 
-yellow_belt_exercise_ls() {
+create_lists() {
 	if [ ! -d $LUS_HOME ]; then
 		mkdir $LUS_HOME
 	fi
@@ -1576,16 +1581,126 @@ EOL
 	if [ ! -d "$LUS_HOME/list/count" ]; then
 		mkdir -p "$LUS_HOME/list/count"
 		# I'd like to make these relative to the time they're made, but it's hard to do that in a portable way.
-		touch -t 202101010000 "$LUS_HOME/list/count/one"
-		touch -t 202101020000 "$LUS_HOME/list/count/two"
-		touch -t 202101030000 "$LUS_HOME/list/count/three"
+		touch -t 202109010000 "$LUS_HOME/list/count/one"
+		touch -t 202109020000 "$LUS_HOME/list/count/two"
+		touch -t 202109030000 "$LUS_HOME/list/count/three"
 	fi
+}
+
+yellow_belt_exercise_ls() {
+	create_lists
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 List the files in $LUS_HOME/list/ord and $LUS_HOME/list/count.  There a ton of different ways to do that.  You can "cd"
 to these directories a bunch of different ways, you could list the contents of these directories without "cd" by providing
 each directory as an argument to "ls", either one at a time, or together on the same command line.  You could also try
-using the copy and paste features of your terminal.  Explore different ways to list these files.
+using the copy and paste features of your terminal.  Explore different ways to list these files without using any options.
+We'll look at options in the next lesson.
+EOL
+
+	complete_exercise
+}
+
+yellow_belt_exercise_ls_dash_l() {
+	create_lists
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+We'll look at the "-l" option for "ls" now.  The "-l" option shows the long listing format.
+
+Here's an example.
+
+EOL
+
+	echo '[user@host:~/example]$ ls -l' >> $fmt_file
+	echo 'total 4' >> $fmt_file
+	echo 'drwxrwxr-x 2 user ug 4096 Nov  8 08:40 zero' >> $fmt_file
+	echo '-rw-rw-r-- 1 user ug    0 Jan  1  2021 one' >> $fmt_file
+	echo '-rw-rw-r-- 1 user ug    0 Jan  2  2021 two' >> $fmt_file
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+
+The first part of the output is the permissions (drwxrwxr-x).  We'll be looking at permissions quite a bit later.  Right
+now, look at the first character.  If it's a directory, the first character will be "d".  If it's not a directory, it
+will be a hyphen ( - ).  So "zero" is a directory, and "one" and "two" are not directories.
+
+The next part is who owns the file.  In this example, the user ID is "user".
+
+The part after that is what group owns the file.  In this case, that's "ug".
+
+Fourth, we have the size of the file.  The files "one" and "two" have a size of 0, so they're empty files.  The directory
+is taking up 4,096 bytes of space.  Directories always take up at least one block (which may be larger or smaller than 4,096
+bytes).  If the number of files in a directory grows so large that the list of files can't fit inside one block, then the
+size of the directory will grow.  A directory's size is based on the number of files and the lengths of their filenames, and
+doesn't have to do with the size of the files.
+
+Second last, we have the date (and maybe the time).  If a file is very recent, you'll see a date and time.  If it's older,
+you'll see a month, day, and year.
+
+The file (or directory) name is last.
+
+The "ls -l" command line is typed so frequently that in many cases there's an "ll" alias.  You can see whether it's aliased
+on your system with the command "type ll".
+
+In the example below, ll is aliased to "ls -l" (plus two more options, "a", and "F").
+
+EOL
+
+	fmt -u -s --width=$WIDTH <<EOL >> $fmt_file
+[user@host:~]$ type ll
+ll is aliased to \`ls -alF'
+EOL
+
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+
+In the following example, ll is not aliased.
+
+EOL
+	fmt -u -s --width=$WIDTH <<EOL >> $fmt_file
+[user@host:~]$ type ll
+bash: type: ll: not found
+
+Check to see if you have the "ll" alias.  List the files in $LUS_HOME/list/ord and $LUS_HOME/list/count with the "-l" option.
+EOL
+
+	complete_exercise
+}
+
+yellow_belt_exercise_ls_explore() {
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+It's time to use the man pages again.  This time, you'll be looking for something specific.
+
+When you're using "less", you can look for something specific with slash ( / ).  Type a slash, type what you're looking
+for, and press Enter.  You're using "less" right now, but everything is probably on one page in your terminal, so searching for
+something is likely to be a bit boring.  (But nothing's stopping you.)
+
+You know from the previous exercises that the files "one", "two", and "three" have different modification dates.  Open the man
+page for "ls" by executing "man ls".  While it's open, use slash to search through the options to find the right arguments
+that will list the files in order.  Once you've found some options that will help, close the man page with "q" as usual
+and try them out.  Once you have a listing of the files in $LUS_HOME/list/count in numerical order, execute ". check".
+
+Only the short options will be considered correct, as they work with both BSD and GNU "ls".  Also, please put the options before
+the directory name (if you use one).
+EOL
+
+	complete_exercise
+}
+
+yellow_belt_exercise_df() {
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+The last thing in yellow belt is the "df" command.  But before we go into what it does, we'll have to go over mounts.
+
+Some time ago, we showed how Windows has drive letters, but in Unix, everything is in one filesystem.  In order to bring
+disk drives, network shares, USB sticks, and everything that has files in it into one place, they are "mounted" onto the
+base filesystem.  How that works isn't important for these lessons.  The important thing is that each "mount" has a bunch
+of files and each one has a maximum size.
+
+Just as a USB drive E: in Windows has a maximum size, and the hard disk C: has a maximum size, each mount in Unix has
+can get filled up.  That means that /var/log can be full of log files, but /home still has room.  That's a good thing.
+It means one problem won't bring down the whole system.  That's also why some filesystems keep a little bit of room for
+root's home directory (/root).
+
+The command to see how much space is being taken up for each mount is "df".  By default "df" shows block sizes, which are
+not very user friendly.  To see the sizes in "human" units, use the "-h" option.
 EOL
 
 	complete_exercise

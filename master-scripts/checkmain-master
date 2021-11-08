@@ -680,6 +680,62 @@ EOL
 	fi
 }
 
+yellow_belt_exercise_ls_dash_l() {
+	fmt -u --width=$luc_width <<EOL
+Question 1/1
+
+What did you find?
+
+EOL
+
+	luc_correct_answers=0
+	luc_answers=( 'The files "one", "two", and "three" have different dates.' 'There is no file called "second".' 'The files "first", "second", and "third" have different dates.' 'Hey!  Look at the obvious distraction!' )
+
+	handle_answer 'The files "one", "two", and "three" have different dates.'
+
+	if [ "$luc_correct_answers" == "1" ]; then
+		good_work
+	else
+		sorry
+	fi
+}
+
+yellow_belt_exercise_ls_explore() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*ls( )*-([a-z]*t[a-z]*r[a-z]*|[a-z]*r[a-z]*t[a-z]*) ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
+yellow_belt_exercise_df() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*df([ ]|$) ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
 ###############################
 # End of function definitions #
 ###############################
