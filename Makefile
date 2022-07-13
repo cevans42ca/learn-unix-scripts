@@ -4,7 +4,7 @@ replace: master-scripts/learn-master master-scripts/checkmain-master master-scri
 	./replace-all
 
 install:
-	cp bin/* "${LEARN_INSTALL_DIR}/bin"
+	cp bin/* docker/bin
 
 dist:
 	mkdir -p dist
