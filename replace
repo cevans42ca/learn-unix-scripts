@@ -92,8 +92,18 @@ for file in "${@:2:$replacement_args}"; do
 	read_one_replacement_file "$file"
 done
 
-temp_output_file=$(mktemp --suffix=_$(whoami))
 trap clean_up EXIT
+
+set +e
+temp_output_file=$(mktemp --suffix_$(whoami) 2>/dev/null)
+RESULT=$?
+if [ $RESULT -eq 0 ]; then
+	echo success - need to clean up
+else
+	temp_output_file=$(mktemp -t $(whoami))
+fi
+set -e
+
 state=$looking
 input_line_num=0
 

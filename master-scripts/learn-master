@@ -1763,8 +1763,18 @@ EOL
 	fi
 }
 
+make_temp() {
+	set +e
+	fmt_file=$(mktemp --suffix_$(whoami) 2>/dev/null)
+	RESULT=$?
+	if [ $RESULT -ne 0 ]; then
+		fmt_file=$(mktemp -t $(whoami)-XXXXXX)
+	fi
+	set -e
+}
+
 welcome() {
-	fmt_file=$(mktemp --suffix=_$(whoami))
+	make_temp
 	file_clean_up_array+=($fmt_file)
 
 	fmt -u --width=$WIDTH <<EOL > $fmt_file
@@ -2100,7 +2110,7 @@ elif [ -n "${1:-}" ] && [ "${1:-}" != "--return" ]; then
 fi
 
 if [ -z "${fmt_file:-}" ]; then
-	fmt_file=$(mktemp --suffix=_$(whoami))
+	make_temp
 	file_clean_up_array+=($fmt_file)
 fi
 
