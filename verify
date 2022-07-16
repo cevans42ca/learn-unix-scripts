@@ -23,23 +23,42 @@
 # This script was developed in a 130x30 terminal.
 
 parent_proc_name=`ps -p $PPID -o comm=`
-if [[ "bash" != "$parent_proc_name" ]]; then
+if [[ ! "$parent_proc_name" =~ "bash" ]]; then
+	echo "The parent process is $parent_proc_name.  An interactive bash shell was expected."
 	echo "The scripts in this project are written in bash and require the user to use the bash shell."
 	echo "But they're open source, so feel free to use the lesson text and write your own."
 	exit 1
 fi
 
 if [[ "${BASH_VERSINFO:-0}" < "4" ]]; then
-	echo "Associative array support, added in Bash 4.0, is required."
-	exit 2
+	if [ -f /usr/local/bin/bash ]; then
+		homebrew=$(/usr/local/bin/bash -c 'echo ${BASH_VERSINFO[0]}')
+		echo "/bin/bash too old, checking Homebrew version:  $homebrew"
+		if [[ "$homebrew" < "4" ]]; then
+			echo "Associative array support, added in Bash 4.0, is required.  Homebrew bash not found either."
+			echo "If you have a Mac, install Homebrew, then install bash."
+			exit 2
+		else
+			echo "Homebrew bash installed."
+		fi
+	else
+		echo "Associative array support, added in Bash 4.0, is required."
+		echo "If you have a Mac, install Homebrew, then install bash."
+		exit 2
+	fi 
 fi 
 
 echo "Verify that some of the words in this sentence are red." | grep --color=always "some of the words"
 
-if stty --version 2>/dev/null | grep -q 'coreutils'; then
+if stty --version 2>&1 | grep -q 'version'; then
+    # BusyBox and other streamlined systems don't support --version.
     stty_options='-a'
 else
-    stty_options='everything'
+    if stty --version 2>/dev/null | grep -q 'coreutils'; then
+        stty_options='-a'
+    else
+        stty_options='everything'
+    fi
 fi
 
 stty ${stty_options} | grep -q "intr = ^C"
