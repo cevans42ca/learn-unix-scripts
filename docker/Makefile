@@ -4,9 +4,11 @@ G_UID=10000
 DARK_MODE=1
 
 run: build
-	docker run -it --rm --mount src=lus,target=/mnt/lus learn-unix
+	@echo
+	@echo Starting docker.  Once it starts, type the word \"learn\" and press Enter.
+	docker run -it --rm --mount src=lus,target=/mnt/vol learn-unix
 
-flags/buildtarget: bin/learn bin/check bin/checkmain
+flags/buildtarget: bin/learn bin/check bin/checkmain PS1.sh
 	docker build -t learn-unix --build-arg D_UID=1001 --build-arg D_USERNAME=duser1 --build-arg D_GID=$(G_UID) --build-arg DARK_MODE=$(DARK_MODE) .
 	touch flags/buildtarget
 

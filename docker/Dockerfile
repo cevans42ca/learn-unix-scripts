@@ -22,7 +22,8 @@ ADD bin /home/${D_USERNAME}/bin
 RUN chown -R ${D_USERNAME} /home/${D_USERNAME}/bin
 RUN chmod u+x /home/${D_USERNAME}/bin/*
 
-RUN ln -s /mnt/lus /home/${D_USERNAME}/lus 
+RUN ln -s /mnt/vol/testuser/lus /home/${D_USERNAME}/lus 
+RUN ln -s /mnt/vol/testuser/.learnUnix /home/${D_USERNAME}/.learnUnix
 
 RUN addgroup -g $D_GID lus
 RUN addgroup ${D_USERNAME} lus

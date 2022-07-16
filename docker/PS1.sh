@@ -3,3 +3,7 @@ if [ "${DARK_MODE:-1}" -eq "1" ]; then
 else
 	export PS1="\033[38;5;021m\u@docker\[\033[00m\]:\033[38;5;022m\w\[\033[00m\]\$ "
 fi
+
+export INSIDE_DOCKER=1
+export LUS_DOCKER_BASE=/mnt/vol/testuser
+

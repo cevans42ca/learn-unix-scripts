@@ -217,6 +217,18 @@ complete_exercise() {
 
 # insert 37333148-8746-4468-826e-544e532f1ebc updateDotFile, getBeltWithColours
 
+prepareLusHome() {
+	if [[ "${INSIDE_DOCKER:-0}" == "0" ]]; then
+		if [ ! -d $LUS_HOME ]; then
+			mkdir $LUS_HOME
+		fi
+	else
+		if [ ! -d "$LUS_DOCKER_BASE/lus" ]; then
+			mkdir $LUS_DOCKER_BASE/lus
+		fi
+	fi
+}
+
 white_belt_exercise_what_execute_means() {
 	yellow_stripe="${yellow_on_black}yellow ${nc}${bright_white_on_black}stripe${nc}"
 	printf "${underline}The Bare Essentials${no_underline}\n\n" >> $fmt_file
@@ -725,10 +737,8 @@ EOL
 }
 
 yellow_stripe_exercise_mkdir_and_relative_paths() {
-	if [ ! -d $LUS_HOME ]; then
-		mkdir $LUS_HOME
-	fi
-	
+	prepareLusHome
+
 	if [ -d $LUS_HOME/parent ]; then
 		fmt -u --width=$WIDTH <<EOL >> $fmt_file
 This exercise involves creating the directory $LUS_HOME/parent, which already exists.  You will need to move it or rename
@@ -812,9 +822,7 @@ EOL
 }
 
 yellow_stripe_exercise_special_characters() {
-	if [ ! -d $LUS_HOME ]; then
-		mkdir $LUS_HOME
-	fi
+	prepareLusHome
 	
 	if [ -f $LUS_HOME/yellow ]; then
 		less -R -P "$less_prompt_move_on" $fmt_file
@@ -881,9 +889,7 @@ EOL
 }
 
 yellow_stripe_exercise_file() {
-	if [ ! -d $LUS_HOME ]; then
-		mkdir $LUS_HOME
-	fi
+	prepareLusHome
 	
 	if [ ! -f $LUS_HOME/yellow ]; then
 		less -R -P "$less_prompt_move_on" $fmt_file
@@ -917,9 +923,7 @@ EOL
 }
 
 yellow_stripe_exercise_cat_less() {
-	if [ ! -d $LUS_HOME ]; then
-		mkdir $LUS_HOME
-	fi
+	prepareLusHome
 	
 	if [ ! -f $LUS_HOME/yellow ]; then
 		less -R -P "$less_prompt_move_on" $fmt_file
@@ -1570,9 +1574,7 @@ EOL
 }
 
 create_lists() {
-	if [ ! -d $LUS_HOME ]; then
-		mkdir $LUS_HOME
-	fi
+	prepareLusHome
 	
 	if [ -f $LUS_HOME/list ]; then
 		fmt -u --width=$WIDTH <<EOL >> $fmt_file
