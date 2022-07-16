@@ -1,0 +1,52 @@
+#!/bin/sh
+#
+# Query a property from the terminal, e.g. background color.
+#
+# XTerm Operating System Commands
+#     "ESC ] Ps;Pt ST"
+#
+# Copied and adapted from blueyed's answer to:
+# https://stackoverflow.com/questions/2507337/how-to-determine-a-terminals-background-color
+
+oldstty=$(stty -g)
+
+# What to query?
+# 11: text background
+Ps=${1:-11}
+
+echo "During background colour detection, the terminal may flash or beep, and"
+echo "you may see some strange characters."
+
+sleep 2
+
+stty raw -echo min 0 time 0
+# stty raw -echo min 0 time 1
+printf "\033]$Ps;?\033\\"
+# xterm needs the sleep (or "time 1", but that is 1/10th second).
+sleep 0.01
+read -r answer
+result=${answer#*;}
+stty $oldstty
+
+echo
+echo "Detected RGB " $result
+colours=$(echo ${result} | sed 's/rgb://' | sed 's/[^[:print:]]//g')
+
+redhex=$(echo $colours | cut -f1 -d'/')
+greenhex=$(echo $colours | cut -f2 -d'/')
+bluehex=$(echo $colours | cut -f3 -d'/')
+
+red=$(printf "%d" $((16#$redhex)))
+green=$(printf "%d" $((16#$greenhex)))
+blue=$(printf "%d" $((16#$bluehex)))
+
+total=$(echo "$red + $green + $blue" | bc)
+
+if [[ "$total" > 150000 ]]; then
+	echo "Enabling light mode."
+	sed -i 's/DARK_MODE=.*/DARK_MODE=0/' docker/Makefile 
+else
+	echo "Enabling dark mode (traditional white on black)."
+	sed -i 's/DARK_MODE=.*/DARK_MODE=1/' docker/Makefile 
+fi
+

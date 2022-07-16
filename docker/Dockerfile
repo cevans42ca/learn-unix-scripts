@@ -2,6 +2,7 @@ FROM alpine
 
 ARG D_GID=10000
 ARG D_USERNAME=duser1
+ARG DARK_MODE=1
 
 RUN apk update
 RUN apk upgrade
@@ -12,7 +13,8 @@ RUN apk add grep
 RUN apk add coreutils
 RUN apk add less
 
-RUN echo 'export PS1="\033[38;5;075;48;5;000m\u@docker\[\033[00m\]:\033[38;5;082;48;5;000m\w\[\033[00m\]\$ "' >> /etc/profile.d/PS1.sh
+COPY PS1.sh /etc/profile.d/PS1.sh
+RUN sed -i "1s;^;export DARK_MODE=${DARK_MODE}\n;" /etc/profile.d/PS1.sh
 
 RUN adduser -S $D_USERNAME
 
