@@ -24,7 +24,7 @@ createuservolume: createvolume
 
 createsharedvolume: createvolume
 	./createGroup.sh $(G_UID)
-	./fixPermissions.sh $(G_UID) testuser/shared shared
+	./fixPermissions.sh $(G_UID) testuser shared
 
 clean:
 	rm -f flags/buildtarget
