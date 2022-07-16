@@ -44,9 +44,9 @@ total=$(echo "$red + $green + $blue" | bc)
 
 if [[ "$total" > 150000 ]]; then
 	echo "Enabling light mode."
-	sed -i 's/DARK_MODE=.*/DARK_MODE=0/' docker/Makefile 
+	sed -i '' 's/^DARK_MODE=.*/DARK_MODE=0/' docker/Makefile 
 else
 	echo "Enabling dark mode (traditional white on black)."
-	sed -i 's/DARK_MODE=.*/DARK_MODE=1/' docker/Makefile 
+	sed -i '' 's/^DARK_MODE=.*/DARK_MODE=1/' docker/Makefile 
 fi
 
