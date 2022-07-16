@@ -1,5 +1,7 @@
 .PHONY: dist clean
 
+run: configure install dockerrun
+
 configuretarget:
 	./configure
 	touch configuretarget
@@ -18,13 +20,18 @@ clean:
 	rm -f replace
 
 scripts = master-scripts/learn-master master-scripts/checkmain-master master-scripts/check-master
+replaced_scripts = bin/learn bin/checkmain bin/check
 
 replacetarget: $(scripts) replace
 	./replace-all
 	touch replacetarget
 
-install:
+install: replacetarget
 	cp bin/* docker/bin
+
+dockerrun: install
+	cd docker && make createuservolume
+	cd docker && make run
 
 dist:
 	mkdir -p dist
