@@ -5,9 +5,13 @@ config:
 
 clean:
 	sed -i '' 's/^DARK_MODE=.*/DARK_MODE=1/' docker/Makefile 
+	rm bin/learn
+	rm bin/check
+	rm bin/checkmain
 
-replace: master-scripts/learn-master master-scripts/checkmain-master master-scripts/check-master
+replacetarget: master-scripts/learn-master master-scripts/checkmain-master master-scripts/check-master
 	./replace-all
+	touch replacetarget
 
 install:
 	cp bin/* docker/bin

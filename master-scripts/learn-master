@@ -1800,7 +1800,11 @@ EOL
 
 	printf "\n${underline}Beginner and Intermediate Ranks${no_underline}\n" >> $fmt_file
 
-	printf "\n${bright_white_on_black}White Belt${nc}\n" >> $fmt_file
+	if [[ "${DARK_MODE:-1}" -eq "1" ]]; then
+		printf "\n${bright_white_on_black}White Belt${nc}\n" >> $fmt_file
+	else
+		printf "\nWhite Belt\n" >> $fmt_file
+	fi
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
   In a martial arts club (or dojo) a student gets their white belt when they buy a uniform and sign up for classes.  In this

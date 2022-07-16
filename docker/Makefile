@@ -1,6 +1,6 @@
 VOL_DIR=/var/lib/docker/volumes/lus/_data
 G_UID=10000
-DARK_MODE=1
+DARK_MODE=0
 
 build:
 	docker build -t learn-unix --build-arg D_UID=1001 --build-arg D_USERNAME=duser1 --build-arg D_GID=$(G_UID) --build-arg DARK_MODE=$(DARK_MODE) .
