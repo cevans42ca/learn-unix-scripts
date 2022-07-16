@@ -1,4 +1,10 @@
-.PHONY: dist
+.PHONY: dist clean
+
+config:
+	./configure
+
+clean:
+	sed -i '' 's/^DARK_MODE=.*/DARK_MODE=1/' docker/Makefile 
 
 replace: master-scripts/learn-master master-scripts/checkmain-master master-scripts/check-master
 	./replace-all
