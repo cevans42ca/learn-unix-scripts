@@ -18,6 +18,7 @@ clean:
 	rm -f configuretarget
 	rm -f replacetarget
 	rm -f replace
+	cd docker && make clean
 
 scripts = master-scripts/learn-master master-scripts/checkmain-master master-scripts/check-master
 replaced_scripts = bin/learn bin/checkmain bin/check
