@@ -1,15 +1,25 @@
 .PHONY: dist clean
 
-config:
+configuretarget:
 	./configure
+	touch configuretarget
+
+configure: configuretarget
+
+replace: replace-master configure
 
 clean:
 	sed -i '' 's/^DARK_MODE=.*/DARK_MODE=1/' docker/Makefile 
-	rm bin/learn
-	rm bin/check
-	rm bin/checkmain
+	rm -f bin/learn
+	rm -f bin/check
+	rm -f bin/checkmain
+	rm -f configuretarget
+	rm -f replacetarget
+	rm -f replace
 
-replacetarget: master-scripts/learn-master master-scripts/checkmain-master master-scripts/check-master
+scripts = master-scripts/learn-master master-scripts/checkmain-master master-scripts/check-master
+
+replacetarget: $(scripts) replace
 	./replace-all
 	touch replacetarget
 

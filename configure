@@ -1,5 +1,26 @@
 #!/bin/sh
-#
+
+if [[ "${BASH_VERSINFO:-0}" < "4" ]]; then
+	if [ -f /usr/local/bin/bash ]; then
+		homebrew=$(/usr/local/bin/bash -c 'echo ${BASH_VERSINFO[0]}')
+		echo "/bin/bash too old, checking Homebrew version:  $homebrew"
+		if [[ "$homebrew" < "4" ]]; then
+			echo "Associative array support, added in Bash 4.0, is required.  Homebrew bash not found either."
+			echo "If you have a Mac, install Homebrew, then install bash."
+			exit 2
+		else
+			sed 's/\/bin\/bash/\/usr\/local\/bin\/bash/' replace-master > replace
+			chmod ug+x replace
+		fi
+	else
+		echo "Associative array support, added in Bash 4.0, is required."
+		echo "If you have a Mac, install Homebrew, then install bash."
+		exit 2
+	fi 
+else
+	cp replace-master replace
+fi 
+
 # Query a property from the terminal, e.g. background color.
 #
 # XTerm Operating System Commands
