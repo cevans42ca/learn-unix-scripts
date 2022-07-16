@@ -2,11 +2,11 @@
 
 run: configure install dockerrun
 
-configuretarget:
+flags/configuretarget:
 	./configure
-	touch configuretarget
+	touch flags/configuretarget
 
-configure: configuretarget
+configure: flags/configuretarget
 
 replace: replace-master configure
 
@@ -15,17 +15,19 @@ clean:
 	rm -f bin/learn
 	rm -f bin/check
 	rm -f bin/checkmain
-	rm -f configuretarget
-	rm -f replacetarget
+	rm -f flags/configuretarget
+	rm -f flags/replacetarget
 	rm -f replace
 	cd docker && make clean
 
 scripts = master-scripts/learn-master master-scripts/checkmain-master master-scripts/check-master
 replaced_scripts = bin/learn bin/checkmain bin/check
 
-replacetarget: $(scripts) replace
+flags/replacetarget: $(scripts) configure
 	./replace-all
-	touch replacetarget
+	touch flags/replacetarget
+
+replacetarget: flags/replacetarget
 
 install: replacetarget
 	cp bin/* docker/bin
