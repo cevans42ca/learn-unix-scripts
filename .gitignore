@@ -2,4 +2,5 @@ bin
 dist
 site
 replacetarget
+configuretarget
 replace
