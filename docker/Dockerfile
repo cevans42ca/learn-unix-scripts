@@ -10,11 +10,18 @@ RUN apk add bash
 RUN apk add bash-doc
 RUN apk add bash-completion
 RUN apk add grep
+
+# For fmt
 RUN apk add coreutils
+
 RUN apk add less
 
-COPY PS1.sh /etc/profile.d/PS1.sh
-RUN sed -i "1s;^;export DARK_MODE=${DARK_MODE}\n;" /etc/profile.d/PS1.sh
+# For tput
+RUN apk add ncurses
+
+
+COPY etc-profile.sh /etc/profile.d/exports.sh
+RUN sed -i "1s;^;export DARK_MODE=${DARK_MODE}\n;" /etc/profile.d/exports.sh
 
 RUN adduser -S $D_USERNAME
 

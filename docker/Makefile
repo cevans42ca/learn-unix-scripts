@@ -8,7 +8,7 @@ run: build
 	@echo Starting docker.  Once it starts, type the word \"learn\" and press Enter.
 	docker run -it --rm --mount src=lus,target=/mnt/vol learn-unix
 
-flags/buildtarget: bin/learn bin/check bin/checkmain PS1.sh
+flags/buildtarget: bin/learn bin/check bin/checkmain etc-profile.sh Dockerfile
 	docker build -t learn-unix --build-arg D_UID=1001 --build-arg D_USERNAME=duser1 --build-arg D_GID=$(G_UID) --build-arg DARK_MODE=$(DARK_MODE) .
 	touch flags/buildtarget
 

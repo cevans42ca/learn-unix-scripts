@@ -794,16 +794,14 @@ blue_stripe_exercise_df() {
 
 # If this script is switched back to being sourced, we'll need to change the "exit"s below to returns.
 
-if [ ! -f ~/.learnUnix ]; then
+if [ ! -f "${LUS_PROGRESS}" ]; then
 	echo 'Please run the "learn" script first.'
 	exit 1
 fi
 
-source ~/.learnUnix
+source "${LUS_PROGRESS}"
 
-if [ -z "${LUS_HOME:-}" ]; then
-	LUS_HOME=$HOME/lus
-fi
+LUS_HOME=${LUS_HOME:-"$HOME/lus"}
 
 if [ -z "${RANK:-}" ] || [ -z "${EXERCISE:-}" ]; then
 	fmt -u --width=$luc_width <<EOL
@@ -814,7 +812,7 @@ fi
 
 if [[ ! "${RANK}" =~ ^(white|yellow|green|blue|red|black)_(stripe|belt)$ ]]; then
 	fmt -u --width=$luc_width <<EOL
-It looks like the ~/.learnUnix file has become corrupted.  If it can't be repaired, you may have no choice but to delete it
+It looks like the ${LUS_PROGRESS} file has become corrupted.  If it can't be repaired, you may have no choice but to delete it
 and start over.  Sorry about that.
 EOL
 	exit 2
@@ -822,7 +820,7 @@ fi
 
 if [[ ! "${EXERCISE}" =~ ^[0-9]+$ ]]; then
 	fmt -u --width=$luc_width <<EOL
-It looks like the ~/.learnUnix file has become corrupted.  If it can't be repaired, you may have no choice but to delete it
+It looks like the ${LUS_PROGRESS} file has become corrupted.  If it can't be repaired, you may have no choice but to delete it
 and start over.  Sorry about that.
 EOL
 	exit 2

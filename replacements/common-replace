@@ -3,8 +3,10 @@
 # Generate GUIDs with uuidgen.
 
 # start ffa9e74e-2b02-4d72-9c82-9f9db2915c62
+LUS_PROGRESS=${LUS_PROGRESS:-"$HOME/.learnUnixScripts"}
+
 black_on_white="\033[30;107m"
-bright_white_on_black="\033[107;40m"
+bright_white_on_black="$(tput setab 0)$(tput setaf 7)$(tput bold)"
 yellow_on_black="\033[93;40m"
 green_on_black="\033[92;40m"
 blue_on_black="\033[94;40m"
@@ -113,32 +115,32 @@ getBeltWithColours() {
 }
 
 updateDotFile() {
-	if [ ! -f ~/.learnUnix ]; then
-		echo "RANK=$RANK" > ~/.learnUnix
-		echo "EXERCISE=$EXERCISE" >> ~/.learnUnix
+	if [ ! -f "${LUS_PROGRESS}" ]; then
+		echo "RANK=$RANK" > "${LUS_PROGRESS}"
+		echo "EXERCISE=$EXERCISE" >> "${LUS_PROGRESS}"
 	else
-		if grep -q "RANK=" ~/.learnUnix; then
-			sed -i "s/RANK=.*/RANK=${RANK}/" ~/.learnUnix
+		if grep -q "RANK=" "${LUS_PROGRESS}"; then
+			sed -i "s/RANK=.*/RANK=${RANK}/" "${LUS_PROGRESS}"
 		else
-			echo "RANK=${RANK}" >> ~/.learnUnix
+			echo "RANK=${RANK}" >> "${LUS_PROGRESS}"
 		fi
 
-		if grep -q "EXERCISE=" ~/.learnUnix; then
-			sed -i "s/EXERCISE=.*/EXERCISE=${EXERCISE}/" ~/.learnUnix
+		if grep -q "EXERCISE=" "${LUS_PROGRESS}"; then
+			sed -i "s/EXERCISE=.*/EXERCISE=${EXERCISE}/" "${LUS_PROGRESS}"
 		else
-			echo "EXERCISE=${EXERCISE}" >> ~/.learnUnix
+			echo "EXERCISE=${EXERCISE}" >> "${LUS_PROGRESS}"
 		fi
 
-		if grep -q "SAVED_RANK=" ~/.learnUnix; then
-			sed -i "s/SAVED_RANK=.*/SAVED_RANK=${SAVED_RANK:-}/" ~/.learnUnix
+		if grep -q "SAVED_RANK=" "${LUS_PROGRESS}"; then
+			sed -i "s/SAVED_RANK=.*/SAVED_RANK=${SAVED_RANK:-}/" "${LUS_PROGRESS}"
 		else
-			echo "SAVED_RANK=${SAVED_RANK:-}" >> ~/.learnUnix
+			echo "SAVED_RANK=${SAVED_RANK:-}" >> "${LUS_PROGRESS}"
 		fi
 
-		if grep -q "SAVED_EXERCISE=" ~/.learnUnix; then
-			sed -i "s/SAVED_EXERCISE=.*/SAVED_EXERCISE=${SAVED_EXERCISE:-}/" ~/.learnUnix
+		if grep -q "SAVED_EXERCISE=" "${LUS_PROGRESS}"; then
+			sed -i "s/SAVED_EXERCISE=.*/SAVED_EXERCISE=${SAVED_EXERCISE:-}/" "${LUS_PROGRESS}"
 		else
-			echo "SAVED_EXERCISE=${SAVED_EXERCISE:-}" >> ~/.learnUnix
+			echo "SAVED_EXERCISE=${SAVED_EXERCISE:-}" >> "${LUS_PROGRESS}"
 		fi
 	fi	
 }

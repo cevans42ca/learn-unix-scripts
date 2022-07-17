@@ -1890,7 +1890,7 @@ EOL
 
 	less -R -P "$less_prompt_move_on" $fmt_file
 
-	if [ ! -f ~/.learnUnix ] || [ -z "${RANK:-}" ] || [ -z "${EXERCISE:-}" ]; then
+	if [ ! -f "${LUS_PROGRESS}" ] || [ -z "${RANK:-}" ] || [ -z "${EXERCISE:-}" ]; then
 		if [ -n "${SSH_CONNECTION:-}" ] || [ -n "${SSH_TTY:-}" ]; then
 			ask_about_putty_font_size
 		fi
@@ -1939,15 +1939,13 @@ EOL
 
 # Script execution will begin here.
 
-if [ -f ~/.learnUnix ]; then
-	source ~/.learnUnix
+if [ -f "${LUS_PROGRESS}" ]; then
+	source "${LUS_PROGRESS}"
 fi
 
-if [ -z "${LUS_HOME:-}" ]; then
-	LUS_HOME=$HOME/lus
-fi
+LUS_HOME=${LUS_HOME:-"$HOME/lus"}
 
-if [ ! -f ~/.learnUnix ] || [ -z "${RANK:-}" ] || [ -z "${EXERCISE:-}" ]; then
+if [ ! -f "${LUS_PROGRESS}" ] || [ -z "${RANK:-}" ] || [ -z "${EXERCISE:-}" ]; then
 	if (($STTY_ROWS < 24)) || (($STTY_COLUMNS < 80)); then
 		# We haven't introduced what Y/n means, but if the user has made a conscious choice to make their terminal
 		# smaller, they probably already know.
@@ -1994,7 +1992,7 @@ fi
 
 if [[ ! "${RANK}" =~ ^(white|yellow|green|blue|red|black)_(stripe|belt)$ ]]; then
 	fmt -u --width=$WIDTH <<EOL
-It looks like the ~/.learnUnix file has become corrupted.  If it can't be repaired, you may have no choice but to delete it
+It looks like the "${LUS_PROGRESS}" file has become corrupted.  If it can't be repaired, you may have no choice but to delete it
 and start over.  Sorry about that.
 EOL
 	exit 2
@@ -2002,7 +2000,7 @@ fi
 
 if [[ ! "${EXERCISE}" =~ ^[0-9]+$ ]]; then
 	fmt -u --width=$WIDTH <<EOL
-It looks like the ~/.learnUnix file has become corrupted.  If it can't be repaired, you may have no choice but to delete it
+It looks like the "${LUS_PROGRESS}" file has become corrupted.  If it can't be repaired, you may have no choice but to delete it
 and start over.  Sorry about that.
 EOL
 	exit 2
@@ -2011,7 +2009,7 @@ fi
 all_args="$*"
 all_args=${all_args,,}
 if [[ "${all_args}" =~ (white|yellow|green|blue|red|black).*(stripe|belt)[^0-9]*([0-9]*) ]]; then
-	# The ~/.learnUnix file must exist.  If it didn't, we would be running welcome().
+	# The $LUS_PROGRESS file must exist.  If it didn't, we would be running welcome().
 
 	new_rank="${BASH_REMATCH[1]}_${BASH_REMATCH[2]}"
 

@@ -6,4 +6,4 @@ fi
 
 export INSIDE_DOCKER=1
 export LUS_DOCKER_BASE=/mnt/vol/testuser
-
+export LUS_PROGRESS=/mnt/vol/testuser/.learnUnixScripts
