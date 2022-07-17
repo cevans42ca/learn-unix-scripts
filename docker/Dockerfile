@@ -10,15 +10,16 @@ RUN apk add bash
 RUN apk add bash-doc
 RUN apk add bash-completion
 RUN apk add grep
+RUN apk add less
 
 # For fmt
 RUN apk add coreutils
 
-RUN apk add less
-
 # For tput
 RUN apk add ncurses
 
+RUN apk add mandoc man-pages mandoc-apropos less less-doc
+RUN apk add bash-doc busybox-doc mandoc-apropos coreutils-doc
 
 COPY etc-profile.sh /etc/profile.d/exports.sh
 RUN sed -i "1s;^;export DARK_MODE=${DARK_MODE}\n;" /etc/profile.d/exports.sh
@@ -30,7 +31,6 @@ RUN chown -R ${D_USERNAME} /home/${D_USERNAME}/bin
 RUN chmod u+x /home/${D_USERNAME}/bin/*
 
 RUN ln -s /mnt/vol/testuser/lus /home/${D_USERNAME}/lus 
-RUN ln -s /mnt/vol/testuser/.learnUnix /home/${D_USERNAME}/.learnUnix
 
 RUN addgroup -g $D_GID lus
 RUN addgroup ${D_USERNAME} lus
