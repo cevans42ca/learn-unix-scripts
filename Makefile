@@ -1,4 +1,4 @@
-.PHONY: dist clean
+.PHONY: clean dist distclean install configure run replacetarget
 
 run: configure install dockerrun
 
@@ -8,7 +8,7 @@ flags/configuretarget:
 
 configure: flags/configuretarget
 
-replace: replace-master configure
+replace: replace-master flags/configuretarget
 
 clean:
 	sed -i '' 's/^DARK_MODE=.*/DARK_MODE=1/' docker/Makefile 
@@ -23,14 +23,16 @@ clean:
 scripts = master-scripts/learn-master master-scripts/checkmain-master master-scripts/check-master
 replaced_scripts = bin/learn bin/checkmain bin/check
 
-flags/replacetarget: $(scripts) configure
+flags/replacetarget: $(scripts) replacements/* flags/configuretarget
 	./replace-all
 	touch flags/replacetarget
 
 replacetarget: flags/replacetarget
 
-install: replacetarget
-	cp bin/* docker/bin
+docker/bin/%: bin/%
+	cp bin/$* docker/bin/$*
+
+install: docker/bin/*
 
 dockerrun: install
 	cd docker && make createuservolume
