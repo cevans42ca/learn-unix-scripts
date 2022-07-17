@@ -32,7 +32,7 @@ replacetarget: flags/replacetarget
 docker/bin/%: bin/%
 	cp bin/$* docker/bin/$*
 
-install: docker/bin/*
+install: flags/replacetarget docker/bin/*
 
 dockerrun: install
 	cd docker && make createuservolume
