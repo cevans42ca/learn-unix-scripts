@@ -1805,7 +1805,7 @@ EOL
 	if [[ "${DARK_MODE:-1}" -eq "1" ]]; then
 		printf "\n${bright_white_on_black}White Belt${nc}\n" >> $fmt_file
 	else
-		printf "\nWhite Belt\n" >> $fmt_file
+		printf "\n$(tput bold)White Belt${nc}\n" >> $fmt_file
 	fi
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
@@ -1815,22 +1815,35 @@ EOL
 
 	echo "" >> $fmt_file
 
-	# Use an extra ${nc} to fix an issue with PuTTY.
-	printf "${yellow_on_black}Yellow ${nc}${bright_white_on_black}Stripe${nc}\n" >> $fmt_file
+	if [[ "${DARK_MODE:-1}" -eq "1" ]]; then
+		# Use an extra ${nc} to fix an issue with PuTTY.
+		printf "${yellow_on_black}Yellow ${nc}${bright_white_on_black}Stripe${nc}\n" >> $fmt_file
+	else
+		# Use an extra ${nc} to fix an issue with PuTTY.
+		printf "$(tput setaf 3)$(tput bold)Yellow ${nc}$(tput bold)Stripe${nc}\n" >> $fmt_file
+	fi
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
   Understanding \$PATH and environment variables.
 EOL
 
 	echo "" >> $fmt_file
-	printf "${yellow_on_black}Yellow Belt${nc}\n" >> $fmt_file
+	if [[ "${DARK_MODE:-1}" -eq "1" ]]; then
+		printf "${yellow_on_black}Yellow Belt${nc}\n" >> $fmt_file
+	else
+		printf "$(tput setaf 3)$(tput bold)Yellow Belt${nc}\n" >> $fmt_file
+	fi
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
   Creating and deleting directories; . and ..; pwd; cd
 EOL
 
 	echo "" >> $fmt_file
-	printf "${green_on_black}Green ${yellow_on_black}Stripe${nc}\n" >> $fmt_file
+	if [[ "${DARK_MODE:-1}" -eq "1" ]]; then
+		printf "${green_on_black}Green ${yellow_on_black}Stripe${nc}\n" >> $fmt_file
+	else
+		printf "$(tput setaf 2)$(tput bold)Green $(tput setaf 3)Stripe${nc}\n" >> $fmt_file
+	fi
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
   File types; intermediate arguments to ls; mounts and disk space
@@ -1838,49 +1851,77 @@ EOL
 
 	printf "\n\n${underline}Advanced Ranks${no_underline}\n" >> $fmt_file
 
-	printf "\n${green_on_black}Green Belt${nc}\n" >> $fmt_file
+	if [[ "${DARK_MODE:-1}" -eq "1" ]]; then
+		printf "\n${green_on_black}Green Belt${nc}\n" >> $fmt_file
+	else
+		printf "\n$(tput setaf 2)$(tput bold)Green Belt${nc}\n" >> $fmt_file
+	fi
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
   Hidden files and directories; globbing; directory stacks
 EOL
 
 	echo "" >> $fmt_file
-	printf "${blue_on_black}Blue ${green_on_black}Stripe${nc}\n" >> $fmt_file
+	if [[ "${DARK_MODE:-1}" -eq "1" ]]; then
+		printf "${blue_on_black}Blue ${green_on_black}Stripe${nc}\n" >> $fmt_file
+	else
+		printf "$(tput setaf 4)$(tput bold)Blue $(tput setaf 2)Stripe${nc}\n" >> $fmt_file
+	fi
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
   Pipes; tee; redirection; head, tail, sort, grep
 EOL
 
 	echo "" >> $fmt_file
-	printf "${blue_on_black}Blue Belt${nc}\n" >> $fmt_file
+	if [[ "${DARK_MODE:-1}" -eq "1" ]]; then
+		printf "${blue_on_black}Blue Belt${nc}\n" >> $fmt_file
+	else
+		printf "$(tput setaf 4)$(tput bold)Blue Belt${nc}\n" >> $fmt_file
+	fi
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
   Finding large files and directories with du, sort, and head; rm; rmdir; mv
 EOL
 
 	echo "" >> $fmt_file
-	printf "${red_on_black}Red ${blue_on_black}Stripe${nc}\n" >> $fmt_file
+	if [[ "${DARK_MODE:-1}" -eq "1" ]]; then
+		printf "${red_on_black}Red ${blue_on_black}Stripe${nc}\n" >> $fmt_file
+	else
+		printf "$(tput setaf 1)$(tput bold)Red $(tput setaf 4)Stripe${nc}\n" >> $fmt_file
+	fi
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
   ZIP and tar archives
 EOL
 
 	echo "" >> $fmt_file
-	printf "${red_on_black}Red Belt${nc}\n" >> $fmt_file
+	if [[ "${DARK_MODE:-1}" -eq "1" ]]; then
+		printf "${red_on_black}Red Belt${nc}\n" >> $fmt_file
+	else
+		printf "$(tput setaf 1)$(tput bold)Red Belt${nc}\n" >> $fmt_file
+	fi
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
   Signals; stopping processes; ps; pgrep vs grep
 EOL
 
 	echo "" >> $fmt_file
-	printf "${black_on_white}Black ${red_on_black}Stripe${nc}\n" >> $fmt_file
+	if [[ "${DARK_MODE:-1}" -eq "1" ]]; then
+		printf "${black_on_white}Black ${red_on_black}Stripe${nc}\n" >> $fmt_file
+	else
+		printf "$(tput setaf 15)$(tput setab 0)$(tput bold)Black ${red_on_black}Stripe${nc}\n" >> $fmt_file
+	fi
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
   Foreground and background tasks, jobs and &
 EOL
 
 	echo "" >> $fmt_file
-	printf "${black_on_white}Black Belt${nc}\n" >> $fmt_file
+	if [[ "${DARK_MODE:-1}" -eq "1" ]]; then
+		printf "${black_on_white}Black Belt${nc}\n" >> $fmt_file
+	else
+		printf "$(tput setaf 15)$(tput setab 0)$(tput bold)Black Belt${nc}\n" >> $fmt_file
+	fi
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
   User and group ownership; permissions; ls -ld; stat; namei

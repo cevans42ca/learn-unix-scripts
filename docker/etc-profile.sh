@@ -7,3 +7,9 @@ fi
 export INSIDE_DOCKER=1
 export LUS_DOCKER_BASE=/mnt/vol/testuser
 export LUS_PROGRESS=/mnt/vol/testuser/.learnUnixScripts
+
+# If someone is connecting to Docker with "xterm", it's pretty much guaranteed to be a modern one.
+# By setting 256 colours, we can give tput more to work with.
+if [[ "$TERM" -eq "xterm" ]]; then
+	export TERM=xterm-256color
+fi

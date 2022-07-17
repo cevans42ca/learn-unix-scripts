@@ -10,12 +10,12 @@ bright_white_on_black="$(tput setab 0)$(tput setaf 7)$(tput bold)"
 yellow_on_black="\033[93;40m"
 green_on_black="\033[92;40m"
 blue_on_black="\033[94;40m"
-red_on_black="\033[91;40m"
+red_on_black="$(tput setab 0)$(tput setaf 196)"
 
 underline="\033[4m"
 no_underline="\033[m"
 
-nc='\033[0m' # No colour
+nc=$(tput sgr0) # No colour
 
 # Use an associative array to make it easy to reorder the exercises and add more in the middle.
 i=1
