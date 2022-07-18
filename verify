@@ -23,6 +23,7 @@
 # This script was developed in a 130x30 terminal.
 
 parent_proc_name=`ps -p $PPID -o comm=`
+echo "Checking that the parent process is bash."
 if [[ ! "$parent_proc_name" =~ "bash" ]]; then
 	echo "The parent process is $parent_proc_name.  An interactive bash shell was expected."
 	echo "The scripts in this project are written in bash and require the user to use the bash shell."
@@ -30,16 +31,17 @@ if [[ ! "$parent_proc_name" =~ "bash" ]]; then
 	exit 1
 fi
 
+echo "Checking for bash version 4 or later."
 if [[ "${BASH_VERSINFO:-0}" < "4" ]]; then
 	if [ -f /usr/local/bin/bash ]; then
 		homebrew=$(/usr/local/bin/bash -c 'echo ${BASH_VERSINFO[0]}')
-		echo "/bin/bash too old, checking Homebrew version:  $homebrew"
+		#echo "/bin/bash too old, checking Homebrew version:  $homebrew"
 		if [[ "$homebrew" < "4" ]]; then
 			echo "Associative array support, added in Bash 4.0, is required.  Homebrew bash not found either."
 			echo "If you have a Mac, install Homebrew, then install bash."
 			exit 2
-		else
-			echo "Homebrew bash installed."
+		#else
+			#echo "Homebrew bash installed."
 		fi
 	else
 		echo "Associative array support, added in Bash 4.0, is required."
@@ -48,8 +50,7 @@ if [[ "${BASH_VERSINFO:-0}" < "4" ]]; then
 	fi 
 fi 
 
-echo "Verify that some of the words in this sentence are red." | grep --color=always "some of the words"
-
+echo "Checking stty arguments."
 if stty --version 2>&1 | grep -q 'version'; then
     # BusyBox and other streamlined systems don't support --version.
     stty_options='-a'
@@ -61,19 +62,27 @@ else
     fi
 fi
 
+echo "Checking interrupt character."
 stty ${stty_options} | grep -q "intr = ^C"
 if [ $? -ne 0 ]; then
 	echo "The interrupt character is not Ctrl+C or could not be parsed from the output of stty."
+	echo "The exercises specifically say to use Ctrl+C, so if you can't change it, you"
+	echo "will need to tell all students the correct interrupt character."
 	exit 3
 fi
 
 if ! which tput > /dev/null; then
-	echo "tput is not installed.  It's part of ncurses."
+	echo "tput is not installed and is required.  It's part of ncurses."
 	exit 4
 fi
 
 if ! which man > /dev/null; then
-	echo "man is not installed."
+	echo "man is not installed and is required."
 	exit 5
 fi
+
+echo 
+echo 
+echo "Verify that some of the words in this sentence are red." | grep --color=always "some of the words"
+echo "Verify that some of the words in $(tput setaf 196)this sentence are also$(tput sgr0) red."
 
