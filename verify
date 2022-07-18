@@ -76,13 +76,21 @@ if ! which tput > /dev/null; then
 	exit 4
 fi
 
+if ! which fmt > /dev/null; then
+	echo "fmt is not installed and is required.  It's part of the coreutils package."
+	exit 5
+fi
+
 if ! which man > /dev/null; then
 	echo "man is not installed and is required."
-	exit 5
+	exit 6
 fi
 
 echo 
 echo 
 echo "Verify that some of the words in this sentence are red." | grep --color=always "some of the words"
 echo "Verify that some of the words in $(tput setaf 196)this sentence are also$(tput sgr0) red."
+echo
+echo "If either of those doesn't have any red words, you may want to check your"
+echo "terminal settings and/or your TERM environment variable."
 
