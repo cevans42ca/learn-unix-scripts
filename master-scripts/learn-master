@@ -343,15 +343,14 @@ When you ran this script, you were in the `pwd` directory.
 Let's begin at the beginning:  the root directory.  (Not to be confused with the /root directory.)
 EOL
 
+	echo >> $fmt_file
+	echo 'Execute "cd /".' >> $fmt_file
+	echo 'Then execute ". check"' >> $fmt_file
+
 	less -R -P "$less_prompt_move_on" $fmt_file
 
 	# Print the exercise to the terminal to retain context.
 	cat $fmt_file
-
-	echo ""
-
-	echo 'Execute "cd /".'
-	echo 'Then execute ". check"'
 }
 
 white_belt_exercise_ls_root() {
