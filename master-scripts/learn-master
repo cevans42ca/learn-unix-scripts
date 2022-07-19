@@ -328,13 +328,14 @@ shared drives, and removeable disks) are in one unified filesystem.  In a future
 in from shared and removeable drives.
 
 In Unix, paths use forward slashes ( / ) instead of backslashes.  The path to your home directory is $HOME.  Your home
-directory contains everything that's only for you:  configuration settings.  More generally, anything you're working on
-that isn't shared with other users will be in $HOME.
+directory contains everything that's only for you.  It will be mostly configuration settings, but more generally,
+anything you're working on that isn't shared with other users will be in $HOME.
 
 You may have a $HOME/bin directory for programs that are only for you.  There are multiple directories called "bin" on a
-Unix system.  The one in your home directory contains programs (compiled binaries, scripts, and anything that runs) for your
-use only.  For example, some people set up a particular version of a common program that has different features.  You may
-want to have scripts that automate certain tasks that are too specific for other users to use, and they should go in $HOME/bin.
+Unix system.  The one in your home directory contains programs (compiled binaries, scripts, and anything else that can
+be run) for your use only.  For example, some people set up a particular version of a common program that has different
+features.  You may want to have scripts that automate certain tasks that are too specific for other users to use, and
+they should go in $HOME/bin.
 
 Windows usually uses the term "folder" as an equivalent term for "directory".
 
