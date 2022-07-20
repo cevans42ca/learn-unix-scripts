@@ -85,32 +85,102 @@ number_to_belt[7]="red_stripe"
 number_to_belt[8]="red_belt"
 number_to_belt[9]="black_stripe"
 number_to_belt[10]="black_belt"
+
+declare -A belt_to_first_text
+belt_to_first_text["white_belt"]="White"
+belt_to_first_text["yellow_stripe"]="Yellow"
+belt_to_first_text["yellow_belt"]="Yellow"
+belt_to_first_text["green_stripe"]="Green"
+belt_to_first_text["green_belt"]="Green"
+belt_to_first_text["blue_stripe"]="Blue"
+belt_to_first_text["blue_belt"]="Blue"
+belt_to_first_text["red_stripe"]="Red"
+belt_to_first_text["red_belt"]="Red"
+belt_to_first_text["black_stripe"]="Black"
+belt_to_first_text["black_belt"]="Black"
+
+declare -A belt_to_second_text
+belt_to_second_text["white_belt"]="Belt"
+belt_to_second_text["yellow_stripe"]="Stripe"
+belt_to_second_text["yellow_belt"]="Belt"
+belt_to_second_text["green_stripe"]="Stripe"
+belt_to_second_text["green_belt"]="Belt"
+belt_to_second_text["blue_stripe"]="Stripe"
+belt_to_second_text["blue_belt"]="Belt"
+belt_to_second_text["red_stripe"]="Stripe"
+belt_to_second_text["red_belt"]="Belt"
+belt_to_second_text["black_stripe"]="Stripe"
+belt_to_second_text["black_belt"]="Belt"
+
+declare -A belt_to_first_colour_dark
+belt_to_first_colour_dark["white_belt"]="${bright_white_on_black}"
+belt_to_first_colour_dark["yellow_stripe"]="${yellow_on_black}"
+belt_to_first_colour_dark["yellow_belt"]="${yellow_on_black}"
+belt_to_first_colour_dark["green_stripe"]="${green_on_black}"
+belt_to_first_colour_dark["green_belt"]="${green_on_black}"
+belt_to_first_colour_dark["blue_stripe"]="${blue_on_black}"
+belt_to_first_colour_dark["blue_belt"]="${blue_on_black}"
+belt_to_first_colour_dark["red_stripe"]="${red_on_black}"
+belt_to_first_colour_dark["red_belt"]="${red_on_black}"
+belt_to_first_colour_dark["black_stripe"]="${black_on_white}"
+belt_to_first_colour_dark["black_belt"]="${black_on_white}"
+
+declare -A belt_to_first_colour_light
+belt_to_first_colour_light["white_belt"]="$(tput setaf 7)$(tput bold)"
+belt_to_first_colour_light["yellow_stripe"]="$(tput setaf 3)$(tput bold)"
+belt_to_first_colour_light["yellow_belt"]="$(tput setaf 3)$(tput bold)"
+belt_to_first_colour_light["green_stripe"]="$(tput setaf 2)$(tput bold)"
+belt_to_first_colour_light["green_belt"]="$(tput setaf 2)$(tput bold)"
+belt_to_first_colour_light["blue_stripe"]="$(tput setaf 4)$(tput bold)"
+belt_to_first_colour_light["blue_belt"]="$(tput setaf 4)$(tput bold)"
+belt_to_first_colour_light["red_stripe"]="$(tput setaf 1)$(tput bold)"
+belt_to_first_colour_light["red_belt"]="$(tput setaf 1)$(tput bold)"
+belt_to_first_colour_light["black_stripe"]="$(tput setaf 15)$(tput setab 0)$(tput bold)"
+belt_to_first_colour_light["black_belt"]="$(tput setaf 15)$(tput setab 0)$(tput bold)"
+
+# Some extra ${nc}s are added to fix an issue with PuTTY.
+declare -A belt_to_second_colour_dark
+belt_to_second_colour_dark["white_belt"]=""
+belt_to_second_colour_dark["yellow_stripe"]="${nc}${bright_white_on_black}Stripe"
+belt_to_second_colour_dark["yellow_belt"]=""
+belt_to_second_colour_dark["green_stripe"]="${yellow_on_black}"
+belt_to_second_colour_dark["green_belt"]=""
+belt_to_second_colour_dark["blue_stripe"]="${green_on_black}"
+belt_to_second_colour_dark["blue_belt"]=""
+belt_to_second_colour_dark["red_stripe"]="${blue_on_black}"
+belt_to_second_colour_dark["red_belt"]=""
+belt_to_second_colour_dark["black_stripe"]="${red_on_black}"
+belt_to_second_colour_dark["black_belt"]=""
+
+# Some extra ${nc}s are added to fix an issue with PuTTY.
+declare -A belt_to_second_colour_light
+belt_to_second_colour_light["white_belt"]=""
+belt_to_second_colour_light["yellow_stripe"]="${nc}$(tput setaf 7)$(tput bold)"
+belt_to_second_colour_light["yellow_belt"]=""
+belt_to_second_colour_light["green_stripe"]="$(tput setaf 3)"
+belt_to_second_colour_light["green_belt"]=""
+belt_to_second_colour_light["blue_stripe"]="$(tput setaf 2)"
+belt_to_second_colour_light["blue_belt"]=""
+belt_to_second_colour_light["red_stripe"]="$(tput setaf 4)"
+belt_to_second_colour_light["red_belt"]=""
+belt_to_second_colour_light["black_stripe"]="${red_on_black}"
+belt_to_second_colour_light["black_belt"]=""
 # end ffa9e74e-2b02-4d72-9c82-9f9db2915c62
 
 # start 37333148-8746-4468-826e-544e532f1ebc
 getBeltWithColours() {
-	if [[ "$1" == "white_belt" ]]; then
-		echo "${bright_white_on_black}white belt${nc}"
-	elif [[ "$1" == "yellow_stripe" ]]; then
-		echo "${yellow_on_black}yellow ${nc}${bright_white_on_black}stripe${nc}"
-	elif [[ "$1" == "yellow_belt" ]]; then
-		echo "${yellow_on_black}yellow belt${nc}"
-	elif [[ "$1" == "green_stripe" ]]; then
-		echo "${green_on_black}green ${yellow_on_black}stripe${nc}"
-	elif [[ "$1" == "green_belt" ]]; then
-		echo "${green_on_black}green belt${nc}"
-	elif [[ "$1" == "blue_stripe" ]]; then
-		echo "${blue_on_black}blue ${green_on_black}stripe${nc}"
-	elif [[ "$1" == "blue_belt" ]]; then
-		echo "${blue_on_black}blue belt${nc}"
-	elif [[ "$1" == "red_stripe" ]]; then
-		echo "${red_on_black}red ${blue_on_black}stripe${nc}"
-	elif [[ "$1" == "red_belt" ]]; then
-		echo "${red_on_black}red belt${nc}"
-	elif [[ "$1" == "black_stripe" ]]; then
-		echo "${black_on_white}black ${red_on_black}stripe${nc}"
-	elif [[ "$1" == "black_belt" ]]; then
-		echo "${black_on_white}black belt${nc}"
+	first_text=${belt_to_first_text[$1]}
+	second_text=${belt_to_second_text[$1]}
+
+	if [[ "${2:-}" != "title" ]]; then
+		first_text="${first_text,,}"
+		second_text="${second_text,,}"
+	fi
+
+	if [[ "${DARK_MODE:-1}" -eq "1" ]]; then
+		echo ${belt_to_first_colour_dark[$1]}${first_text} ${belt_to_second_colour_dark[$1]}${second_text}${nc}
+	else
+		echo ${belt_to_first_colour_light[$1]}${first_text} ${belt_to_second_colour_light[$1]}${second_text}${nc}
 	fi
 }
 
