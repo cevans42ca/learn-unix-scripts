@@ -48,15 +48,16 @@ if ([[ -n "${ZSH_EVAL_CONTEXT:-}" && "${ZSH_EVAL_CONTEXT:-}" == "toplevel" ]] ||
 fi
 
 # When we pipe the history to the checkmain script in through standard in, the TTY will be reset and we won't be able to
-# set the rows and columns.  By passing the TTY device in, we can still get the rows and columns.
+# set the rows and columns.
+LUS_STTY_ROWS=$(bash -c "stty -a | grep -Po '(?<=rows )[0-9]*(?=;)'")
+LUS_STTY_COLUMNS=$(bash -c "stty -a | grep -Po '(?<=columns )[0-9]*(?=;)'")
 
 # We could make the entire script (check and checkmain) so it can be sourced but that would mean all the subroutines would
 # be added to the environment, and "set -e -o unset" would be problematic.
 
-LUC_TTY=$(tty)
 if [ "${HISTTIMEFORMAT:-}" == "%F %T " ]; then
-	history 5 | tr -s ' ' | cut -d" " -f5- | checkmain $LUC_TTY
+	history 5 | tr -s ' ' | cut -d" " -f5- | checkmain $LUS_STTY_ROWS $LUS_STTY_COLUMNS
 else
-	history 5 | tr -s ' ' | cut -d" " -f3- | checkmain $LUC_TTY
+	history 5 | tr -s ' ' | cut -d" " -f3- | checkmain $LUS_STTY_ROWS $LUS_STTY_COLUMNS
 fi
 

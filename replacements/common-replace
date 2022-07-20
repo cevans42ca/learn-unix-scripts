@@ -229,3 +229,11 @@ simple_trim() {
 }
 # end 37333148-8746-4468-826e-544e532f1ebc
 
+# start 7437f7c8-c360-4f96-91f6-b75dcd3b8cd7
+# If someone is connecting to Docker with "xterm", it's pretty much guaranteed to be a modern one.
+# By setting 256 colours, we can give tput more to work with.
+if [[ "$TERM" -eq "xterm" ]]; then
+	TERM=xterm-256color
+fi
+# end 7437f7c8-c360-4f96-91f6-b75dcd3b8cd7
+

@@ -38,6 +38,8 @@ set -e -o nounset
 
 # insert 17fa07e6-24b8-4e35-bc1a-094427fd8699
 
+# insert 17fa07e6-24b8-4e35-bc1a-094427fd8699 xterm fix
+
 if [ `whoami` == "root" ]; then
 	echo "Run this script as yourself, not the root user."
 	exit 1
@@ -54,12 +56,6 @@ while read i; do
 done
 
 # insert ffa9e74e-2b02-4d72-9c82-9f9db2915c62 associative arrays for exercises and belt levels
-
-luc_tty=$1
-
-luc_stty_rows=$(bash -c "stty -a -F$1 | grep -Po '(?<=rows )[0-9]*(?=;)'")
-luc_stty_columns=$(bash -c "stty -a -F$1 | grep -Po '(?<=columns )[0-9]*(?=;)'")
-luc_width=`expr $luc_stty_columns - 5`
 
 luc_good_work_array[0]="Good work!"
 luc_good_work_array[1]="Excellent!"
@@ -809,6 +805,9 @@ Please run the "learn" script first.
 EOL
 	exit 1
 fi
+
+# luc = Learn Unix Check
+luc_width=`expr $2 - 5`
 
 if [[ ! "${RANK}" =~ ^(white|yellow|green|blue|red|black)_(stripe|belt)$ ]]; then
 	fmt -u --width=$luc_width <<EOL
