@@ -141,7 +141,7 @@ belt_to_first_colour_light["black_belt"]="$(tput setaf 15)$(tput setab 0)$(tput 
 # Some extra ${nc}s are added to fix an issue with PuTTY.
 declare -A belt_to_second_colour_dark
 belt_to_second_colour_dark["white_belt"]=""
-belt_to_second_colour_dark["yellow_stripe"]="${nc}${bright_white_on_black}Stripe"
+belt_to_second_colour_dark["yellow_stripe"]="${nc}${bright_white_on_black}"
 belt_to_second_colour_dark["yellow_belt"]=""
 belt_to_second_colour_dark["green_stripe"]="${yellow_on_black}"
 belt_to_second_colour_dark["green_belt"]=""
@@ -232,7 +232,7 @@ simple_trim() {
 # start 7437f7c8-c360-4f96-91f6-b75dcd3b8cd7
 # If someone is connecting to Docker with "xterm", it's pretty much guaranteed to be a modern one.
 # By setting 256 colours, we can give tput more to work with.
-if [[ "$TERM" -eq "xterm" ]]; then
+if [[ "$TERM" == "xterm" ]]; then
 	TERM=xterm-256color
 fi
 # end 7437f7c8-c360-4f96-91f6-b75dcd3b8cd7
