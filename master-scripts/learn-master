@@ -304,9 +304,11 @@ The second thing you should try is typing Ctrl+q (Ctrl with a lowercase "q", or 
 including shift).
 
 Ctrl+q and Ctrl+s are holdovers of an ancient age when it was more common to print output to a printer than a screen.
-Printers were much slower and needed time to catch up.
+Printers were much slower and needed time to catch up.  These continued to be used with displays to freeze the screen so
+that users could read something that was quickly scrolling by.  Ctrl+q and Ctrl+s can still be used that way, but there are
+generally better options available now that allow programs to continue to run while the user is looking at something.
 
-Please make a note of these now.  There will be a question later about it.
+Please make a note of these now.  There will be a question later about it.  (The history lesson is not on the test.)
 
 Execute ". check".
 EOL
@@ -316,7 +318,8 @@ EOL
 
 white_belt_exercise_cd_root() {
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
-First things first:  you need to know how to navigate.
+Now that you know how to recover from your terminal getting frozen and how to get a prompt back, you need to know how to
+navigate.
 
 All files and directories have a path which tells the operating system how to retrieve them.  You may be familiar with
 Microsoft Windows-style paths such as C:\\Windows\\System\\.  When you insert a USB drive, Windows usually assigns the drive
