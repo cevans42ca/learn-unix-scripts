@@ -275,6 +275,10 @@ are even more complicated.
 Your interrupt character is Ctrl+c (don't type it now, but in order to type it, hold one of the Ctrl keys down and press
 the "c" key.  Do not use either Shift key.)  There are only a few cases where typing Ctrl+c will not stop what's happening
 and return you to a prompt.  We will be covering two of these soon.  Make a note of it.
+
+For now, it's a good thing that Ctrl+c will get you out of most situations.  Later, you will learn to be more careful
+about using Ctrl+c, and you will learn other things you might want to try first.
+
 EOL
 
 	printf "\n\n${underline}Moving On${no_underline}\n\n" >> $fmt_file
