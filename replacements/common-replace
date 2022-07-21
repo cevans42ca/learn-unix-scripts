@@ -237,3 +237,15 @@ if [[ "$TERM" -eq "xterm" ]]; then
 fi
 # end 7437f7c8-c360-4f96-91f6-b75dcd3b8cd7
 
+# start 1a88ef09-bbc8-4f7e-ac03-a1849fd03166
+if stty --version 2>&1 | grep -q 'version'; then
+    # BusyBox and other streamlined systems don't support --version.
+    stty_options='-a'
+else
+    if stty --version 2>/dev/null | grep -q 'coreutils'; then
+        stty_options='-a'
+    else
+        stty_options='everything'
+    fi
+fi
+# end 1a88ef09-bbc8-4f7e-ac03-a1849fd03166

@@ -60,16 +60,7 @@ clean_up() {
 # It's a trap!  Run the clean_up subroutine on normal or aborted exit.
 trap clean_up EXIT
 
-if stty --version 2>&1 | grep -q 'version'; then
-    # BusyBox and other streamlined systems don't support --version.
-    stty_options='-a'
-else
-    if stty --version 2>/dev/null | grep -q 'coreutils'; then
-        stty_options='-a'
-    else
-        stty_options='everything'
-    fi
-fi
+# insert 1a88ef09-bbc8-4f7e-ac03-a1849fd03166 stty options
 
 # insert ffa9e74e-2b02-4d72-9c82-9f9db2915c62 associative arrays for exercises and belt levels
 

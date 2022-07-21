@@ -47,10 +47,12 @@ if ([[ -n "${ZSH_EVAL_CONTEXT:-}" && "${ZSH_EVAL_CONTEXT:-}" == "toplevel" ]] ||
 	exit 0
 fi
 
+# insert 1a88ef09-bbc8-4f7e-ac03-a1849fd03166 stty options
+
 # When we pipe the history to the checkmain script in through standard in, the TTY will be reset and we won't be able to
 # set the rows and columns.
-LUS_STTY_ROWS=$(bash -c "stty -a | grep -Po '(?<=rows )[0-9]*(?=;)'")
-LUS_STTY_COLUMNS=$(bash -c "stty -a | grep -Po '(?<=columns )[0-9]*(?=;)'")
+LUS_STTY_ROWS=$(bash -c "stty ${stty_options} | grep -Po '(?<=rows )[0-9]*(?=;)'")
+LUS_STTY_COLUMNS=$(bash -c "stty ${stty_options} | grep -Po '(?<=columns )[0-9]*(?=;)'")
 
 # We could make the entire script (check and checkmain) so it can be sourced but that would mean all the subroutines would
 # be added to the environment, and "set -e -o unset" would be problematic.
