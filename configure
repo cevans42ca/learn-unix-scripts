@@ -21,6 +21,10 @@ else
 	cp replace-master replace
 fi 
 
+# TODO
+# Figure out stty -a vs stty everything and which side the rows are on
+#stty -a | sed -E 's/.*; rows ([0-9]+);.*/\1/;1q'
+
 # Query a property from the terminal, e.g. background color.
 #
 # XTerm Operating System Commands
