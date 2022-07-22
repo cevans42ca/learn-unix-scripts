@@ -10,15 +10,17 @@ configure: flags/configuretarget
 
 replace: replace-master flags/configuretarget
 
-clean:
-	sed -i '' 's/^DARK_MODE=.*/DARK_MODE=1/' docker/Makefile 
+clean: gitclean
 	rm -f bin/learn
 	rm -f bin/check
 	rm -f bin/checkmain
-	rm -f flags/configuretarget
 	rm -f flags/replacetarget
 	rm -f replace
 	cd docker && make clean
+
+gitclean:
+	sed -i '' 's/^DARK_MODE=.*/DARK_MODE=1/' docker/Makefile 
+	rm -f flags/configuretarget
 
 scripts = master-scripts/learn-master master-scripts/checkmain-master master-scripts/check-master
 replaced_scripts = bin/learn bin/checkmain bin/check
