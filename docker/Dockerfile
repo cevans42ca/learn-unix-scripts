@@ -31,13 +31,20 @@ COPY etc-profile.sh /etc/profile.d/exports.sh
 RUN adduser -S $D_USERNAME
 
 ADD bin /home/${D_USERNAME}/bin
+ADD launch.sh /usr/local/bin/launch_lus.sh
+
 RUN chown -R ${D_USERNAME} /home/${D_USERNAME}/bin
 RUN chmod u+x /home/${D_USERNAME}/bin/*
 
 RUN ln -s /mnt/vol/testuser/lus /home/${D_USERNAME}/lus 
 
+VOLUME /mnt/vol
+
 RUN addgroup -g $D_GID lus
 RUN addgroup ${D_USERNAME} lus
+
+RUN chown root:lus /usr/local/bin/launch_lus.sh
+RUN chmod g+rx /usr/local/bin/launch_lus.sh
 
 USER ${D_USERNAME}
 WORKDIR /home/${D_USERNAME}
@@ -46,4 +53,5 @@ ENV DARK_MODE=1
 
 RUN echo "export PATH=$PATH:/home/${D_USERNAME}/bin" >> /home/${D_USERNAME}/.bashrc
 
-CMD ["/bin/bash"]
+CMD ["/usr/local/bin/launch_lus.sh"]
+
