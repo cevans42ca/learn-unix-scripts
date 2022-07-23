@@ -25,6 +25,9 @@ RUN apk add coreutils
 # For tput
 RUN apk add ncurses
 
+# For man magic
+RUN apk add file-doc
+
 RUN apk add mandoc man-pages mandoc-apropos less less-doc
 RUN apk add bash-doc busybox-doc mandoc-apropos coreutils-doc
 
