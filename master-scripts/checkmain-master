@@ -55,6 +55,8 @@ while read i; do
 	luc_history+=("$i")
 done
 
+LUS_HOME=${LUS_HOME:-"$HOME/lus"}
+
 # insert ffa9e74e-2b02-4d72-9c82-9f9db2915c62 associative arrays for exercises and belt levels
 
 luc_good_work_array[0]="Good work!"
@@ -444,10 +446,12 @@ EOL
 yellow_stripe_exercise_mkdir_and_relative_paths() {
 	if [ ! -d $LUS_HOME/parent ]; then
 		sorry
+		return
 	fi
 
 	if [ ! -d $LUS_HOME/parent/one ] || [ ! -d $LUS_HOME/parent/two ] || [ ! -d $LUS_HOME/parent/three ]; then
 		sorry
+		return
 	fi
 
 	good_work
