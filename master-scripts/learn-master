@@ -1851,7 +1851,7 @@ EOL
   Hidden files and directories; globbing; directory stacks
 EOL
 
-	printf "\n`getBeltWithColours green_stripe title`\n" >> $fmt_file
+	printf "\n`getBeltWithColours blue_stripe title`\n" >> $fmt_file
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
   Pipes; tee; redirection; head, tail, sort, grep
