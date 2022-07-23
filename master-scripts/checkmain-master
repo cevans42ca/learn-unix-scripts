@@ -333,6 +333,7 @@ EOL
 	luc_answers=( 'It executes the "check" script as if it was typed in, which changes how environment variables work.' 'It changes the script output to the current directory.' 'It causes the script to be run with authority.' )
 	handle_answer 'It executes the "check" script as if it was typed in, which changes how environment variables work.'
 
+	echo
 	fmt -u --width=$luc_width <<EOL
 Question 2/4
 
@@ -343,6 +344,7 @@ EOL
 	luc_answers=( "It's the root directory, in which (or under which) all other directories exist." "It means or:  allowing one path or another to be chosen based on which one exists." "Slash and burn.  Delete everything from here down." "It's the user's home directory." )
 	handle_answer "It's the root directory, in which (or under which) all other directories exist."
 
+	echo
 	fmt -u --width=$luc_width <<EOL
 Question 3/4
 
@@ -353,7 +355,18 @@ EOL
 	luc_answers=( 'Configuration files and other private files' 'System files' 'Global configuration files' 'A well appointed kitchen, including several sinks' )
 	handle_answer 'Configuration files and other private files'
 
-	if [ "$luc_correct_answers" == "3" ]; then
+	echo
+	fmt -u --width=$luc_width <<EOL
+Question 4/4
+
+What's the shortest command that will return you to your home directory?
+
+EOL
+
+	luc_answers=( 'cd' 'cd ~' '/' '${HOME}' )
+	handle_answer 'cd'
+
+	if [ "$luc_correct_answers" == "4" ]; then
 		good_work
 	else
 		echo "Results:  $luc_correct_answers/4 correct"
