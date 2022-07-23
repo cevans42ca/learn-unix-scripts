@@ -922,6 +922,8 @@ Windows popularized the idea of file extensions (foo.bat is a batch file, foo.tx
 Word document, etc.)  Unix doesn't require extensions, though it's quite common to see them.  Instead of using a file
 extension, Unix uses the first few bytes of a file to tell what kind of file it is.  This file type detection process
 is called "file magic" or sometimes "magic".  The file that stores the bytes and mappings is usually named "magic".
+If you're interested in more details, you can check "man magic".
+
 The program that can check a file's type is named "file".
 
 Execute "cd $LUS_HOME", then execute "file yellow".
@@ -1831,14 +1833,14 @@ EOL
 	printf "\n`getBeltWithColours yellow_belt title`\n" >> $fmt_file
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
-  Creating and deleting directories; . and ..; pwd; cd
+  Creating and deleting directories; . and ..; pwd; cd; file types and magic
 EOL
 
 	echo "" >> $fmt_file
 	printf "`getBeltWithColours green_stripe title`\n" >> $fmt_file
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
-  File types; intermediate arguments to ls; mounts and disk space
+  Intermediate arguments to ls; mounts and disk space
 EOL
 
 	printf "\n\n${underline}Advanced Ranks${no_underline}\n" >> $fmt_file
