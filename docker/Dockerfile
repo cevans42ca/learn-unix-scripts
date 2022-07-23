@@ -11,6 +11,9 @@ RUN apk add bash-completion
 RUN apk add grep
 RUN apk add less
 
+# For the "file" command
+RUN apk add file
+
 # Notes for encrypted, shared directories
 #apk add encfs
 #encfs /mnt/vol ~/vol
