@@ -744,7 +744,7 @@ EOL
 	complete_exercise
 }
 
-yellow_stripe_exercise_mkdir_and_relative_paths() { The "mkdir" Command and Relative Paths
+yellow_stripe_exercise_mkdir_and_relative_paths() { # The "mkdir" Command and Relative Paths
 	prepareLusHome
 
 	if [ -d $LUS_HOME/parent ]; then
@@ -1080,7 +1080,7 @@ EOL
 	complete_exercise
 }
 
-yellow_belt_exercise_speed_and_lists() {
+yellow_belt_exercise_speed_and_lists() { # More Speed!  Using Asterisk
 	if [ ! -d "$LUS_HOME/complete" ]; then
 		mkdir -p "$LUS_HOME/complete"
 	fi
@@ -1093,10 +1093,10 @@ correctly.  It's time for you to take it on yourself.  All the exercises so far 
 flavours of Unix with different terminals and different shells, but some of these exercises may not work the same way for you.
 
 Since it's not possible to build a check script to check the things you're doing in this belt, be extra careful that you
-don't execute ". check" multiple times in a row, or you could skip exercises.  Not all the exercises have something to be
-checked.  If you accidentally skip an exercise, you can review a previous exercise with "learn yellow belt 4" for exercise 4
-(for example).  If you complete all the exercises up to the one you're on, you'll see a message, and your progress will be
-tracked from that point.
+don't execute ". check" multiple times in a row, or you could skip exercises.  Not all the exercises have something to
+be checked.  If you accidentally skip an exercise, you can review a previous exercise with "learn yellow belt 4" for
+exercise 4 (for example).  You can also see a list of exercises with "learn yellow belt list".  If you complete all the
+exercises up to the one you're on, you'll see a message, and your progress will be tracked from that point.
 
 We've been using the words "terminal" and "shell" without defining them, since the exact meaning wasn't necessary to understand.
 Perhaps you looked them up.  In the 1970s, it was easy to tell the difference between a terminal and a shell, because
@@ -1140,6 +1140,8 @@ Go to $LUS_HOME and execute "ls".  From there you're going to cd to the "complet
 to type all the letters.  Type "cd", a space, the letter "c", and an asterisk ( * ) which is usually Shift+8.  Press Enter.
 You can use this trick with files and directories (but not commands or command line arguments).
 
+The asterisk is often called a "star".
+
 If there are other directories that start with "c" and you type "cd c*", then your shell will change your current directory
 to the first one in alphabetical order.  Tab is better than asterisk, because you get to see where you're going before you
 go and change your mind.
@@ -1152,7 +1154,7 @@ EOL
 	complete_exercise
 }
 
-yellow_belt_exercise_unquoted_tab_completion() {
+yellow_belt_exercise_unquoted_tab_completion() { # Introduction to Tab Completion
 	if [ ! -d "$LUS_HOME/complete" ]; then
 		mkdir -p "$LUS_HOME/complete"
 	fi
@@ -1232,7 +1234,7 @@ EOL
 	fi
 }
 
-yellow_belt_exercise_unquoted_tab_completion_two_options() {
+yellow_belt_exercise_unquoted_tab_completion_two_options() { # Tab Completion with Two Options
 	if [ ! -d "$LUS_HOME/complete" ]; then
 		mkdir -p "$LUS_HOME/complete"
 	fi
@@ -1258,7 +1260,7 @@ EOL
 	complete_exercise
 }
 
-yellow_belt_exercise_quoted_tab_completion() {
+yellow_belt_exercise_quoted_tab_completion() { # Tab Completion with a Quote
 	create_two_TPS_reports
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
@@ -1309,7 +1311,7 @@ EOL
 	complete_exercise
 }
 
-yellow_belt_exercise_tab_is_context_sensitive() {
+yellow_belt_exercise_tab_is_context_sensitive() { # Tab is Context Sensitive:  What are you Completing?
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 It matters where in the command line you press Tab.  The first thing on a command line must be a program or alias (we'll look
@@ -1339,7 +1341,7 @@ EOL
 	complete_exercise
 }
 
-yellow_belt_exercise_up() {
+yellow_belt_exercise_up() { # Finding and Running Previous Commands one Line at a Time
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 There are a few ways you can run a previous command.  The simplest way is with the up arrow.  Depending on your
 terminal settings, the most likely thing to happen is that you'll see the previous command you ran (which will
@@ -1359,7 +1361,7 @@ If they don't work, try Ctrl+p and Ctrl+n.  Ctrl+f moves forward one character. 
 single one works, you can hold down the Control key and type the letter multiple times.
 
 If you get lost in your history and don't want to execute anything, you have a few options.  (1) You can go to the end of the
-line, then hold down Backspace to wipe everything out.  (2) You can type Ctrl+C, your trusty get-me-out-of-here key combination.
+line, then hold down Backspace to wipe everything out.  (2) You can type Ctrl+c, your trusty get-me-out-of-here key combination.
 (3) You can hold the Down key until you get out of your history (which may not always work, and in some cases, if you hold
 it too long, you'll get a stream of noise from your terminal).  (4) You can go to the beginning of the line, type a pound
 sign ( # ) and press Enter. 
@@ -1368,7 +1370,7 @@ EOL
 	complete_exercise
 }
 
-yellow_belt_exercise_home_end_and_pound() {
+yellow_belt_exercise_home_end_and_pound() { # The "Home" key, "End" key, and What "#" Does
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 We're going to look at two more keys before we look at other ways to run previous commands.  These are Home and End.
 If you have a terminal with the right settings, pressing Home will take you to the beginning of your command line,
@@ -1380,9 +1382,10 @@ to go to the beginning of the command line ("a" is the first letter in the alpha
 There are more key combinations to go to the beginning and end of words, to delete to the beginning and end of words,
 and more.  We do not recommend memorizing them.
 
-We recommend memorizing Ctrl+a, Ctrl+e, for two reasons.  They are much faster than picking up your hands, finding the Home
-or End key, pressing it, and returning your hands to the home row.  In some cases, you may need to use a misconfigured or
-old terminal, and Home and End won't work.
+We recommend memorizing Ctrl+a, Ctrl+e, for two reasons:  speed and compatibility.  They are much faster than picking up
+your hands, finding the Home or End key, pressing it, and returning your hands to the home row.  In some cases, you may
+need to use a misconfigured or old terminal, and Home and End won't work.  Home and End don't usually work by default on
+Macs either, so it's good to have options.
 
 If you're used to moving quickly back and forth between the cursor keys and the home row, memorizing Ctrl+f and Ctrl+b
 may not be of much use.  In the worst case, if you have no choice but to use a misconfigured terminal, you'll still be
@@ -1408,7 +1411,7 @@ EOL
 	complete_exercise
 }
 
-yellow_belt_exercise_ctrl_r() {
+yellow_belt_exercise_ctrl_r() { # Using Ctrl-r to Search for and Run Previous Commands
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 It's time to look at Ctrl+r.  This keystoke lets you search for a command that's in your history, make changes to it if
 you want, and then save it for later or execute it.  If you execute it, it will also be added to your history.
@@ -1450,7 +1453,7 @@ EOL
 	complete_exercise
 }
 
-yellow_belt_exercise_history_bang() {
+yellow_belt_exercise_history_bang() { # "!"
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 There are a truly staggering number of ways to speed up typing things.  For example, you can refer to the third
 argument of the fifth last command you typed.
@@ -1508,7 +1511,7 @@ EOL
 	complete_exercise
 }
 
-yellow_belt_exercise_command_line_options() {
+yellow_belt_exercise_command_line_options() { # Short Options, Long Options
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 Before we get into the various ways you can list files, we'll have to go through short options and long options.
 Short options are single characters.  Long options are full words, and sometimes multiple words.
@@ -1611,7 +1614,7 @@ EOL
 	fi
 }
 
-yellow_belt_exercise_ls() {
+yellow_belt_exercise_ls() { # Getting Directory Lists Different Ways
 	create_lists
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
@@ -1625,7 +1628,7 @@ EOL
 	complete_exercise
 }
 
-yellow_belt_exercise_ls_dash_l() {
+yellow_belt_exercise_ls_dash_l() { # Introduction to "ls -l"
 	create_lists
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
@@ -1689,7 +1692,7 @@ EOL
 	complete_exercise
 }
 
-yellow_belt_exercise_ls_explore() {
+yellow_belt_exercise_ls_explore() { # Using the Manual
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 It's time to use the man pages again.  This time, you'll be looking for something specific.
 
@@ -1709,7 +1712,7 @@ EOL
 	complete_exercise
 }
 
-yellow_belt_exercise_ls_dash_h() {
+yellow_belt_exercise_ls_dash_h() { # Introducing "ls -h"
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 Try out "ls -lh" in or on different directories.  If you're on a BSD or GNU system, it will give you file listings in long
 format with "human readable" file sizes.
@@ -2111,7 +2114,9 @@ elif [ -n "${1:-}" ] && [ "${1:-}" != "--return" ]; then
 	echo "learn white belt"
 	echo "  To review the white belt exercises"
 	echo "learn yellow stripe"
-	echo "  To review the yellow stripe exercises"
+	echo "  To review the yellow stripe exercises from the beginning"
+	echo "learn white belt list"
+	echo "  To see a list of white belt exercises"
 	echo "learn white belt 6"
 	echo "  To start reviewing at a particular exercise"
 	echo "learn --return"
