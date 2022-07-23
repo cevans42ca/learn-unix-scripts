@@ -620,17 +620,18 @@ are not reflected in the parent.
 
 Carefully controlling environment variables results in programs that are cleaner and more resilient.
 
-You will only need to understand all of these details when writing scripts for Unix, however, being aware of these
-factors is important if most of your previous experience with Microsoft Windows (see below).
+You will only need to understand all of these details when writing bash (and similar) scripts, however, being aware of
+these factors is important if most of your previous experience is with Microsoft Windows (see below).
 
-Executing ". check" is a short form for "source check".  When you source a script, the script runs as if it was typed
-in.  (If you're familiar with Windows batch files, all batch files run as if they were typed in.  Another way to say it
-is that Windows batch files are always sourced.)  This "sourcing" trick is how we can have scripts that set environment
-variables for other scripts.  It can also be used to get an up-to-date command history (which is normally inaccessible).
-Since running the "set" command doesn't change anything that can be checked directly, accessing the command history is
-the only way to verify that the correct command was issued.
+The dot (.) in ". check" is a short form for the built-in command "source", so executing ". check" is a short form for
+"source check".  When you source a script, the script runs as if it was typed in.  (If you're familiar with Windows
+batch files, all batch files run as if they were typed in.  Another way to say it is that Windows batch files are always
+sourced.)  This "sourcing" trick is how we can have scripts that set environment variables for other scripts.  It can
+also be used to get an up-to-date command history (which is normally inaccessible).  Since running the "set" command
+doesn't change anything that can be checked directly, accessing the command history is the only way that the check
+script can verify that the correct command was issued.
 
-Once you have read and understood this text, execute ". check"
+Once you have read and understood this text, execute ". check" for your (short) final exam.
 EOL
 
 	complete_exercise
