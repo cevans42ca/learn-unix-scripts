@@ -1734,10 +1734,10 @@ disk drives, network shares, USB sticks, and everything that has files in it int
 base filesystem.  How that works isn't important for these lessons.  The important thing is that each "mount" has a bunch
 of files and each one has a maximum size.
 
-Just as a USB drive E: in Windows has a maximum size, and the hard disk C: has a maximum size, each mount in Unix has
-can get filled up.  That means that /var/log can be full of log files, but /home still has room.  That's a good thing.
-It means one problem won't bring down the whole system.  That's also why some filesystems keep a little bit of room for
-root's home directory (/root).
+Just as a USB drive E: in Windows has a maximum size, and the hard disk C: has a maximum size, each mount in Unix can
+get filled up.  That means that /var/log can be full of log files, but /home still has room.  That's a good thing.  It
+means one problem won't bring down the whole system.  In many cases, mounts will have some space reserved that only
+root can use.
 
 The command to see how much space is being taken up for each mount is "df".  By default "df" shows block sizes, which are
 not very user friendly.  To see the sizes in "human" units, use the "-h" option.
