@@ -222,7 +222,7 @@ prepareLusHome() {
 	fi
 }
 
-white_belt_exercise_what_execute_means() {
+white_belt_exercise_what_execute_means() { # What "Execute" Means
 	yellow_stripe="${yellow_on_black}yellow ${nc}${bright_white_on_black}stripe${nc}"
 	printf "${underline}The Bare Essentials${no_underline}\n\n" >> $fmt_file
 
@@ -293,7 +293,7 @@ EOL
 	complete_exercise
 }
 
-white_belt_exercise_stuck() {
+white_belt_exercise_stuck() { # Freezing and Unfreezing the Terminal
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 The first thing you don't want to be caught by is Ctrl+q and Ctrl+s.  If you accidentally type Ctrl and "s", the terminal will
 freeze.  Ctrl+s is easy to type and is in common use in Windows programs as a keyboard shortcut for saving the current file.
@@ -316,7 +316,7 @@ EOL
 	complete_exercise
 }
 
-white_belt_exercise_cd_root() {
+white_belt_exercise_cd_root() { # The Root Directory
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 Now that you know how to recover from your terminal getting frozen and how to get a prompt back, you need to know how to
 navigate.
@@ -354,7 +354,7 @@ EOL
 	cat $fmt_file
 }
 
-white_belt_exercise_ls_root() {
+white_belt_exercise_ls_root() { # What Does the Root Look Like?
 	# If the user is coming back after needing to look at something else, they may now be in another directory.
 	if [[ `pwd` == "/" ]]; then
 		fmt -u --width=$WIDTH <<EOL >> $fmt_file
@@ -369,7 +369,7 @@ EOL
 	complete_exercise
 }
 
-white_belt_exercise_common_root_directories() {
+white_belt_exercise_common_root_directories() { # Explanation of Directories Under Root
 	# The existence of /opt can't be counted on, but it's hard to imagine the rest would be missing on any modern
 	# Unix derivative.  Maybe this script is being run in a Docker container.  Handling missing directories, formatting
 	# to the TTY size, and paging the whole thing using was a chance to sharpen my skills.
@@ -507,7 +507,7 @@ EOL
 	complete_exercise
 }
 
-white_belt_exercise_set() {
+white_belt_exercise_set() { # The "set" Command
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 There are four ways to pass settings to programs:  environment variables, arguments, standard input, and configuration files.
 
@@ -520,7 +520,7 @@ EOL
 	complete_exercise
 }
 
-white_belt_exercise_frozen() {
+white_belt_exercise_frozen() { # The First Test
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 It's time for the first test.  Make sure your notes are handy and execute ". check".
 EOL
@@ -528,7 +528,7 @@ EOL
 	complete_exercise
 }
 
-white_belt_exercise_set_more() {
+white_belt_exercise_set_more() { # The "more" Command
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 To go page by page, add "| more" to a command.  The pipe ( | ) can be used to send the output of one command to the input
 of another command.  We'll be going into more detail on pipes later.  The pipe character is rarely used outside
@@ -542,7 +542,7 @@ EOL
 	complete_exercise
 }
 
-white_belt_exercise_set_less() {
+white_belt_exercise_set_less() { # The "less" Command
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 The "more" command will only give you more.  If you want to back up, add "| less" to a command.  In many cases (but depending
 on your terminal settings) you will be able to move up and down with the cursor keys and use the Page Up and Page Down keys.
@@ -559,7 +559,7 @@ EOL
 	complete_exercise
 }
 
-white_belt_exercise_path_and_sourcing() {
+white_belt_exercise_path_and_sourcing() { # The $PATH Environment Variable, Sourcing, Final Exam
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 We're going to look at one specific environment variable now:  \$PATH.  Environment variables are usually printed with a
 dollar sign ( \$ ) in front of them.  Currently, \$PATH is set to the following value.
@@ -582,7 +582,7 @@ EOL
 
 	echo "" >> $fmt_file
 	# Use positive lookbehind and positive lookahead to match the exact path, whether it's at the beginning of the
-	# $PATH, the end, or in the middle.  This way, we can both highlight the exact path and # show the entire $PATH.
+	# $PATH, the end, or in the middle.  This way, we can both highlight the exact path and show the entire $PATH.
 	# It won't work if the path in $PATH has a trailing slash, but trailing slashes shouldn't be there.
 	printf '%s\n' "$PATH" | grep -P --color=always "(?<=^|:)${script_path}(?=:|\$)" >> $fmt_file
 	echo "" >> $fmt_file
@@ -2013,6 +2013,17 @@ if [[ "${all_args}" =~ (white|yellow|green|blue|red|black).*(stripe|belt)[^0-9]*
 	new_rank_for_echo="${BASH_REMATCH[1]} ${BASH_REMATCH[2]}"
 
 	new_exercise="${BASH_REMATCH[3]}"
+
+	if [[ "${all_args}" =~ list ]]; then
+		regex="'"
+		regex+="${new_rank}_exercise_.*\(\)"
+		regex+="'"
+
+		# Advanced sed:  if an exercise exists, skip to the :x label.  If not, replace the line with "No Title".
+		# Use cat -n to add a line number (which is the exercise number).
+		bash -c "grep -E ${regex} ~/bin/learn | sed 's/.* #\s*//;tx;s/.*/No Title/;:x' | cat -n"
+		exit 0
+	fi
 
 	if [ "${new_exercise}" == "" ]; then
 		new_exercise=1
