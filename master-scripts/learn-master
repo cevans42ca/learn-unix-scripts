@@ -637,7 +637,7 @@ EOL
 	complete_exercise
 }
 
-yellow_stripe_exercise_pwd() {
+yellow_stripe_exercise_pwd() { # The "pwd" Command
 	if [[ `pwd` == "/" ]]; then
 		fmt -u --width=$WIDTH <<EOL >> $fmt_file
 To begin this exericse, you can't be in the root directory.  Execute "cd", then execute "learn".
@@ -665,7 +665,7 @@ EOL
 	complete_exercise
 }
 
-yellow_stripe_exercise_cd_dot_dot() {
+yellow_stripe_exercise_cd_dot_dot() { # Parent Directories, ".", and ".."
 	if [[ `pwd` == "/" ]]; then
 		fmt -u --width=$WIDTH <<EOL >> $fmt_file
 To begin this exericse, you can't be in the root directory.  Execute "cd", then execute "learn".
@@ -728,7 +728,7 @@ EOL
 	complete_exercise
 }
 
-yellow_stripe_exercise_no_news_is_good_news() {
+yellow_stripe_exercise_no_news_is_good_news() { # No News is Good News
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 When it comes to Unix, always remember:  no news is good news.
 
@@ -744,7 +744,7 @@ EOL
 	complete_exercise
 }
 
-yellow_stripe_exercise_mkdir_and_relative_paths() {
+yellow_stripe_exercise_mkdir_and_relative_paths() { The "mkdir" Command and Relative Paths
 	prepareLusHome
 
 	if [ -d $LUS_HOME/parent ]; then
@@ -785,7 +785,7 @@ EOL
 	complete_exercise
 }
 
-yellow_stripe_exercise_rmdir() {
+yellow_stripe_exercise_rmdir() { # The "rmdir" Command
 	if [ ! -d "$LUS_HOME" ]; then
 		mkdir "$LUS_HOME"
 	fi
@@ -829,7 +829,7 @@ EOL
 	complete_exercise
 }
 
-yellow_stripe_exercise_special_characters() {
+yellow_stripe_exercise_special_characters() { # Special Characters in Filenames and Directory Names
 	prepareLusHome
 	
 	if [ -f $LUS_HOME/yellow ]; then
@@ -896,7 +896,7 @@ EOL
 	complete_exercise
 }
 
-yellow_stripe_exercise_file() {
+yellow_stripe_exercise_file() { # The "file" Command and Magic
 	prepareLusHome
 	
 	if [ ! -f $LUS_HOME/yellow ]; then
@@ -930,7 +930,7 @@ EOL
 	complete_exercise
 }
 
-yellow_stripe_exercise_cat_less() {
+yellow_stripe_exercise_cat_less() { # Comparing "cat" and "less"
 	prepareLusHome
 	
 	if [ ! -f $LUS_HOME/yellow ]; then
@@ -963,7 +963,7 @@ EOL
 	complete_exercise
 }
 
-yellow_stripe_exercise_quotes() {
+yellow_stripe_exercise_quotes() { # Introduction to Quoting
 	set +o nounset
 	x="$(PS1=\"$PS1\" echo -n | bash -i 2>&1)"
 	PS2=$(bash -ci 'echo $PS2')
@@ -1011,7 +1011,7 @@ EOL
 	complete_exercise
 }
 
-yellow_stripe_exercise_escaping_quotes() {
+yellow_stripe_exercise_escaping_quotes() { # Escaping Characters
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 Double quotes let you use environment variables.   If you want to work with a file that has a dollar sign, you need to
 use single quotes.  Now is a good time to talk about literals.  Your shell treats a lot of characters in a special way.
@@ -1052,7 +1052,7 @@ EOL
 	complete_exercise
 }
 
-yellow_stripe_exercise_quote_finale() {
+yellow_stripe_exercise_quote_finale() { # Quoting:  Final Lesson
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 You might think that you could also escape a single quote to use it inside single quotes.  There are some shells that handle
 it, but you shouldn't expect it.  What you can do instead is end the single quote, put a single quote in double quotes, and
