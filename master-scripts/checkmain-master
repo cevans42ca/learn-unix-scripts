@@ -320,8 +320,26 @@ white_belt_exercise_set_less() {
 }
 
 white_belt_exercise_path_and_sourcing() {
-	# For this exercise, we're only confirming this script was run, so there's nothing to check.
-	good_work
+	luc_correct_answers=0
+
+	fmt -u --width=$luc_width <<EOL
+If you press Ctrl+c, you will get back to a prompt, but your progress through the questions will not be saved.
+
+Question 1/4
+
+What does the "." in ". check" do?
+EOL
+
+	luc_answers=( 'It executes the "check" script as if it was typed in, which changes how environment variables work.' 'It changes the script output to the current directory.' 'It causes the script to be run with authority.' )
+	handle_answer 'It executes the "check" script as if it was typed in, which changes how environment variables work.'
+
+	if [ "$luc_correct_answers" == "1" ]; then
+		good_work
+	else
+		echo "Results:  $luc_correct_answers/4 correct"
+		echo ""
+		sorry
+	fi
 }
 
 yellow_stripe_exercise_pwd() {
