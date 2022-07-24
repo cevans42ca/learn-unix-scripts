@@ -70,6 +70,10 @@ blue=$(printf "%d" $((16#$bluehex)))
 
 total=$(echo "$red + $green + $blue" | bc)
 
+if [ ! -f docker/Makefile ]; then
+	cp docker/Makefile-master docker/Makefile
+fi
+
 if [[ "$total" > 150000 ]]; then
 	echo "Enabling light mode."
 	sed -i '' 's/^DARK_MODE=.*/DARK_MODE=0/' docker/Makefile 
