@@ -1610,9 +1610,9 @@ EOL
 	if [ ! -d "$LUS_HOME/list/count" ]; then
 		mkdir -p "$LUS_HOME/list/count"
 		# I'd like to make these relative to the time they're made, but it's hard to do that in a portable way.
-		touch -t 202109010000 "$LUS_HOME/list/count/one"
-		touch -t 202109020000 "$LUS_HOME/list/count/two"
-		touch -t 202109030000 "$LUS_HOME/list/count/three"
+		touch -t 202203010000 "$LUS_HOME/list/count/one"
+		touch -t 202203020000 "$LUS_HOME/list/count/two"
+		touch -t 202203030000 "$LUS_HOME/list/count/three"
 	fi
 }
 
@@ -1725,6 +1725,12 @@ EOL
 
 	complete_exercise
 }
+
+# Green Stripe
+# ls -ld
+# ls -f (directory order, good for problems with lots of files)
+# show ls -l with files at different dates in the past?
+# Intermediate arguments to ls; mounts and disk space
 
 ####################
 # End of exercises #
