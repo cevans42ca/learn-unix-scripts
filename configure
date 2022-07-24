@@ -21,9 +21,12 @@ else
 	cp replace-master replace
 fi 
 
-# TODO
-# Figure out stty -a vs stty everything and which side the rows are on
+# TODO:  Figure out stty -a vs stty everything and which side the rows are on
 #stty -a | sed -E 's/.*; rows ([0-9]+);.*/\1/;1q'
+
+# TODO:  Figure out how to do relative dates to ensure files created by touch are recent
+#date --date="3 months ago" +"%Y%m%d"
+#date -v-3m +"%Y%m%d"
 
 # Query a property from the terminal, e.g. background color.
 #
