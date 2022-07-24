@@ -1,6 +1,6 @@
 .PHONY: clean dist distclean install configure run replacetarget
 
-run: configure install dockerrun
+run: configure
 
 flags/configuretarget:
 	./configure
@@ -16,6 +16,7 @@ clean: gitclean
 	rm -f bin/checkmain
 	rm -f flags/replacetarget
 	rm -f replace
+	rm -f Makefile
 	cd docker && make clean
 
 gitclean:
