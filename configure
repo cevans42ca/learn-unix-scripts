@@ -30,7 +30,7 @@ fi
 
 echo "What would you like to do?"
 echo "(1) Generate the scripts for audit or review (don't install)."
-echo "(2) Create a docker container and run the scripts."
+echo "(2) Create a docker container for a single user and run it."
 echo "(3) Prepare the scripts to run directly (without docker)."
 
 read -p "Please answer (1-3)?  " luc_choice
