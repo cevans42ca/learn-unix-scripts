@@ -4,11 +4,10 @@ run: configure
 
 flags/configuretarget:
 	./configure
-	touch flags/configuretarget
 
 configure: flags/configuretarget
 
-replace: replace-master flags/configuretarget
+replace: flags/configuretarget flags/replacetarget
 
 clean: gitclean
 	rm -f bin/learn
@@ -29,6 +28,7 @@ replaced_scripts = bin/learn bin/checkmain bin/check
 flags/replacetarget: $(scripts) replacements/* flags/configuretarget
 	./replace-all
 	touch flags/replacetarget
+	@echo "Scripts prepared in ./bin"
 
 replacetarget: flags/replacetarget
 

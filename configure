@@ -108,6 +108,8 @@ else
 	sed -i '' 's/^DARK_MODE=.*/DARK_MODE=1/' docker/Makefile 
 fi
 
+touch flags/configuretarget
+
 echo
 echo "Run make with no arguments."
 
