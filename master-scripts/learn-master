@@ -1904,6 +1904,22 @@ EOL
 
 		size_matters
 
+		lus_dir=$(dirname "${LUS_PROGRESS}")
+		if [ ! -w "${lus_dir}" ]; then
+			if [[ "${INSIDE_DOCKER:-0}" == "0" ]]; then
+				echo "Unable to save progress.  Please ask your sysadmin to make sure the"
+				echo "directory ${lus_dir} is writable."
+			else
+				echo "The directory ${lus_dir} is not writable."
+				echo 'Unable to save progress.  Please exit the docker container (with "exit")'
+				echo "and run the following two commands."
+				echo
+				echo "docker volume create lus"
+				echo "docker run --mount src=lus,target=/mnt/vol -u 0 alpine /bin/ash -c 'mkdir -p /mnt/vol/testuser;chgrp 1000 /mnt/vol/testuser;chmod g+w /mnt/vol/testuser'"
+				exit 1
+			fi
+		fi
+
 		fmt -u --width=$WIDTH <<EOL
 If you type "y" and press Enter, then you will be given your first task.
 EOL
