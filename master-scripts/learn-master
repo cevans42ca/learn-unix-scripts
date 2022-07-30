@@ -372,7 +372,7 @@ EOL
 white_belt_exercise_common_root_directories() { # Explanation of Directories Under Root
 	# The existence of /opt can't be counted on, but it's hard to imagine the rest would be missing on any modern
 	# Unix derivative.  Maybe this script is being run in a Docker container.  Handling missing directories, formatting
-	# to the TTY size, and paging the whole thing using was a chance to sharpen my skills.
+	# to the TTY size, and paging the whole thing was a chance to sharpen my skills.
 	# It's also a good reference for redirecting output from a program that already has a heredoc coming in.
 
 	set +e
@@ -919,10 +919,10 @@ EOL
 Now that you've created the file $LUS_HOME/yellow, let's look at ways to see what's in it.
 
 Windows popularized the idea of file extensions (foo.bat is a batch file, foo.txt is a text file, foo.doc is a Microsoft
-Word document, etc.)  Unix doesn't require extensions, though it's quite common to see them.  Instead of using a file
-extension, Unix uses the first few bytes of a file to tell what kind of file it is.  This file type detection process
-is called "file magic" or sometimes "magic".  The file that stores the bytes and mappings is usually named "magic".
-If you're interested in more details, you can check "man magic".
+Word document, etc.)  Unix doesn't require extensions, though it's quite common to see them.  Instead of using file
+extensions, Unix uses the first few bytes of a file to tell what kind of file it is.  This file type detection process is
+called "file magic" or sometimes "magic".  The file that stores a list of all the bytes and what file types they signify
+is usually named "magic".  If you're interested in more details, you can check "man magic".
 
 The program that can check a file's type is named "file".
 
@@ -1634,6 +1634,22 @@ yellow_belt_exercise_ls_dash_l() { # Introduction to "ls -l"
 	create_lists
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+Before we look at long directory listings, you'll need some idea of scale and size.  If you've spent any length of time
+with computers, you may already have some sense of it.
+
+Outside of the United States, the basic unit of length is the metre, the basic unit of mass is the gram, and the basic
+unit of time is the second.  Similarly, the basic unit of information is the byte.  A byte is made up of eight bits,
+which can be 0 or 1.  One byte can hold a single character like "a", "1", or "$", or a number from 0 to 255.
+
+A kilobyte (1 KB) is 1024 bytes.  A page of text or a short email with no pictures can be stored in a kilobyte or two.
+(If you try it yourself, make sure to save the file in text format.)  Unixes work with hard disks, SD cards (and
+anything else that can store files) in blocks.  Most of the time, the block size is 4 KB.  Working with blocks makes it
+more efficient to read and write data.  Imagine playing a game of chess where all the squares were in one long line
+(instead of a grid) and every square was a different size:  how efficient would you be at finding and moving the pieces?
+
+Only experimental and research file systems allow for more than one file to be stored in a block.  If a file only has
+100 bytes of data in it, it will take up one block.
+
 We'll look at the "-l" option for "ls" now.  The "-l" option shows the long listing format.
 
 Here's an example.
@@ -1648,24 +1664,34 @@ EOL
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 
+The first thing that the "ls" command prints is a total, in this case, "total 4".  That means that the files and
+directories here take up 4 blocks.  The size of a block can vary from filesystem to filesystem, but is rarely more than
+4 KB (4096 bytes), and very rarely less than 512 bytes (1/2 KB).  We will be looking at more helpful ways to display
+that information later.
+
+The next three lines tell us information about what's in this directory.
+
+We'll begin at the end.  On the right side are the file and directory names:  "zero", "one", and "two".
+
 The first part of the output is the permissions (drwxrwxr-x).  We'll be looking at permissions quite a bit later.  Right
-now, look at the first character.  If it's a directory, the first character will be "d".  If it's not a directory, it
-will be a hyphen ( - ).  So "zero" is a directory, and "one" and "two" are not directories.
+now, look at the first character.  If it's a directory, the first character will be "d".  If it's a regular file, it
+will be a hyphen.  So "zero" is a directory, and "one" and "two" are not directories.
 
 The next part is who owns the file.  In this example, the user ID is "user".
 
 The part after that is what group owns the file.  In this case, that's "ug".
 
-Fourth, we have the size of the file.  The files "one" and "two" have a size of 0, so they're empty files.  The directory
-is taking up 4,096 bytes of space.  Directories always take up at least one block (which may be larger or smaller than 4,096
-bytes).  If the number of files in a directory grows so large that the list of files can't fit inside one block, then the
-size of the directory will grow.  A directory's size is based on the number of files and the lengths of their filenames, and
-doesn't have to do with the size of the files.
+Fourth, we have the size of the file.  The files "one" and "two" have a size of 0, so they're empty files.  Empty files
+can serve as flags to indicate something has been completed, and to provide a timestamp of when it completed.  The
+"zero" directory is taking up 4,096 bytes of space.  Directories always take up at least one block (which may be larger
+or smaller than 4,096 bytes).  If the number of files in a directory grows so large that the list of files can't fit
+inside one block, then the size of the directory will grow.  A directory's size is based on the number of files and the
+lengths of their filenames, and doesn't have to do with the size of the files.
 
 Second last, we have the date (and maybe the time).  If a file is very recent, you'll see a date and time.  If it's older,
 you'll see a month, day, and year.
 
-The file (or directory) name is last.
+For the sake of completion, the file (or directory) name is last.
 
 The "ls -l" command line is typed so frequently that in many cases there's an "ll" alias.  You can see whether it's aliased
 on your system with the command "type ll".
@@ -1699,13 +1725,16 @@ yellow_belt_exercise_ls_explore() { # Using the Manual
 It's time to use the man pages again.  This time, you'll be looking for something specific.
 
 When you're using "less", you can look for something specific with slash ( / ).  Type a slash, type what you're looking
-for, and press Enter.  You're using "less" right now, but everything is probably on one page in your terminal, so searching for
-something is likely to be a bit boring.  (But nothing's stopping you.)
+for, and press Enter.  You're using "less" right now, but everything is probably on one page in your terminal, so
+searching for something is likely to be a bit boring.  (But nothing's stopping you.)
 
-You know from the previous exercises that the files "one", "two", and "three" have different modification dates.  Open the man
-page for "ls" by executing "man ls".  While it's open, use slash to search through the options to find the right arguments
-that will list the files in order.  Once you've found some options that will help, close the man page with "q" as usual
-and try them out.  Once you have a listing of the files in $LUS_HOME/list/count in numerical order, execute ". check".
+Use the question mark ( ? ) to go back.  Type the letter "h" for more ways to move around.
+
+You know from the previous exercises that the files "one", "two", and "three" have different modification dates.  Open
+the man page for "ls" by executing "man ls".  You may want to skim the man page for "ls" so you can appreciate the sheer
+number of options.  While it's open, use slash to search through the options to find the right arguments that will list
+the files in order.  Once you've found some options that will help, close the man page with "q" as usual and try them
+out.  Once you have a listing of the files in $LUS_HOME/list/count in numerical order, execute ". check".
 
 Only the short options will be considered correct, as they work with both BSD and GNU "ls".  Also, please put the options before
 the directory name (if you use one).
@@ -1912,10 +1941,17 @@ EOL
 			else
 				echo "The directory ${lus_dir} is not writable."
 				echo 'Unable to save progress.  Please exit the docker container (with "exit")'
-				echo "and run the following two commands."
+				echo "and run the following commands."
 				echo
+				echo "# Setup commands:  run them once"
 				echo "docker volume create lus"
 				echo "docker run --mount src=lus,target=/mnt/vol -u 0 alpine /bin/ash -c 'mkdir -p /mnt/vol/testuser;chgrp 1000 /mnt/vol/testuser;chmod g+w /mnt/vol/testuser'"
+				echo
+				echo "# Work with traditional white text on black terminal settings"
+				echo "docker run -it --rm --mount src=lus,target=/mnt/vol cevans42ca/learn-unix-scripts"
+				echo
+				echo "# Work with black text on white"
+				echo "docker run -it --rm --mount src=lus,target=/mnt/vol --env DARK_MODE=0 docker run -it --rm cevans42ca/learn-unix-scripts"
 				exit 1
 			fi
 		fi
