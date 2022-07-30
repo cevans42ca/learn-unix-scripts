@@ -100,11 +100,15 @@ size_matters() {
 	get_rows_and_columns
 
 	# PuTTY uses a default size of 80x24, though 80x25 tends to be more of a standard (because of VT100 terminals).
-	# TODO:  handle both
-	if [ "$STTY_COLUMNS" == 80 ] && [ "$STTY_ROWS" == 24 ] && [ -z "${RESIZED_ALREADY:-}" ]; then
+	standard_rows=0
+	if [ "$STTY_ROWS" == 24 ] || [ "$STTY_ROWS" == 25 ]; then
+		standard_rows=1
+	fi
+
+	if [ "$STTY_COLUMNS" == 80 ] && [ "$standard_rows" -eq "1" ] && [ -z "${RESIZED_ALREADY:-}" ]; then
 		fmt -u --width=$WIDTH <<EOL
-It looks like your terminal is set to the default size of 80 columns and 24 rows.  This script is capable of using more.
-If you're able to change the size of the terminal, please do so, then press Enter to continue.
+It looks like your terminal is set to the default size of 80 columns and $STTY_ROWS rows.  This script is capable of
+using more.  If you're able to change the size of the terminal, please do so, then press Enter to continue.
 EOL
 
 		echo ""
@@ -1634,20 +1638,24 @@ yellow_belt_exercise_ls_dash_l() { # Introduction to "ls -l"
 	create_lists
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
-Before we look at long directory listings, you'll need some idea of scale and size.  If you've spent any length of time
-with computers, you may already have some sense of it.
+Before we look at long directory listings, you'll need some idea of size.  If you've sent emails with attachments, you
+may already have some sense of the size of information.  The size of attachments is usually shown, and you may have
+seen an error that that your attachment was too large.
 
 Outside of the United States, the basic unit of length is the metre, the basic unit of mass is the gram, and the basic
 unit of time is the second.  Similarly, the basic unit of information is the byte.  A byte is made up of eight bits,
-which can be 0 or 1.  One byte can hold a single character like "a", "1", or "$", or a number from 0 to 255.
+which can be 0 or 1.  One byte can hold a single character like "a", "1", or "$", or a number from 0 to 255.  A kilobyte
+(1 KB) is 1024 bytes.  A page of text or a short email with no pictures or attachments can be stored in a kilobyte or
+two.  (If you try it yourself, make sure to save the file in text format.)
 
-A kilobyte (1 KB) is 1024 bytes.  A page of text or a short email with no pictures can be stored in a kilobyte or two.
-(If you try it yourself, make sure to save the file in text format.)  Unixes work with hard disks, SD cards (and
-anything else that can store files) in blocks.  Most of the time, the block size is 4 KB.  Working with blocks makes it
-more efficient to read and write data.  Imagine playing a game of chess where all the squares were in one long line
-(instead of a grid) and every square was a different size:  how efficient would you be at finding and moving the pieces?
+Unix doesn't write to disks byte by byte, but instead groups bytes together into blocks.  You can think of a block like
+a shipping container.  Most of the time, the block size is 4 KB (4,096 bytes).  Each one is a standard size, and they can
+be placed in any order, which makes it easier to organize and move them.  A shipping container might have papers,
+packing peanuts, a car, or priceless antiques.  It could be full or empty.  The same is true of a block, which might
+contain a part of a larger text file, a small text file with empty space, or a tiny piece of a PhD thesis.  A block
+might also contain nothing at all.  Read on for what empty files can be used for.
 
-Only experimental and research file systems allow for more than one file to be stored in a block.  If a file only has
+Only experimental and research file systems allow more than one file to be stored in a block.  If a file only has
 100 bytes of data in it, it will take up one block.
 
 We'll look at the "-l" option for "ls" now.  The "-l" option shows the long listing format.
@@ -1664,18 +1672,19 @@ EOL
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 
-The first thing that the "ls" command prints is a total, in this case, "total 4".  That means that the files and
-directories here take up 4 blocks.  The size of a block can vary from filesystem to filesystem, but is rarely more than
-4 KB (4096 bytes), and very rarely less than 512 bytes (1/2 KB).  We will be looking at more helpful ways to display
-that information later.
+The first thing that "ls -l" prints is a total, in this case, "total 4".  That means that the files and directories here
+take up 4 blocks.  The size of a block can vary from filesystem to filesystem, but is rarely more than 4 KB (4,096
+bytes), and very rarely less than 512 bytes (1/2 KB).  We will be looking at more helpful ways to display this "total"
+later.
 
 The next three lines tell us information about what's in this directory.
 
-We'll begin at the end.  On the right side are the file and directory names:  "zero", "one", and "two".
+We'll begin at the end.  On the far right are the file and directory names:  "zero", "one", and "two".
 
-The first part of the output is the permissions (drwxrwxr-x).  We'll be looking at permissions quite a bit later.  Right
-now, look at the first character.  If it's a directory, the first character will be "d".  If it's a regular file, it
-will be a hyphen.  So "zero" is a directory, and "one" and "two" are not directories.
+We'll go through the rest of the fields from left to right.  The first part of the output shows the permissions
+(drwxrwxr-x).  We'll be looking at permissions quite a bit later.  Right now, look at the first character.  If it's a
+directory, the first character will be "d".  If it's a regular file, it will be a hyphen.  So "zero" is a directory, and
+"one" and "two" are not directories.
 
 The next part is who owns the file.  In this example, the user ID is "user".
 
