@@ -327,7 +327,7 @@ white_belt_exercise_path_and_sourcing() {
 	fmt -u --width=$luc_width <<EOL
 If you press Ctrl+c, you will get back to a prompt, but your progress through the questions will not be saved.
 
-Question 1/4
+Question 1/5
 
 What does the "." in ". check" do?
 EOL
@@ -337,7 +337,7 @@ EOL
 
 	echo
 	fmt -u --width=$luc_width <<EOL
-Question 2/4
+Question 2/5
 
 What does slash (/) refer to in terms of a path?
 
@@ -348,7 +348,7 @@ EOL
 
 	echo
 	fmt -u --width=$luc_width <<EOL
-Question 3/4
+Question 3/5
 
 What would you find in a user's home directory?
 
@@ -359,7 +359,7 @@ EOL
 
 	echo
 	fmt -u --width=$luc_width <<EOL
-Question 4/4
+Question 4/5
 
 What's the shortest command that will return you to your home directory?
 
@@ -368,10 +368,21 @@ EOL
 	luc_answers=( 'cd' 'cd ~' '/' '${HOME}' )
 	handle_answer 'cd'
 
-	if [ "$luc_correct_answers" == "4" ]; then
+	echo
+	fmt -u --width=$luc_width <<EOL
+Question 5/5
+
+What are the two situations that you are most likely to run into where Ctrl+c doesn't return you to a prompt?
+
+EOL
+
+	luc_answers=( 'Using less (including man) and accidentally typing Ctrl+s' 'Accidentally typing Ctrl+s and \' 'Using less (including man) and accidentally typing ?' 'The power goes out and gunpowder stops working' )
+	handle_answer 'Using less (including man) and accidentally typing Ctrl+s'
+
+	if [ "$luc_correct_answers" == "5" ]; then
 		good_work
 	else
-		echo "Results:  $luc_correct_answers/4 correct"
+		echo "Results:  $luc_correct_answers/5 correct"
 		echo ""
 		sorry
 	fi
