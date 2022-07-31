@@ -60,6 +60,9 @@ exercises["yellow_belt_$((i++))"]="ls_dash_l"
 exercises["yellow_belt_$((i++))"]="ls_explore"
 exercises["yellow_belt_$((i++))"]="ls_dash_h"
 
+i=1
+exercises["green_stripe_$((i++))"]="ls_dash_ld"
+
 declare -A belt_to_number
 belt_to_number["white_belt"]=0
 belt_to_number["yellow_stripe"]=1
@@ -168,6 +171,10 @@ belt_to_second_colour_light["black_belt"]=""
 # end ffa9e74e-2b02-4d72-9c82-9f9db2915c62
 
 # start 37333148-8746-4468-826e-544e532f1ebc
+getNextBelt() {
+	echo ${number_to_belt[$(expr 1 + ${belt_to_number[$1]})]}
+}
+
 getBeltWithColours() {
 	first_text=${belt_to_first_text[$1]}
 	second_text=${belt_to_second_text[$1]}

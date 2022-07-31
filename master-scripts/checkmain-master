@@ -208,6 +208,8 @@ ask_review_final_exam() {
 		else
 			exit 0
 		fi
+	else
+		return 1
 	fi
 }
 
@@ -864,6 +866,10 @@ EOL
 	fi
 }
 
+green_stripe_exercise_ls_dash_ld() {
+	good_work
+}
+
 ####################
 # End of exercises #
 ####################
@@ -884,6 +890,25 @@ blue_stripe_exercise_df() {
 	sorry
 	unset IFS
 	return
+}
+
+belt_complete() {
+	rank_exercises_completed=$RANK
+	rank_attained=$(getNextBelt $RANK)
+	rank_working_towards=$(getNextBelt $rank_attained)
+
+	RANK=$rank_attained
+	EXERCISE=1
+
+	echo ""
+
+	if [ -z "${SAVED_RANK:-}" ]; then
+		printf "Congratulations!  You have now attained your `getBeltWithColours $RANK`.\n"
+		printf "You're working toward your `getBeltWithColours $rank_working_towards`.\n\n"
+	else
+		printf "You have reviewed all the exercises in `getBeltWithColours $rank_exercises_completed`.\n"
+		printf "Execute \"learn\" to start reviewing the `getBeltWithColours $rank_attained` exercises.\n\n"
+	fi
 }
 
 ###############################
@@ -1003,27 +1028,22 @@ EOL
 			EXERCISE=1
 		fi
 	elif [ $RANK == "yellow_stripe" ]; then
-		RANK=yellow_belt
-		EXERCISE=1
-
-		echo ""
-
-		if [ -z "${SAVED_RANK:-}" ]; then
-			printf "Congratulations!  You have now attained your `getBeltWithColours yellow_belt`.\n"
-			printf "You're working toward your `getBeltWithColours green_stripe`.\n\n"
-		else
-			printf "You have reviewed all the exercises in `getBeltWithColours yellow_stripe`.\n"
-			printf "Execute \"learn\" to start reviewing the `getBeltWithColours yellow_belt` exercises.\n\n"
-		fi
+		belt_complete
 	elif [ $RANK == "yellow_belt" ]; then
-		RANK=green_stripe
+		belt_complete
+	else
+		rank_exercises_completed=$RANK
+		rank_attained=$(getNextBelt $RANK)
+		rank_working_towards=$(getNextBelt $rank_attained)
+
+		RANK=$rank_attained
 		EXERCISE=1
 
 		if [ -z "${SAVED_RANK:-}" ]; then
-			printf "Congratulations!  You have now attained your `getBeltWithColours green_stripe`.\n"
-			printf "You would be working toward your `getBeltWithColours green_belt`, but there are no more exercises.\n\n"
+			printf "Congratulations!  You have now attained your `getBeltWithColours $rank_attained`.\n"
+			printf "You would be working toward your `getBeltWithColours $rank_working_towards`, but there are no more exercises.\n\n"
 		else
-			printf "You have reviewed all the exercises in `getBeltWithColours yellow_belt`.\n"
+			printf "You have reviewed all the exercises in `getBeltWithColours $rank_exercises_completed`.\n"
 			printf "There are no more exercises at this time.\n\n"
 
 			SAVED_RANK=""

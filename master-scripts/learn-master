@@ -1517,7 +1517,7 @@ EOL
 	complete_exercise
 }
 
-yellow_belt_exercise_command_line_options() { # Short Options, Long Options
+yellow_belt_exercise_command_line_options() { # Short Options, Long Options, and Man(ual) Pages
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 Before we get into the various ways you can list files, we'll have to go through short options and long options.
 Short options are single characters.  Long options are full words, and sometimes multiple words.
@@ -1761,6 +1761,16 @@ If you're not, it's anyone's guess.  It may give you an error, do nothing, or do
 man page before you try it.  Once you're done, execute ". check" for your final exam.
 EOL
 
+	complete_exercise
+}
+
+green_stripe_exercise_ls_dash_ld() { # Introducing "ls -d"
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+Try out "ls -ld" in or on different directories.  It will show you the directory permissions.
+
+As usual, execute ". check" to continue.
+EOL
+	
 	complete_exercise
 }
 
@@ -2204,7 +2214,8 @@ print_rank > $fmt_file
 if [ -z ${exercises["${RANK}_${EXERCISE}"]:-} ]; then
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 There are no more exercises at this time.  If you like, you can review exercises you've already completed by executing
-"learn white belt", "learn yellow stripe", or "learn white belt 6" to start review at a particular exercise.
+"learn white belt" or "learn yellow stripe".  Get a list of exercises with "learn yellow stripe list", and go to a specific
+exercise with "learn white belt 6".
 EOL
 
 	complete_exercise
