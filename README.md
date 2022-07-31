@@ -11,4 +11,21 @@ There is nothing hidden or encrypted in this project.  The project only contains
 
 If you plan on using these exercises in a classroom setting, you will need to include traditional testing in order to confirm understanding, or you might consider a project with different goals, such as GameShell.  (Disclaimer:  I have no experience with GameShell and don't have a personal or professional relationship with any of the team members.)
 
-Please see the "readme" file in the distribution for a few options on how to best prepare or install the scripts for your site or workstation.
+# Try them Out in Docker
+
+If you want to try these scripts out in a Docker container, and you have Docker installed, you can use the following commands to set up a volume to save your progress and run them.
+
+## Setup commands:  Run them Once
+docker volume create lus
+docker run --mount src=lus,target=/mnt/vol -u 0 alpine /bin/ash -c 'mkdir -p /mnt/vol/testuser;chgrp 1000 /mnt/vol/testuser;chmod g+w /mnt/vol/testuser'
+
+## Work with traditional white text on black terminal settings
+docker run -it --rm --mount src=lus,target=/mnt/vol cevans42ca/learn-unix-scripts
+
+## Work with black text on white
+docker run -it --rm --mount src=lus,target=/mnt/vol --env DARK_MODE=0 docker run -it --rm cevans42ca/learn-unix-scripts
+
+# Installing Locally
+
+If you want to run the scripts directly on your own host, clone this repo and run the ./configure script, which will ask you if you want to use Docker.  Follow the prompts from there to set up the scripts to run directly in your environment or create your own site-specific Docker image.
+
