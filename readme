@@ -1,16 +1,27 @@
 This project contains a suite of scripts to teach various aspects of
-Unix.  Although the scripts are written in bash, I intend the exercises
-to be broad enough to work on FreeBSD, Macs, Linux, and any system that
-has bash installed or could have bash installed.
-
-The default Docker image lacks many important features, such as man,
-that should be expected on most systems.  However, it should be possible
-to install man, bash, and anything else lacking.  At some point, I
-expect to have something like a configure script that checks for
-dependencies.
+Unix with the bash shell.
 
 This readme file is for system administrators who want to make the
 learn Unix scripts available for users.
+
+To get started, run the ./configure script and follow the prompts.
+
+Although the scripts are written in bash, I intend the exercises
+to be broad enough to work on FreeBSD, Macs, Linux, and any system that
+has bash installed or could have bash installed.  However, not all these
+systems are currently supported.  The "verify" script can check some
+requirements, but it's still a prototype.
+
+For the time being, please use Docker on non-Linux systems.  The scripts
+that prepare the Docker container require Bash 4, and Homebrew Bash is
+detected on Mac.
+
+This project is in alpha status.  Please check back for updates.
+
+https://github.com/cevans42ca/learn-unix-scripts
+
+Although there's a roadmap for exercises from white belt to black belt,
+only about half of the planned exercises are complete.
 
 I will use the term "student" to refer to anyone who will be using the
 scripts in this project to learn Unix.
@@ -24,7 +35,7 @@ The "learn" script teaches some aspect of Unix and the "check" script
 verifies that the lesson has been completed.  Upon successful completion,
 the next invocation of the "learn" script will teach the next lesson.
 These scripts don't require arguments.  Progress is kept in a dot file
-in the user's home directory.
+in the user's home directory by default, or $LUS_PROGRESS.
 
 
 Runtime Architecture
@@ -39,23 +50,8 @@ Accessing the recent history is only possible in a sourced script.
 Preparing the Scripts Without Site-Specific Changes
 ===================================================
 
-To prepare the scripts, run replace-all, which executes the following.
-
-replace learn-master learn-replace learn
-replace check-master check-replace check
-replace checkmain-master checkmain-replace checkmain
-
-The three scripts that are output are put in a "bin" directory.
-
-You'll need to put the following scripts in your $PATH.  Common places
-include your bin directory (/home/userID/bin/) and /usr/local/bin/.
-
-learn
-check
-checkmain
-
-Once you have all the scripts in your $PATH, start by running the
-"learn" script.
+First, run the ./configure script, which will ask you if you intend to use
+Docker.  It will then guide you on what to do next.
 
 
 Site-Specific Changes
@@ -70,7 +66,8 @@ replace your own site-specific lessons or text at that point.  Only the
 GUID is public.  If you submit a pull request to add your GUID to the
 master files, you can stay up to date with the latest public version
 without having to constantly maintain your changes.  The "replace" script
-accepts multiple replacement files between the first and last argument.
+accepts multiple replacement files between the first and last argument,
+so you can split your replacements into multiple files.
 
 To get started, copy the "site-install" directory to "site" and look
 at the replace script and replacement file.  The "site" directory is
@@ -78,12 +75,12 @@ ignored in Git, so Git will not prompt you to push any changes you make
 there.
 
 
-List of Provided and Created Files
-==================================
+List of Core Provided and Created Files
+=======================================
 
 check:
-  A wrapper for the "checkmain" script, which does the real work of verifying
-  lessons have been completed.  Created by running the "replace" script.
+  A wrapper for the "checkmain" script.  Created by running the "replace"
+  script.
 
 checkmain:
   Verifies that lessons have been completed.  Created by running the
