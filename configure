@@ -118,7 +118,7 @@ else
 	echo "DARK_MODE=1" >> config.status
 fi
 
-if which gshuf; then
+if which gshuf > /dev/null; then
 	echo "SHUF_BIN=gshuf" >> config.status
 elif which shuf; then
 	echo "SHUF_BIN=shuf" >> config.status

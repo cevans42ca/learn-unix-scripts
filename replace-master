@@ -146,7 +146,7 @@ if [ "${DOCKER:-0}" -eq "0" ] && [ "${DARK_MODE:-1}" -eq "0" ]; then
 	sed -i '' "s/^# DARK_MODE Replacement Tag.*/DARK_MODE=${DARK_MODE}/" "$final_file" 
 fi
 
-if [ -n "${SHUF_BIN:-}" ]; then
+if [ "${DOCKER:-0}" -eq "0" ] && [ -n "${SHUF_BIN:-}" ]; then
 	sed -i '' "s/^SHUF_BIN=.*/SHUF_BIN=${SHUF_BIN}/" "$final_file" 
 fi
 
