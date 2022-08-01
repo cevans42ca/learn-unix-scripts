@@ -60,6 +60,7 @@ LUS_HOME=${LUS_HOME:-"$HOME/lus"}
 # insert ffa9e74e-2b02-4d72-9c82-9f9db2915c62 associative arrays for exercises and belt levels
 
 FMT_OPTIONS="-u --width="
+SHUF_BIN=shuf
 
 luc_good_work_array[0]="Good work!"
 luc_good_work_array[1]="Excellent!"
@@ -156,7 +157,7 @@ handle_answer() {
 	luc_shuffled_answers=()
 	while read -r item; do
 	    luc_shuffled_answers+=("$item")
-	done < <(shuf -e "${luc_answers[@]}")
+	done < <(${SHUF_BIN} -e "${luc_answers[@]}")
 
 	luc_num=1
 	for item in "${luc_shuffled_answers[@]}"

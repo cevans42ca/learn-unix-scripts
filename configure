@@ -118,6 +118,15 @@ else
 	echo "DARK_MODE=1" >> config.status
 fi
 
+if which gshuf; then
+	echo "SHUF_BIN=gshuf" >> config.status
+elif which shuf; then
+	echo "SHUF_BIN=shuf" >> config.status
+else
+	echo "Neither shuf or gshuf were found.  On Mac with Homebrew, brew install coreutils."
+	exit 1
+fi
+
 touch flags/configuretarget
 
 echo

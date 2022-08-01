@@ -86,6 +86,13 @@ if ! which man > /dev/null; then
 	exit 6
 fi
 
+if ! which shuf > /dev/null; then
+	if ! which gshuf > /dev/null; then
+		echo "Neither shuf or gshuf were found.  On Mac with Homebrew, brew install coreutils."
+		exit 7
+	fi
+fi
+
 echo 
 echo 
 echo "Verify that some of the words in this sentence are red.  (Checks grep --color.)" | grep --color=always "some of the words"
