@@ -1049,7 +1049,7 @@ lot of different situations.  Try out the following.
 
 EOL
 
-	fmt ${FMT_OPTIONS:-} -s --width=$WIDTH <<EOL >> $fmt_file
+cat <<EOL >> $fmt_file
 echo "HOME"
 echo "\$HOME"
 echo '\$HOME'
@@ -2144,7 +2144,8 @@ if [[ "${all_args}" =~ (white|yellow|green|blue|red|black).*(stripe|belt)[^0-9]*
 
 		# Advanced sed:  if an exercise exists, skip to the :x label.  If not, replace the line with "No Title".
 		# Use cat -n to add a line number (which is the exercise number).
-		bash -c "grep -E ${regex} ~/bin/learn | sed 's/.* #\s*//;tx;s/.*/No Title/;:x' | cat -n"
+		# Exercises must be in order in this file for it to work.
+		bash -c "grep -E ${regex} ~/bin/learn | sed -e 's/.* #[:space:]*//;tx' -e 's/.*/No Title/' -e ':x' -e 's/^[ \t]*//' | cat -n"
 		exit 0
 	fi
 
