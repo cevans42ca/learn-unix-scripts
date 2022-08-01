@@ -141,3 +141,8 @@ fi
 if [ -n "${FMT_OPTIONS:-}" ]; then
 	sed -i '' "s/^FMT_OPTIONS=.*/FMT_OPTIONS=${FMT_OPTIONS}/" "$final_file" 
 fi
+
+if [ "${DOCKER:-0}" -eq "0" ] && [ "${DARK_MODE:-1}" -eq "0" ]; then
+	sed -i '' "s/^# DARK_MODE Replacement Tag.*/DARK_MODE=${DARK_MODE}/" "$final_file" 
+fi
+

@@ -40,13 +40,11 @@ cp Makefile-master Makefile
 
 if [[ "${luc_choice}" =~ ^[\ ]*1[\ ]*$ ]]; then
 	sed -i '' 's/^run:.*/run: configure replace/' Makefile 
-fi
-
-if [[ "${luc_choice}" =~ ^[\ ]*2[\ ]*$ ]]; then
+	echo "DOCKER=0" >> config.status
+elif [[ "${luc_choice}" =~ ^[\ ]*2[\ ]*$ ]]; then
 	sed -i '' 's/^run:.*/run: configure dockerrun/' Makefile 
-fi
-
-if [[ "${luc_choice}" =~ ^[\ ]*3[\ ]*$ ]]; then
+	echo "DOCKER=1" >> config.status
+elif [[ "${luc_choice}" =~ ^[\ ]*3[\ ]*$ ]]; then
 	sed -i '' 's/^run:.*/run: configure flags\/replacetarget/' Makefile 
 	if [ -n "${HOMEBREW_BASH:-}" ]; then
 		echo "HOMEBREW_BASH=1" >> config.status
@@ -57,9 +55,9 @@ if [[ "${luc_choice}" =~ ^[\ ]*3[\ ]*$ ]]; then
 	else
 		echo "FMT_OPTIONS=-" >> config.status
 	fi
-fi
 
-if [[ "$luc_processed_choice" == "0" ]]; then
+	echo "DOCKER=0" >> config.status
+else
 	echo "Your answer should be a number between 1 and 3."
 	exit 1
 fi
@@ -113,9 +111,11 @@ fi
 if [[ "$total" > 150000 ]]; then
 	echo "Enabling light mode."
 	sed -i '' 's/^DARK_MODE=.*/DARK_MODE=0/' docker/Makefile 
+	echo "DARK_MODE=0" >> config.status
 else
 	echo "Enabling dark mode (traditional white on black)."
 	sed -i '' 's/^DARK_MODE=.*/DARK_MODE=1/' docker/Makefile 
+	echo "DARK_MODE=1" >> config.status
 fi
 
 touch flags/configuretarget

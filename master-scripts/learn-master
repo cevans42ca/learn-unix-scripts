@@ -35,6 +35,8 @@
 # Setting nounset is worth having to sometimes reference variables as ${VAR:-}.
 set -e -o nounset
 
+# DARK_MODE Replacement Tag:  if not running in Docker, replace this line with DARK_MODE=0 for black text on white
+
 # insert 17fa07e6-24b8-4e35-bc1a-094427fd8699 xterm fix
 
 # insert 7437f7c8-c360-4f96-91f6-b75dcd3b8cd7
