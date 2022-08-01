@@ -22,10 +22,10 @@ flags/volumetarget:
 createvolume: flags/volumetarget
 
 createuservolume: createvolume
-	docker run --mount src=lus,target=/mnt/vol -u 0 learn-unix /bin/bash -c 'mkdir -p /mnt/vol/testuser;chgrp ${G_UID} /mnt/vol/testuser;chmod g+w /mnt/vol/testuser'
+	docker run --rm --mount src=lus,target=/mnt/vol -u 0 learn-unix /bin/bash -c 'mkdir -p /mnt/vol/testuser;chgrp ${G_UID} /mnt/vol/testuser;chmod g+w /mnt/vol/testuser'
 
 createsharedvolume: createvolume
-	docker run --mount src=lus,target=/mnt/vol -u 0 learn-unix /bin/bash -c 'mkdir -p /mnt/vol/shared;chgrp ${G_UID} /mnt/vol/shared;chmod g+w /mnt/vol/shared;chmod +t /mnt/vol/shared'
+	docker run --rm --mount src=lus,target=/mnt/vol -u 0 learn-unix /bin/bash -c 'mkdir -p /mnt/vol/shared;chgrp ${G_UID} /mnt/vol/shared;chmod g+w /mnt/vol/shared;chmod +t /mnt/vol/shared'
 
 clean:
 	rm -f flags/buildtarget
