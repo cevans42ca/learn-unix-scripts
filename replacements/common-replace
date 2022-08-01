@@ -198,25 +198,25 @@ updateDotFile() {
 		echo "EXERCISE=$EXERCISE" >> "${LUS_PROGRESS}"
 	else
 		if grep -q "RANK=" "${LUS_PROGRESS}"; then
-			sed -i "s/RANK=.*/RANK=${RANK}/" "${LUS_PROGRESS}"
+			sed -i '' "s/RANK=.*/RANK=${RANK}/" "${LUS_PROGRESS}"
 		else
 			echo "RANK=${RANK}" >> "${LUS_PROGRESS}"
 		fi
 
 		if grep -q "EXERCISE=" "${LUS_PROGRESS}"; then
-			sed -i "s/EXERCISE=.*/EXERCISE=${EXERCISE}/" "${LUS_PROGRESS}"
+			sed -i '' "s/EXERCISE=.*/EXERCISE=${EXERCISE}/" "${LUS_PROGRESS}"
 		else
 			echo "EXERCISE=${EXERCISE}" >> "${LUS_PROGRESS}"
 		fi
 
 		if grep -q "SAVED_RANK=" "${LUS_PROGRESS}"; then
-			sed -i "s/SAVED_RANK=.*/SAVED_RANK=${SAVED_RANK:-}/" "${LUS_PROGRESS}"
+			sed -i '' "s/SAVED_RANK=.*/SAVED_RANK=${SAVED_RANK:-}/" "${LUS_PROGRESS}"
 		else
 			echo "SAVED_RANK=${SAVED_RANK:-}" >> "${LUS_PROGRESS}"
 		fi
 
 		if grep -q "SAVED_EXERCISE=" "${LUS_PROGRESS}"; then
-			sed -i "s/SAVED_EXERCISE=.*/SAVED_EXERCISE=${SAVED_EXERCISE:-}/" "${LUS_PROGRESS}"
+			sed -i '' "s/SAVED_EXERCISE=.*/SAVED_EXERCISE=${SAVED_EXERCISE:-}/" "${LUS_PROGRESS}"
 		else
 			echo "SAVED_EXERCISE=${SAVED_EXERCISE:-}" >> "${LUS_PROGRESS}"
 		fi

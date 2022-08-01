@@ -49,10 +49,10 @@ fi
 
 # insert 1a88ef09-bbc8-4f7e-ac03-a1849fd03166 stty options
 
-# When we pipe the history to the checkmain script in through standard in, the TTY will be reset and we won't be able to
-# set the rows and columns.
-LUS_STTY_ROWS=$(bash -c "stty ${stty_options} | grep -Po '(?<=rows )[0-9]*(?=;)'")
-LUS_STTY_COLUMNS=$(bash -c "stty ${stty_options} | grep -Po '(?<=columns )[0-9]*(?=;)'")
+# When we pipe in the history to the checkmain script through standard in, the TTY will be reset and it becomes harder to
+# check the rows and columns.
+LUS_STTY_ROWS=$(stty ${stty_options} | head -1 | sed 's/.*; \([0-9][0-9]*\) rows.*/\1/;s/.*; rows \([0-9][0-9]*\).*/\1/')
+LUS_STTY_COLUMNS=$(stty ${stty_options} | head -1 | sed 's/.*; \([0-9][0-9]*\) columns.*/\1/;s/.*; columns \([0-9][0-9]*\).*/\1/')
 
 # We could make the entire script (check and checkmain) so it can be sourced but that would mean all the subroutines would
 # be added to the environment, and "set -e -o unset" would be problematic.
