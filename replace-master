@@ -134,3 +134,7 @@ final_file="${@: -1:1}"
 mv $temp_output_file "$final_file"
 chmod u+x "$final_file"
 
+if [ "${HOMEBREW_BASH:-}" -eq "1" ]; then
+	sed -i '' 's/\/bin\/bash/\/usr\/local\/bin\/bash/' "$final_file" 
+fi
+

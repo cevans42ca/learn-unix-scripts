@@ -348,7 +348,7 @@ white_belt_exercise_set_less() {
 
 white_belt_exercise_path_and_sourcing() {
 	if ask_review_final_exam; then
-		good_work
+		keep_going
 		return 0
 	fi
 
@@ -589,7 +589,7 @@ yellow_stripe_exercise_escaping_quotes() {
 
 yellow_stripe_exercise_quote_finale() {
 	if ask_review_final_exam; then
-		good_work
+		keep_going
 		return 0
 	fi
 
@@ -739,7 +739,7 @@ yellow_belt_exercise_ctrl_r() {
 
 yellow_belt_exercise_history_bang() {
 	if ask_review_final_exam; then
-		good_work
+		keep_going
 		return 0
 	fi
 
@@ -850,7 +850,7 @@ green_stripe_exercise_ls_explore() {
 
 	for item in "${luc_history[@]}"
 	do
-		if [[ "$item" =~ ^[\ ]*ls( )*-([a-z]*t[a-z]*r[a-z]*|[a-z]*r[a-z]*t[a-z]*) ]]; then
+		if [[ "$item" =~ ^[\ ]*ls( )*-([A-Za-z]*t[A-Za-z]*r[A-Za-z]*|[A-Za-z]*r[A-Za-z]*t[A-Za-z]*) ]]; then
 			good_work
 			unset IFS
 			return
@@ -863,16 +863,48 @@ green_stripe_exercise_ls_explore() {
 }
 
 green_stripe_exercise_ls_dash_h() {
-	good_work
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*ls( )*-([A-Za-z]*h) ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
 }
 
 green_stripe_exercise_ls_dash_f() {
-	good_work
+	keep_going
 }
 
 green_stripe_exercise_df() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*df( )*-([A-Za-z]*h) ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
+green_stripe_final_exam() {
 	if ask_review_final_exam; then
-		good_work
+		keep_going
 		return 0
 	fi
 
@@ -922,24 +954,6 @@ EOL
 ####################
 # End of exercises #
 ####################
-
-blue_stripe_exercise_df() {
-	IFS='
-'
-
-	for item in "${luc_history[@]}"
-	do
-		if [[ "$item" =~ ^[\ ]*df([ ]|$) ]]; then
-			good_work
-			unset IFS
-			return
-		fi
-	done
-
-	sorry
-	unset IFS
-	return
-}
 
 belt_complete() {
 	rank_exercises_completed=$RANK

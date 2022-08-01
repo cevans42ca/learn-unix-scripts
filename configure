@@ -1,5 +1,8 @@
 #!/bin/sh
 
+rm -f config.status
+touch config.status
+
 if [[ "${BASH_VERSINFO:-0}" < "4" ]]; then
 	if [ -f /usr/local/bin/bash ]; then
 		homebrew=$(/usr/local/bin/bash -c 'echo ${BASH_VERSINFO[0]}')
@@ -11,6 +14,7 @@ if [[ "${BASH_VERSINFO:-0}" < "4" ]]; then
 		else
 			sed 's/\/bin\/bash/\/usr\/local\/bin\/bash/' replace-master > replace
 			chmod ug+x replace
+			echo "HOMEBREW_BASH=1" >> config.status
 		fi
 	else
 		echo "Associative array support, added in Bash 4.0, is required."
@@ -20,9 +24,6 @@ if [[ "${BASH_VERSINFO:-0}" < "4" ]]; then
 else
 	cp replace-master replace
 fi 
-
-# TODO:  Figure out stty -a vs stty everything and which side the rows are on
-#stty -a | sed -E 's/.*; rows ([0-9]+);.*/\1/;1q'
 
 # TODO:  Figure out how to do relative dates to ensure files created by touch are recent
 #date --date="3 months ago" +"%Y%m%d"

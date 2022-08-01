@@ -65,8 +65,8 @@ trap clean_up EXIT
 # insert ffa9e74e-2b02-4d72-9c82-9f9db2915c62 associative arrays for exercises and belt levels
 
 get_rows_and_columns() {
-	STTY_ROWS=`stty ${stty_options} | grep -Po "(?<=rows )[0-9]*(?=;)"`
-	STTY_COLUMNS=`stty ${stty_options} | grep -Po "(?<=columns )[0-9]*(?=;)"`
+	STTY_ROWS=$(stty ${stty_options} | head -1 | sed 's/.*; \([0-9][0-9]*\) rows.*/\1/;s/.*; rows \([0-9][0-9]*\).*/\1/')
+	STTY_COLUMNS=$(stty ${stty_options} | head -1 | sed 's/.*; \([0-9][0-9]*\) columns.*/\1/;s/.*; columns \([0-9][0-9]*\).*/\1/')
 	if (($STTY_ROWS > 50)); then
 		WIDTH=`expr $STTY_COLUMNS - 5`
 	else
@@ -563,7 +563,7 @@ EOL
 	complete_exercise
 }
 
-white_belt_exercise_path_and_sourcing() { # The $PATH Environment Variable, Sourcing, Final Exam
+white_belt_exercise_path_and_sourcing() { # $PATH, Sourcing, Processes, Final Exam
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 We're going to look at one specific environment variable now:  \$PATH.  Environment variables are usually printed with a
 dollar sign ( \$ ) in front of them.  Currently, \$PATH is set to the following value.
@@ -616,16 +616,35 @@ EOL
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 The last thing to teach you before you get your yellow stripe is why you need to add the dot and space at the beginning
-of the "check" script.  Normally, when you run a program, it runs in its own process.  All modern operating systems
-allow you to run multiple instances of the same program, which can work on different inputs at the same time.  Each new
-instance of the program (the child) gets a copy of some of the environment variables.  Environment variables in scripts
-need to be "exported" to show up in child processes.  Any environment variables that are changed while the child runs
-are not reflected in the parent.
+of the "check" script.  Normally, when you run a program, it runs in its own process, but the dot changes that.  Let's
+go more into detail about what a process is.
+
+Unix systems allow many people to do work on the same computer at the same time.  At any point in time, multiple people
+might be running the "ls" command.  We don't want these to get mixed up.  A process is a running* copy of a program.
+Processes allow Unix to keep the different running copies (or instances) of programs straight.
+
+Unix creates an entry in the process table for each copy or instance of all running programs.  You can think of the
+process table as a spreadsheet or work sheet, where each process has a row.  There are many columns:  a unique ID, the
+user ID that started it, what directory it was started in, and many other details.  The process table is stored in
+memory.
+
+* If a program has finished running, it will have an exit code, which is stored in the process table.  Processes
+stick around until their parent (the program that started them) requests their exit code:  these are called zombie
+processes.  In Unix, zombies are part of the normal lifecycle of processes, but in a properly functioning system, they
+don't last long.
+
+Let's go back to environment variables.
+
+All modern operating systems allow you to run multiple instances of the same program, which can work on different inputs
+at the same time.  Each new instance of the program (the child) gets a copy of some of the environment variables.
+Environment variables in scripts need to be "exported" to show up in child processes.  Any environment variables that
+are changed while the child runs are not reflected in the parent.
 
 Carefully controlling environment variables results in programs that are cleaner and more resilient.
 
-You will only need to understand all of these details when writing bash (and similar) scripts, however, being aware of
-these factors is important if most of your previous experience is with Microsoft Windows (see below).
+You will only need to understand these details about environment variables when writing bash (and similar) scripts,
+however, being aware of these factors is important if most of your previous experience is with Microsoft Windows (see
+below).
 
 The dot (.) in ". check" is a short form for the built-in command "source", so executing ". check" is a short form for
 "source check".  When you source a script, the script runs as if it was typed in.  (If you're familiar with Windows
@@ -1771,10 +1790,10 @@ green_stripe_exercise_ls_dash_f() { # Introducing "ls -f"
 The last option we'll be looking at for "ls" is the "-f" option.
 
 If a runaway process has created tens of thousands of files in a directory, getting a listing can take a while.  Most of
-the time taken up is in sorting the files alphabetically (which is the default).  To help in finding all the files in
-such a directory, you can ask "ls" for the files in whatever order they're listed in the directory, instead of in
+the time is used to sort the files alphabetically (which is the default).  To help in finding all the files in
+such a directory, you can add an option to print the files in whatever order they're listed in the directory, instead of in
 alphabetical order.  You do that with the "-f" option.  We don't recommend memorizing it, but you should be aware that
-it exists.
+it exists so you can check the man page when you need it.
 EOL
 
 	complete_exercise
@@ -1791,11 +1810,15 @@ of files and each one has a maximum size.
 
 Just as a USB drive E: in Windows has a maximum size, and the hard disk C: has a maximum size, each mount in Unix can
 get filled up.  That means that /var/log can be full of log files, but /home still has room.  That's a good thing.  It
-means one problem won't bring down the whole system.  In many cases, mounts will have some space reserved that only
-root can use.
+means one problem won't bring down the whole system.
 
-The command to see how much space is being taken up for each mount is "df".  By default "df" shows sizes in 512-byte
-or 1K blocks, which is not very readable for new users.  To see the sizes in "human" units, use the "-h" option.
+In many cases, mounts will have some space reserved that only root can use.  This space can be used for emergencies, and
+also, having a nearly full filesystem can cause performance problems.  All you need to do to use this space is to
+switch to the root user (we'll look at how to do that later).
+
+The command to see how much space is being taken up for each mount is "df".  The "df" command usually defaults to either
+512-byte or 1K blocks, which is not very readable for new users.  To see the sizes in "human" units, use the "-h" option.
+Try it now.
 EOL
 
 	complete_exercise
