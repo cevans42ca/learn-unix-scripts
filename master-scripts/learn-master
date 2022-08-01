@@ -1634,6 +1634,8 @@ EOL
 	complete_exercise
 }
 
+# TODO:  show ls -l with files at different dates in the past?
+
 green_stripe_exercise_ls_dash_l() { # Introduction to "ls -l"
 	create_lists
 
@@ -1758,22 +1760,27 @@ Try out "ls -lh" in or on different directories.  If you're on a BSD or GNU syst
 format with "human readable" file sizes.
 
 If you're not, it's anyone's guess.  It may give you an error, do nothing, or do something else.  If you like, check the
-man page before you try it.  Once you're done, execute ". check" for your final exam.
+man page before you try it.
 EOL
 
 	complete_exercise
 }
 
-# Green Stripe
-# ls -f (directory order, good for problems with lots of files)
-# show ls -l with files at different dates in the past?
-# Intermediate arguments to ls; mounts and disk space
+green_stripe_exercise_ls_dash_f() { # Introducing "ls -f"
+	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+The last option we'll be looking at for "ls" is the "-f" option.
 
-####################
-# End of exercises #
-####################
+If a runaway process has created tens of thousands of files in a directory, getting a listing can take a while.  Most of
+the time taken up is in sorting the files alphabetically (which is the default).  To help in finding all the files in
+such a directory, you can ask "ls" for the files in whatever order they're listed in the directory, instead of in
+alphabetical order.  You do that with the "-f" option.  We don't recommend memorizing it, but you should be aware that
+it exists.
+EOL
 
-blue_stripe_exercise_df() {
+	complete_exercise
+}
+
+green_stripe_exercise_df() {
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 The last thing in yellow belt is the "df" command.  But before we go into what it does, we'll have to go over mounts.
 
@@ -1787,16 +1794,16 @@ get filled up.  That means that /var/log can be full of log files, but /home sti
 means one problem won't bring down the whole system.  In many cases, mounts will have some space reserved that only
 root can use.
 
-The command to see how much space is being taken up for each mount is "df".  By default "df" shows block sizes, which are
-not very user friendly.  To see the sizes in "human" units, use the "-h" option.
+The command to see how much space is being taken up for each mount is "df".  By default "df" shows sizes in 512-byte
+or 1K blocks, which is not very readable for new users.  To see the sizes in "human" units, use the "-h" option.
 EOL
 
 	complete_exercise
 }
 
-#########################
-# End of held exercises #
-#########################
+####################
+# End of exercises #
+####################
 
 ask_about_putty_font_size() {
 	fmt -u --width=$WIDTH <<EOL

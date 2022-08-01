@@ -61,6 +61,8 @@ exercises["green_stripe_$((i++))"]="ls"
 exercises["green_stripe_$((i++))"]="ls_dash_l"
 exercises["green_stripe_$((i++))"]="ls_explore"
 exercises["green_stripe_$((i++))"]="ls_dash_h"
+exercises["green_stripe_$((i++))"]="ls_dash_f"
+exercises["green_stripe_$((i++))"]="df"
 
 declare -A belt_to_number
 belt_to_number["white_belt"]=0

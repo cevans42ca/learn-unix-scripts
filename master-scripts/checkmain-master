@@ -863,6 +863,14 @@ green_stripe_exercise_ls_explore() {
 }
 
 green_stripe_exercise_ls_dash_h() {
+	good_work
+}
+
+green_stripe_exercise_ls_dash_f() {
+	good_work
+}
+
+green_stripe_exercise_df() {
 	if ask_review_final_exam; then
 		good_work
 		return 0
