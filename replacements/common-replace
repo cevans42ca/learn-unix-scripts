@@ -54,14 +54,13 @@ exercises["yellow_belt_$((i++))"]="up"
 exercises["yellow_belt_$((i++))"]="home_end_and_pound"
 exercises["yellow_belt_$((i++))"]="ctrl_r"
 exercises["yellow_belt_$((i++))"]="history_bang"
-exercises["yellow_belt_$((i++))"]="command_line_options"
-exercises["yellow_belt_$((i++))"]="ls"
-exercises["yellow_belt_$((i++))"]="ls_dash_l"
-exercises["yellow_belt_$((i++))"]="ls_explore"
-exercises["yellow_belt_$((i++))"]="ls_dash_h"
 
 i=1
-exercises["green_stripe_$((i++))"]="ls_dash_ld"
+exercises["green_stripe_$((i++))"]="command_line_options"
+exercises["green_stripe_$((i++))"]="ls"
+exercises["green_stripe_$((i++))"]="ls_dash_l"
+exercises["green_stripe_$((i++))"]="ls_explore"
+exercises["green_stripe_$((i++))"]="ls_dash_h"
 
 declare -A belt_to_number
 belt_to_number["white_belt"]=0

@@ -1388,10 +1388,10 @@ to go to the beginning of the command line ("a" is the first letter in the alpha
 There are more key combinations to go to the beginning and end of words, to delete to the beginning and end of words,
 and more.  We do not recommend memorizing them.
 
-We recommend memorizing Ctrl+a, Ctrl+e, for two reasons:  speed and compatibility.  They are much faster than picking up
-your hands, finding the Home or End key, pressing it, and returning your hands to the home row.  In some cases, you may
-need to use a misconfigured or old terminal, and Home and End won't work.  Home and End don't usually work by default on
-Macs either, so it's good to have options.
+We recommend memorizing Ctrl+a and Ctrl+e, for two reasons:  speed and compatibility.  They are much faster than picking
+up your hands, finding the Home or End key, pressing it, and returning your hands to the home row.  In some cases, you
+may need to use a misconfigured or old terminal, and Home and End won't work.  Home and End don't usually work by
+default on Macs either, so it's good to have options.
 
 If you're used to moving quickly back and forth between the cursor keys and the home row, memorizing Ctrl+f and Ctrl+b
 may not be of much use.  In the worst case, if you have no choice but to use a misconfigured terminal, you'll still be
@@ -1517,7 +1517,7 @@ EOL
 	complete_exercise
 }
 
-yellow_belt_exercise_command_line_options() { # Short Options, Long Options, and Man(ual) Pages
+green_stripe_exercise_command_line_options() { # Short Options, Long Options, and Man(ual) Pages
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 Before we get into the various ways you can list files, we'll have to go through short options and long options.
 Short options are single characters.  Long options are full words, and sometimes multiple words.
@@ -1558,7 +1558,7 @@ The history lesson ends now.
 
 If you're using a Mac (now, or you plan to fully immerse yourself in using the command line) this would be a good time to
 take note that Macs are based on BSD and won't work the same way Linux does.  In particular, long options don't appear very
-often in BSD tools.  If don't want to use the command line features of Macs, that's certainly an option as well.
+often in BSD tools.  If you don't want to use the command line features of Macs, that's certainly an option as well.
 
 No matter which platform you're using or will be using, programmers can still do short and long options however they want.
 Some Linux programs don't have any short options and long options have one dash, not two (like Java).  Some programs
@@ -1620,7 +1620,7 @@ EOL
 	fi
 }
 
-yellow_belt_exercise_ls() { # Getting Directory Lists Different Ways
+green_stripe_exercise_ls() { # Getting Directory Lists Different Ways
 	create_lists
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
@@ -1628,13 +1628,13 @@ List the files in $LUS_HOME/list/ord and $LUS_HOME/list/count.  There a ton of d
 to these directories a bunch of different ways, you could list the contents of these directories without "cd" by providing
 each directory as an argument to "ls", either one at a time, or together on the same command line.  You could also try
 using the copy and paste features of your terminal.  Explore different ways to list these files without using any options.
-We'll look at options in the next lesson.
+We'll look at options for "ls" in the next few exercises.
 EOL
 
 	complete_exercise
 }
 
-yellow_belt_exercise_ls_dash_l() { # Introduction to "ls -l"
+green_stripe_exercise_ls_dash_l() { # Introduction to "ls -l"
 	create_lists
 
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
@@ -1682,9 +1682,9 @@ The next three lines tell us information about what's in this directory.
 We'll begin at the end.  On the far right are the file and directory names:  "zero", "one", and "two".
 
 We'll go through the rest of the fields from left to right.  The first part of the output shows the permissions
-(drwxrwxr-x).  We'll be looking at permissions quite a bit later.  Right now, look at the first character.  If it's a
-directory, the first character will be "d".  If it's a regular file, it will be a hyphen.  So "zero" is a directory, and
-"one" and "two" are not directories.
+(drwxrwxr-x).  We'll be looking at what these mean and how to change them quite a bit later.  Right now, look at the
+first character.  If it's a directory, the first character will be "d".  If it's a regular file, it will be a hyphen.
+So "zero" is a directory, and "one" and "two" are not directories.
 
 The next part is who owns the file.  In this example, the user ID is "user".
 
@@ -1729,7 +1729,7 @@ EOL
 	complete_exercise
 }
 
-yellow_belt_exercise_ls_explore() { # Using the Manual
+green_stripe_exercise_ls_explore() { # Searching in a Man(ual) Page
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 It's time to use the man pages again.  This time, you'll be looking for something specific.
 
@@ -1752,7 +1752,7 @@ EOL
 	complete_exercise
 }
 
-yellow_belt_exercise_ls_dash_h() { # Introducing "ls -h"
+green_stripe_exercise_ls_dash_h() { # Introducing "ls -h"
 	fmt -u --width=$WIDTH <<EOL >> $fmt_file
 Try out "ls -lh" in or on different directories.  If you're on a BSD or GNU system, it will give you file listings in long
 format with "human readable" file sizes.
@@ -1764,18 +1764,7 @@ EOL
 	complete_exercise
 }
 
-green_stripe_exercise_ls_dash_ld() { # Introducing "ls -d"
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
-Try out "ls -ld" in or on different directories.  It will show you the directory permissions.
-
-As usual, execute ". check" to continue.
-EOL
-	
-	complete_exercise
-}
-
 # Green Stripe
-# ls -ld
 # ls -f (directory order, good for problems with lots of files)
 # show ls -l with files at different dates in the past?
 # Intermediate arguments to ls; mounts and disk space

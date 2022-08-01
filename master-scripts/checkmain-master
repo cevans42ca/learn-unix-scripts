@@ -738,10 +738,55 @@ yellow_belt_exercise_ctrl_r() {
 }
 
 yellow_belt_exercise_history_bang() {
-	keep_going
+	if ask_review_final_exam; then
+		good_work
+		return 0
+	fi
+
+	luc_correct_answers=0
+
+	fmt -u --width=$luc_width <<EOL
+If you press Ctrl+c, you will get back to a prompt, but your progress through the questions will not be saved.
+
+Question 1/3
+
+If you found a command in your history with Ctrl+r but you need to make a change to it first, what should you do?
+
+EOL
+
+	luc_answers=( 'Type Ctrl+c' 'Type Ctrl+g' 'Start typing the desired changes' 'Press Left, Right, Ctrl+b, or Ctrl+f' 'Ask the audience' )
+	handle_answer 'Press Left, Right, Ctrl+b, or Ctrl+f'
+
+	fmt -u --width=$luc_width <<EOL
+Question 2/3
+
+With some terminals, what keystrokes do you need to go to the beginning and end of the current command line?
+
+EOL
+
+	luc_answers=( 'Ctrl+a and Ctrl+e' 'Ctrl+f and Ctrl+b' 'Ctrl+1 and Ctrl+9' 'The Home and End keys work everywhere!' )
+	handle_answer 'Ctrl+a and Ctrl+e'
+
+	fmt -u --width=$luc_width <<EOL
+Question 3/3
+
+If you want to keep what you've typed so far but not run it, what should you do?
+
+EOL
+
+	luc_answers=( 'Type Ctrl+a, #, Enter' "Just press Enter, there are errors so it won't run" 'Type Ctrl+h' 'Type Ctrl+s' )
+	handle_answer 'Type Ctrl+a, #, Enter'
+
+	if [ "$luc_correct_answers" == "3" ]; then
+		good_work
+	else
+		echo "Results:  $luc_correct_answers/3 correct"
+		echo ""
+		sorry
+	fi
 }
 
-yellow_belt_exercise_command_line_options() {
+green_stripe_exercise_command_line_options() {
 	IFS='
 '
 
@@ -759,7 +804,7 @@ yellow_belt_exercise_command_line_options() {
 	return
 }
 
-yellow_belt_exercise_ls() {
+green_stripe_exercise_ls() {
 	fmt -u --width=$luc_width <<EOL
 Question 1/1
 
@@ -779,7 +824,7 @@ EOL
 	fi
 }
 
-yellow_belt_exercise_ls_dash_l() {
+green_stripe_exercise_ls_dash_l() {
 	fmt -u --width=$luc_width <<EOL
 Question 1/1
 
@@ -799,7 +844,7 @@ EOL
 	fi
 }
 
-yellow_belt_exercise_ls_explore() {
+green_stripe_exercise_ls_explore() {
 	IFS='
 '
 
@@ -817,7 +862,7 @@ yellow_belt_exercise_ls_explore() {
 	return
 }
 
-yellow_belt_exercise_ls_dash_h() {
+green_stripe_exercise_ls_dash_h() {
 	if ask_review_final_exam; then
 		good_work
 		return 0
@@ -864,10 +909,6 @@ EOL
 		echo ""
 		sorry
 	fi
-}
-
-green_stripe_exercise_ls_dash_ld() {
-	good_work
 }
 
 ####################
