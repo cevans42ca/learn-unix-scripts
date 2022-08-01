@@ -230,7 +230,7 @@ prepareLusHome() {
 	fi
 }
 
-white_belt_exercise_what_execute_means() { # What "Execute" Means
+white_belt_exercise_what_execute_means() { # What "Execute" Means, and Your Prompt
 	yellow_stripe="${yellow_on_black}yellow ${nc}${bright_white_on_black}stripe${nc}"
 	printf "${underline}The Bare Essentials${no_underline}\n\n" >> $fmt_file
 
@@ -257,11 +257,29 @@ In particular, this exercise has the most reading and the least to do.
 EOL
 
 	printf "\n\n${underline}Your Prompt${no_underline}\n\n" >> $fmt_file
-	x="$(PS1=\"$PS1\" echo -n | bash -i 2>&1)"
-	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+		x="$(PS1=\"${PS1:-}\" echo -n | bash -i 2>&1)"
+		# If the prompt starts with "bash", it's probably a default prompt, and not the real one.
+		# Checking if $PS1 is set doesn't seem to work in all cases.
+		if [[ "${x}" =~ ^bash.* ]]; then
+			fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Here are some examples of prompts.  Real prompts will have 'user', 'host', and 'directory' filled in with the real
+values based on who is logged in, what directory they're in, and what host they're using.
+EOL
+			echo >> $fmt_file
+			echo "[user:host directory]$" >> $fmt_file
+			echo "host:directory user$" >> $fmt_file
+			echo "user@host directory$" >> $fmt_file
+			echo
+			echo "They usually end with a dollar sign ( $ )."
+		else
+			fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Your current prompt is as follows.
 
 ${x%exit}
+EOL
+		fi
+
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
 When you see your prompt, that means that the previous commands have completed and your shell is ready for another command.
 (We'll be going into more detail on shells later.)  Prompts are one of the most heavily customized aspects of Unix, ranging
