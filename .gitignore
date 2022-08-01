@@ -5,3 +5,4 @@ replacetarget
 configuretarget
 replace
 Makefile
+config.status
