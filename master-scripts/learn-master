@@ -167,14 +167,14 @@ set_num_exercises() {
 	regex="'"
 	regex+="${RANK}_exercise_.*\(\)"
 	regex+="'"
-	NUM_EXERCISES=$(bash -c "grep -E ${regex} ~/bin/learn | wc -l")
+	NUM_EXERCISES=$(bash -c "grep -E ${regex} ~/bin/learn | wc -l | tr -d '[:blank:]'")
 }
 
 set_num_exercises_for_review() {
 	regex="'"
 	regex+="${new_rank}_exercise_.*\(\)"
 	regex+="'"
-	NUM_REVIEW_EXERCISES=$(bash -c "grep -E ${regex} ~/bin/learn | wc -l")
+	NUM_REVIEW_EXERCISES=$(bash -c "grep -E ${regex} ~/bin/learn | wc -l | tr -d '[:blank:]'")
 }
 
 print_rank() {
