@@ -17,6 +17,7 @@ clean: gitclean
 	rm -f flags/replacetarget
 	rm -f replace
 	rm -f Makefile
+	rm -f config.status
 	cd docker && make clean
 	@echo
 	@echo "Run the ./configure script to create the Makefile."

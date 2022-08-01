@@ -64,6 +64,8 @@ trap clean_up EXIT
 
 # insert ffa9e74e-2b02-4d72-9c82-9f9db2915c62 associative arrays for exercises and belt levels
 
+FMT_OPTIONS="-u --width="
+
 get_rows_and_columns() {
 	STTY_ROWS=$(stty ${stty_options} | head -1 | sed 's/.*; \([0-9][0-9]*\) rows.*/\1/;s/.*; rows \([0-9][0-9]*\).*/\1/')
 	STTY_COLUMNS=$(stty ${stty_options} | head -1 | sed 's/.*; \([0-9][0-9]*\) columns.*/\1/;s/.*; columns \([0-9][0-9]*\).*/\1/')
@@ -85,7 +87,7 @@ resize_to_default() {
 	get_rows_and_columns
 
 	if (($STTY_ROWS < 24)) || (($STTY_COLUMNS < 80)); then
-		fmt -u --width=$WIDTH <<EOL
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
 It looks like the automatic resize didn't work.  Continue anyway (y/N)?
 EOL
 
@@ -106,7 +108,7 @@ size_matters() {
 	fi
 
 	if [ "$STTY_COLUMNS" == 80 ] && [ "$standard_rows" -eq "1" ] && [ -z "${RESIZED_ALREADY:-}" ]; then
-		fmt -u --width=$WIDTH <<EOL
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
 It looks like your terminal is set to the default size of 80 columns and $STTY_ROWS rows.  This script is capable of
 using more.  If you're able to change the size of the terminal, please do so, then press Enter to continue.
 EOL
@@ -117,7 +119,7 @@ EOL
 		get_rows_and_columns
 
 		if (("$STTY_COLUMNS" < "80")) || (("$STTY_ROWS" < 24)); then
-			fmt -u --width=$WIDTH <<EOL
+			fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
 Oh!  A wise guy!  How about we change that back to the default (Y/y)?
 EOL
 
@@ -148,7 +150,7 @@ EOL
 			fi	
 
 			if [ -n "${FMT_STRING:-}" ]; then
-				fmt -u --width=$WIDTH <<EOL
+				fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
 $FMT_STRING
 EOL
 			fi
@@ -230,7 +232,7 @@ white_belt_exercise_what_execute_means() { # What "Execute" Means
 	yellow_stripe="${yellow_on_black}yellow ${nc}${bright_white_on_black}stripe${nc}"
 	printf "${underline}The Bare Essentials${no_underline}\n\n" >> $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 In the United States and Canada, grammar rules say to put the period inside the double quotes.
 
     He told me, "You need to go to the store."
@@ -254,7 +256,7 @@ EOL
 
 	printf "\n\n${underline}Your Prompt${no_underline}\n\n" >> $fmt_file
 	x="$(PS1=\"$PS1\" echo -n | bash -i 2>&1)"
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Your current prompt is as follows.
 
 ${x%exit}
@@ -266,7 +268,7 @@ from a simple dollar sign to multi-line creations.  You should expect your promp
 EOL
 
 	printf "\n\n${underline}I'm Stuck!${no_underline}\n\n" >> $fmt_file
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 It's always a good idea to take notes, because it helps with recall.  But there a few things this script will specifically
 call out for you to make a note of, things you're always going to want to have handy.  Take them down in whatever style you
 like (Evernote, a personal wiki, on your phone, Microsoft OneNote, a mind map, or good old pen and paper) but make sure it
@@ -286,7 +288,7 @@ about using Ctrl+c, and you will learn other things you might want to try first.
 EOL
 
 	printf "\n\n${underline}Moving On${no_underline}\n\n" >> $fmt_file
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 After reading the text for each exercise, you will need to
 quit the lesson by pressing "q" (which will return you to your prompt).  You can then complete anything the exercise asked
 you to do.
@@ -298,7 +300,7 @@ EOL
 }
 
 white_belt_exercise_stuck() { # Freezing and Unfreezing the Terminal
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 The first thing you don't want to be caught by is Ctrl+q and Ctrl+s.  If you accidentally type Ctrl and "s", the terminal will
 freeze.  Ctrl+s is easy to type and is in common use in Windows programs as a keyboard shortcut for saving the current file.
 Depending on your background, it may be second nature to you to type it when you want to save something.
@@ -321,7 +323,7 @@ EOL
 }
 
 white_belt_exercise_cd_root() { # The Root Directory
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Now that you know how to recover from your terminal getting frozen and how to get a prompt back, you need to know how to
 navigate.
 
@@ -361,11 +363,11 @@ EOL
 white_belt_exercise_ls_root() { # What Does the Root Look Like?
 	# If the user is coming back after needing to look at something else, they may now be in another directory.
 	if [[ `pwd` == "/" ]]; then
-		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 It's time to take a look around.  Execute "ls", read the names of the directories, and execute ". check".
 EOL
 	else
-		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 It's time to take a look around.  Execute "cd /", execute "ls", read the names of the directories, and execute ". check".
 EOL
 	fi
@@ -389,7 +391,7 @@ white_belt_exercise_common_root_directories() { # Explanation of Directories Und
 	fi
 
 	# $ROOT_TEXT should be at the end of the line so the formatting works out.
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 For the following notes, keep in mind that the root user (usually simply called "root") is the administrator account.  $ROOT_TEXT
 The root user has access to everything and is allowed to do everything, unless permissions have been deliberately given up.
 A simple example is making a file read only.  The root user can put up blocks to make things more difficult to do, but the
@@ -400,21 +402,21 @@ EOL
 
 	if [ -d "/bin" ]; then
 		printf "\n${underline}/bin${no_underline}\n" >> $fmt_file
-		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
   Stands for BINaries (programs that aren't scripts).  The core binaries are here, like "ls". 
 EOL
 	fi
 
 	if [ -d "/etc" ]; then
 		printf "\n${underline}/etc${no_underline}\n" >> $fmt_file
-		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
   You'll find all system wide configuration here.
 EOL
 	fi
 
 	if [ -d "/home" ]; then
 		printf "\n${underline}/home${no_underline}\n" >> $fmt_file
-		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
   Each user's home directory is under here.  Your home directory (${HOME}) contains everything that's only for you,
   especially configuration files.  In most Unix enviroments, your home directory is shared across multiple servers so your
   configuration settings are available across multiple servers.  On Macs, this directory (if it exists) will usually be
@@ -424,7 +426,7 @@ EOL
 
 	if [ -d "/opt" ]; then
 		printf "\n${underline}/opt${no_underline}\n" >> $fmt_file
-		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
   Sometimes seen on Red Hat Linux servers, the /opt directory is for OPTional software that's not part of the distribution.
   (If you want, you can look up what a Linux distribution is.)  You might find an Oracle DB instance or a Dynatrace OneAgent
   installed here.
@@ -433,7 +435,7 @@ EOL
 
 	if [ -d "/root" ]; then
 		printf "\n${underline}/root${no_underline}\n" >> $fmt_file
-		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
   The root user's home directory (set aside for the root user's personal use).  Depending on the installation, the /root
   directory can sometimes be used in emergencies if other parts of the filesystem are full.
 EOL
@@ -441,7 +443,7 @@ EOL
 
 	if [ -d "/sbin" ]; then
 		printf "\n${underline}/sbin${no_underline}\n" >> $fmt_file
-		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
   Stands for Secure BINaries.  Binary programs (not scripts) that are run only by privileged users go here.  For example,
   the programs that change network configurations are here, as well as programs for other system maintenance and starting up the
   operating system.
@@ -450,7 +452,7 @@ EOL
 
 	if [ -d "/tmp" ]; then
 		printf "\n${underline}/tmp${no_underline}\n" >> $fmt_file
-		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
   Short for TeMP, this directory is where any temporary files are created.  Well-behaved programs should clean up after
   themselves.  Most systems are configured to delete any files that haven't been modified in a week (two weeks is also common).
 EOL
@@ -458,7 +460,7 @@ EOL
 
 	if [ -d "/Users" ]; then
 		printf "\n${underline}/Users${no_underline}\n" >> $fmt_file
-		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
   Each user's home directory is under here.  On most flavors of Unix, home directories are under /home instead.
   Your home directory ($HOME) contains everything that's only for you, particularly configuration files.  In most
   Unix enviroments, your home directory is shared across multiple servers so your configuration settings are available
@@ -468,7 +470,7 @@ EOL
 
 	if [ -d "/usr" ]; then
 		printf "\n${underline}/usr${no_underline}\n" >> $fmt_file
-		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
   Short for "user", i.e. for "regular" users and not the root user.  Most programs are under here somewhere (/usr/bin,
   /usr/local/bin, /usr/sbin, /usr/local/sbin).
 EOL
@@ -476,7 +478,7 @@ EOL
 
 	if [ -d "/var" ]; then
 		printf "\n${underline}/var${no_underline}\n" >> $fmt_file
-		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
   Short for VARiable, this directory is for things that are constantly changing, particularly:  log files, caches, mail, and
   printer queues.
 EOL
@@ -484,20 +486,20 @@ EOL
 
 	echo "" >> $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 For a full list, see https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard.
 
 EOL
 	
 
 	if [[ `pwd` == "$HOME" ]]; then
-		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 This exercise was going to ask you to go back to your home directory, but you're already there.  Use the "cd" command to
 change directory to somewhere else (like "cd /").  You can any one of the following commands to return to your home directory.
 Then execute ". check".
 EOL
 	else
-		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Let's return to your home directory.  The following commands are equivalent.  Execute one of them, then execute ". check".
 EOL
 	fi
@@ -512,7 +514,7 @@ EOL
 }
 
 white_belt_exercise_set() { # The "set" Command
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 There are four ways to pass settings to programs:  environment variables, arguments, standard input, and configuration files.
 
 We will be looking at environment variables next.  The "set" command will show you the current environment variables.
@@ -525,7 +527,7 @@ EOL
 }
 
 white_belt_exercise_frozen() { # The First Test
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 It's time for the first test.  Make sure your notes are handy and execute ". check".
 EOL
 
@@ -533,7 +535,7 @@ EOL
 }
 
 white_belt_exercise_set_more() { # The "more" Command
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 To go page by page, add "| more" to a command.  The pipe ( | ) can be used to send the output of one command to the input
 of another command.  We'll be going into more detail on pipes later.  The pipe character is rarely used outside
 of technical fields.  On many keyboard layouts, you can type it with Shift+Backslash.
@@ -547,7 +549,7 @@ EOL
 }
 
 white_belt_exercise_set_less() { # The "less" Command
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 The "more" command will only give you more.  If you want to back up, add "| less" to a command.  In many cases (but depending
 on your terminal settings) you will be able to move up and down with the cursor keys and use the Page Up and Page Down keys.
 As before, Space will go a page forward, Enter will show one more line, and "q" will quit.
@@ -564,7 +566,7 @@ EOL
 }
 
 white_belt_exercise_path_and_sourcing() { # $PATH, Sourcing, Processes, Final Exam
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 We're going to look at one specific environment variable now:  \$PATH.  Environment variables are usually printed with a
 dollar sign ( \$ ) in front of them.  Currently, \$PATH is set to the following value.
 
@@ -578,7 +580,7 @@ EOL
 	script_path="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 	script_name=`basename $0`
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 \$PATH contains a list of paths where programs might be found (scripts, binaries, and anything that can be run).
 
 This script is in $script_path and the full path to it is $script_path/$script_name.  
@@ -593,7 +595,7 @@ EOL
 
 	less -R -P "$less_prompt_move_on" $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL > $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL > $fmt_file
 The \$PATH environment variable lists all the directories where programs can be found.  On Windows, the current directory
 is always checked first for commands, operable programs, or batch files.  On Unix, typically the current directory is never
 in the \$PATH.
@@ -614,7 +616,7 @@ EOL
 
 	echo "" >> $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 The last thing to teach you before you get your yellow stripe is why you need to add the dot and space at the beginning
 of the "check" script.  Normally, when you run a program, it runs in its own process, but the dot changes that.  Let's
 go more into detail about what a process is.
@@ -662,14 +664,14 @@ EOL
 
 yellow_stripe_exercise_pwd() { # The "pwd" Command
 	if [[ `pwd` == "/" ]]; then
-		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 To begin this exericse, you can't be in the root directory.  Execute "cd", then execute "learn".
 EOL
 		complete_exercise
 		exit 0
 	fi
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 The theme of the yellow stripe exericses is creating files and directories, and in particular, characters that should be avoided.
 We will also be looking at the special directories "." and "..".
 
@@ -690,14 +692,14 @@ EOL
 
 yellow_stripe_exercise_cd_dot_dot() { # Parent Directories, ".", and ".."
 	if [[ `pwd` == "/" ]]; then
-		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 To begin this exericse, you can't be in the root directory.  Execute "cd", then execute "learn".
 EOL
 		complete_exercise
 		exit 0
 	fi
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 The directory "." is a special directory that refers to the current directory.  All directories have a "." directory and
 it cannot be removed.  The following paths all reference the same directory.
 
@@ -708,7 +710,7 @@ EOL
 	echo "$HOME/./." >> $fmt_file
 	echo "$HOME/././." >> $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
 The "." directory can be useful to provide as a source or destination.
 
@@ -722,7 +724,7 @@ EOL
 
 printf "\n\n${underline}The Parent Rescue${no_underline}\n\n" >> $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 The special directory ".." refers to the parent directory.  The following paths point to the same directory.
 
 EOL
@@ -730,7 +732,7 @@ EOL
 	echo "/home/" >> $fmt_file
 	echo "/home/example/.." >> $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
 All of these following paths also point to the same directory (a different one than the one above).
 
@@ -740,7 +742,7 @@ echo "/home/example/" >> $fmt_file
 echo "/home/example/../example/" >> $fmt_file
 echo "/home/example/../example/../example/" >> $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
 In the white belt exercises, you went from your home directory to the root directory, then back.  This
 time, we'll look at each step along the way.  To go one directory up, execute "cd ..".  In many cases,
@@ -752,7 +754,7 @@ EOL
 }
 
 yellow_stripe_exercise_no_news_is_good_news() { # No News is Good News
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 When it comes to Unix, always remember:  no news is good news.
 
 The oldest and most core programs ("cp, "mv", "rm", etc.) will only print something if there was a problem.
@@ -771,7 +773,7 @@ yellow_stripe_exercise_mkdir_and_relative_paths() { # The "mkdir" Command and Re
 	prepareLusHome
 
 	if [ -d $LUS_HOME/parent ]; then
-		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 This exercise involves creating the directory $LUS_HOME/parent, which already exists.  You will need to move it or rename
 it by executing "mv $LUS_HOME/parent newname", then executing "learn" again.
 EOL
@@ -781,7 +783,7 @@ EOL
 		exit 2
 	fi
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 The "mkdir" command creates directories.  Given what you know about "." and "..", think about the following commands.
 
 EOL
@@ -794,7 +796,7 @@ EOL
 	echo "mkdir ../two" >> $fmt_file
 	echo "mkdir ../three" >> $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
 Once you've thought about it, execute the commands.  Please be careful when entering them.  If you get it wrong, you'll
 have to rename the parent directory and start from the beginning.  You can delete your attempts later when you have
@@ -814,7 +816,7 @@ yellow_stripe_exercise_rmdir() { # The "rmdir" Command
 	fi
 
 	if [ ! -d "$LUS_HOME/parent" ] || [ ! -d "$LUS_HOME/parent/one" ] || [ ! -d "$LUS_HOME/parent/two" ] || [ ! -d "$LUS_HOME/parent/three" ]; then
-		fmt -u --width=$WIDTH <<EOL
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
 This exercise involves removing directories created in a previous exercise.  At least one of them doesn't exist.  Create them (y/n)?
 EOL
 
@@ -829,7 +831,7 @@ EOL
 		fi
 	fi
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 The "rmdir" command removes directories.  The directory must be empty for "rmdir" to work.  We will look at deleting whole
 trees of directories later.  Read these commands and see if you can follow what they do.
 
@@ -843,7 +845,7 @@ EOL
 	echo "cd .." >> $fmt_file
 	echo "rmdir parent" >> $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
 Once you've thought about it, execute the commands.  Please be careful when entering them.  If you get it wrong, when you
 run "learn" again, you can choose to create any missing directories so you can try again.
@@ -858,7 +860,7 @@ yellow_stripe_exercise_special_characters() { # Special Characters in Filenames 
 	if [ -f $LUS_HOME/yellow ]; then
 		less -R -P "$less_prompt_move_on" $fmt_file
 	
-		fmt -u --width=$WIDTH <<EOL
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
 This exercise involves creating the file $LUS_HOME/yellow, which already exists.  Delete it (y/n)?
 EOL
 
@@ -871,7 +873,7 @@ EOL
 		fi
 	fi
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 We're going to switch focus to filenames, file types, and how to look at file contents.
 
 Windows is up front about the characters that you're not allowed to use in a file or directory name.  They are as follows.
@@ -925,7 +927,7 @@ yellow_stripe_exercise_file() { # The "file" Command and Magic
 	if [ ! -f $LUS_HOME/yellow ]; then
 		less -R -P "$less_prompt_move_on" $fmt_file
 	
-		fmt -u --width=$WIDTH <<EOL
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
 The previous exercise involves creating the file $LUS_HOME/yellow, but it doesn't exist.  Create it (y/n)?
 EOL
 
@@ -938,7 +940,7 @@ EOL
 		fi
 	fi
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Now that you've created the file $LUS_HOME/yellow, let's look at ways to see what's in it.
 
 Windows popularized the idea of file extensions (foo.bat is a batch file, foo.txt is a text file, foo.doc is a Microsoft
@@ -961,7 +963,7 @@ yellow_stripe_exercise_cat_less() { # Comparing "cat" and "less"
 	if [ ! -f $LUS_HOME/yellow ]; then
 		less -R -P "$less_prompt_move_on" $fmt_file
 	
-		fmt -u --width=$WIDTH <<EOL
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
 A previous exercise involves creating the file $LUS_HOME/yellow, but it doesn't exist.  Create it (y/n)?
 EOL
 
@@ -974,7 +976,7 @@ EOL
 		fi
 	fi
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 The simplest way to see what's in a file is with the "cat" command (which is short for conCATenate).  Before you use "cat",
 you need to know that it's a small file.  (We'll look at file sizes later.)  If you accidentally "cat" a large file, your
 terminal may be stuck for a while, even if you type Ctrl+c.
@@ -999,7 +1001,7 @@ yellow_stripe_exercise_quotes() { # Introduction to Quoting
 		non_default_PS2="(On your system, it's different.)  "
 	fi
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 We're going to change focus one more time and look at single and double quotes.
 
 Double quotes are one way to work with filenames that have spaces in them.  Single quotes are one way to work with filenames
@@ -1014,7 +1016,7 @@ EOL
 
 	echo "$PS2" >> $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
 In most cases, the character on the second line is a right angle bracket ( > ).  ${non_default_PS2}Single quotes
 and double quotes must have a matching single or double quote.  (Experts:  we'll look at escaping shortly.)  The right
@@ -1027,7 +1029,7 @@ lot of different situations.  Try out the following.
 
 EOL
 
-	fmt -u -s --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-} -s --width=$WIDTH <<EOL >> $fmt_file
 echo "HOME"
 echo "\$HOME"
 echo '\$HOME'
@@ -1037,7 +1039,7 @@ EOL
 }
 
 yellow_stripe_exercise_escaping_quotes() { # Escaping Characters
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Double quotes let you use environment variables.   If you want to work with a file that has a dollar sign, you need to
 use single quotes.  Now is a good time to talk about literals.  Your shell treats a lot of characters in a special way.
 The pipe ( | ) is used to connect two programs together.  The right angle bracket ( > ) sends a program's output to a file.
@@ -1053,14 +1055,14 @@ you can escape the spaces with backslashes rather than putting the whole thing i
 the following two command lines produce the same result.
 EOL
 
-	fmt -u -s --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-} -s --width=$WIDTH <<EOL >> $fmt_file
 
 echo "Hello world." > "file with spaces"
 echo "Hello world." > file\\ with\\ spaces
 
 EOL
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 You can try them out, but keep in mind that you won't be told if you're overwriing an existing file.  Make sure you're not
 overwriting anything important first.
 
@@ -1068,7 +1070,7 @@ Try the following just before executing ". check".
 
 EOL
 
-	fmt -u -s --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-} -s --width=$WIDTH <<EOL >> $fmt_file
 echo "\"HOME\""
 echo "\"\$HOME\""
 echo "'\$HOME'"
@@ -1078,7 +1080,7 @@ EOL
 }
 
 yellow_stripe_exercise_quote_finale() { # Quoting:  Final Lesson
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 You might think that you could also escape a single quote to use it inside single quotes.  There are some shells that handle
 it, but you shouldn't expect it.  What you can do instead is end the single quote, put a single quote in double quotes, and
 then start the single quote again.
@@ -1110,7 +1112,7 @@ yellow_belt_exercise_speed_and_lists() { # More Speed!  Using Asterisk
 		mkdir -p "$LUS_HOME/complete"
 	fi
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 To get your green stripe, we will be looking at two things:  speed, and more about file listings.
 
 The speed part will be partly up to you, for a few reasons.  It's not possible for a script to check that you're doing them
@@ -1130,7 +1132,7 @@ the terminal was a big box that sat on a desk with a keyboard and screen.  Now, 
 Your terminal:
 EOL
 
-	fmt -u --prefix="  * " --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-} --prefix="  * " --width=$WIDTH <<EOL >> $fmt_file
   * Has a size measured in rows and columns
 
   * Controls the font and font size (how the characters look)
@@ -1188,7 +1190,7 @@ yellow_belt_exercise_unquoted_tab_completion() { # Introduction to Tab Completio
 
 	files=$(ls -1 "$LUS_HOME/complete"/Mon* | wc -l)
 	if [ ! "$files" == "1" ]; then
-		fmt -u --width=$WIDTH <<EOL
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
 There are extra files in $LUS_HOME/complete.  Is it OK to delete them (y/n)?
 EOL
 
@@ -1202,7 +1204,7 @@ EOL
 		fi
 	fi
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Now that you know how to speed up no matter the circumstances (with asterisk), let's see if tab completion works for you.
 
 Make sure you're in $LUS_HOME/complete.  Type "file Mon" (without the quotes).  Press Tab.
@@ -1227,7 +1229,7 @@ create_two_TPS_reports() {
 	if [ -f "$LUS_HOME/complete/Monday's TPS Report for Fred" ]; then
 		chars=$(cat "$LUS_HOME/complete/Monday's TPS Report for Fred" | wc -c)
 		if [ ! "$chars" == "4" ]; then
-			fmt -u --width=$WIDTH <<EOL
+			fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
 Monday's TPS Report for Fred has been modified.  Is it OK to overwrite it (y/n)?
 EOL
 
@@ -1243,7 +1245,7 @@ EOL
 
 	files=$(ls -1 "$LUS_HOME/complete"/Mon* | wc -l)
 	if [ ! "$files" == "2" ]; then
-		fmt -u --width=$WIDTH <<EOL
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
 There are extra files in $LUS_HOME/complete.  Is it OK to delete them (y/n)?
 EOL
 
@@ -1266,7 +1268,7 @@ yellow_belt_exercise_unquoted_tab_completion_two_options() { # Tab Completion wi
 
 	create_two_TPS_reports
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Make sure you're in $LUS_HOME/complete.  Type "file Mon" (without the quotes).  Press Tab.  This time, if tab completion
 is working, part of the file will be filled in.  That's because there are now two files that start with "Mon".
 
@@ -1288,7 +1290,7 @@ EOL
 yellow_belt_exercise_quoted_tab_completion() { # Tab Completion with a Quote
 	create_two_TPS_reports
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 When you pressed Tab before, you had typed part of a filename but you didn't use a single or double quote.  In this
 exercise, you're going to see what happens if you do.
 
@@ -1315,7 +1317,7 @@ EOL
 			echo "file "'"'"Mon" >> $fmt_file
 			echo "file 'Mon" >> $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
 Do you see how starting with a quote will finish part of the filename but won't help you after that?
 
@@ -1338,7 +1340,7 @@ EOL
 
 yellow_belt_exercise_tab_is_context_sensitive() { # Tab is Context Sensitive:  What are you Completing?
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 It matters where in the command line you press Tab.  The first thing on a command line must be a program or alias (we'll look
 at aliases later).
 
@@ -1367,7 +1369,7 @@ EOL
 }
 
 yellow_belt_exercise_up() { # Finding and Running Previous Commands one Line at a Time
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 There are a few ways you can run a previous command.  The simplest way is with the up arrow.  Depending on your
 terminal settings, the most likely thing to happen is that you'll see the previous command you ran (which will
 be "learn").  If that works, you can press Up or Down to go through your previous commands.  You'll also be
@@ -1396,7 +1398,7 @@ EOL
 }
 
 yellow_belt_exercise_home_end_and_pound() { # The "Home" key, "End" key, and What "#" Does
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 We're going to look at two more keys before we look at other ways to run previous commands.  These are Home and End.
 If you have a terminal with the right settings, pressing Home will take you to the beginning of your command line,
 and End will take you to the end.
@@ -1437,7 +1439,7 @@ EOL
 }
 
 yellow_belt_exercise_ctrl_r() { # Using Ctrl-r to Search for and Run Previous Commands
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 It's time to look at Ctrl+r.  This keystoke lets you search for a command that's in your history, make changes to it if
 you want, and then save it for later or execute it.  If you execute it, it will also be added to your history.
 
@@ -1450,7 +1452,7 @@ Once you've found the command you want, you have multiple options.
 
 EOL
 
-	fmt -u -c --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-} -c --width=$WIDTH <<EOL >> $fmt_file
   * You can run the command as is right now (which will also add it to your history as the last command run).  To do that,
     simply press enter.
 
@@ -1467,7 +1469,7 @@ EOL
     get a fresh new prompt.  You can also get out of search mode with Ctrl+g, but Ctrl+c is easier to remember.
 EOL
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
 You can also type Ctrl+r again (and again).  Each time you type it, you'll see the previous command line that matches what
 you typed.  You can search forward again with Ctrl+s, but if you start over, you only have to remember Ctrl+r.
@@ -1479,13 +1481,13 @@ EOL
 }
 
 yellow_belt_exercise_history_bang() { # "!"
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 There are a truly staggering number of ways to speed up typing things.  For example, you can refer to the third
 argument of the fifth last command you typed.
 
 EOL
 
-	fmt -u --width=$WIDTH -s <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH -s <<EOL >> $fmt_file
 [user@host:~]$ echo 100 98 96
 100 98 96
 [user@host:~]$ echo 94 92 90
@@ -1501,7 +1503,7 @@ echo 96
 96
 EOL
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
 Your shell will print the full command (in this case, "echo 96") then execute it.
 
@@ -1515,14 +1517,14 @@ if the directory name is long or it's a full path (which is long).
 
 EOL
 
-	fmt -u --width=$WIDTH -s <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH -s <<EOL >> $fmt_file
 [user@host:~]$ mkdir dirname
 [user@host:~]$ cd !$
 cd dirname
 [user@host:dirname]$
 EOL
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
 The exclamation point ( ! ) means you want to fill something in from your history.  The dollar sign ( $ ) means you want
 the last argument filled in.  It can be tricky to remember, and you can always fall back on Ctrl+r, Ctrl+p, or Up and then
@@ -1537,7 +1539,7 @@ EOL
 }
 
 green_stripe_exercise_command_line_options() { # Short Options, Long Options, and Man(ual) Pages
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Before we get into the various ways you can list files, we'll have to go through short options and long options.
 Short options are single characters.  Long options are full words, and sometimes multiple words.
 
@@ -1613,7 +1615,7 @@ create_lists() {
 	prepareLusHome
 	
 	if [ -f $LUS_HOME/list ]; then
-		fmt -u --width=$WIDTH <<EOL >> $fmt_file
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 This exercise involves creating the directory $LUS_HOME/list, which already exists.  You will need to move it or rename
 it by executing "mv $LUS_HOME/list newname", then executing "learn" again.
 EOL
@@ -1642,7 +1644,7 @@ EOL
 green_stripe_exercise_ls() { # Getting Directory Lists Different Ways
 	create_lists
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 List the files in $LUS_HOME/list/ord and $LUS_HOME/list/count.  There a ton of different ways to do that.  You can "cd"
 to these directories a bunch of different ways, you could list the contents of these directories without "cd" by providing
 each directory as an argument to "ls", either one at a time, or together on the same command line.  You could also try
@@ -1658,7 +1660,7 @@ EOL
 green_stripe_exercise_ls_dash_l() { # Introduction to "ls -l"
 	create_lists
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Before we look at long directory listings, you'll need some idea of size.  If you've sent emails with attachments, you
 may already have some sense of the size of information.  The size of attachments is usually shown, and you may have
 seen an error that that your attachment was too large.
@@ -1691,7 +1693,7 @@ EOL
 	echo '-rw-rw-r-- 1 user ug    0 Jan  1  2021 one' >> $fmt_file
 	echo '-rw-rw-r-- 1 user ug    0 Jan  2  2021 two' >> $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
 The first thing that "ls -l" prints is a total, in this case, "total 4".  That means that the files and directories here
 take up 4 blocks.  The size of a block can vary from filesystem to filesystem, but is rarely more than 4 KB (4,096
@@ -1730,17 +1732,17 @@ In the example below, ll is aliased to "ls -l" (plus two more options, "a", and 
 
 EOL
 
-	fmt -u -s --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-} -s --width=$WIDTH <<EOL >> $fmt_file
 [user@host:~]$ type ll
 ll is aliased to \`ls -alF'
 EOL
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
 In the following example, ll is not aliased.
 
 EOL
-	fmt -u -s --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-} -s --width=$WIDTH <<EOL >> $fmt_file
 [user@host:~]$ type ll
 bash: type: ll: not found
 
@@ -1751,7 +1753,7 @@ EOL
 }
 
 green_stripe_exercise_ls_explore() { # Searching in a Man(ual) Page
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 It's time to use the man pages again.  This time, you'll be looking for something specific.
 
 When you're using "less", you can look for something specific with slash ( / ).  Type a slash, type what you're looking
@@ -1774,7 +1776,7 @@ EOL
 }
 
 green_stripe_exercise_ls_dash_h() { # Introducing "ls -h"
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Try out "ls -lh" in or on different directories.  If you're on a BSD or GNU system, it will give you file listings in long
 format with "human readable" file sizes.
 
@@ -1786,7 +1788,7 @@ EOL
 }
 
 green_stripe_exercise_ls_dash_f() { # Introducing "ls -f"
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 The last option we'll be looking at for "ls" is the "-f" option.
 
 If a runaway process has created tens of thousands of files in a directory, getting a listing can take a while.  Most of
@@ -1800,7 +1802,7 @@ EOL
 }
 
 green_stripe_exercise_df() {
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 The last thing in yellow belt is the "df" command.  But before we go into what it does, we'll have to go over mounts.
 
 Some time ago, we showed how Windows has drive letters, but in Unix, everything is in one filesystem.  In order to bring
@@ -1829,7 +1831,7 @@ EOL
 ####################
 
 ask_about_putty_font_size() {
-	fmt -u --width=$WIDTH <<EOL
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
 Was that text comfortable to read?  It looks like you're connected with SSH, so chances are, you're using PuTTY.
 If you're using PuTTY, would you like any help to increase the font size (y/N)?
 EOL
@@ -1837,7 +1839,7 @@ EOL
 	read CHOICE
 
 	if [[ "$CHOICE" =~ ^\s*[Yy].* ]]; then
-		fmt -u --width=$WIDTH <<EOL
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
 Right click on PuTTY's title bar and select "Change Settings".  In the left navigation pane, select Window >
 Appearance.  Click the "Change..." button about halfway down the right pane.  Select a new font size and
 click "OK".  Click "Apply".  When you're happy with the settings, right click on PuTTYs title bar, go to
@@ -1865,7 +1867,7 @@ welcome() {
 	make_temp
 	file_clean_up_array+=($fmt_file)
 
-	fmt -u --width=$WIDTH <<EOL > $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL > $fmt_file
 When you see a prompt like "Press h for help; Enter for more", press Enter for one more line and Space for one more page.
 
 If there's more text than will fit in your terminal, the Up and Down arrow keys should work in addition to Enter and Space
@@ -1880,7 +1882,7 @@ EOL
 
 	less -R -P "$less_prompt_move_on" $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL > $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL > $fmt_file
 The following notes are an overview of what will be covered in this course.
 It's likely that you will only understand them if you already have some
 experience with them.  Consider them like chapter headings in a textbook you recently received.
@@ -1890,7 +1892,7 @@ EOL
 
 	printf "\n`getBeltWithColours white_belt title`\n" >> $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
   In a martial arts club (or dojo) a student gets their white belt when they buy a uniform and sign up for classes.  In this
   case, a student gets their white belt when they run the learn script and choose to get started.
 EOL
@@ -1899,20 +1901,20 @@ EOL
 
 	printf "`getBeltWithColours yellow_stripe title`\n" >> $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
   Understanding \$PATH and environment variables.
 EOL
 
 	printf "\n`getBeltWithColours yellow_belt title`\n" >> $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
   Creating and deleting directories; . and ..; pwd; cd; file types and magic
 EOL
 
 	echo "" >> $fmt_file
 	printf "`getBeltWithColours green_stripe title`\n" >> $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
   Intermediate arguments to ls; mounts and disk space
 EOL
 
@@ -1920,43 +1922,43 @@ EOL
 
 	printf "\n`getBeltWithColours green_belt title`\n" >> $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
   Hidden files and directories; globbing; directory stacks
 EOL
 
 	printf "\n`getBeltWithColours blue_stripe title`\n" >> $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
   Pipes; tee; redirection; head, tail, sort, grep
 EOL
 
 	printf "\n`getBeltWithColours blue_belt title`\n" >> $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
   Finding large files and directories with du, sort, and head; rm; rmdir; mv
 EOL
 
 	printf "\n`getBeltWithColours red_stripe title`\n" >> $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
   ZIP and tar archives
 EOL
 
 	printf "\n`getBeltWithColours red_belt title`\n" >> $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
   Signals; stopping processes; ps; pgrep vs grep
 EOL
 
 	printf "\n`getBeltWithColours black_stripe title`\n" >> $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
   Foreground and background tasks, jobs and &
 EOL
 
 	printf "\n`getBeltWithColours black_belt title`\n" >> $fmt_file
 
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
   User and group ownership; permissions; ls -ld; stat; namei
 EOL
 
@@ -1994,7 +1996,7 @@ EOL
 			fi
 		fi
 
-		fmt -u --width=$WIDTH <<EOL
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
 If you type "y" and press Enter, then you will be given your first task.
 EOL
 
@@ -2002,7 +2004,7 @@ EOL
 		read CHOICE
 
 		if [ "$CHOICE" == "" ]; then
-			fmt -u --width=$WIDTH <<EOL
+			fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
 Implict consent is not enough this time.  To begin, you must choose.
 EOL
 
@@ -2046,7 +2048,7 @@ if [ ! -f "${LUS_PROGRESS}" ] || [ -z "${RANK:-}" ] || [ -z "${EXERCISE:-}" ]; t
 	if (($STTY_ROWS < 24)) || (($STTY_COLUMNS < 80)); then
 		# We haven't introduced what Y/n means, but if the user has made a conscious choice to make their terminal
 		# smaller, they probably already know.
-		fmt -u --width=$WIDTH <<EOL
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
 A minimum of 80 columns and 24 rows is strongly recommended.  Would you like to automatically update the terminal size to
 the recommended minimum and continue (Y/n)?
 EOL
@@ -2088,7 +2090,7 @@ if [ "${1:-}" == "--return" ]; then
 fi
 
 if [[ ! "${RANK}" =~ ^(white|yellow|green|blue|red|black)_(stripe|belt)$ ]]; then
-	fmt -u --width=$WIDTH <<EOL
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
 It looks like the "${LUS_PROGRESS}" file has become corrupted.  If it can't be repaired, you may have no choice but to delete it
 and start over.  Sorry about that.
 EOL
@@ -2096,7 +2098,7 @@ EOL
 fi
 
 if [[ ! "${EXERCISE}" =~ ^[0-9]+$ ]]; then
-	fmt -u --width=$WIDTH <<EOL
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
 It looks like the "${LUS_PROGRESS}" file has become corrupted.  If it can't be repaired, you may have no choice but to delete it
 and start over.  Sorry about that.
 EOL
@@ -2155,7 +2157,7 @@ if [[ "${all_args}" =~ (white|yellow|green|blue|red|black).*(stripe|belt)[^0-9]*
 	fi
 
 	if (($new_belt_number > $current_belt_number)); then
-		fmt -u --width=$WIDTH <<EOL
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
 This feature is for reviewing previous exercises, not for skipping ahead.
 EOL
 		exit 3
@@ -2163,12 +2165,12 @@ EOL
 
 	if (($new_belt_number == $current_belt_number)); then
 		if ((${new_exercise} > $current_exercise)); then
-			fmt -u --width=$WIDTH <<EOL
+			fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
 This feature is for reviewing previous exercises, not for skipping ahead.
 EOL
 			exit 3
 		elif ((${new_exercise} == $current_exercise)); then
-			fmt -u --width=$WIDTH <<EOL
+			fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
 You're already working on that exercise.
 EOL
 			exit 3
@@ -2231,7 +2233,7 @@ fi
 print_rank > $fmt_file
 
 if [ -z ${exercises["${RANK}_${EXERCISE}"]:-} ]; then
-	fmt -u --width=$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 There are no more exercises at this time.  If you like, you can review exercises you've already completed by executing
 "learn white belt" or "learn yellow stripe".  Get a list of exercises with "learn yellow stripe list", and go to a specific
 exercise with "learn white belt 6".

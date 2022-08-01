@@ -14,7 +14,7 @@ if [[ "${BASH_VERSINFO:-0}" < "4" ]]; then
 		else
 			sed 's/\/bin\/bash/\/usr\/local\/bin\/bash/' replace-master > replace
 			chmod ug+x replace
-			echo "HOMEBREW_BASH=1" >> config.status
+			HOMEBREW_BASH=1
 		fi
 	else
 		echo "Associative array support, added in Bash 4.0, is required."
@@ -32,7 +32,7 @@ fi
 echo "What would you like to do?"
 echo "(1) Generate the scripts for audit or review (don't install)."
 echo "(2) Create a docker container for a single user and run it."
-echo "(3) Prepare the scripts to run directly (without docker)."
+echo "(3) Prepare the scripts to run directly (without docker) on this host."
 
 read -p "Please answer (1-3)?  " luc_choice
 
@@ -48,6 +48,15 @@ fi
 
 if [[ "${luc_choice}" =~ ^[\ ]*3[\ ]*$ ]]; then
 	sed -i '' 's/^run:.*/run: configure flags\/replacetarget/' Makefile 
+	if [ -n "${HOMEBREW_BASH:-}" ]; then
+		echo "HOMEBREW_BASH=1" >> config.status
+	fi
+
+	if echo "Test" | fmt -u 2>/dev/null; then
+		echo "FMT_OPTIONS=-u --width=" >> config.status
+	else
+		echo "FMT_OPTIONS=-" >> config.status
+	fi
 fi
 
 if [[ "$luc_processed_choice" == "0" ]]; then
