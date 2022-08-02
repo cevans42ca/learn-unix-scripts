@@ -93,11 +93,17 @@ if ! which shuf > /dev/null; then
 	fi
 fi
 
+GREP_BIN=grep
+if which ggrep > /dev/null; then
+	GREP_BIN=ggrep
+fi
+
 echo 
 echo 
-echo "Verify that some of the words in this sentence are red.  (Checks grep --color.)" | grep --color=always "some of the words"
+echo "Verify that some of the words in this sentence are red.  (Checks grep --color.)" | ${GREP_BIN} --color=always "some of the words"
 echo "Verify that some of the words in $(tput setaf 196)this sentence are also$(tput sgr0) red.  (Checks tput.)"
+echo "Verify that some of the words in this final sentence are red.  (Checks grep -P.)" | ${GREP_BIN} -P --color=always "(?<=Verify )that some of(?= the words)"
 echo
-echo "Both sentences should have red words.  If they don't, you may want to check"
-echo "your terminal settings and/or your TERM environment variable."
+echo "All three sentences should have red words.  If they don't, you may want to"
+echo "check your terminal settings and/or your TERM environment variable."
 

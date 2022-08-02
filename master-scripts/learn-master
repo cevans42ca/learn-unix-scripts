@@ -67,6 +67,7 @@ trap clean_up EXIT
 # insert ffa9e74e-2b02-4d72-9c82-9f9db2915c62 associative arrays for exercises and belt levels
 
 FMT_OPTIONS="-u --width="
+GREP_BIN=grep
 
 get_rows_and_columns() {
 	STTY_ROWS=$(stty ${stty_options} | head -1 | sed 's/.*; \([0-9][0-9]*\) rows.*/\1/;s/.*; rows \([0-9][0-9]*\).*/\1/')
@@ -610,7 +611,7 @@ EOL
 	# Use positive lookbehind and positive lookahead to match the exact path, whether it's at the beginning of the
 	# $PATH, the end, or in the middle.  This way, we can both highlight the exact path and show the entire $PATH.
 	# It won't work if the path in $PATH has a trailing slash, but trailing slashes shouldn't be there.
-	printf '%s\n' "$PATH" | grep -P --color=always "(?<=^|:)${script_path}(?=:|\$)" >> $fmt_file
+	printf '%s\n' "$PATH" | ${GREP_BIN} -P --color=always "(?<=^|:)${script_path}(?=:|\$)" >> $fmt_file
 	echo "" >> $fmt_file
 
 	less -R -P "$less_prompt_move_on" $fmt_file

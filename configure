@@ -43,6 +43,7 @@ if [[ "${luc_choice}" =~ ^[\ ]*1[\ ]*$ ]]; then
 	echo "DOCKER=0" >> config.status
 elif [[ "${luc_choice}" =~ ^[\ ]*2[\ ]*$ ]]; then
 	sed -i '' 's/^run:.*/run: configure dockerrun/' Makefile 
+	DOCKER=1
 	echo "DOCKER=1" >> config.status
 elif [[ "${luc_choice}" =~ ^[\ ]*3[\ ]*$ ]]; then
 	sed -i '' 's/^run:.*/run: configure flags\/replacetarget/' Makefile 
@@ -118,13 +119,27 @@ else
 	echo "DARK_MODE=1" >> config.status
 fi
 
-if which gshuf > /dev/null; then
-	echo "SHUF_BIN=gshuf" >> config.status
-elif which shuf; then
+if [ "${DOCKER:-0}" -eq "1" ]; then
 	echo "SHUF_BIN=shuf" >> config.status
 else
-	echo "Neither shuf or gshuf were found.  On Mac with Homebrew, brew install coreutils."
-	exit 1
+	if which gshuf > /dev/null; then
+		echo "SHUF_BIN=gshuf" >> config.status
+	elif which shuf; then
+		echo "SHUF_BIN=shuf" >> config.status
+	else
+		echo "Neither shuf or gshuf were found.  On Mac with Homebrew, brew install coreutils."
+		exit 1
+	fi
+fi
+
+if [ "${DOCKER:-0}" -eq "1" ]; then
+	echo "GREP_BIN=grep" >> config.status
+else
+	if which ggrep > /dev/null; then
+		echo "GREP_BIN=ggrep" >> config.status
+	else
+		echo "GREP_BIN=grep" >> config.status
+	fi
 fi
 
 touch flags/configuretarget
