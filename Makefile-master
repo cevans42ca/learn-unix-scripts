@@ -17,13 +17,13 @@ clean: gitclean
 	rm -f flags/replacetarget
 	rm -f replace
 	rm -f Makefile
+	rm -f docker/Makefile 
 	rm -f config.status
 	cd docker && make clean
 	@echo
 	@echo "Run the ./configure script to create the Makefile."
 
 gitclean:
-	sed -i '' 's/^DARK_MODE=.*/DARK_MODE=1/' docker/Makefile 
 	rm -f flags/configuretarget
 
 scripts = master-scripts/learn-master master-scripts/checkmain-master master-scripts/check-master

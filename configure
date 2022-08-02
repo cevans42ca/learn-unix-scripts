@@ -36,17 +36,15 @@ echo "(3) Prepare the scripts to run directly (without docker) on this host."
 
 read -p "Please answer (1-3)?  " luc_choice
 
-cp Makefile-master Makefile
-
 if [[ "${luc_choice}" =~ ^[\ ]*1[\ ]*$ ]]; then
-	sed -i '' 's/^run:.*/run: configure replace/' Makefile 
+	sed 's/^run:.*/run: configure replace/' Makefile-master > Makefile
 	echo "DOCKER=0" >> config.status
 elif [[ "${luc_choice}" =~ ^[\ ]*2[\ ]*$ ]]; then
-	sed -i '' 's/^run:.*/run: configure dockerrun/' Makefile 
+	sed 's/^run:.*/run: configure dockerrun/' Makefile-master > Makefile
 	DOCKER=1
 	echo "DOCKER=1" >> config.status
 elif [[ "${luc_choice}" =~ ^[\ ]*3[\ ]*$ ]]; then
-	sed -i '' 's/^run:.*/run: configure flags\/replacetarget/' Makefile 
+	sed 's/^run:.*/run: configure flags\/replacetarget/' Makefile-master > Makefile
 	if [ -n "${HOMEBREW_BASH:-}" ]; then
 		echo "HOMEBREW_BASH=1" >> config.status
 	fi
@@ -111,12 +109,12 @@ fi
 
 if [[ "$total" > 150000 ]]; then
 	echo "Enabling light mode."
-	sed -i '' 's/^DARK_MODE=.*/DARK_MODE=0/' docker/Makefile 
 	echo "DARK_MODE=0" >> config.status
+	echo "DARK_MODE=0" >> docker/config.status
 else
 	echo "Enabling dark mode (traditional white on black)."
-	sed -i '' 's/^DARK_MODE=.*/DARK_MODE=1/' docker/Makefile 
 	echo "DARK_MODE=1" >> config.status
+	echo "DARK_MODE=1" >> docker/config.status
 fi
 
 if [ "${DOCKER:-0}" -eq "1" ]; then
