@@ -171,6 +171,21 @@ belt_to_second_colour_light["black_stripe"]="${red_on_black}"
 belt_to_second_colour_light["black_belt"]=""
 # end ffa9e74e-2b02-4d72-9c82-9f9db2915c62
 
+# start bef71a69-5f8d-43d4-af29-60608e9b56c7
+file_clean_up_array=()
+
+clean_up() {
+	if [ -n "${file_clean_up_array:-}" ]; then
+		for item in $file_clean_up_array; do
+			rm -f $item
+		done
+	fi
+}
+
+# It's a trap!  Run the clean_up subroutine on normal or aborted exit.
+trap clean_up EXIT
+# end bef71a69-5f8d-43d4-af29-60608e9b56c7
+
 # start 37333148-8746-4468-826e-544e532f1ebc
 getNextBelt() {
 	echo ${number_to_belt[$(expr 1 + ${belt_to_number[$1]})]}
@@ -192,34 +207,31 @@ getBeltWithColours() {
 	fi
 }
 
+make_temp_progress() {
+	set +e
+	progress_file=$(mktemp --suffix_$(whoami) 2>/dev/null)
+	RESULT=$?
+	if [ $RESULT -ne 0 ]; then
+		progress_file=$(mktemp -t $(whoami)-XXXXXX)
+	fi
+	set -e
+}
+
 updateDotFile() {
 	if [ ! -f "${LUS_PROGRESS}" ]; then
 		echo "RANK=$RANK" > "${LUS_PROGRESS}"
 		echo "EXERCISE=$EXERCISE" >> "${LUS_PROGRESS}"
 	else
-		if grep -q "RANK=" "${LUS_PROGRESS}"; then
-			sed -i '' "s/RANK=.*/RANK=${RANK}/" "${LUS_PROGRESS}"
-		else
-			echo "RANK=${RANK}" >> "${LUS_PROGRESS}"
-		fi
+		make_temp_progress
+		file_clean_up_array+=($progress_file)
 
-		if grep -q "EXERCISE=" "${LUS_PROGRESS}"; then
-			sed -i '' "s/EXERCISE=.*/EXERCISE=${EXERCISE}/" "${LUS_PROGRESS}"
-		else
-			echo "EXERCISE=${EXERCISE}" >> "${LUS_PROGRESS}"
-		fi
+		echo "RANK=${RANK}" >> "${progress_file}"
+		echo "EXERCISE=${EXERCISE}" >> "${progress_file}"
+		echo "SAVED_RANK=${SAVED_RANK:-}" >> "${progress_file}"
+		echo "SAVED_EXERCISE=${SAVED_EXERCISE:-}" >> "${progress_file}"
 
-		if grep -q "SAVED_RANK=" "${LUS_PROGRESS}"; then
-			sed -i '' "s/SAVED_RANK=.*/SAVED_RANK=${SAVED_RANK:-}/" "${LUS_PROGRESS}"
-		else
-			echo "SAVED_RANK=${SAVED_RANK:-}" >> "${LUS_PROGRESS}"
-		fi
-
-		if grep -q "SAVED_EXERCISE=" "${LUS_PROGRESS}"; then
-			sed -i '' "s/SAVED_EXERCISE=.*/SAVED_EXERCISE=${SAVED_EXERCISE:-}/" "${LUS_PROGRESS}"
-		else
-			echo "SAVED_EXERCISE=${SAVED_EXERCISE:-}" >> "${LUS_PROGRESS}"
-		fi
+		# Leave the temp file to be cleaned up by the trap.
+		cp "${progress_file}" "${LUS_PROGRESS}"
 	fi	
 }
 

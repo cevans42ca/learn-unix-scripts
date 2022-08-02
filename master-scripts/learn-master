@@ -49,21 +49,8 @@ fi
 less_prompt_move_on="Press h for help;?e: Enter for more (line %lb of %L).?e q to move on."
 less_prompt_quit="Press h for help;?e: Enter for more (line %lb of %L).?e q to quit."
 
-file_clean_up_array=()
-
-clean_up() {
-	if [ -n "${file_clean_up_array:-}" ]; then
-		for item in $file_clean_up_array; do
-			rm -f $item
-		done
-	fi
-}
-
-# It's a trap!  Run the clean_up subroutine on normal or aborted exit.
-trap clean_up EXIT
-
+# insert bef71a69-5f8d-43d4-af29-60608e9b56c7 temp file clean up
 # insert 1a88ef09-bbc8-4f7e-ac03-a1849fd03166 stty options
-
 # insert ffa9e74e-2b02-4d72-9c82-9f9db2915c62 associative arrays for exercises and belt levels
 
 FMT_OPTIONS="-u --width="
