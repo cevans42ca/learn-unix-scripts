@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export SED_ARGS=${SED_ARGS:--i}
+
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 mkdir -p "$script_dir/dist/bin"

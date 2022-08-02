@@ -119,6 +119,8 @@ fi
 
 if [ "${DOCKER:-0}" -eq "1" ]; then
 	echo "SHUF_BIN=shuf" >> config.status
+	echo "GREP_BIN=grep" >> config.status
+	echo "SED_ARGS=-i" >> config.status
 else
 	if which gshuf > /dev/null; then
 		echo "SHUF_BIN=gshuf" >> config.status
@@ -128,15 +130,17 @@ else
 		echo "Neither shuf or gshuf were found.  On Mac with Homebrew, brew install coreutils."
 		exit 1
 	fi
-fi
 
-if [ "${DOCKER:-0}" -eq "1" ]; then
-	echo "GREP_BIN=grep" >> config.status
-else
 	if which ggrep > /dev/null; then
 		echo "GREP_BIN=ggrep" >> config.status
 	else
 		echo "GREP_BIN=grep" >> config.status
+	fi
+
+	if sed -i 's/there are no possible matches//' config.status 2>/dev/null; then
+		echo "SED_ARGS=-i" >> config.status
+	else
+		echo "SED_ARGS=-i ''" >> config.status
 	fi
 fi
 

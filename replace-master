@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export SED_ARGS=${SED_ARGS:--i}
+
 set -e -o nounset
 
 declare -A map
@@ -135,22 +137,22 @@ mv $temp_output_file "$final_file"
 chmod u+x "$final_file"
 
 if [ "${HOMEBREW_BASH:-0}" -eq "1" ]; then
-	sed -i '' 's/\/bin\/bash/\/usr\/local\/bin\/bash/' "$final_file" 
+	sed ${SED_ARGS} 's/\/bin\/bash/\/usr\/local\/bin\/bash/' "$final_file" 
 fi
 
 if [ -n "${FMT_OPTIONS:-}" ]; then
-	sed -i '' "s/^FMT_OPTIONS=.*/FMT_OPTIONS=${FMT_OPTIONS}/" "$final_file" 
+	sed ${SED_ARGS} "s/^FMT_OPTIONS=.*/FMT_OPTIONS=${FMT_OPTIONS}/" "$final_file" 
 fi
 
 if [ "${DOCKER:-0}" -eq "0" ] && [ "${DARK_MODE:-1}" -eq "0" ]; then
-	sed -i '' "s/^# DARK_MODE Replacement Tag.*/DARK_MODE=${DARK_MODE}/" "$final_file" 
+	sed ${SED_ARGS} "s/^# DARK_MODE Replacement Tag.*/DARK_MODE=${DARK_MODE}/" "$final_file" 
 fi
 
 if [ -n "${SHUF_BIN:-}" ]; then
-	sed -i '' "s/^SHUF_BIN=.*/SHUF_BIN=${SHUF_BIN}/" "$final_file" 
+	sed ${SED_ARGS} "s/^SHUF_BIN=.*/SHUF_BIN=${SHUF_BIN}/" "$final_file" 
 fi
 
 if [ -n "${GREP_BIN:-}" ]; then
-	sed -i '' "s/^GREP_BIN=.*/GREP_BIN=${GREP_BIN}/" "$final_file" 
+	sed ${SED_ARGS} "s/^GREP_BIN=.*/GREP_BIN=${GREP_BIN}/" "$final_file" 
 fi
 
