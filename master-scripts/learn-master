@@ -1783,7 +1783,7 @@ EOL
 	complete_exercise
 }
 
-green_stripe_exercise_ls_dash_h() { # Introducing "ls -h"
+green_stripe_exercise_ls_dash_h() { # Introducing "ls -h":  Human-Readable Numbers
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Try out "ls -lh" in or on different directories.  If you're on a BSD or GNU system, it will give you file listings in long
 format with "human readable" file sizes.
@@ -1795,7 +1795,7 @@ EOL
 	complete_exercise
 }
 
-green_stripe_exercise_ls_dash_f() { # Introducing "ls -f"
+green_stripe_exercise_ls_dash_f() { # Using "ls -f" on Directories with Numerous Files
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 The last option we'll be looking at for "ls" is the "-f" option.
 
@@ -1809,7 +1809,7 @@ EOL
 	complete_exercise
 }
 
-green_stripe_exercise_df() {
+green_stripe_exercise_df() { # Using "df" to Look at Disk Space
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 The last thing in yellow belt is the "df" command.  But before we go into what it does, we'll have to go over mounts.
 
@@ -1828,7 +1828,48 @@ switch to the root user (we'll look at how to do that later).
 
 The command to see how much space is being taken up for each mount is "df".  The "df" command usually defaults to either
 512-byte or 1K blocks, which is not very readable for new users.  To see the sizes in "human" units, use the "-h" option.
-Try it now.
+
+Here are some examples of what you might see on different platforms.  First, Linux Mint.
+
+EOL
+
+	${GREP_BIN} --color=always "\(\/dev\/sda[1-9]\|\)" <<EOL >> $fmt_file
+Filesystem      Size  Used Avail Use% Mounted on
+udev            445M     0  445M   0% /dev
+tmpfs            99M  1.2M   98M   2% /run
+/dev/sda5        29G  8.0G   20G  30% /
+tmpfs           491M     0  491M   0% /dev/shm
+tmpfs           5.0M  4.0K  5.0M   1% /run/lock
+tmpfs           491M     0  491M   0% /sys/fs/cgroup
+/dev/sda1       511M  4.0K  511M   1% /boot/efi
+tmpfs            99M   36K   99M   1% /run/user/1000
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+The "/dev/sda1" and "/dev/sda5" devices are partitions on the first SCSI hard disk (SCSI drive A, partition 1).
+Partitons allow you to break up a physical hard disk into smaller pieces for more flexibility, and to isolate issues if
+one partition gets full.  You may also need different partitions for different things:  a boot drive, a place to store
+regular files, and swap space.  These exercises don't get into swap space, so you'll need to take a look online if
+you're interested.  If you see /dev/sda, it's basically guaranteed that you're dealing with some kind of Linux.  All the
+mounts that don't start with /dev/sda aren't hard disks, stick drives, or SD cards, but rather something internal to
+Linux.
+
+In the cloud, you might not see a partition number.
+
+Here's what you might see on a FreeBSD system:
+
+EOL
+
+	${GREP_BIN} --color=always "\(100.\|\)" <<EOL >> $fmt_file
+Filesystem         Size    Used   Avail Capacity  Mounted on
+/dev/gpt/server    2.6T    2.1T    351G    86%    /
+devfs              1.0K    1.0K      0B   100%    /dev
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+Execute "df -h".
 EOL
 
 	complete_exercise
