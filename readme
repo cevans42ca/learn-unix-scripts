@@ -4,7 +4,13 @@ Unix with the bash shell.
 This readme file is for system administrators who want to make the
 learn Unix scripts available for users.
 
-To get started, run the ./configure script and follow the prompts.
+If you're not a system administrator, we recommend that you download
+Docker Desktop on Windows or Mac and run the commands on the following page.
+
+https://github.com/cevans42ca/learn-unix-scripts#try-them-out-in-docker
+
+If you are a Unix sysadmin, run the ./configure script and follow the
+prompts, but you may need some other things first (see below).
 
 Although the scripts are written in bash, I intend the exercises
 to be broad enough to work on FreeBSD, Macs, Linux, and any system that
@@ -12,13 +18,10 @@ has bash installed or could have bash installed.  However, not all these
 systems are currently supported.  The "verify" script can check some
 requirements, but it's still a prototype.
 
-For FreeBSD, you will need:  bash version 4 or later,
-a version of grep that supports -P, and shuf.
+For Mac, you will need Homebrew with bash, ggrep, and shuf.
 
-If you want to use these scripts as a student, please use Docker on non-Linux
-systems.  If you want to test, audit, or submit bug reports, run ./configure.
-The scripts that prepare the Docker container require Bash 4, and Homebrew Bash
-is detected on Mac.
+For FreeBSD, you will need:  bash version 4 or later, a version of grep
+that supports -P, and shuf.  Other BSDs are likely to need the same things.
 
 This project is in alpha status.  Please check back for updates.
 
@@ -82,33 +85,33 @@ there.
 List of Core Provided and Created Files
 =======================================
 
-check:
+dist/bin/check:
   A wrapper for the "checkmain" script.  Created by running the "replace"
   script.
 
-checkmain:
+dist/bin/checkmain:
   Verifies that lessons have been completed.  Created by running the
   "replace" script.
 
-learn:
+dist/bin/learn:
   Provides the next lesson.  Created by running the "replace" script.
 
 replace:
   A script that makes replacements in the master learn and check files
   to produce the "learn" and "checkmain" scripts that will be run by users.
 
-learn-master:
+master-scripts/learn-master:
   The master version of the "learn" script, used by the "replace" script.
 
-check-master:
+master-scripts/check-master:
   The master version of the "check" script, used by the "replace" script.
 
-checkmain-master:
+master-scripts/checkmain-master:
   The master version of the "checkmain" script, used by the "replace" script.
 
-check-replace:
-checkmain-replace:
-learn-replace:
+replacements/check-replace:
+replacements/checkmain-replace:
+replacements/learn-replace:
   Files containing an example replacement, used by the "replace" script.
 
 

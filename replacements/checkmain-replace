@@ -3,7 +3,7 @@
 # Generate GUIDs with uuidgen.
 
 
-# Make it clear not to make changes to the "checkmain" script.  Make the following replacement when it's created.
+# Make it clear that changes shouldn't be made to the "checkmain" script.  Make the following replacement when it's created.
 
 # start b2074508-dd08-48be-bc6c-346c26349e4e
 # This script is auto-generated.

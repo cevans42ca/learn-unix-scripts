@@ -3,7 +3,7 @@
 # Generate GUIDs with uuidgen.
 
 
-# Make it clear not to make changes to the "learn" script.  Make the following replacement when it's created.
+# Make it clear that changes shouldn't be made to the "learn" script.  Make the following replacement when it's created.
 
 # start 1acc396a-02a2-40b8-a427-f4685c20320e
 # This script is auto-generated.
