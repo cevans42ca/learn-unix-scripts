@@ -1,8 +1,9 @@
-#!/bin/bash
+#!/bin/sh
 
-export SED_ARGS=${SED_ARGS:--i}
+script=$(readlink -f "$0")
+script_dir=$(dirname "$script")
 
-script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+#script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 mkdir -p "$script_dir/dist/bin"
 

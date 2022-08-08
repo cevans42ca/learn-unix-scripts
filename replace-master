@@ -1,7 +1,5 @@
 #!/bin/bash
 
-export SED_ARGS=${SED_ARGS:--i}
-
 set -e -o nounset
 
 declare -A map
@@ -132,27 +130,36 @@ do
 done < "$1"
 
 # The space is required to prevent the shell from processing it as ${@:- ...}.
-final_file="${@: -1:1}"
-mv $temp_output_file "$final_file"
-chmod u+x "$final_file"
+intermediate_file="${@: -1:1}"
+intermediate_temp_file="${@: -1:1}".new
+mv $temp_output_file "${intermediate_file}"
 
 if [ "${HOMEBREW_BASH:-0}" -eq "1" ]; then
-	sed ${SED_ARGS} 's/\/bin\/bash/\/usr\/local\/bin\/bash/' "$final_file" 
+	sed 's/\/bin\/bash/\/usr\/local\/bin\/bash/' "${intermediate_file}" > "${intermediate_temp_file}"
+	mv "${intermediate_temp_file}" "${intermediate_file}"
 fi
 
 if [ -n "${FMT_OPTIONS:-}" ]; then
-	sed ${SED_ARGS} "s/^FMT_OPTIONS=.*/FMT_OPTIONS=${FMT_OPTIONS}/" "$final_file" 
+	sed "s/^FMT_OPTIONS=.*/FMT_OPTIONS=${FMT_OPTIONS}/" "${intermediate_file}" > "${intermediate_temp_file}"
+	mv "${intermediate_temp_file}" "${intermediate_file}"
 fi
 
 if [ "${DOCKER:-0}" -eq "0" ] && [ "${DARK_MODE:-1}" -eq "0" ]; then
-	sed ${SED_ARGS} "s/^# DARK_MODE Replacement Tag.*/DARK_MODE=${DARK_MODE}/" "$final_file" 
+	sed "s/^# DARK_MODE Replacement Tag.*/DARK_MODE=${DARK_MODE}/" "${intermediate_file}" > "${intermediate_temp_file}"
+	mv "${intermediate_temp_file}" "${intermediate_file}"
 fi
 
 if [ -n "${SHUF_BIN:-}" ]; then
-	sed ${SED_ARGS} "s/^SHUF_BIN=.*/SHUF_BIN=${SHUF_BIN}/" "$final_file" 
+	sed "s/^SHUF_BIN=.*/SHUF_BIN=${SHUF_BIN}/" "${intermediate_file}" > "${intermediate_temp_file}"
+	mv "${intermediate_temp_file}" "${intermediate_file}"
 fi
 
 if [ -n "${GREP_BIN:-}" ]; then
-	sed ${SED_ARGS} "s/^GREP_BIN=.*/GREP_BIN=${GREP_BIN}/" "$final_file" 
+	echo sed "s:^GREP_BIN=.*:GREP_BIN=${GREP_BIN}:" "${intermediate_file}" > "${intermediate_temp_file}"
+	sed "s:^GREP_BIN=.*:GREP_BIN=${GREP_BIN}:" "${intermediate_file}" > "${intermediate_temp_file}"
+	mv "${intermediate_temp_file}" "${intermediate_file}"
 fi
 
+final_file="${@: -1:1}"
+mv "${intermediate_file}" "$final_file"
+chmod u+x "$final_file"

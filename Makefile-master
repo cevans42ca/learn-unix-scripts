@@ -1,7 +1,6 @@
 .PHONY: clean dist distclean install configure run replacetarget
 
 include config.status
-export
 
 run: configure
 

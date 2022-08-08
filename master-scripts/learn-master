@@ -30,7 +30,11 @@
 # you can add comments.  Replace parts with "# replace start <GUID>" and "# replace end <GUID>".  To remove sections,
 # replace the content with nothing.  Put the replacements in the learn-replace file.
 #
+# Make sure to keep the exercises in order in this file and in the checkmain script, or the list argument won't work.
+#
 # replace end 1acc396a-02a2-40b8-a427-f4685c20320e
+
+# insert 4c02f3dc-1640-11ed-baa4-1511ebd0a2d1 check tput
 
 # Setting nounset is worth having to sometimes reference variables as ${VAR:-}.
 set -e -o nounset
@@ -585,8 +589,9 @@ EOL
 
 	# I copied this code from Stack Overflow.  It's probably overkill.
 	# https://stackoverflow.com/questions/4774054/reliable-way-for-a-bash-script-to-get-the-full-path-to-itself
-	script_path="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 	script_name=`basename $0`
+	# Don't resolve symlinks, as /home is symlinked to /usr/home on FreeBSD.
+	script_path=$(dirname "${0}")
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 \$PATH contains a list of paths where programs might be found (scripts, binaries, and anything that can be run).
@@ -1140,6 +1145,17 @@ the terminal was a big box that sat on a desk with a keyboard and screen.  Now, 
 Your terminal:
 EOL
 
+set_color=""
+clear_color=""
+underline_code=""
+no_underline_code=""
+if [ "${enable_tput}" == "1" ]; then
+	set_color="$(tput setaf 2)"
+	clear_color="$(tput sgr0)"
+	underline_code="$(tput smul)"
+	no_underline_code="$(tput rmul)"
+fi
+
 	fmt ${FMT_OPTIONS:-} --prefix="  * " --width=$WIDTH <<EOL >> $fmt_file
   * Has a size measured in rows and columns
 
@@ -1147,7 +1163,7 @@ EOL
 
   * Sends what you type to your shell and displays the output from your shell
 
-  * Accepts special sequences of characters that change the $(tput setaf 2)colour$(tput sgr0) or $(tput smul)formatting$(tput rmul)
+  * Accepts special sequences of characters that change the ${set_color}colour${clear_color} or ${underline_code}formatting${no_underline_code}
 
 Your shell:
   * Accepts characters from your terminal and figures out what you're asking it to do

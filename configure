@@ -2,12 +2,13 @@
 
 rm -f config.status
 touch config.status
+mkdir -p flags
 
-if [[ "${BASH_VERSINFO:-0}" < "4" ]]; then
+if [ "${BASH_VERSINFO:-0}" -le "4" ]; then
 	if [ -f /usr/local/bin/bash ]; then
 		homebrew=$(/usr/local/bin/bash -c 'echo ${BASH_VERSINFO[0]}')
 		echo "/bin/bash too old, checking Homebrew version:  $homebrew"
-		if [[ "$homebrew" < "4" ]]; then
+		if [ "$homebrew" -le "4" ]; then
 			echo "Associative array support, added in Bash 4.0, is required.  Homebrew bash not found either."
 			echo "If you have a Mac, install Homebrew, then install bash."
 			exit 2
@@ -36,30 +37,34 @@ echo "(3) Prepare the scripts to run directly (without docker) on this host."
 
 read -p "Please answer (1-3)?  " luc_choice
 
-if [[ "${luc_choice}" =~ ^[\ ]*1[\ ]*$ ]]; then
+case "${luc_choice}" in
+*1*)
 	sed 's/^run:.*/run: configure replace/' Makefile-master > Makefile
-	echo "DOCKER=0" >> config.status
-elif [[ "${luc_choice}" =~ ^[\ ]*2[\ ]*$ ]]; then
+	echo "export DOCKER=0" >> config.status
+;;
+*2*)
 	sed 's/^run:.*/run: configure dockerrun/' Makefile-master > Makefile
 	DOCKER=1
-	echo "DOCKER=1" >> config.status
-elif [[ "${luc_choice}" =~ ^[\ ]*3[\ ]*$ ]]; then
+	echo "export DOCKER=1" >> config.status
+;;
+*3*)
 	sed 's/^run:.*/run: configure flags\/replacetarget/' Makefile-master > Makefile
 	if [ -n "${HOMEBREW_BASH:-}" ]; then
-		echo "HOMEBREW_BASH=1" >> config.status
+		echo "export HOMEBREW_BASH=1" >> config.status
 	fi
 
 	if echo "Test" | fmt -u 2>/dev/null; then
-		echo "FMT_OPTIONS=-u --width=" >> config.status
+		echo "export FMT_OPTIONS=-u --width=" >> config.status
 	else
-		echo "FMT_OPTIONS=-" >> config.status
+		echo "export FMT_OPTIONS=-" >> config.status
 	fi
 
-	echo "DOCKER=0" >> config.status
-else
+	echo "export DOCKER=0" >> config.status
+;;
+*)
 	echo "Your answer should be a number between 1 and 3."
 	exit 1
-fi
+esac
 
 # Query a property from the terminal, e.g. background color.
 #
@@ -89,58 +94,60 @@ read -r answer
 result=${answer#*;}
 stty $oldstty
 
-echo
-echo "Detected RGB " $result
-colours=$(echo ${result} | sed 's/rgb://' | sed 's/[^[:print:]]//g')
+case "${result}" in
+*rgb*)
+	echo
+	echo "Detected RGB " $result
 
-redhex=$(echo $colours | cut -f1 -d'/')
-greenhex=$(echo $colours | cut -f2 -d'/')
-bluehex=$(echo $colours | cut -f3 -d'/')
+	colours=$(echo ${result} | sed 's/rgb://' | sed 's/[^[:print:]]//g')
 
-red=$(printf "%d" $((16#$redhex)))
-green=$(printf "%d" $((16#$greenhex)))
-blue=$(printf "%d" $((16#$bluehex)))
+	redhex=$(echo $colours | cut -f1 -d'/')
+	greenhex=$(echo $colours | cut -f2 -d'/')
+	bluehex=$(echo $colours | cut -f3 -d'/')
 
-total=$(echo "$red + $green + $blue" | bc)
+	red=$(printf "%d" $((16#$redhex)))
+	green=$(printf "%d" $((16#$greenhex)))
+	blue=$(printf "%d" $((16#$bluehex)))
+
+	total=$(echo "$red + $green + $blue" | bc)
+
+	if [[ "$total" -gt "150000" ]]; then
+		echo "Enabling light mode."
+		echo "export DARK_MODE=0" >> config.status
+		echo "export DARK_MODE=0" >> docker/config.status
+	else
+		echo "Enabling dark mode (traditional white on black)."
+		echo "export DARK_MODE=1" >> config.status
+		echo "export DARK_MODE=1" >> docker/config.status
+	fi
+;;
+*)
+	echo "Colour detection failed."
+	echo "Enabling dark mode (traditional white on black)."
+	echo "export DARK_MODE=1" >> config.status
+esac
 
 if [ ! -f docker/Makefile ]; then
 	cp docker/Makefile-master docker/Makefile
 fi
 
-if [[ "$total" > 150000 ]]; then
-	echo "Enabling light mode."
-	echo "DARK_MODE=0" >> config.status
-	echo "DARK_MODE=0" >> docker/config.status
-else
-	echo "Enabling dark mode (traditional white on black)."
-	echo "DARK_MODE=1" >> config.status
-	echo "DARK_MODE=1" >> docker/config.status
-fi
-
 if [ "${DOCKER:-0}" -eq "1" ]; then
-	echo "SHUF_BIN=shuf" >> config.status
-	echo "GREP_BIN=grep" >> config.status
-	echo "SED_ARGS=-i" >> config.status
+	echo "export SHUF_BIN=shuf" >> config.status
+	echo "export GREP_BIN=grep" >> config.status
 else
 	if which gshuf > /dev/null; then
-		echo "SHUF_BIN=gshuf" >> config.status
-	elif which shuf; then
-		echo "SHUF_BIN=shuf" >> config.status
+		echo "export SHUF_BIN=gshuf" >> config.status
+	elif which shuf > /dev/null; then
+		echo "export SHUF_BIN=shuf" >> config.status
 	else
 		echo "Neither shuf or gshuf were found.  On Mac with Homebrew, brew install coreutils."
 		exit 1
 	fi
 
-	if which ggrep > /dev/null; then
-		echo "GREP_BIN=ggrep" >> config.status
-	else
-		echo "GREP_BIN=grep" >> config.status
-	fi
-
-	if sed -i 's/there are no possible matches//' config.status 2>/dev/null; then
-		echo "SED_ARGS=-i" >> config.status
-	else
-		echo "SED_ARGS=-i ''" >> config.status
+	if [ -x /usr/local/bin/grep ]; then
+		echo "export GREP_BIN=/usr/local/bin/grep" >> config.status
+	elif which ggrep > /dev/null; then
+		echo "export GREP_BIN=ggrep" >> config.status
 	fi
 fi
 

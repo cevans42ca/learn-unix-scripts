@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # This file is part of the "learn-unix-scripts" project.
 #
@@ -24,19 +24,23 @@
 
 parent_proc_name=`ps -p $PPID -o comm=`
 echo "Checking that the parent process is bash."
-if [[ ! "$parent_proc_name" =~ "bash" ]]; then
+case "$parent_proc_name" in
+*bash*)
+	echo "Bash required and detected."
+;;
+*)
 	echo "The parent process is $parent_proc_name.  An interactive bash shell was expected."
 	echo "The scripts in this project are written in bash and require the user to use the bash shell."
 	echo "But they're open source, so feel free to use the lesson text and write your own."
 	exit 1
-fi
+esac
 
 echo "Checking for bash version 4 or later."
-if [[ "${BASH_VERSINFO:-0}" < "4" ]]; then
+if [ "${BASH_VERSINFO:-0}" -le "4" ]; then
 	if [ -f /usr/local/bin/bash ]; then
 		homebrew=$(/usr/local/bin/bash -c 'echo ${BASH_VERSINFO[0]}')
 		#echo "/bin/bash too old, checking Homebrew version:  $homebrew"
-		if [[ "$homebrew" < "4" ]]; then
+		if [ "$homebrew" -le "4" ]; then
 			echo "Associative array support, added in Bash 4.0, is required.  Homebrew bash not found either."
 			echo "If you have a Mac, install Homebrew, then install bash."
 			exit 2
@@ -51,19 +55,19 @@ if [[ "${BASH_VERSINFO:-0}" < "4" ]]; then
 fi 
 
 echo "Checking stty arguments."
-if stty --version 2>&1 | grep -q 'version'; then
-    # BusyBox and other streamlined systems don't support --version.
-    stty_options='-a'
+stty -a 2>&1 | grep -q 'rows'
+check_one=$?
+stty -a 2>&1 | grep -q 'intr'
+check_two=$?
+
+if [ "${check_one}" -eq "0" ] && [ "${check_two}" -eq "0" ]; then
+	stty_options='-a'
 else
-    if stty --version 2>/dev/null | grep -q 'coreutils'; then
-        stty_options='-a'
-    else
-        stty_options='everything'
-    fi
+	stty_options='everything'
 fi
 
 echo "Checking interrupt character."
-stty ${stty_options} | grep -q "intr = ^C"
+stty ${stty_options} | grep -qF "intr = ^C"
 if [ $? -ne 0 ]; then
 	echo "The interrupt character is not Ctrl+C or could not be parsed from the output of stty."
 	echo "The exercises specifically say to use Ctrl+C, so if you can't change it, you"
@@ -94,7 +98,9 @@ if ! which shuf > /dev/null; then
 fi
 
 GREP_BIN=grep
-if which ggrep > /dev/null; then
+if [ -x /usr/local/bin/grep ]; then
+	GREP_BIN=/usr/local/bin/grep
+elif which ggrep > /dev/null; then
 	GREP_BIN=ggrep
 fi
 
@@ -105,5 +111,6 @@ echo "Verify that some of the words in $(tput setaf 196)this sentence are also$(
 echo "Verify that some of the words in this final sentence are red.  (Checks grep -P.)" | ${GREP_BIN} -P --color=always "(?<=Verify )that some of(?= the words)"
 echo
 echo "All three sentences should have red words.  If they don't, you may want to"
-echo "check your terminal settings and/or your TERM environment variable."
+echo "check your terminal settings, your TERM environment variable, and/or"
+echo "your version of tput."
 

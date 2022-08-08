@@ -31,6 +31,8 @@
 #
 # replace end b2074508-dd08-48be-bc6c-346c26349e4e
 
+# insert 4c02f3dc-1640-11ed-baa4-1511ebd0a2d1 check tput
+
 # In case this script needs to be moved back to being sourced, use a prefix on the environment variables to avoid messing
 # up other programs (Learn Unix Check or luc_).
 

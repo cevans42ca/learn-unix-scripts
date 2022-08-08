@@ -2,20 +2,41 @@
 # Create your own site-specific replacements and merge them with the "replace" script.  See site-install for examples.
 # Generate GUIDs with uuidgen.
 
+# start 4c02f3dc-1640-11ed-baa4-1511ebd0a2d1
+enable_tput=0
+if tput sgr0; then
+	enable_tput=1
+fi
+# end 4c02f3dc-1640-11ed-baa4-1511ebd0a2d1
+
 # start ffa9e74e-2b02-4d72-9c82-9f9db2915c62
 LUS_PROGRESS=${LUS_PROGRESS:-"$HOME/.learnUnixScripts"}
 
-black_on_white="\033[30;107m"
-bright_white_on_black="$(tput setab 0)$(tput setaf 7)$(tput bold)"
-yellow_on_black="\033[93;40m"
-green_on_black="\033[92;40m"
-blue_on_black="\033[94;40m"
-red_on_black="$(tput setab 0)$(tput setaf 196)"
+if [ "${enable_tput}" == "1" ]; then
+	black_on_white="\033[30;107m"
+	bright_white_on_black="$(tput setab 0)$(tput setaf 7)$(tput bold)"
+	yellow_on_black="\033[93;40m"
+	green_on_black="\033[92;40m"
+	blue_on_black="\033[94;40m"
+	red_on_black="$(tput setab 0)$(tput setaf 196)"
 
-underline="\033[4m"
-no_underline="\033[m"
+	underline="\033[4m"
+	no_underline="\033[m"
 
-nc=$(tput sgr0) # No colour
+	nc=$(tput sgr0) # No colour
+else
+	black_on_white=""
+	bright_white_on_black=""
+	yellow_on_black=""
+	green_on_black=""
+	blue_on_black=""
+	red_on_black=""
+
+	underline=""
+	no_underline=""
+
+	nc="" # No colour
+fi
 
 # Use an associative array to make it easy to reorder the exercises and add more in the middle.
 i=1
@@ -130,45 +151,87 @@ belt_to_first_colour_dark["black_stripe"]="${black_on_white}"
 belt_to_first_colour_dark["black_belt"]="${black_on_white}"
 
 declare -A belt_to_first_colour_light
-belt_to_first_colour_light["white_belt"]="$(tput setaf 7)$(tput bold)"
-belt_to_first_colour_light["yellow_stripe"]="$(tput setaf 3)$(tput bold)"
-belt_to_first_colour_light["yellow_belt"]="$(tput setaf 3)$(tput bold)"
-belt_to_first_colour_light["green_stripe"]="$(tput setaf 2)$(tput bold)"
-belt_to_first_colour_light["green_belt"]="$(tput setaf 2)$(tput bold)"
-belt_to_first_colour_light["blue_stripe"]="$(tput setaf 4)$(tput bold)"
-belt_to_first_colour_light["blue_belt"]="$(tput setaf 4)$(tput bold)"
-belt_to_first_colour_light["red_stripe"]="$(tput setaf 1)$(tput bold)"
-belt_to_first_colour_light["red_belt"]="$(tput setaf 1)$(tput bold)"
-belt_to_first_colour_light["black_stripe"]="$(tput setaf 15)$(tput setab 0)$(tput bold)"
-belt_to_first_colour_light["black_belt"]="$(tput setaf 15)$(tput setab 0)$(tput bold)"
+if [ "${enable_tput}" == "1" ]; then
+	belt_to_first_colour_light["white_belt"]="$(tput setaf 7)$(tput bold)"
+	belt_to_first_colour_light["yellow_stripe"]="$(tput setaf 3)$(tput bold)"
+	belt_to_first_colour_light["yellow_belt"]="$(tput setaf 3)$(tput bold)"
+	belt_to_first_colour_light["green_stripe"]="$(tput setaf 2)$(tput bold)"
+	belt_to_first_colour_light["green_belt"]="$(tput setaf 2)$(tput bold)"
+	belt_to_first_colour_light["blue_stripe"]="$(tput setaf 4)$(tput bold)"
+	belt_to_first_colour_light["blue_belt"]="$(tput setaf 4)$(tput bold)"
+	belt_to_first_colour_light["red_stripe"]="$(tput setaf 1)$(tput bold)"
+	belt_to_first_colour_light["red_belt"]="$(tput setaf 1)$(tput bold)"
+	belt_to_first_colour_light["black_stripe"]="$(tput setaf 15)$(tput setab 0)$(tput bold)"
+	belt_to_first_colour_light["black_belt"]="$(tput setaf 15)$(tput setab 0)$(tput bold)"
+else
+	belt_to_first_colour_light["white_belt"]=""
+	belt_to_first_colour_light["yellow_stripe"]=""
+	belt_to_first_colour_light["yellow_belt"]=""
+	belt_to_first_colour_light["green_stripe"]=""
+	belt_to_first_colour_light["green_belt"]=""
+	belt_to_first_colour_light["blue_stripe"]=""
+	belt_to_first_colour_light["blue_belt"]=""
+	belt_to_first_colour_light["red_stripe"]=""
+	belt_to_first_colour_light["red_belt"]=""
+	belt_to_first_colour_light["black_stripe"]=""
+	belt_to_first_colour_light["black_belt"]=""
+fi
 
 # Some extra ${nc}s are added to fix an issue with PuTTY.
 declare -A belt_to_second_colour_dark
-belt_to_second_colour_dark["white_belt"]=""
-belt_to_second_colour_dark["yellow_stripe"]="${nc}${bright_white_on_black}"
-belt_to_second_colour_dark["yellow_belt"]=""
-belt_to_second_colour_dark["green_stripe"]="${yellow_on_black}"
-belt_to_second_colour_dark["green_belt"]=""
-belt_to_second_colour_dark["blue_stripe"]="${green_on_black}"
-belt_to_second_colour_dark["blue_belt"]=""
-belt_to_second_colour_dark["red_stripe"]="${blue_on_black}"
-belt_to_second_colour_dark["red_belt"]=""
-belt_to_second_colour_dark["black_stripe"]="${red_on_black}"
-belt_to_second_colour_dark["black_belt"]=""
+if [ "${enable_tput}" == "1" ]; then
+	belt_to_second_colour_dark["white_belt"]=""
+	belt_to_second_colour_dark["yellow_stripe"]="${nc}${bright_white_on_black}"
+	belt_to_second_colour_dark["yellow_belt"]=""
+	belt_to_second_colour_dark["green_stripe"]="${yellow_on_black}"
+	belt_to_second_colour_dark["green_belt"]=""
+	belt_to_second_colour_dark["blue_stripe"]="${green_on_black}"
+	belt_to_second_colour_dark["blue_belt"]=""
+	belt_to_second_colour_dark["red_stripe"]="${blue_on_black}"
+	belt_to_second_colour_dark["red_belt"]=""
+	belt_to_second_colour_dark["black_stripe"]="${red_on_black}"
+	belt_to_second_colour_dark["black_belt"]=""
+else
+	belt_to_second_colour_dark["white_belt"]=""
+	belt_to_second_colour_dark["yellow_stripe"]=""
+	belt_to_second_colour_dark["yellow_belt"]=""
+	belt_to_second_colour_dark["green_stripe"]=""
+	belt_to_second_colour_dark["green_belt"]=""
+	belt_to_second_colour_dark["blue_stripe"]=""
+	belt_to_second_colour_dark["blue_belt"]=""
+	belt_to_second_colour_dark["red_stripe"]=""
+	belt_to_second_colour_dark["red_belt"]=""
+	belt_to_second_colour_dark["black_stripe"]=""
+	belt_to_second_colour_dark["black_belt"]=""
+fi
 
 # Some extra ${nc}s are added to fix an issue with PuTTY.
 declare -A belt_to_second_colour_light
-belt_to_second_colour_light["white_belt"]=""
-belt_to_second_colour_light["yellow_stripe"]="${nc}$(tput setaf 7)$(tput bold)"
-belt_to_second_colour_light["yellow_belt"]=""
-belt_to_second_colour_light["green_stripe"]="$(tput setaf 3)"
-belt_to_second_colour_light["green_belt"]=""
-belt_to_second_colour_light["blue_stripe"]="$(tput setaf 2)"
-belt_to_second_colour_light["blue_belt"]=""
-belt_to_second_colour_light["red_stripe"]="$(tput setaf 4)"
-belt_to_second_colour_light["red_belt"]=""
-belt_to_second_colour_light["black_stripe"]="${red_on_black}"
-belt_to_second_colour_light["black_belt"]=""
+if [ "${enable_tput}" == "1" ]; then
+	belt_to_second_colour_light["white_belt"]=""
+	belt_to_second_colour_light["yellow_stripe"]="${nc}$(tput setaf 7)$(tput bold)"
+	belt_to_second_colour_light["yellow_belt"]=""
+	belt_to_second_colour_light["green_stripe"]="$(tput setaf 3)"
+	belt_to_second_colour_light["green_belt"]=""
+	belt_to_second_colour_light["blue_stripe"]="$(tput setaf 2)"
+	belt_to_second_colour_light["blue_belt"]=""
+	belt_to_second_colour_light["red_stripe"]="$(tput setaf 4)"
+	belt_to_second_colour_light["red_belt"]=""
+	belt_to_second_colour_light["black_stripe"]="${red_on_black}"
+	belt_to_second_colour_light["black_belt"]=""
+else
+	belt_to_second_colour_light["white_belt"]=""
+	belt_to_second_colour_light["yellow_stripe"]=""
+	belt_to_second_colour_light["yellow_belt"]=""
+	belt_to_second_colour_light["green_stripe"]=""
+	belt_to_second_colour_light["green_belt"]=""
+	belt_to_second_colour_light["blue_stripe"]=""
+	belt_to_second_colour_light["blue_belt"]=""
+	belt_to_second_colour_light["red_stripe"]=""
+	belt_to_second_colour_light["red_belt"]=""
+	belt_to_second_colour_light["black_stripe"]=""
+	belt_to_second_colour_light["black_belt"]=""
+fi
 # end ffa9e74e-2b02-4d72-9c82-9f9db2915c62
 
 # start bef71a69-5f8d-43d4-af29-60608e9b56c7
@@ -252,7 +315,7 @@ simple_trim() {
 # start 7437f7c8-c360-4f96-91f6-b75dcd3b8cd7
 # If someone is connecting to Docker with "xterm", it's pretty much guaranteed to be a modern one.
 # By setting 256 colours, we can give tput more to work with.
-if [[ "$TERM" == "xterm" ]]; then
+if [[ "${INSIDE_DOCKER:-0}" == "1" ]] && [[ "$TERM" == "xterm" ]]; then
 	TERM=xterm-256color
 fi
 # end 7437f7c8-c360-4f96-91f6-b75dcd3b8cd7

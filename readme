@@ -12,9 +12,13 @@ has bash installed or could have bash installed.  However, not all these
 systems are currently supported.  The "verify" script can check some
 requirements, but it's still a prototype.
 
-For the time being, please use Docker on non-Linux systems.  The scripts
-that prepare the Docker container require Bash 4, and Homebrew Bash is
-detected on Mac.
+For FreeBSD, you will need:  bash version 4 or later,
+a version of grep that supports -P, and shuf.
+
+If you want to use these scripts as a student, please use Docker on non-Linux
+systems.  If you want to test, audit, or submit bug reports, run ./configure.
+The scripts that prepare the Docker container require Bash 4, and Homebrew Bash
+is detected on Mac.
 
 This project is in alpha status.  Please check back for updates.
 
