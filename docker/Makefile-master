@@ -1,7 +1,7 @@
 .PHONY: clean
 
+include config.status
 G_UID=10000
-DARK_MODE=1
 
 run: build
 	docker run -it --rm --mount src=lus,target=/mnt/vol --env DARK_MODE=$(DARK_MODE) learn-unix

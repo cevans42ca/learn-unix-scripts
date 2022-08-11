@@ -18,7 +18,8 @@ clean: gitclean
 	rm -f Makefile
 	rm -f docker/Makefile 
 	rm -f config.status
-	cd docker && make clean
+	rm -f docker/flags/buildtarget
+	rm -f docker/flags/volumetarget
 	@echo
 	@echo "Run the ./configure script to create the Makefile."
 
