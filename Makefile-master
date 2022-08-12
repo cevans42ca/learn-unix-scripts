@@ -18,6 +18,7 @@ clean: gitclean
 	rm -f Makefile
 	rm -f docker/Makefile 
 	rm -f config.status
+	rm -f docker/config.status
 	rm -f docker/flags/buildtarget
 	rm -f docker/flags/volumetarget
 	@echo

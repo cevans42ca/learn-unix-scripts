@@ -1,7 +1,9 @@
 #!/bin/sh
 
 rm -f config.status
+rm -f docker/config.status
 touch config.status
+touch docker/config.status
 mkdir -p flags
 
 if [ "${BASH_VERSINFO:-0}" -le "4" ]; then
