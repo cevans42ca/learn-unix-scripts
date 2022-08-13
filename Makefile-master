@@ -45,7 +45,8 @@ docker/bin/%: dist/bin/%
 dockerinstall: flags/replacetarget docker/bin/*
 
 install: flags/replacetarget
-	cp dist/bin/* /usr/local/bin/
+	@# Quotes around the install path are already added by the configure script.
+	cp dist/bin/* ${INSTALL_PATH}
 
 dockerrun: dockerinstall
 	cd docker && make createuservolume
