@@ -18,7 +18,11 @@ has bash installed or could have bash installed.  However, not all these
 systems are currently supported.  The "verify" script can check some
 requirements, but it's still a prototype.
 
-For Mac, you will need Homebrew with bash, ggrep, and shuf.
+For Mac, you will need Homebrew with bash, ggrep, and shuf to run the
+first set of exercises.  Later, you'll need encfs and fuse-zip, which
+are not easy to install.  If you're not up for a challenge, please
+install Docker Desktop and use the Docker image.  The configure script
+will ask which one you want to use.
 
 For FreeBSD, you will need:  bash version 4 or later, a version of grep
 that supports -P, and shuf.  Other BSDs are likely to need the same things.
