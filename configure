@@ -187,7 +187,9 @@ if which dzdo; then
 fi
 
 echo
-if [ "${luc_choice_2}" -eq "1" ]; then
+if [ "${luc_choice_2}" -eq "0" ]; then
+	echo "Run make with no arguments."
+elif [ "${luc_choice_2}" -eq "1" ]; then
 	echo "Run make install."
 elif [ "${luc_choice_2}" -eq "2" ]; then
 	echo "Run make with no arguments, then run ${su_command} make install."
