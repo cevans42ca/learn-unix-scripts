@@ -97,6 +97,18 @@ if ! which shuf > /dev/null; then
 	fi
 fi
 
+if ! which encfs > /dev/null; then
+	echo
+	echo "The encfs executable isn't present or is not in the path."
+	echo "The exercise associated with encfs won't be interactive."
+fi
+
+if ! which archivemount > /dev/null; then
+	echo
+	echo "The archivemount executable isn't present or is not in the path."
+	echo "The exercise associated with archivemount won't be interactive."
+fi
+
 GREP_BIN=grep
 if [ -x /usr/local/bin/grep ]; then
 	GREP_BIN=/usr/local/bin/grep
