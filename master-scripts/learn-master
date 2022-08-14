@@ -1985,6 +1985,7 @@ disk space) mounting may be a better option.  The "automount" command leverages 
 EOL
 
 	if [ which automount > /dev/null ]; then
+	echo 'Attempting to create "${LUS_HOME}/green-stripe/original"' >> $fmt_file
 		if mkdir -p "${LUS_HOME}/green-stripe/original"; then
 			echo "one" > "$LUS_HOME/green-stripe/original/one"
 			echo "two" > "$LUS_HOME/green-stripe/original/two"
@@ -2023,6 +2024,7 @@ EOL
 		echo "archivemount myfile.zip mydir" >> $fmt_file
 
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
 The preceding command will make myfile.zip available in mydir under the current path.
 
 EOL
@@ -2030,6 +2032,7 @@ EOL
 		echo "umount mydir" >> $fmt_file
 
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
 When you're done, unmount the mount with the preceding command.  Unfortunately, archivemount is not installed,
 so you won't be able to try it out.  Execute ". check".
 EOL
