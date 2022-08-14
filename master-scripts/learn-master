@@ -2020,14 +2020,14 @@ The archivemount command takes an archive file and a mount point as arguments.
 
 EOL
 
-		echo "archivemount myfile.zip mydir"
+		echo "archivemount myfile.zip mydir" >> $fmt_file
 
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 The preceding command will make myfile.zip available in mydir under the current path.
 
 EOL
 
-		echo "umount mydir"
+		echo "umount mydir" >> $fmt_file
 
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 When you're done, unmount the mount with the preceding command.  Unfortunately, archivemount is not installed,
