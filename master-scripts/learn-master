@@ -1958,56 +1958,42 @@ green_stripe_exercise_midterm_exam() { # Midterm Exam
 }
 
 green_stripe_exercise_fuse() { # FUSE and User Mounts
-	if [ which encfs ] > /dev/null || [ which automount ] > /dev/null; then
+	if which encfs > /dev/null; then
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-Let's look at how to create a mount.  Unfortunately, neither "encfs" nor "automount" appears to be here, so this
-portion won't be interactive.
+Let's look at how to create our own mount.
+
+EOL
+	else
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Let's look at how to create a mount.  Unfortunately, "encfs" doesn't appear to be here, so this portion won't be
+interactive.
 
 EOL
 	fi
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-Let's look at how to create our own mount.
-
-EOL
-
-	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 In the beginning, only root could mount filesystems.  FUSE (Filesystem in USErspace) was invented to allow non-admin
 users to mount filesystems, which allows for more flexibility.
 
-We're going to look at two examples.  The first one is simpler, and has very few use cases in real life, but it's
-a good place to start.
-
-With the right software installed, it's possible to mount a ZIP file.  In most cases it's easier to extract (or unzip)
-the ZIP and then work with the files, but if you have disk constraints (such as an embedded system or you're out of
-disk space) mounting may be a better option.  The "automount" command leverages FUSE to mount a ZIP file.
-
 EOL
 
-	if [ which automount > /dev/null ]; then
-	echo 'Attempting to create "${LUS_HOME}/green-stripe/original"' >> $fmt_file
-		if mkdir -p "${LUS_HOME}/green-stripe/original"; then
-			echo "one" > "$LUS_HOME/green-stripe/original/one"
-			echo "two" > "$LUS_HOME/green-stripe/original/two"
-			echo "three" > "$LUS_HOME/green-stripe/original/three"
-			mkdir -p "${LUS_HOME}/green-stripe/original/more"
-			echo "four" > "$LUS_HOME/green-stripe/original/four"
-			echo "five" > "$LUS_HOME/green-stripe/original/five"
-			echo "six" > "$LUS_HOME/green-stripe/original/six"
-
-			zip -r "$LUS_HOME/green-stripe/file.zip" "$LUS_HOME/green-stripe/original/"
-
+	if which encfs > /dev/null; then
+		if mkdir -p "${LUS_HOME}/green-stripe/encrypted" && mkdir -p "${LUS_HOME}/green-stripe/unencrypted"; then
 			fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-Execute "automount $LUS_HOME/green-stripe/file.zip $LUS_HOME/green-stripe/mount".
+The following command will work no matter what your current working directory is, and will also work if $LUS_HOME
+has spaces in it.  You will likely be able to use a simpler command.  Keep that in mind going forward.  Execute
+the following command (or a simpler version of it if you like).
+
+encfs "${LUS_HOME}/green-stripe/encrypted" "${LUS_HOME}/green-stripe/unencrypted"
 EOL
 
 			complete_exercise
 		else
-			# Unable to make the directory.
+			# Unable to make the directories.
 
 			fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-This exercise involves creating some files in $LUS_HOME/green-stripe/original, which already exists as a file or can't
-be created.  Please move or rename $LUS_HOME/green-stripe/original.
+This exercise involves creating files in $LUS_HOME/green-stripe/encrypted and $LUS_HOME/green-stripe/unencrypted, which
+already exist as a file or can't be created.  Please move or rename them.
 EOL
 
 			less -R -P "$less_prompt_move_on" $fmt_file
@@ -2015,25 +2001,25 @@ EOL
 			exit 2
 		fi
 	else
-		# No automount.
+		# No encfs.
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-The archivemount command takes an archive file and a mount point as arguments.
+The encfs command takes an archive file and a mount point as arguments.
 
 EOL
 
-		echo "archivemount myfile.zip mydir" >> $fmt_file
+		echo "encfs encrypteddir unencrypteddir" >> $fmt_file
 
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
-The preceding command will make myfile.zip available in mydir under the current path.
+The preceding command will create (or reconnect to) a mount that allows you to work with encrypted files.
 
 EOL
 
-		echo "umount mydir" >> $fmt_file
+		echo "umount unencrypteddir" >> $fmt_file
 
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
-When you're done, unmount the mount with the preceding command.  Unfortunately, archivemount is not available
+When you're done, unmount the mount with the preceding command.  Unfortunately, encfs is not available
 on your path, so you won't be able to try it out.
 
 Execute ". check".
