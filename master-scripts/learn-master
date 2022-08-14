@@ -1958,7 +1958,7 @@ green_stripe_exercise_midterm_exam() { # Midterm Exam
 }
 
 green_stripe_exercise_fuse() { # FUSE and User Mounts
-	if [[ which encfs > /dev/null ]] || [[ which automount > /dev/null ]]; then
+	if [ which encfs ] > /dev/null || [ which automount ] > /dev/null; then
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Let's look at how to create a mount.  Unfortunately, neither "encfs" nor "automount" appears to be here, so this
 portion won't be interactive.
