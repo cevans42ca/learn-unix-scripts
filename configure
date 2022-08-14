@@ -42,6 +42,9 @@ read -p "Please answer (1-3)?  " luc_choice
 custom_install=0
 luc_choice_2=0
 
+# A case statement might be overkill, but it allows for extra spaces in the
+# input.
+
 case "${luc_choice}" in
 *1*)
 	sed 's/^run:.*/run: configure replace/' Makefile-master > Makefile
