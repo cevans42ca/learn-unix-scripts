@@ -13,7 +13,7 @@ fi
 LUS_PROGRESS=${LUS_PROGRESS:-"$HOME/.learnUnixScripts"}
 
 if [ "${enable_tput}" == "1" ]; then
-	black_on_white="\033[30;107m"
+	black_on_white="$(tput setab 7)$(tput setaf 0)"
 	bright_white_on_black="$(tput setab 0)$(tput setaf 7)$(tput bold)"
 	yellow_on_black="\033[93;40m"
 	green_on_black="\033[92;40m"
@@ -84,6 +84,7 @@ exercises["green_stripe_$((i++))"]="ls_explore"
 exercises["green_stripe_$((i++))"]="ls_dash_h"
 exercises["green_stripe_$((i++))"]="ls_dash_f"
 exercises["green_stripe_$((i++))"]="df"
+exercises["green_stripe_$((i++))"]="midterm_exam"
 
 declare -A belt_to_number
 belt_to_number["white_belt"]=0

@@ -340,10 +340,18 @@ Now that you know how to recover from your terminal getting frozen and how to ge
 navigate.
 
 All files and directories have a path which tells the operating system how to retrieve them.  You may be familiar with
-Microsoft Windows-style paths such as C:\\Windows\\System\\.  When you insert a USB drive, Windows usually assigns the drive
-letter E: to the new disk, unless it's already taken.  Unix doesn't have drive letters.  Instead, all disks (local disks,
-shared drives, and removeable disks) are in one unified filesystem.  In a future exercise, we'll look at how data is brought
-in from shared and removeable drives.
+Microsoft Windows-style paths such as C:\\Windows\\System\\.  When you insert a USB drive, Windows usually assigns the
+drive letter D: or E: to the new disk, unless it's already taken.  Unix doesn't have drive letters.  Instead, all disks
+(local disks, shared drives, and removable disks) are in one unified filesystem.
+
+We'll use the term "disk drive" to refer to hard disks and the part of a computer that reads removable disks like SD
+cards and USB sticks.  Although most of these no longer have spinning disks, or never had them in the first place, the
+term "disk drive" is still popular and is likely to be the least confusing term.  It's like the floppy disk icon, still
+ubiquitous in software as what you click on to save what you're working on.  Where it makes sense to distinguish between
+the part of a computer that reads a USB stick and the USB stick itself, we will call USB sticks, SD cards, and similar
+things "removable media".
+
+In a future exercise, we'll look at how data is brought in from network drives and removable drives.
 
 In Unix, paths use forward slashes ( / ) instead of backslashes.  The path to your home directory is $HOME.  Your home
 directory contains everything that's only for you.  It will be mostly configuration settings, but more generally,
@@ -1827,7 +1835,7 @@ EOL
 
 green_stripe_exercise_df() { # Using "df" to Look at Disk Space
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-The last thing in yellow belt is the "df" command.  But before we go into what it does, we'll have to go over mounts.
+The next thing to cover is the "df" command.  But before we go into what it does, we'll have to go over mounts.
 
 Some time ago, we showed how Windows has drive letters, but in Unix, everything is in one filesystem.  In order to bring
 disk drives, network shares, USB sticks, and everything that has files in it into one place, they are "mounted" onto the
@@ -1839,13 +1847,14 @@ get filled up.  That means that /var/log can be full of log files, but /home sti
 means one problem won't bring down the whole system.
 
 In many cases, mounts will have some space reserved that only root can use.  This space can be used for emergencies, and
-also, having a nearly full filesystem can cause performance problems.  All you need to do to use this space is to
-switch to the root user (we'll look at how to do that later).
+also, having a nearly full mount can cause performance problems.  All you need to do to use this space is to switch to
+the root user (we'll look at how to do that later).
 
 The command to see how much space is being taken up for each mount is "df".  The "df" command usually defaults to either
 512-byte or 1K blocks, which is not very readable for new users.  To see the sizes in "human" units, use the "-h" option.
 
-Here are some examples of what you might see on different platforms.  First, Linux Mint.
+Here are some examples of what you might see on different platforms.  First, Linux Mint.  Some parts are shown in red
+to draw your eye to them.  This colour is not in the original.
 
 EOL
 
@@ -1879,16 +1888,73 @@ EOL
 
 	${GREP_BIN} --color=always "\(100.\|\)" <<EOL >> $fmt_file
 Filesystem         Size    Used   Avail Capacity  Mounted on
-/dev/gpt/server    2.6T    2.1T    351G    86%    /
+/dev/gpt/rootfs    9.7G    5.5G    3.4G    62%    /
 devfs              1.0K    1.0K      0B   100%    /dev
 EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
+If you're not familiar with FreeBSD, you might think there's a problem here, as one of the mounts is 100% full.  However, it's
+normal.  The "/dev" mount is a special, internal mount, and isn't a disk drive.  You'll notice that there are only two
+filesystems listed, which is common, but Linux has several.
+
+The following output is from running "df -h" on a Mac.  Some of the original lines from the output have been removed for
+clarity.
+
+EOL
+
+	if (($STTY_COLUMNS < 98)); then
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Unfortunately, it won't all fit with your current terminal settings, so some or all of the lines are going to wrap.
+
+EOL
+	fi
+
+	${GREP_BIN} --color=always "\(%iused\|iused\|ifree\|\)" <<EOL >> $fmt_file
+Filesystem       Size   Used  Avail Capacity iused      ifree %iused  Mounted on
+/dev/disk1s6s1  466Gi   22Gi  227Gi     9%  501138 2383102400    0%   /
+devfs           199Ki  199Ki    0Bi   100%     690          0  100%   /dev
+/dev/disk1s5    466Gi  2.0Gi  227Gi     1%       2 2383102400    0%   /System/Volumes/VM
+/dev/disk1s3    466Gi  256Mi  227Gi     1%     814 2383102400    0%   /System/Volumes/Preboot
+/dev/disk1s7    466Gi  100Mi  227Gi     1%     441 2383102400    0%   /System/Volumes/Update
+/dev/disk1s1    466Gi  201Gi  227Gi    47% 1250938 2383102400    0%   /System/Volumes/Data
+map auto_home     0Bi    0Bi    0Bi   100%       0          0  100%   /System/Volumes/Data/home
+/dev/disk1s6    466Gi   22Gi  227Gi     9%  502049 2383102400    0%   /System/Volumes/Update/mnt1
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+The Mac shows three additional columns with "df -h", which list the number of inodes used, the number of inodes free,
+and the percentage of inodes used.  Inodes (or index nodes) are used to keep track of where files are on a disk drive,
+as well as permissions and many other attributes.  If we run out of inodes, we will not be able to store any more
+files even if there's space for them (but it's rare).
+
+Like before, there's a devfs filesystem that's full.  Likewise, it's not an issue.
+
+You may have noticed that there are six filesystems that have the same capacity, inodes used, and inodes free.  We're seeing
+a feature Macs have that allow multiple partitions to share the same space on the same physical disk.  Right now,
+it's merely a curiosity.
+
+In the output from the Mac, we see that most of the filesystems start with "/dev/disk" followed by a device number and
+partition number.  These are real disks, as opposed to the "devfs" filesystem, which is internal.  We can also see that
+most of the entries in the last column have full English words like "System" and "Volumes", which is a distinguishing
+feature of Macs.
+
+In summary, the FreeBSD volume that represented a real disk that could get full was /dev/gpt/rootfs.  For Linux, they
+were /dev/sda1 and /dev/sda5.  For the Mac, they all started with /dev/disk1.  In general, the smaller the amount of
+available space, the more likely the filesystem is something internal.  As you gain experience, you'll have a better
+idea of which filesystems are usually internal.  It'll become easier to distinguish the internal filesystems from the
+"real" ones.  Keep in mind that Linux systems tend to show internal filesystems as having space available, but FreeBSD
+and Mac don't.
+
 Execute "df -h".
 EOL
 
 	complete_exercise
+}
+
+green_stripe_exercise_midterm_exam() { # Midterm Exam
+	echo 'Execute ". check" for your midterm exam.'
 }
 
 ####################
@@ -2108,6 +2174,13 @@ if [ -f "${LUS_PROGRESS}" ]; then
 fi
 
 LUS_HOME=${LUS_HOME:-"$HOME/lus"}
+
+if [[ "${INSIDE_DOCKER:-0}" == "1" ]]; then
+	if [ ! -d "$LUS_DOCKER_BASE/sandbox" ]; then
+		mkdir $LUS_DOCKER_BASE/sandbox
+	fi
+fi
+
 
 if [ ! -f "${LUS_PROGRESS}" ] || [ -z "${RANK:-}" ] || [ -z "${EXERCISE:-}" ]; then
 	if (($STTY_ROWS < 24)) || (($STTY_COLUMNS < 80)); then

@@ -905,7 +905,7 @@ green_stripe_exercise_df() {
 	return
 }
 
-green_stripe_final_exam() {
+green_stripe_exercise_midterm_exam() {
 	if ask_review_final_exam; then
 		keep_going
 		return 0
@@ -916,7 +916,7 @@ green_stripe_final_exam() {
 	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
 If you press Ctrl+c, you will get back to a prompt, but your progress through the questions will not be saved.
 
-Question 1/3
+Question 1/6
 
 If you found a command in your history with Ctrl+r but you need to make a change to it first, what should you do?
 
@@ -926,7 +926,7 @@ EOL
 	handle_answer 'Press Left, Right, Ctrl+b, or Ctrl+f'
 
 	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
-Question 2/3
+Question 2/6
 
 You want to see a long-format file list with the most recent files at the bottom.  Which options will do that?
 
@@ -936,7 +936,7 @@ EOL
 	handle_answer 'ls -ltr'
 
 	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
-Question 3/3
+Question 3/6
 
 You want to see a long-format file list with the oldest files at the bottom.  Which options will do that?
 
@@ -945,10 +945,77 @@ EOL
 	luc_answers=( 'ls -lh' 'ls -lt' 'ls -Al' 'ls -ltr' 'Ctrl+c! Ctrl+c!!' )
 	handle_answer 'ls -lt'
 
-	if [ "$luc_correct_answers" == "3" ]; then
+	# Start of Question 4/6
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 4/6
+
+After executing "df -h" on a FreeBSD system, you see the following output.  Is there a problem?
+
+EOL
+
+	cat <<EOL
+Filesystem         Size    Used   Avail Capacity  Mounted on
+/dev/gpt/rootfs    9.7G    5.5G    3.4G    62%    /
+devfs              1.0K    1.0K      0B   100%    /dev
+
+EOL
+
+	luc_answers=( 'Yes' 'No' 'Fish' )
+	handle_answer 'No'
+
+	# Start of Question 5/6
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 5/6
+
+Now you're on a Mac.  You execute "df -h", and see the following.  Is there a problem?
+
+EOL
+
+	cat <<EOL
+Filesystem       Size   Used  Avail Capacity iused      ifree %iused  Mounted on
+/dev/disk1s6s1  466Gi   22Gi  227Gi     9%  501138 2383102400    0%   /
+devfs           199Ki  199Ki    0Bi   100%     690          0  100%   /dev
+/dev/disk1s5    466Gi  2.0Gi  227Gi     1%       2 2383102400    0%   /System/Volumes/VM
+/dev/disk1s3    466Gi  256Mi  227Gi     1%     814 2383102400    0%   /System/Volumes/Preboot
+/dev/disk1s7    466Gi  100Mi  227Gi     1%     441 2383102400    0%   /System/Volumes/Update
+/dev/disk1s1    466Gi  201Gi  227Gi    47% 1250938 2383102400    0%   /System/Volumes/Data
+map auto_home     0Bi    0Bi    0Bi   100%       0          0  100%   /System/Volumes/Data/home
+/dev/disk1s6    466Gi   22Gi  227Gi     9%  502049 2383102400    0%   /System/Volumes/Update/mnt1
+
+EOL
+
+	luc_answers=( 'Yes' 'No' 'Phone a friend' )
+	handle_answer 'No'
+
+	# Start of Question 6/6
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 6/6
+
+Here is the output of "df -h" from a Linux system.  Is there a problem?
+
+EOL
+
+	cat <<EOL
+Filesystem      Size  Used Avail Use% Mounted on
+udev            445M     0  445M   0% /dev
+tmpfs            99M  1.2M   98M   2% /run
+/dev/sda5        29G   28G     0 100% /
+tmpfs           491M     0  491M   0% /dev/shm
+tmpfs           5.0M  4.0K  5.0M   1% /run/lock
+tmpfs           491M     0  491M   0% /sys/fs/cgroup
+/dev/sda1       511M  4.0K  511M   1% /boot/efi
+tmpfs            99M   20K   99M   1% /run/user/1000
+
+EOL
+
+	luc_answers=( 'Yes' 'No' 'Maybe' )
+	handle_answer 'Yes'
+
+	# Final check
+	if [ "$luc_correct_answers" == "6" ]; then
 		good_work
 	else
-		echo "Results:  $luc_correct_answers/3 correct"
+		echo "Results:  $luc_correct_answers/6 correct"
 		echo ""
 		sorry
 	fi
