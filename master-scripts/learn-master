@@ -1957,6 +1957,87 @@ green_stripe_exercise_midterm_exam() { # Midterm Exam
 	echo 'Execute ". check" for your midterm exam.'
 }
 
+green_stripe_exercise_fuse() { # FUSE and User Mounts
+	if [ which encfs > /dev/null ] || [ which automount > /dev/null ]; then
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Let's look at how to create a mount.  Unfortunately, neither "encfs" nor "automount" appears to be here, so this
+portion won't be interactive.
+
+EOL
+	fi
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Let's look at how to create our own mount.
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+In the beginning, only root could mount filesystems.  FUSE (Filesystem in USErspace) was invented to allow non-admin
+users to mount filesystems, which allows for more flexibility.
+
+We're going to look at two examples.  The first one is simpler, and has very few use cases in real life, but it's
+a good place to start.
+
+With the right software installed, it's possible to mount a ZIP file.  In most cases it's easier to extract (or unzip)
+the ZIP and then work with the files, but if you have disk constraints (such as an embedded system or you're out of
+disk space) mounting may be a better option.  The "automount" command leverages FUSE to mount a ZIP file.
+
+EOL
+
+	if [ which automount > /dev/null ]; then
+		if mkdir -p "${LUS_HOME}/green-stripe/original"; then
+			echo "one" > "$LUS_HOME/green-stripe/original/one"
+			echo "two" > "$LUS_HOME/green-stripe/original/two"
+			echo "three" > "$LUS_HOME/green-stripe/original/three"
+			mkdir -p "${LUS_HOME}/green-stripe/original/more"
+			echo "four" > "$LUS_HOME/green-stripe/original/four"
+			echo "five" > "$LUS_HOME/green-stripe/original/five"
+			echo "six" > "$LUS_HOME/green-stripe/original/six"
+
+			zip -r "$LUS_HOME/green-stripe/file.zip" "$LUS_HOME/green-stripe/original/"
+
+			fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Execute "automount $LUS_HOME/green-stripe/file.zip $LUS_HOME/green-stripe/mount".
+EOL
+
+			complete_exercise
+		else
+			# Unable to make the directory.
+
+			fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+This exercise involves creating some files in $LUS_HOME/green-stripe/original, which already exists as a file or can't
+be created.  Please move or rename $LUS_HOME/green-stripe/original.
+EOL
+
+			less -R -P "$less_prompt_move_on" $fmt_file
+
+			exit 2
+		fi
+	else
+		# No automount.
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+The archivemount command takes an archive file and a mount point as arguments.
+
+EOL
+
+		echo "archivemount myfile.zip mydir"
+
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+The preceding command will make myfile.zip available in mydir under the current path.
+
+EOL
+
+		echo "umount mydir"
+
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+When you're done, unmount the mount with the preceding command.  Unfortunately, archivemount is not installed,
+so you won't be able to try it out.  Execute ". check".
+EOL
+
+		complete_exercise
+	fi
+}
+
 ####################
 # End of exercises #
 ####################
@@ -2125,6 +2206,21 @@ EOL
 				echo "docker run -it --rm --mount src=lus,target=/mnt/vol --env DARK_MODE=0 docker run -it --rm cevans42ca/learn-unix-scripts"
 				exit 1
 			fi
+		fi
+
+		if [[ "${INSIDE_DOCKER:-0}" == "1" ]]; then
+			fmt ${FMT_OPTIONS:-}$WIDTH <<EOL > $fmt_file
+Welcome to the Docker version of the Learn Unix Scripts.  There's one thing you should keep in mind that applies
+specifically to this version.  It's common for Docker containers to be deleted once they complete their work.  Of
+course, you'll want to keep your progress, so that will be kept.  Two other things will also be kept:  a "sandbox"
+directory for you to try things out, and a "lus" directory which will be used for some of the exercises.  These are in
+your home directory (if you don't know what that is, we'll cover it soon).  Only add, modify, or delete files and
+directories under "lus" when asked to do so by an exercise.  Anything not in the lus or sandbox directories may be
+deleted, depending on how you've started the Docker container.
+
+EOL
+
+			less -R -P "$less_prompt_move_on" $fmt_file
 		fi
 
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL

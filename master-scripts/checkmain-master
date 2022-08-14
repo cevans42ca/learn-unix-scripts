@@ -1021,6 +1021,11 @@ EOL
 	fi
 }
 
+green_stripe_exercise_midterm_fuse() {
+	keep_going
+}
+
+
 ####################
 # End of exercises #
 ####################
