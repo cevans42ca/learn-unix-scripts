@@ -1972,7 +1972,7 @@ EOL
 	fi
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-In the beginning, only root could mount filesystems.  FUSE (Filesystem in USErspace) was invented to allow non-admin
+In the beginning, only the root user could mount filesystems.  FUSE (Filesystem in USErspace) was invented to allow non-admin
 users to mount filesystems, which allows for more flexibility.
 
 EOL
