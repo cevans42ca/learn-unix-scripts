@@ -33,9 +33,7 @@ replaced_scripts = dist/bin/learn dist/bin/checkmain dist/bin/check
 flags/replacetarget: $(scripts) replacements/* flags/configuretarget
 	./replace-all
 	touch flags/replacetarget
-	@echo "Scripts prepared in ./dist/bin.  Review them if you like.  When you're ready,"
-	@echo "copy these into any directory on the students' PATH or update the install"
-	@echo "target in the Makefile and use that."
+	@echo "Scripts prepared in ./dist/bin."
 
 replacetarget: flags/replacetarget
 
