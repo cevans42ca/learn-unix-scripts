@@ -6,3 +6,4 @@ configuretarget
 replace
 Makefile
 config.status
+encfs.log

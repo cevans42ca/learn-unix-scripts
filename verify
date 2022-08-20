@@ -22,6 +22,11 @@
 
 # This script was developed in a 130x30 terminal.
 
+if [ `whoami` == "root" ]; then
+	echo "Run this script as a normal user, not the root user.  (Don't use dzdo or sudo.)"
+	exit 1
+fi
+
 parent_proc_name=`ps -p $PPID -o comm=`
 echo "Checking that the parent process is bash."
 case "$parent_proc_name" in
@@ -101,12 +106,28 @@ if ! which encfs > /dev/null; then
 	echo
 	echo "The encfs executable isn't present or is not in the path."
 	echo "The exercise associated with encfs won't be interactive."
-fi
-
-if ! which archivemount > /dev/null; then
-	echo
-	echo "The archivemount executable isn't present or is not in the path."
-	echo "The exercise associated with archivemount won't be interactive."
+else
+	script=$(readlink -f "$0")
+	script_dir=$(dirname "$script")
+	mkdir "${script_dir}"/lus-testenc
+	mkdir "${script_dir}"/lus-testunenc
+	echo "Checking encfs.  Mounting a test filesystem."
+	if printf "Test Password\n" | encfs --stdinpass --standard "${script_dir}"/lus-testenc "${script_dir}"/lus-testunenc > "${script_dir}"/encfs.log; then
+		if mount | grep -q "encfs.*lus-testunenc"; then
+			if encfs -u "${script_dir}"/lus-testunenc; then
+				rm -Rf "${script_dir}"/lus-testenc
+				rm -Rf "${script_dir}"/lus-testunenc
+			fi	
+		else
+			echo "Encfs is installed but isn't working."
+			echo "Users who use these scripts on this host will not be able to proceed past"
+			echo "green stripe."
+		fi
+	else
+		echo "Encfs is installed but isn't working."
+		echo "Users who use these scripts on this host will not be able to proceed past"
+		echo "green stripe."
+	fi
 fi
 
 GREP_BIN=grep

@@ -33,11 +33,13 @@ fi
 #date -v-3m +"%Y%m%d"
 
 echo "What would you like to do?"
-echo "(1) Generate the scripts for audit or review (don't install)."
-echo "(2) Create a docker container for a single user and run it."
-echo "(3) Prepare the scripts to run directly (without docker) on this host."
+echo "(1) Check to see if the scripts will work on this host without Docker."
+echo "(2) Generate the scripts for audit or review (don't install)."
+echo "(3) Create a Docker container for a single user and run it."
+echo "(4) Create a Docker container that can share a volume (INCOMPLETE)."
+echo "(5) Prepare the scripts to run directly (without docker) on this host."
 
-read -p "Please answer (1-3)?  " luc_choice
+read -p "Please answer (1-5)?  " luc_choice
 
 custom_install=0
 luc_choice_2=0
@@ -47,15 +49,23 @@ luc_choice_2=0
 
 case "${luc_choice}" in
 *1*)
+	echo "Please run the "./verify" script.  It can't be run directly from this script"
+	echo "as it checks for an interactive bash shell."
+	exit 0
+	;;
+*2*)
 	sed 's/^run:.*/run: configure replace/' Makefile-master > Makefile
 	echo "export DOCKER=0" >> config.status
 	;;
-*2*)
+*3*)
 	sed 's/^run:.*/run: configure dockerrun/' Makefile-master > Makefile
 	DOCKER=1
 	echo "export DOCKER=1" >> config.status
 	;;
-*3*)
+*4*)
+	echo "This option isn't ready yet."
+	;;
+*5*)
 	sed 's/^run:.*/run: configure flags\/replacetarget/' Makefile-master > Makefile
 	if [ -n "${HOMEBREW_BASH:-}" ]; then
 		echo "export HOMEBREW_BASH=1" >> config.status
