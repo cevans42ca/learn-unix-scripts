@@ -38,6 +38,8 @@
 
 set -e -o nounset
 
+# DARK_MODE Replacement Tag:  if not running in Docker, replace this line with DARK_MODE=0 for black text on white
+
 # insert 17fa07e6-24b8-4e35-bc1a-094427fd8699 xterm fix
 
 # insert bef71a69-5f8d-43d4-af29-60608e9b56c7 temp file clean up
@@ -1040,7 +1042,7 @@ green_stripe_exercise_fuse() {
 
 green_stripe_exercise_fuse_look_around_unmount() {
 	if which encfs > /dev/null; then
-		if mount | qrep -q "encfs.*unencrypted"; then
+		if mount | grep -q "encfs.*unencrypted"; then
 			sorry
 		else
 			keep_going
