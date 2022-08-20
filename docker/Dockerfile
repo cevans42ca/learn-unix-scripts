@@ -27,11 +27,8 @@ RUN apk add file-doc
 RUN apk add mandoc man-pages mandoc-apropos less less-doc
 RUN apk add bash-doc busybox-doc mandoc-apropos coreutils-doc
 
-# For Encrypted, shared directories (also part of the exercises)
+# For Encrypted, shared directories (Part of the exercises, but may be used for shared volumes)
 RUN apk add encfs encfs-doc
-
-# For mounting ZIP files (part of the exercises)
-RUN apk add archivemount archivemount-doc
 
 #encfs /mnt/vol ~/vol
 #fusermount -u ~/vol
