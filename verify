@@ -112,11 +112,14 @@ else
 	mkdir "${script_dir}"/lus-testenc
 	mkdir "${script_dir}"/lus-testunenc
 	echo "Checking encfs.  Mounting a test filesystem."
+	need_to_clean=0
 	if printf "Test Password\n" | encfs --stdinpass --standard "${script_dir}"/lus-testenc "${script_dir}"/lus-testunenc > "${script_dir}"/encfs.log; then
+		need_to_clean=1
 		if mount | grep -q "encfs.*lus-testunenc"; then
 			if encfs -u "${script_dir}"/lus-testunenc; then
 				rm -Rf "${script_dir}"/lus-testenc
 				rm -Rf "${script_dir}"/lus-testunenc
+				need_to_clean=0
 			fi	
 		else
 			echo "Encfs is installed but isn't working."
@@ -147,3 +150,8 @@ echo "All three sentences should have red words.  If they don't, you may want to
 echo "check your terminal settings, your TERM environment variable, and/or"
 echo "your version of tput."
 
+if [[ "${need_to_clean}" == "1" ]]; then
+	echo
+	echo "Unable to clean up after encfs test.  Please unmount any encfs mounts and delete"
+	echo "${script_dir}"/lus-testenc and "${script_dir}"/lus-testunenc/.
+fi

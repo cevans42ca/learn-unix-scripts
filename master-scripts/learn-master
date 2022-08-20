@@ -1980,16 +1980,16 @@ EOL
 	if which encfs > /dev/null; then
 		if mkdir -p "${LUS_HOME}/green-stripe/encrypted" && mkdir -p "${LUS_HOME}/green-stripe/unencrypted"; then
 			fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-The command below will work no matter what your current working directory is, and will also work if $LUS_HOME has
-spaces in it.  If $LUS_HOME is in $HOME, you will also be able to use "~" as a short form for $HOME.  All of these
-together mean that you will likely be able to use a shorter command.  These exercises will provide command lines that
-are likely to work in all situations.  Keep that in mind going forward.
+Execute the following command exactly as written.  The "encfs" command requires full paths to work (though you may be
+able to shorten it by using a "~" as an alias for $HOME).  You might want to use the copy and paste function your
+terminal provides.  After you execute it, it will ask you if you want expert configuration or pre-configured paranoia
+mode:  press Enter.  You'll then need to provide a password.  Passwords for encfs have no special requirements (like upper
+case, numbers, and symbols).
 
-Execute the following command (or a simpler version of it if you like).  When you're asked if you want expert configuration
-or pre-configured paranoia mode, press Enter.  Passwords have no requirements.
-
-encfs "${LUS_HOME}/green-stripe/encrypted" "${LUS_HOME}/green-stripe/unencrypted"
 EOL
+
+			# If the terminal is small, fmt may introduce a newline, which will make copy and paste fail.
+			echo encfs "${LUS_HOME}/green-stripe/encrypted" "${LUS_HOME}/green-stripe/unencrypted" >> $fmt_file
 
 			complete_exercise
 		else
