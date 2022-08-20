@@ -2163,7 +2163,7 @@ EOL
 	printf "\n`getBeltWithColours blue_belt title`\n" >> $fmt_file
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-  Finding large files and directories with du, sort, and head; rm; rmdir; mv
+  Finding large files and dirs with du, sort, and head; mv; rm -Rf; diff
 EOL
 
 	printf "\n`getBeltWithColours red_stripe title`\n" >> $fmt_file
