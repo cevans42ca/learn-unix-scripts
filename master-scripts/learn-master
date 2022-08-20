@@ -340,16 +340,20 @@ Now that you know how to recover from your terminal getting frozen and how to ge
 navigate.
 
 All files and directories have a path which tells the operating system how to retrieve them.  You may be familiar with
-Microsoft Windows-style paths such as C:\\Windows\\System\\.  When you insert a USB drive, Windows usually assigns the
-drive letter D: or E: to the new disk, unless it's already taken.  Unix doesn't have drive letters.  Instead, all disks
-(local disks, shared drives, and removable disks) are in one unified filesystem.
+Microsoft Windows-style paths such as C:\\Windows\\System\\.  When you insert a USB stick, Windows usually assigns the
+drive letter D: or E: to the new drive, unless it's already taken.  Unix doesn't have drive letters.  Instead, all drives
+(local drives, shared drives, and removable drives) are in one unified filesystem.
 
-We'll use the term "disk drive" to refer to hard disks and the part of a computer that reads removable disks like SD
-cards and USB sticks.  Although most of these no longer have spinning disks, or never had them in the first place, the
-term "disk drive" is still popular and is likely to be the least confusing term.  It's like the floppy disk icon, still
-ubiquitous in software as what you click on to save what you're working on.  Where it makes sense to distinguish between
-the part of a computer that reads a USB stick and the USB stick itself, we will call USB sticks, SD cards, and similar
-things "removable media".
+Where it makes sense to distinguish between the part of a computer that reads a USB stick and the USB stick itself, we
+will call USB sticks, SD cards, and similar things "removable media".  We'll use the term "drive" to refer to hard
+drives and the part of a computer that reads removable media like SD cards and USB sticks.
+
+Before disk drives, there were tape drives.  (Tape drives remain today for very long-term archival storage of large
+amounts of data, but it's rare.)  If you've seen old movies or an old projector, you may have seen a reel-to-reel tape.
+The drive mechanism that moved the tape back and forth became the name for the whole thing.  Later, there were spinning
+disks, and there was a mechanism that drove the disks around.  Now, it's becoming more and more uncommon for drives in a
+computer system to have anything that's driving some kind of motion.  They retain the name "drive" anyway.  It's like
+the floppy disk icon, still ubiquitous in software as what you click on to save what you're working on.
 
 In a future exercise, we'll look at how data is brought in from network drives and removable drives.
 
@@ -1703,7 +1707,7 @@ which can be 0 or 1.  One byte can hold a single character like "a", "1", or "$"
 (1 KB) is 1024 bytes.  A page of text or a short email with no pictures or attachments can be stored in a kilobyte or
 two.  (If you try it yourself, make sure to save the file in text format.)
 
-Unix doesn't write to disks byte by byte, but instead groups bytes together into blocks.  You can think of a block like
+Unix doesn't write to drives byte by byte, but instead groups bytes together into blocks.  You can think of a block like
 a shipping container.  Most of the time, the block size is 4 KB (4,096 bytes).  Each one is a standard size, and they can
 be placed in any order, which makes it easier to organize and move them.  A shipping container might have papers,
 packing peanuts, a car, or priceless antiques.  It could be full or empty.  The same is true of a block, which might
@@ -1833,16 +1837,16 @@ EOL
 	complete_exercise
 }
 
-green_stripe_exercise_df() { # Using "df" to Look at Disk Space
+green_stripe_exercise_df() { # Using "df" to Look at Drive Space
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 The next thing to cover is the "df" command.  But before we go into what it does, we'll have to go over mounts.
 
 Some time ago, we showed how Windows has drive letters, but in Unix, everything is in one filesystem.  In order to bring
-disk drives, network shares, USB sticks, and everything that has files in it into one place, they are "mounted" onto the
+local drives, network shares, USB sticks, and everything that has files in it into one place, they are "mounted" onto the
 base filesystem.  How that works isn't important for these lessons.  The important thing is that each "mount" has a bunch
 of files and each one has a maximum size.
 
-Just as a USB drive E: in Windows has a maximum size, and the hard disk C: has a maximum size, each mount in Unix can
+Just as a USB drive E: in Windows has a maximum size, and the hard drive C: has a maximum size, each mount in Unix can
 get filled up.  That means that /var/log can be full of log files, but /home still has room.  That's a good thing.  It
 means one problem won't bring down the whole system.
 
@@ -1872,12 +1876,12 @@ EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
-The "/dev/sda1" and "/dev/sda5" devices are partitions on the first SCSI hard disk (SCSI drive A, partition 1).
-Partitons allow you to break up a physical hard disk into smaller pieces for more flexibility, and to isolate issues if
+The "/dev/sda1" and "/dev/sda5" devices are partitions on the first SCSI drive (SCSI drive A, partition 1).
+Partitons allow you to break up a physical drive into smaller pieces for more flexibility, and to isolate issues if
 one partition gets full.  You may also need different partitions for different things:  a boot drive, a place to store
 regular files, and swap space.  These exercises don't get into swap space, so you'll need to take a look online if
 you're interested.  If you see /dev/sda, it's basically guaranteed that you're dealing with some kind of Linux.  All the
-mounts that don't start with /dev/sda aren't hard disks, stick drives, or SD cards, but rather something internal to
+mounts that don't start with /dev/sda aren't hard drives, stick drives, or SD cards, but rather something internal to
 Linux.
 
 In the cloud, you might not see a partition number.
@@ -1895,7 +1899,7 @@ EOL
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
 If you're not familiar with FreeBSD, you might think there's a problem here, as one of the mounts is 100% full.  However, it's
-normal.  The "/dev" mount is a special, internal mount, and isn't a disk drive.  You'll notice that there are only two
+normal.  The "/dev" mount is a special, internal mount.  It isn't a drive.  You'll notice that there are only two
 filesystems listed, which is common, but Linux has several.
 
 The following output is from running "df -h" on a Mac.  Some of the original lines from the output have been removed for
@@ -1925,22 +1929,22 @@ EOL
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
 The Mac shows three additional columns with "df -h", which list the number of inodes used, the number of inodes free,
-and the percentage of inodes used.  Inodes (or index nodes) are used to keep track of where files are on a disk drive,
+and the percentage of inodes used.  Inodes (or index nodes) are used to keep track of where files are on a drive,
 as well as permissions and many other attributes.  If we run out of inodes, we will not be able to store any more
 files even if there's space for them (but it's rare).
 
 Like before, there's a devfs filesystem that's full.  Likewise, it's not an issue.
 
 You may have noticed that there are six filesystems that have the same capacity, inodes used, and inodes free.  We're seeing
-a feature Macs have that allow multiple partitions to share the same space on the same physical disk.  Right now,
+a feature Macs have that allow multiple partitions to share the same space on the same physical drive.  Right now,
 it's merely a curiosity.
 
 In the output from the Mac, we see that most of the filesystems start with "/dev/disk" followed by a device number and
-partition number.  These are real disks, as opposed to the "devfs" filesystem, which is internal.  We can also see that
+partition number.  These are real drives, as opposed to the "devfs" filesystem, which is internal.  We can also see that
 most of the entries in the last column have full English words like "System" and "Volumes", which is a distinguishing
 feature of Macs.
 
-In summary, the FreeBSD volume that represented a real disk that could get full was /dev/gpt/rootfs.  For Linux, they
+In summary, the FreeBSD volume that represented a real drive that could get full was /dev/gpt/rootfs.  For Linux, they
 were /dev/sda1 and /dev/sda5.  For the Mac, they all started with /dev/disk1.  In general, the smaller the amount of
 available space, the more likely the filesystem is something internal.  As you gain experience, you'll have a better
 idea of which filesystems are usually internal.  It'll become easier to distinguish the internal filesystems from the
@@ -2148,7 +2152,7 @@ EOL
 	printf "`getBeltWithColours green_stripe title`\n" >> $fmt_file
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-  Intermediate arguments to ls; mounts and disk space
+  Intermediate arguments to ls; mounts and drive space
 EOL
 
 	printf "\n\n${underline}Advanced Ranks${no_underline}\n" >> $fmt_file
