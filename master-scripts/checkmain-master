@@ -92,7 +92,11 @@ keep_going() {
 	index=$(($RANDOM % $size))
 	echo ${luc_continue_array[$index]}
 
-	EXERCISE=`expr $EXERCISE + 1`
+	if [ "${1:-}" == "" ]; then
+		EXERCISE=$(expr $EXERCISE + 1)
+	else
+		EXERCISE=$(expr $EXERCISE + ${1})
+	fi
 }
 
 sorry() {
@@ -1021,10 +1025,30 @@ EOL
 	fi
 }
 
-green_stripe_exercise_midterm_fuse() {
-	keep_going
+green_stripe_exercise_fuse() {
+	if which encfs > /dev/null; then
+		if mount | grep -q "encfs.*unencrypted"; then
+			keep_going
+		else
+			sorry
+		fi
+	else
+		# Skip an exercise (playing around and unmounting).
+		keep_going 2
+	fi
 }
 
+green_stripe_exercise_fuse_look_around_unmount() {
+	if which encfs > /dev/null; then
+		if mount | qrep -q "encfs.*unencrypted"; then
+			sorry
+		else
+			keep_going
+		fi
+	else
+		keep_going
+	fi
+}
 
 ####################
 # End of exercises #

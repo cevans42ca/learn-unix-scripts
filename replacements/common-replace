@@ -86,6 +86,7 @@ exercises["green_stripe_$((i++))"]="ls_dash_f"
 exercises["green_stripe_$((i++))"]="df"
 exercises["green_stripe_$((i++))"]="midterm_exam"
 exercises["green_stripe_$((i++))"]="fuse"
+exercises["green_stripe_$((i++))"]="fuse_look_around_unmount"
 
 declare -A belt_to_number
 belt_to_number["white_belt"]=0

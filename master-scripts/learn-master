@@ -1980,9 +1980,13 @@ EOL
 	if which encfs > /dev/null; then
 		if mkdir -p "${LUS_HOME}/green-stripe/encrypted" && mkdir -p "${LUS_HOME}/green-stripe/unencrypted"; then
 			fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-The following command will work no matter what your current working directory is, and will also work if $LUS_HOME
-has spaces in it.  You will likely be able to use a simpler command.  Keep that in mind going forward.  Execute
-the following command (or a simpler version of it if you like).
+The command below will work no matter what your current working directory is, and will also work if $LUS_HOME has
+spaces in it.  If $LUS_HOME is in $HOME, you will also be able to use "~" as a short form for $HOME.  All of these
+together mean that you will likely be able to use a shorter command.  These exercises will provide command lines that
+are likely to work in all situations.  Keep that in mind going forward.
+
+Execute the following command (or a simpler version of it if you like).  When you're asked if you want expert configuration
+or pre-configured paranoia mode, press Enter.  Passwords have no requirements.
 
 encfs "${LUS_HOME}/green-stripe/encrypted" "${LUS_HOME}/green-stripe/unencrypted"
 EOL
@@ -2015,7 +2019,7 @@ The preceding command will create (or reconnect to) a mount that allows you to w
 
 EOL
 
-		echo "umount unencrypteddir" >> $fmt_file
+		echo "encfs -u unencrypteddir" >> $fmt_file
 
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
@@ -2027,6 +2031,27 @@ EOL
 
 		complete_exercise
 	fi
+}
+
+green_stripe_exercise_fuse_look_around_unmount() { # Unmounting
+	if which encfs > /dev/null; then
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Now that you have this filesystem mounted, take a look at the $LUS_HOME/green-stripe/encrypted and
+$LUS_HOME/green-stripe/unencrypted directories.  Make sure that you only change the unencrypted one.  Use "echo text >
+filename" to make files and "mkdir dirname" to make directories under $LUS_HOME/green-stripe/unencrypted and see
+how things change in $LUS_HOME/green-stripe/encrypted with ls and ls -l.
+
+Once you're done, unmount the mount with the following command.
+
+encfs -u "$LUS_HOME/green-stripe/unencrypted"
+EOL
+	else
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+echo 'This exercise '"should've"' been skipped, as you don't have encfs installed.  Execute ". check".'
+EOL
+	fi
+
+	complete_exercise
 }
 
 ####################
