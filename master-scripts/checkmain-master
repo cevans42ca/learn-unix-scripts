@@ -1029,8 +1029,8 @@ EOL
 
 green_stripe_exercise_fuse() {
 	if which encfs > /dev/null; then
-		if mount | grep -q "encfs.*unencrypted"; then
-			keep_going
+		if df | grep -q "encfs.*green-stripe.*unencrypted"; then
+			good_work
 		else
 			sorry
 		fi
@@ -1042,10 +1042,11 @@ green_stripe_exercise_fuse() {
 
 green_stripe_exercise_fuse_look_around_unmount() {
 	if which encfs > /dev/null; then
-		if mount | grep -q "encfs.*unencrypted"; then
+		# Docker shows no results from mount.
+		if df | grep -q "encfs.*green-stripe.*unencrypted"; then
 			sorry
 		else
-			keep_going
+			good_work
 		fi
 	else
 		keep_going
