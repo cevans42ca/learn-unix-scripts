@@ -1,4 +1,5 @@
-FROM alpine
+ARG SHARED_VOLUME=single
+FROM alpine as base
 
 ARG D_GID=10000
 ARG D_USERNAME=duser1
@@ -28,12 +29,19 @@ RUN apk add mandoc man-pages mandoc-apropos less less-doc
 RUN apk add bash-doc busybox-doc mandoc-apropos coreutils-doc
 
 # For Encrypted, shared directories (Part of the exercises, but may be used for shared volumes)
-RUN apk add encfs encfs-doc
+#RUN apk add encfs encfs-doc
 
 #encfs /mnt/vol ~/vol
 #fusermount -u ~/vol
 
+FROM base AS branch-version-single
 COPY etc-profile.sh /etc/profile.d/exports.sh
+
+FROM base AS branch-version-shared
+COPY etc-profile-shared.sh /etc/profile.d/exports.sh
+
+FROM "branch-version-${SHARED_VOLUME}" as final
+
 #RUN sed -i "1s;^;export DARK_MODE=${DARK_MODE}\n;" /etc/profile.d/exports.sh
 
 RUN adduser -S $D_USERNAME

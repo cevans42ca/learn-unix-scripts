@@ -235,6 +235,9 @@ else
 	belt_to_second_colour_light["black_stripe"]=""
 	belt_to_second_colour_light["black_belt"]=""
 fi
+
+# Resetting the colour here fixes issues with debugging (PS4='Line ${LINENO}: ' bash -x learn)
+reset_colour=$(tput sgr0) # No colour
 # end ffa9e74e-2b02-4d72-9c82-9f9db2915c62
 
 # start bef71a69-5f8d-43d4-af29-60608e9b56c7

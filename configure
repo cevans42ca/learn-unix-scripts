@@ -61,9 +61,16 @@ case "${luc_choice}" in
 	sed 's/^run:.*/run: configure dockerrun/' Makefile-master > Makefile
 	DOCKER=1
 	echo "export DOCKER=1" >> config.status
+	echo "export SHARED_VOLUME=single" >> docker/config.status
 	;;
 *4*)
-	echo "This option isn't ready yet."
+	sed 's/^run:.*/run: configure dockerrun/' Makefile-master > Makefile
+	DOCKER=1
+	echo "export DOCKER=1" >> config.status
+	echo "export SHARED_VOLUME=shared" >> docker/config.status
+
+	# Remove any spaces.
+	luc_choice=4
 	;;
 *5*)
 	sed 's/^run:.*/run: configure flags\/replacetarget/' Makefile-master > Makefile
@@ -175,6 +182,10 @@ fi
 if [ "${DOCKER:-0}" -eq "1" ]; then
 	echo "export SHUF_BIN=shuf" >> config.status
 	echo "export GREP_BIN=grep" >> config.status
+
+	if [[ "${luc_choice}" == "4" ]]; then
+		( cd docker && make createsharedvolume )
+	fi
 else
 	if which gshuf > /dev/null; then
 		echo "export SHUF_BIN=gshuf" >> config.status

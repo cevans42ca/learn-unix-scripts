@@ -8,7 +8,7 @@ run: build
 	which encfs > /dev/null || docker run -it --rm --mount src=lus,target=/mnt/vol --env DARK_MODE=$(DARK_MODE) learn-unix
 
 flags/buildtarget: bin/* etc-profile.sh Dockerfile launch.sh
-	docker build -t learn-unix --build-arg D_UID=1001 --build-arg D_USERNAME=duser1 --build-arg D_GID=$(G_UID) .
+	docker build -t learn-unix --build-arg D_UID=1001 --build-arg D_USERNAME=duser1 --build-arg D_GID=$(G_UID) --build-arg SHARED_VOLUME=$(SHARED_VOLUME) .
 	touch flags/buildtarget
 
 build: flags/buildtarget
@@ -20,10 +20,10 @@ flags/volumetarget:
 createvolume: flags/volumetarget
 
 createuservolume: createvolume
-	docker run --rm --mount src=lus,target=/mnt/vol -u 0 learn-unix /bin/bash -c 'mkdir -p /mnt/vol/testuser;chgrp ${G_UID} /mnt/vol/testuser;chmod g+w /mnt/vol/testuser'
+	docker run --rm --mount src=lus,target=/mnt/vol -u 0 alpine /bin/sh -c 'mkdir -p /mnt/vol/testuser;chgrp ${G_UID} /mnt/vol/testuser;chmod g+w /mnt/vol/testuser'
 
 createsharedvolume: createvolume
-	docker run --rm --mount src=lus,target=/mnt/vol -u 0 learn-unix /bin/bash -c 'mkdir -p /mnt/vol/shared;chgrp ${G_UID} /mnt/vol/shared;chmod g+w /mnt/vol/shared;chmod +t /mnt/vol/shared'
+	docker run --rm --mount src=lus,target=/mnt/vol -u 0 alpine /bin/sh -c 'mkdir -p /mnt/vol/lus;chgrp ${G_UID} /mnt/vol/lus;chmod g+w /mnt/vol/lus;chmod +t /mnt/vol/lus'
 
 clean:
 	rm -f flags/buildtarget

@@ -7,6 +7,6 @@ fi
 alias ls='ls --color'
 
 export INSIDE_DOCKER=1
+export SHARED_VOLUME=0
 export LUS_DOCKER_BASE=/mnt/vol/testuser
 export LUS_PROGRESS=/mnt/vol/testuser/.learnUnixScripts
-
