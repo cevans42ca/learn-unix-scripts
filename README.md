@@ -17,13 +17,13 @@ If you want to try these scripts out in a Docker container, and you have Docker 
 
 ### Setup commands:  Run them Once
 	docker volume create lus
-	docker run --mount src=lus,target=/mnt/vol -u 0 alpine /bin/ash -c 'mkdir -p /mnt/vol/testuser;chgrp 1000 /mnt/vol/testuser;chmod g+w /mnt/vol/testuser'
+	docker run --mount src=lus,target=/mnt/vol -u 0 alpine /bin/sh -c "mkdir -p /mnt/vol/testuser;chgrp 1000 /mnt/vol/testuser;chmod g+w /mnt/vol/testuser"
 
 ### Work with traditional white text on black terminal settings
 	docker run -it --rm --mount src=lus,target=/mnt/vol cevans42ca/learn-unix-scripts
 
 ### Work with black text on white
-	docker run -it --rm --mount src=lus,target=/mnt/vol --env DARK_MODE=0 docker run -it --rm cevans42ca/learn-unix-scripts
+	docker run -it --rm --mount src=lus,target=/mnt/vol --env DARK_MODE=0 cevans42ca/learn-unix-scripts
 
 # Installing Locally
 
