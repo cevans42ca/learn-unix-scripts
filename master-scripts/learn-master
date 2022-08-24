@@ -1964,104 +1964,48 @@ green_stripe_exercise_midterm_exam() { # Midterm Exam
 	echo 'Execute ". check" for your midterm exam.'
 }
 
-green_stripe_exercise_fuse() { # FUSE and User Mounts
-	if which encfs > /dev/null; then
-		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-Let's look at how to create our own mount.
+green_stripe_exercise_dev_and_mount() { # The /dev Filesystem and Mounting
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+In this belt, we looked at several special devices across multiple platforms.
 
 EOL
-	else
-		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-Let's look at how to create a mount.  Unfortunately, "encfs" doesn't appear to be here, so this portion won't be
-interactive.
 
-EOL
-	fi
+	echo "/dev/sda1" >> $fmt_file
+	echo "/dev/sda5" >> $fmt_file
+	echo >> $fmt_file
+	echo "/dev/gpt/rootfs" >> $fmt_file
+	echo >> $fmt_file
+	echo "/dev/disk1s6s1" >> $fmt_file
+	echo "/dev/disk1s1" >> $fmt_file
+	echo "/dev/disk1s3" >> $fmt_file
+	echo "/dev/disk1s5" >> $fmt_file
+	echo "/dev/disk1s6" >> $fmt_file
+	echo "/dev/disk1s7" >> $fmt_file
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+These files don't exist on a drive, but are instead provided by the operating system.  If you were the root user and
+wrote to these files with "echo", or another program, it would corrupt the contents of the corresponding drive.  If or
+when you are the root user, it is of paramount importance that you work with these special files carefully.
+
+When these special files are mounted, a new filesystem overlays the existing one, allowing you to work with the files on
+that drive.  Modern Unixes automatically mount drives, including when removable media is inserted.  Mounts that need to
+be present when the system is booted are put in /etc/fstab (FileSystem TABle).
+
+Here is an example mount command.  It's for context.  We won't be mounting anything in this course.
+
+mount -t ext4 /dev/sdb1 /mnt/sdb1
+
+The -t or type parameter specifies the filesystem type.  For drives, that determines how data is stored on the drive.
+Different operating systems use different filesystems.  The ext4 filesystem is the most popular on Unix.  It's possible to
+mount something that isn't a drive, for example, a Windows or Unix file share.
+
 In the beginning, only the root user could mount filesystems.  FUSE (Filesystem in USErspace) was invented to allow non-admin
-users to mount filesystems, which allows for more flexibility.
+users to mount filesystems, which allows for more flexibility.  Popular uses of FUSE include setting up encrypted mounts and
+making remote filesystems (that can be accessed with SSH) look like local ones.  Not all systems have FUSE.
 
+Execute ". check" for your final exam.
 EOL
-
-	if which encfs > /dev/null; then
-		if mkdir -p "${LUS_HOME}/green-stripe/encrypted" && mkdir -p "${LUS_HOME}/green-stripe/unencrypted"; then
-			fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-Execute the following command exactly as written.  The "encfs" command requires full paths to work (though you may be
-able to shorten it by using a "~" as an alias for $HOME).  You might want to use the copy and paste function your
-terminal provides.  After you execute it, it will ask you if you want expert configuration or pre-configured paranoia
-mode:  press Enter.  You'll then need to provide a password.  Passwords for encfs have no special requirements (like upper
-case, numbers, and symbols).
-
-EOL
-
-			# If the terminal is small, fmt may introduce a newline, which will make copy and paste fail.
-			echo encfs "${LUS_HOME}/green-stripe/encrypted" "${LUS_HOME}/green-stripe/unencrypted" >> $fmt_file
-
-			complete_exercise
-		else
-			# Unable to make the directories.
-
-			fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-This exercise involves creating files in $LUS_HOME/green-stripe/encrypted and $LUS_HOME/green-stripe/unencrypted, which
-already exist as a file or can't be created.  Please move or rename them.
-EOL
-
-			less -R -P "$less_prompt_move_on" $fmt_file
-
-			exit 2
-		fi
-	else
-		# No encfs.
-		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-The encfs command takes an archive file and a mount point as arguments.
-
-EOL
-
-		echo "encfs encrypteddir unencrypteddir" >> $fmt_file
-
-		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-
-The preceding command will create (or reconnect to) a mount that allows you to work with encrypted files.
-
-EOL
-
-		echo "encfs -u unencrypteddir" >> $fmt_file
-
-		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-
-When you're done, unmount the mount with the preceding command.  Unfortunately, encfs is not available
-on your path, so you won't be able to try it out.
-
-Execute ". check".
-EOL
-
-		complete_exercise
-	fi
-}
-
-green_stripe_exercise_fuse_look_around_unmount() { # Unmounting
-	if which encfs > /dev/null; then
-		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-Now that you have this filesystem mounted, take a look at the $LUS_HOME/green-stripe/encrypted and
-$LUS_HOME/green-stripe/unencrypted directories.  Make sure that you only change the unencrypted one.  Use "echo text >
-filename" to make files and "mkdir dirname" to make directories under $LUS_HOME/green-stripe/unencrypted and see
-how things change in $LUS_HOME/green-stripe/encrypted with ls and ls -l.
-
-Don't look at the encrypted files with cat.  Sending binary data to the terminal is almost guaranteed to cause your
-terminal to beep erractically, and in rarer cases wil cause other effects that will make you close your terminal and
-open a new one.  Using "less" to look at binary data is much safer, as it will convert various control codes into
-numbers.  Less will also warn you first before opening a binary file.
-
-When you're done taking a look, execute the following command.
-
-encfs -u "$LUS_HOME/green-stripe/unencrypted"
-EOL
-	else
-		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-echo 'This exercise '"should've"' been skipped, as you don't have encfs installed.  Execute ". check".'
-EOL
-	fi
 
 	complete_exercise
 }

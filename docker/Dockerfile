@@ -28,12 +28,6 @@ RUN apk add file-doc
 RUN apk add mandoc man-pages mandoc-apropos less less-doc
 RUN apk add bash-doc busybox-doc mandoc-apropos coreutils-doc
 
-# For Encrypted, shared directories (Part of the exercises, but may be used for shared volumes)
-#RUN apk add encfs encfs-doc
-
-#encfs /mnt/vol ~/vol
-#fusermount -u ~/vol
-
 FROM base AS branch-version-single
 COPY etc-profile.sh /etc/profile.d/exports.sh
 
