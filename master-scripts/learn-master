@@ -304,11 +304,15 @@ EOL
 
 	printf "\n\n${underline}Moving On${no_underline}\n\n" >> $fmt_file
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-After reading the text for each exercise, you will need to
-quit the lesson by pressing "q" (which will return you to your prompt).  You can then complete anything the exercise asked
-you to do.
+After reading the text for each exercise, you will need to do three things.  For white belt, you only need to remember
+the first step.  All the white belt exercises will tell you what to do for step 2 and will remind you to do step 3.
 
-Your first task is to execute ". check".
+(1) Quit the lesson by pressing "q" (which will return you to your prompt).
+
+(2) Complete anything the exercise asked you to do.  For this exercise, there isn't anything to do for this step.
+
+(3) Execute ". check".  There was a lot of text since we covered that.  If you're not sure on this one, press the Up
+Arrow key to go back.  If the Up Arrow key doesn't work, you can press the k key to go back.
 EOL
 
 	complete_exercise
