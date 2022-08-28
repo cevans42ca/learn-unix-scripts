@@ -57,6 +57,8 @@ less_prompt_quit="Press h for help;?e: Enter for more (line %lb of %L).?e q to q
 # insert 1a88ef09-bbc8-4f7e-ac03-a1849fd03166 stty options
 # insert ffa9e74e-2b02-4d72-9c82-9f9db2915c62 associative arrays for exercises and belt levels
 
+# Top of file script definitions (Start vim fold) {{{
+
 FMT_OPTIONS="-u --width="
 GREP_BIN=grep
 
@@ -225,6 +227,9 @@ prepareLusHome() {
 	fi
 }
 
+# (End vim fold) }}}
+
+# White belt exercises (Start vim fold) {{{
 white_belt_exercise_what_execute_means() { # What "Execute" Means, and Your Prompt
 	yellow_stripe="${yellow_on_black}yellow ${nc}${bright_white_on_black}stripe${nc}"
 	printf "${underline}The Bare Essentials${no_underline}\n\n" >> $fmt_file
@@ -694,6 +699,9 @@ EOL
 	complete_exercise
 }
 
+# (End vim fold) }}}
+
+# Yellow stripe exercises (Start vim fold) {{{
 yellow_stripe_exercise_pwd() { # The "pwd" Command
 	if [[ `pwd` == "/" ]]; then
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
@@ -1139,6 +1147,9 @@ EOL
 	complete_exercise
 }
 
+# (End vim fold) }}}
+
+# Yellow belt exercises (Start vim fold) {{{
 yellow_belt_exercise_speed_and_lists() { # More Speed!  Using Asterisk
 	if [ ! -d "$LUS_HOME/complete" ]; then
 		mkdir -p "$LUS_HOME/complete"
@@ -1576,11 +1587,16 @@ change "mkdir" to "cd".
 If you want to check it first, use "echo !$".  Since the last argument is the same, you can still use "cd !$" after "echo !$".
 
 Try out "!$" now.  If you create any directories under $LUS_HOME, please remove them before continuing.
+
+When you're done, execute ". check" for your final exam.
 EOL
 
 	complete_exercise
 }
 
+# (End vim fold) }}}
+
+# Green stripe exercises (Start vim fold) {{{
 green_stripe_exercise_command_line_options() { # Short Options, Long Options, and Man(ual) Pages
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Before we get into the various ways you can list files, we'll have to go through short options and long options.
@@ -1608,8 +1624,13 @@ discontinued.
 
 All of the operating systems above are "BSD or BSD-like".
 
-Next, we'll list the commerical non-BSD Unixes (the ones you have to pay for).  All of these were based on the original
-work on Unix at Bell Labs and are still around as of this writing:  Solaris, HP-UX, IBM AIX.
+Next, we'll list the commercial non-BSD Unixes (the ones you have to pay for).  All of these were based on the original
+work on Unix at Bell Labs and are still around as of this writing:  Solaris, HP-UX, IBM AIX.  To use the Unix trademark,
+a vendor (the company selling it) must pay a licensing fee and annual trademark royalties to a group of companies called
+"The Open Group".  That means, in general terms, that a vendor is allowed to officially call their operating system Unix
+as long as they pay (and continue to pay) The Open Group for the privilege.  Vendors (who don't pay) call their
+operating systems "Unix-like", or don't say that it's Unix at all, officially.  For the sake of simplicity, when we
+refer to Unix going forward, that will include "Unix-like" operating systems as well.
 
 Last (but certainly not least) is Linux in all of its many shapes and sizes.  It runs phones (Android) and supercomputers
 (all of the fastest 500 as of November 2017).  Linux cannot trace its ancestry back to the original Unix because that was the
@@ -1622,7 +1643,7 @@ The history lesson ends now.
 
 If you're using a Mac (now, or you plan to fully immerse yourself in using the command line) this would be a good time to
 take note that Macs are based on BSD and won't work the same way Linux does.  In particular, long options don't appear very
-often in BSD tools.  If you don't want to use the command line features of Macs, that's certainly an option as well.
+often in the core BSD tools.  If you don't want to use the command-line features of Macs, that's certainly an option as well.
 
 No matter which platform you're using or will be using, programmers can still do short and long options however they want.
 Some Linux programs don't have any short options and long options have one dash, not two (like Java).  Some programs
@@ -2014,9 +2035,78 @@ EOL
 	complete_exercise
 }
 
+# (End vim fold) }}}
+
+green_belt_exercise_ctrl_c() { # What Does Ctrl+c Actually Do?
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Welcome to the advanced ranks!  It's time to revisit Ctrl+c and explain what happens when you type it.  We're going to take
+a brief look at a few of the layers of a Unix operating system as we go, especially the kernel.
+
+We're going to go deeper than that, though.  What is a computer?  Depending on your experience with computers, you might
+think of a laptop, or a desktop.  You might have seen pictures or a short video clip of an aisle between rows of clear
+cabinets housing hundreds of small, twinkling blue lights.  You might not think of a modern phone or a smartwatch, but
+these are also computers.  They also likely run some kind of Unix.
+
+When reduced to the essentials, a computer is a machine that follows instructions.  The part that carries out those
+instructions is the CPU or Central Processing Unit.  The CPU is hardware, which means it's a physical component that
+can't easily be changed.  To change it, you would need to buy a new one and have it installed, and that's assuming
+everything else in the computer would work with the new one.  Software is easily changed.  You can upgrade or install
+new software in minutes.
+
+A computer also has several places to put information, from the tiny but fast caches, to the large but slow drives.  A
+computer might be a server, in which case it probably doesn't have a monitor, keyboard, or mouse, but receives
+instructions from a network and replies the same way.
+
+An operating system's kernel is usually described (and shown) as running on top of the hardware.  It acts as a personal
+assistant to the hardware, drawing up a schedule of meetings (determining who gets how much CPU time) and making sure
+the hardware isn't too heavily loaded.  The kernel decides who gets access to how much memory and swap space (drive
+space used to improve efficiency).
+
+There's one last thing to cover before we look at Ctrl+c again, and that's signals.  In Unix, a process can send a
+signal to another process (which goes through the kernel).  The operating system can also send a signal to a process
+(that didn't come from another process).  Signals are the easiest and simplest way one process can tell another that
+something happened.  We'll be going into more detail about signals in red belt.  For now, a signal is a single number
+between 1 and 33, and what each number means is well established.  (Mac has 31, Linux has 30, and FreeBSD has 33.)
+These signal numbers also have names starting with "SIG", because humans remember words more easily than numbers.
+Although signal handling follows a general pattern, programs can do whatever they like with these signals, except for 9
+(SIGKILL), which kills the process.  Programs never actually receive SIGKILL:  the operating system handles it.  Only a
+program running as the same user as the running program or root can send SIGKILL to a process.
+
+At some point, perhaps soon, you're going to need to stop a process that's taking too long, or perhaps you realized that you
+didn't actually want to run it.  We're going to look at the copy command, cp.  All of the core utilities, including cp,
+don't give us any progress information.  System administrators get a sense of how long things will take as they
+work with a system, and they'll learn patience.  There are ways to see how a copy is proceeding, but looking at it will slow
+the copy down.
+
+Let's say that we need to stop a copy.  We type Ctrl+c.  Our terminal interprets that keystroke and sends signal 2
+(SIGINT, or interrupt) to the currently running process, which is "cp".  Chances are, cp is in the middle of copying a
+block of data, because the drive access is what takes most of the time for the copy.  Programs don't write to devices
+themselves.  If every program that needed to print something knew how to communicate with every printer, that would be a
+mess.  So the kernel of the operating system takes care of the details (in this case, printer drivers, but the example
+extends to all devices).  So the "cp" command asked the kernel to write some data, and it's waiting for that to finish.
+The "cp" command can't take messages at the moment.  Once the block of data is written, the kernel notices that there's
+a pending signal for "cp", and sends it.  The "cp" command processes the signal and quits.
+
+Now, we have a partially written file, possibly with many other files that finished already.  If we were only copying
+one file, that wouldn't be too bad.  We could simply run the command again when it made sense.  Perhaps we needed to
+bring the system down for a kernel update.  If we were copying a large directory, it would be best to start at the
+beginning, and have the "cp" command overwrite any files that it already copied.  The "rsync" command may be of some use
+in completing an unfinished copy, but that's out of the scope of these exercises.
+EOL
+
+	complete_exercise
+}
+
+green_belt_exercise_hidden_files() { # Hidden files
+}
+
+# Green Belt:  Hidden files and directories; globbing; directory stacks
+
 ####################
 # End of exercises #
 ####################
+
+# Function definitions for the "welcome" begin here.  (Vim fold) {{{
 
 ask_about_putty_font_size() {
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
@@ -2111,7 +2201,7 @@ EOL
 	printf "\n`getBeltWithColours green_belt title`\n" >> $fmt_file
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-  Hidden files and directories; globbing; directory stacks
+  Ctrl+c redux; hidden files and directories; globbing; directory stacks
 EOL
 
 	printf "\n`getBeltWithColours blue_stripe title`\n" >> $fmt_file
@@ -2238,8 +2328,9 @@ EOL
 ###############################
 # End of function definitions #
 ###############################
+# }}}
 
-# Script execution will begin here.
+# Script execution will begin here.  (Vim fold) {{{
 
 if [ -f "${LUS_PROGRESS}" ]; then
 	source "${LUS_PROGRESS}"
@@ -2464,3 +2555,5 @@ exercise_name=${exercises["${RANK}_${EXERCISE}"]}
 function_name="${RANK}_exercise_${exercise_name}"
 eval $function_name
 
+# }}}
+# vim: set foldmethod=marker:

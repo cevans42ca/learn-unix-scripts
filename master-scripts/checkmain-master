@@ -1036,6 +1036,11 @@ EOL
 }
 
 green_stripe_exercise_dev_and_mount() {
+	if ask_review_final_exam; then
+		keep_going
+		return 0
+	fi
+
 	luc_correct_answers=0
 	# Start of Question 1/3
 	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
@@ -1047,7 +1052,7 @@ Where would you find the details for all mounts that are mounted when the system
 
 EOL
 
-	luc_answers=( '/etc/fstab' '/etc/fsystab' '/etc/fstable' '/' )
+	luc_answers=( '/etc/fstab' '/etc/fsystab' '/etc/fstable' '/etc/stable' )
 	handle_answer '/etc/fstab'
 
 	# Start of Question 2/3
