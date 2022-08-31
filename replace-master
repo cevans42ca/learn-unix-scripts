@@ -100,7 +100,7 @@ RESULT=$?
 if [ $RESULT -eq 0 ]; then
 	echo success - need to clean up
 else
-	temp_output_file=$(mktemp -t $(whoami))
+	temp_output_file=$(mktemp -t $(whoami)_XXXXXX)
 fi
 set -e
 
@@ -130,12 +130,12 @@ do
 done < "$1"
 
 # The space is required to prevent the shell from processing it as ${@:- ...}.
-intermediate_file="${@: -1:1}"
+intermediate_file="${@: -1:1}".int
 intermediate_temp_file="${@: -1:1}".new
 mv $temp_output_file "${intermediate_file}"
 
-if [ "${HOMEBREW_BASH:-0}" -eq "1" ]; then
-	sed 's/\/bin\/bash/\/usr\/local\/bin\/bash/' "${intermediate_file}" > "${intermediate_temp_file}"
+if [ -n "${BASH_BIN:-}" ]; then
+	sed "s:/bin/bash:${BASH_BIN}:" "${intermediate_file}" > "${intermediate_temp_file}"
 	mv "${intermediate_temp_file}" "${intermediate_file}"
 fi
 

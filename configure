@@ -8,7 +8,7 @@ mkdir -p flags
 
 if which bash > /dev/null; then
 	bash_bin=$(which bash)
-	bash_version_info=$(bash -c '${BASH_VERSINFO[0]}')
+	bash_version_info=$(bash -c 'echo ${BASH_VERSINFO[0]}')
 	if [ "$bash_version_info" -le "4" ]; then
 		if [ -f /usr/local/bin/bash ]; then
 			homebrew=$(/usr/local/bin/bash -c 'echo ${BASH_VERSINFO[0]}')
@@ -18,9 +18,9 @@ if which bash > /dev/null; then
 				echo "If you have a Mac, install Homebrew, then install bash."
 				exit 2
 			else
-				sed 's:/bin/bash:/usr/local/bin/bash:' replace-master > replace
+				sed 's:#!/bin/bash:#!/usr/local/bin/bash:' replace-master > replace
 				chmod ug+x replace
-				HOMEBREW_BASH=1
+				BASH_BIN=/usr/local/bin/bash
 			fi
 		else
 			echo "Associative array support, added in Bash 4.0, is required."
@@ -28,7 +28,8 @@ if which bash > /dev/null; then
 			exit 2
 		fi 
 	else
-		sed "s:/bin/bash:${bash_bin}:" replace-master > replace
+		sed "s:#!/bin/bash:#!${bash_bin}:" replace-master > replace
+		BASH_BIN=$(which bash)
 	fi 
 else
 	echo "Bash not found."
@@ -83,8 +84,10 @@ case "${luc_choice}" in
 	;;
 *5*)
 	sed 's/^run:.*/run: configure flags\/replacetarget/' Makefile-master > Makefile
-	if [ -n "${HOMEBREW_BASH:-}" ]; then
-		echo "export HOMEBREW_BASH=1" >> config.status
+
+	if [ -n "${BASH_BIN:-}" ]; then
+		# This variable will be used by make, so we can't include quotes.
+		echo "export BASH_BIN=${BASH_BIN}" >> config.status
 	fi
 
 	if echo "Test" | fmt -u 2>/dev/null; then

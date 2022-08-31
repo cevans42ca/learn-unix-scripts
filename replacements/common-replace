@@ -87,6 +87,10 @@ exercises["green_stripe_$((i++))"]="df"
 exercises["green_stripe_$((i++))"]="midterm_exam"
 exercises["green_stripe_$((i++))"]="dev_and_mount"
 
+i=1
+exercises["green_belt_$((i++))"]="ctrl_c"
+exercises["green_belt_$((i++))"]="hidden_files"
+
 declare -A belt_to_number
 belt_to_number["white_belt"]=0
 belt_to_number["yellow_stripe"]=1

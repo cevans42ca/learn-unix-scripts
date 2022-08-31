@@ -2098,6 +2098,11 @@ EOL
 }
 
 green_belt_exercise_hidden_files() { # Hidden files
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+This exercise will show how to display and work with hidden files.
+EOL
+
+	complete_exercise
 }
 
 # Green Belt:  Hidden files and directories; globbing; directory stacks
