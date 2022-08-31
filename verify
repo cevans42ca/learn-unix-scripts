@@ -41,7 +41,7 @@ case "$parent_proc_name" in
 esac
 
 echo "Checking for bash version 4 or later."
-if [ "${BASH_VERSINFO:-0}" -le "4" ]; then
+if [ "${BASH_VERSINFO:-0}" -lt "4" ]; then
 	if [ -f /usr/local/bin/bash ]; then
 		homebrew=$(/usr/local/bin/bash -c 'echo ${BASH_VERSINFO[0]}')
 		#echo "/bin/bash too old, checking Homebrew version:  $homebrew"
@@ -105,7 +105,7 @@ fi
 GREP_BIN=grep
 if [ -x /usr/local/bin/grep ]; then
 	GREP_BIN=/usr/local/bin/grep
-elif which ggrep > /dev/null; then
+elif which ggrep > /dev/null 2>&1; then
 	GREP_BIN=ggrep
 fi
 
