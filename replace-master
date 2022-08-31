@@ -140,7 +140,7 @@ if [ -n "${BASH_BIN:-}" ]; then
 fi
 
 if [ -n "${FMT_OPTIONS:-}" ]; then
-	sed "s/^FMT_OPTIONS=.*/FMT_OPTIONS=${FMT_OPTIONS}/" "${intermediate_file}" > "${intermediate_temp_file}"
+	sed "s/^FMT_OPTIONS=.*/FMT_OPTIONS=\"${FMT_OPTIONS}\"/" "${intermediate_file}" > "${intermediate_temp_file}"
 	mv "${intermediate_temp_file}" "${intermediate_file}"
 fi
 
