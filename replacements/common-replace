@@ -18,7 +18,7 @@ if [ "${enable_tput}" == "1" ]; then
 	yellow_on_black="\033[93;40m"
 	green_on_black="\033[92;40m"
 	blue_on_black="\033[94;40m"
-	red_on_black="$(tput setab 0)$(tput setaf 196)"
+	red_on_black="$(tput setab 0)$(tput setaf 1)"
 
 	underline="\033[4m"
 	no_underline="\033[m"
