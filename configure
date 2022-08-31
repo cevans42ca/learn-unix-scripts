@@ -6,27 +6,35 @@ touch config.status
 touch docker/config.status
 mkdir -p flags
 
-if [ "${BASH_VERSINFO:-0}" -le "4" ]; then
-	if [ -f /usr/local/bin/bash ]; then
-		homebrew=$(/usr/local/bin/bash -c 'echo ${BASH_VERSINFO[0]}')
-		echo "/bin/bash too old, checking Homebrew version:  $homebrew"
-		if [ "$homebrew" -le "4" ]; then
-			echo "Associative array support, added in Bash 4.0, is required.  Homebrew bash not found either."
+if which bash > /dev/null; then
+	bash_bin=$(which bash)
+	bash_version_info=$(bash -c '${BASH_VERSINFO[0]}')
+	if [ "$bash_version_info" -le "4" ]; then
+		if [ -f /usr/local/bin/bash ]; then
+			homebrew=$(/usr/local/bin/bash -c 'echo ${BASH_VERSINFO[0]}')
+			echo "/bin/bash too old, checking Homebrew version:  $homebrew"
+			if [ "$homebrew" -le "4" ]; then
+				echo "Associative array support, added in Bash 4.0, is required.  Homebrew bash not found either."
+				echo "If you have a Mac, install Homebrew, then install bash."
+				exit 2
+			else
+				sed 's:/bin/bash:/usr/local/bin/bash:' replace-master > replace
+				chmod ug+x replace
+				HOMEBREW_BASH=1
+			fi
+		else
+			echo "Associative array support, added in Bash 4.0, is required."
 			echo "If you have a Mac, install Homebrew, then install bash."
 			exit 2
-		else
-			sed 's/\/bin\/bash/\/usr\/local\/bin\/bash/' replace-master > replace
-			chmod ug+x replace
-			HOMEBREW_BASH=1
-		fi
+		fi 
 	else
-		echo "Associative array support, added in Bash 4.0, is required."
-		echo "If you have a Mac, install Homebrew, then install bash."
-		exit 2
+		sed "s:/bin/bash:${bash_bin}:" replace-master > replace
 	fi 
 else
-	cp replace-master replace
-fi 
+	echo "Bash not found."
+	echo "Associative array support, added in Bash 4.0, is required."
+	echo "If you have a Mac, install Homebrew, then install bash."
+fi
 
 # TODO:  Figure out how to do relative dates to ensure files created by touch are recent
 #date --date="3 months ago" +"%Y%m%d"
@@ -38,8 +46,9 @@ echo "(2) Generate the scripts for audit or review (don't install)."
 echo "(3) Create a Docker container for a single user and run it."
 echo "(4) Create a Docker container that can share a volume (INCOMPLETE)."
 echo "(5) Prepare the scripts to run directly (without docker) on this host."
+echo "(6) Prepare the scripts to run directly (without docker) on another host."
 
-read -p "Please answer (1-5)?  " luc_choice
+read -p "Please answer (1-6)?  " luc_choice
 
 custom_install=0
 luc_choice_2=0
@@ -109,8 +118,12 @@ case "${luc_choice}" in
 		;;
 	esac
 	;;
+*6*)
+	echo "Please run these scripts on that host."
+	exit 1
+	;;
 *)
-	echo "Your answer should be a number between 1 and 3."
+	echo "Your answer should be a number between 1 and 6."
 	exit 1
 esac
 
