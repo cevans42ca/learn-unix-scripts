@@ -9,11 +9,11 @@ mkdir -p flags
 if which bash > /dev/null; then
 	bash_bin=$(which bash)
 	bash_version_info=$(bash -c 'echo ${BASH_VERSINFO[0]}')
-	if [ "$bash_version_info" -le "4" ]; then
+	if [ "$bash_version_info" -lt "4" ]; then
 		if [ -f /usr/local/bin/bash ]; then
 			homebrew=$(/usr/local/bin/bash -c 'echo ${BASH_VERSINFO[0]}')
 			echo "/bin/bash too old, checking Homebrew version:  $homebrew"
-			if [ "$homebrew" -le "4" ]; then
+			if [ "$homebrew" -lt "4" ]; then
 				echo "Associative array support, added in Bash 4.0, is required.  Homebrew bash not found either."
 				echo "If you have a Mac, install Homebrew, then install bash."
 				exit 2
@@ -29,6 +29,7 @@ if which bash > /dev/null; then
 		fi 
 	else
 		sed "s:#!/bin/bash:#!${bash_bin}:" replace-master > replace
+		chmod ug+x replace
 		BASH_BIN=$(which bash)
 	fi 
 else
@@ -41,6 +42,12 @@ fi
 #date --date="3 months ago" +"%Y%m%d"
 #date -v-3m +"%Y%m%d"
 
+echo "This configure script is intended for system administrators."
+echo "If you aren't one, please use the Docker container instead by following"
+echo "the steps at the following link."
+echo
+echo "https://github.com/cevans42ca/learn-unix-scripts#try-them-out-in-docker"
+echo
 echo "What would you like to do?"
 echo "(1) Check to see if the scripts will work on this host without Docker."
 echo "(2) Generate the scripts for audit or review (don't install)."
@@ -203,9 +210,9 @@ if [ "${DOCKER:-0}" -eq "1" ]; then
 		( cd docker && make createsharedvolume )
 	fi
 else
-	if which gshuf > /dev/null; then
+	if which gshuf > /dev/null 2>&1; then
 		echo "export SHUF_BIN=gshuf" >> config.status
-	elif which shuf > /dev/null; then
+	elif which shuf > /dev/null 2>&1; then
 		echo "export SHUF_BIN=shuf" >> config.status
 	else
 		echo "Neither shuf or gshuf were found.  On Mac with Homebrew, brew install coreutils."
@@ -214,7 +221,7 @@ else
 
 	if [ -x /usr/local/bin/grep ]; then
 		echo "export GREP_BIN=/usr/local/bin/grep" >> config.status
-	elif which ggrep > /dev/null; then
+	elif which ggrep > /dev/null 2>&1; then
 		echo "export GREP_BIN=ggrep" >> config.status
 	fi
 fi
@@ -222,7 +229,7 @@ fi
 touch flags/configuretarget
 
 su_command=sudo
-if which dzdo; then
+if which dzdo > /dev/null 2>&1; then
 	su_command=dzdo
 fi
 
@@ -230,6 +237,12 @@ echo
 if [ "${luc_choice_2}" -eq "0" ]; then
 	echo "Run make with no arguments."
 elif [ "${luc_choice_2}" -eq "1" ]; then
+	if [ ! -d "${HOME}/bin" ]; then
+		echo "Creating ${HOME}/bin."
+		echo "It may already be in your path, you may need to login again to add it to your"
+		echo "path, or you may need to add it to your path manually."
+		mkdir -p "${HOME}/bin"
+	fi
 	echo "Run make install."
 elif [ "${luc_choice_2}" -eq "2" ]; then
 	echo "Run make with no arguments, then run ${su_command} make install."
