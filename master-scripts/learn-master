@@ -2039,41 +2039,47 @@ EOL
 
 green_belt_exercise_ctrl_c() { # What Does Ctrl+c Actually Do?
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-Welcome to the advanced ranks!  It's time to revisit Ctrl+c and explain what happens when you type it.  We're going to take
-a brief look at a few of the layers of a Unix operating system as we go, especially the kernel.
+Welcome to the advanced ranks!  It's time to revisit Ctrl+c and explain what happens when you type it.  It's important that you
+have a full understanding of what's going on.  The better your understanding, the better your choices will be when things
+go wrong.  Depending on your background, some of the following may be review.
 
-We're going to go deeper than that, though.  What is a computer?  Depending on your experience with computers, you might
-think of a laptop, or a desktop.  You might have seen pictures or a short video clip of an aisle between rows of clear
-cabinets housing hundreds of small, twinkling blue lights.  You might not think of a modern phone or a smartwatch, but
-these are also computers.  They also likely run some kind of Unix.
+We're going to take a brief look at a few of the layers of a Unix operating system as we go, especially the kernel.
+We're going to go deeper than that, though.  What is a computer?  What picture comes to your mind?  Depending on
+your experience with computers, you might think of a laptop, or a desktop.  You might have seen pictures or a
+short video clip of an aisle between rows of clear cabinets housing thousands of small, twinkling blue lights and
+many thick wires.  You might not think of a modern phone or a smartwatch, but these are also computers.  They also
+likely run some kind of Unix.  A computer might be a server, in which case it probably doesn't have a monitor,
+keyboard, or mouse, but receives requests from a network (perhaps for a webpage) and replies the same way.
 
 When reduced to the essentials, a computer is a machine that follows instructions.  The part that carries out those
 instructions is the CPU or Central Processing Unit.  The CPU is hardware, which means it's a physical component that
 can't easily be changed.  To change it, you would need to buy a new one and have it installed, and that's assuming
 everything else in the computer would work with the new one.  Software is easily changed.  You can upgrade or install
-new software in minutes.
+new software in minutes.  
 
-A computer also has several places to put information, from the tiny but fast caches, to the large but slow drives.  A
-computer might be a server, in which case it probably doesn't have a monitor, keyboard, or mouse, but receives
-instructions from a network and replies the same way.
-
-An operating system's kernel is usually described (and shown) as running on top of the hardware.  It acts as a personal
-assistant to the hardware, drawing up a schedule of meetings (determining who gets how much CPU time) and making sure
-the hardware isn't too heavily loaded.  The kernel decides who gets access to how much memory and swap space (drive
-space used to improve efficiency).
+A computer also has several places to put information, from the tiny but fast caches, to the large but slow drives.
+RAM (Random Access Memory) is in the middle between the caches and the drives, often simply called "memory".
+An operating system's kernel is usually described (and shown in diagrams) as running on top of the hardware.
+It acts as a personal assistant to the hardware, drawing up a schedule of meetings (determining who gets how much
+CPU time) and making sure the hardware isn't too heavily loaded.  The kernel decides who gets access to how much
+memory and swap space (drive space used to improve efficiency).
 
 There's one last thing to cover before we look at Ctrl+c again, and that's signals.  In Unix, a process can send a
 signal to another process (which goes through the kernel).  The operating system can also send a signal to a process
 (that didn't come from another process).  Signals are the easiest and simplest way one process can tell another that
 something happened.  We'll be going into more detail about signals in red belt.  For now, a signal is a single number
 between 1 and 33, and what each number means is well established.  (Mac has 31, Linux has 30, and FreeBSD has 33.)
+
 These signal numbers also have names starting with "SIG", because humans remember words more easily than numbers.
-Although signal handling follows a general pattern, programs can do whatever they like with these signals, except for 9
-(SIGKILL), which kills the process.  Programs never actually receive SIGKILL:  the operating system handles it.  Only a
-program running as the same user as the running program or root can send SIGKILL to a process.
+Signal 2 (SIGINT) is sent to a program when the user types Ctrl+c (and in other cases).  Although signal handling
+follows a general pattern, programs can do whatever they like with these signals, except for 9 (SIGKILL), which
+kills the process.  Programs never actually receive SIGKILL:  the operating system handles it.  Only a program
+running as the same user as the running program or root can send SIGKILL to a process.
 
 At some point, perhaps soon, you're going to need to stop a process that's taking too long, or perhaps you realized that you
-didn't actually want to run it.  We're going to look at the copy command, cp.  All of the core utilities, including cp,
+didn't actually want to run it.  If we were getting a file listing, and it was taking too long because there were too
+many files, stopping it with Ctrl+c would be no problem.  The worst case is having to stop something that's changing
+files on a filesystem.  We're going to look at the copy command, cp.  All of the core utilities, including cp,
 don't give us any progress information.  System administrators get a sense of how long things will take as they
 work with a system, and they'll learn patience.  There are ways to see how a copy is proceeding, but looking at it will slow
 the copy down.
@@ -2175,7 +2181,7 @@ It's likely that you will only understand them if you already have some
 experience with them.  Consider them like chapter headings in a textbook you recently received.
 EOL
 
-	printf "\n${underline}Beginner and Intermediate Ranks${no_underline}\n" >> $fmt_file
+	printf "\n${underline}Beginner and Advanced Ranks${no_underline}\n" >> $fmt_file
 
 	printf "\n`getBeltWithColours white_belt title`\n" >> $fmt_file
 

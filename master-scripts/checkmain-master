@@ -1087,6 +1087,41 @@ EOL
 	fi
 }
 
+green_belt_exercise_ctrl_c() {
+	luc_correct_answers=0
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+You must answer all questions correctly to pass.
+
+Question 1/2
+
+What happens when you press Ctrl+c while the "cp" command is doing its work?
+
+EOL
+
+	luc_answers=( 'The filesystem is corrupted' 'Previous files remain and the current file will be partially written' 'All changes are undone' 'Previous files remain and the current file will be removed' )
+	handle_answer 'Previous files remain and the current file will be partially written'
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 2/2
+
+What is a Unix signal?
+
+EOL
+
+	luc_answers=( 'A simple way for one program to tell another that something happened' 'A coloured light that controls vehicles' 'A complex mechanism to send information from one program to another' )
+	handle_answer 'A simple way for one program to tell another that something happened'
+
+	# Final check
+	if [ "$luc_correct_answers" == "2" ]; then
+		good_work
+	else
+		echo "Results:  $luc_correct_answers out of 6 correct"
+		echo ""
+		sorry
+	fi
+}
+
 ####################
 # End of exercises #
 ####################
