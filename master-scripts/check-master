@@ -63,6 +63,8 @@ LUS_STTY_COLUMNS=$(stty ${stty_options} | head -1 | sed 's/.*; \([0-9][0-9]*\) c
 # redirected, I finally gave up and just used temp files.
 make_temp
 file_clean_up_array+=($fmt_file)
+# make_temp removes e, and we don't want that in this sourced script.
+set +e
 
 if [ "${HISTTIMEFORMAT:-}" == "%F %T " ]; then
 	history 5 | tr -s ' ' | cut -d" " -f5- > $fmt_file
