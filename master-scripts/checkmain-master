@@ -1122,6 +1122,10 @@ EOL
 	fi
 }
 
+green_belt_exercise_hidden_files() {
+	keep_going
+}
+
 ####################
 # End of exercises #
 ####################
