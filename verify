@@ -27,6 +27,18 @@ if [ `whoami` == "root" ]; then
 	exit 1
 fi
 
+if which less > /dev/null 2>&1; then
+	less_prompt_move_on="Press h for help;?e: Enter for more (line %lb of %L).?e q to move on."
+
+	if ! less -cE~ -R -P "${less_prompt_move_on}" less-test; then
+		echo "Please upgrade less."
+		exit 2
+	fi
+else
+	echo "Please install less."
+	exit 2
+fi
+
 parent_proc_name=`ps -p $PPID -o comm=`
 echo "Checking that the parent process is bash."
 case "$parent_proc_name" in
@@ -37,7 +49,7 @@ case "$parent_proc_name" in
 	echo "The parent process is $parent_proc_name.  An interactive bash shell was expected."
 	echo "The scripts in this project are written in bash and require the user to use the bash shell."
 	echo "But they're open source, so feel free to use the lesson text and write your own."
-	exit 1
+	exit 3
 esac
 
 echo "Checking for bash version 4 or later."
@@ -48,14 +60,14 @@ if [ "${BASH_VERSINFO:-0}" -lt "4" ]; then
 		if [ "$homebrew" -le "4" ]; then
 			echo "Associative array support, added in Bash 4.0, is required.  Homebrew bash not found either."
 			echo "If you have a Mac, install Homebrew, then install bash."
-			exit 2
+			exit 4
 		#else
 			#echo "Homebrew bash installed."
 		fi
 	else
 		echo "Associative array support, added in Bash 4.0, is required."
 		echo "If you have a Mac, install Homebrew, then install bash."
-		exit 2
+		exit 5
 	fi 
 fi 
 
@@ -77,28 +89,28 @@ if [ $? -ne 0 ]; then
 	echo "The interrupt character is not Ctrl+C or could not be parsed from the output of stty."
 	echo "The exercises specifically say to use Ctrl+C, so if you can't change it, you"
 	echo "will need to tell all students the correct interrupt character."
-	exit 3
+	exit 6
 fi
 
 if ! which tput > /dev/null; then
 	echo "tput is not installed and is required.  It's part of ncurses."
-	exit 4
+	exit 7
 fi
 
 if ! which fmt > /dev/null; then
 	echo "fmt is not installed and is required.  It's part of the coreutils package."
-	exit 5
+	exit 8
 fi
 
 if ! which man > /dev/null; then
 	echo "man is not installed and is required."
-	exit 6
+	exit 9
 fi
 
 if ! which shuf > /dev/null; then
 	if ! which gshuf > /dev/null; then
 		echo "Neither shuf or gshuf were found.  On Mac with Homebrew, brew install coreutils."
-		exit 7
+		exit 10
 	fi
 fi
 
