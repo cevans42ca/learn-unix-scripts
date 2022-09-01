@@ -48,6 +48,8 @@ if ([[ -n "${ZSH_EVAL_CONTEXT:-}" && "${ZSH_EVAL_CONTEXT:-}" == "toplevel" ]] ||
 fi
 
 # insert 1a88ef09-bbc8-4f7e-ac03-a1849fd03166 stty options
+# insert bef71a69-5f8d-43d4-af29-60608e9b56c7 file_clean_up_array and trap
+# insert dbfb406a-b3c4-4c8d-84f3-4f54bef5d50e make_temp
 
 # When we pipe in the history to the checkmain script through standard in, the TTY will be reset and it becomes harder to
 # check the rows and columns.
@@ -57,9 +59,15 @@ LUS_STTY_COLUMNS=$(stty ${stty_options} | head -1 | sed 's/.*; \([0-9][0-9]*\) c
 # We could make the entire script (check and checkmain) so it can be sourced but that would mean all the subroutines would
 # be added to the environment, and "set -e -o unset" would be problematic.
 
+# After trying out named pipes and fds across multiple operating systems, and the issues involved with having stdin
+# redirected, I finally gave up and just used temp files.
+make_temp
+file_clean_up_array+=($fmt_file)
+
 if [ "${HISTTIMEFORMAT:-}" == "%F %T " ]; then
-	history 5 | tr -s ' ' | cut -d" " -f5- | checkmain $LUS_STTY_ROWS $LUS_STTY_COLUMNS
+	history 5 | tr -s ' ' | cut -d" " -f5- > $fmt_file
 else
-	history 5 | tr -s ' ' | cut -d" " -f3- | checkmain $LUS_STTY_ROWS $LUS_STTY_COLUMNS
+	history 5 | tr -s ' ' | cut -d" " -f3- > $fmt_file
 fi
 
+checkmain $fmt_file $LUS_STTY_ROWS $LUS_STTY_COLUMNS

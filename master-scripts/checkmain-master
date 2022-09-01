@@ -57,7 +57,7 @@ fi
 luc_history=()
 while read i; do
 	luc_history+=("$i")
-done
+done < "${1}"
 
 LUS_HOME=${LUS_HOME:-"$HOME/lus"}
 
@@ -1170,7 +1170,7 @@ EOL
 fi
 
 # luc = Learn Unix Check
-luc_width=`expr $2 - 5`
+luc_width=`expr $3 - 5`
 
 if [[ ! "${RANK}" =~ ^(white|yellow|green|blue|red|black)_(stripe|belt)$ ]]; then
 	fmt ${FMT_OPTIONS:-}$luc_width <<EOL

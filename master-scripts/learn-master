@@ -2142,15 +2142,7 @@ EOL
 	fi
 }
 
-make_temp() {
-	set +e
-	fmt_file=$(mktemp --suffix_$(whoami) 2>/dev/null)
-	RESULT=$?
-	if [ $RESULT -ne 0 ]; then
-		fmt_file=$(mktemp -t $(whoami)-XXXXXX)
-	fi
-	set -e
-}
+# insert dbfb406a-b3c4-4c8d-84f3-4f54bef5d50e make_temp
 
 welcome() {
 	make_temp

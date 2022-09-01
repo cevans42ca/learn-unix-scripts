@@ -323,6 +323,19 @@ simple_trim() {
 }
 # end 37333148-8746-4468-826e-544e532f1ebc
 
+# start dbfb406a-b3c4-4c8d-84f3-4f54bef5d50e
+make_temp() {
+	umask 077
+	set +e
+	fmt_file=$(mktemp --suffix_$(whoami) 2>/dev/null)
+	RESULT=$?
+	if [ $RESULT -ne 0 ]; then
+		fmt_file=$(mktemp -t $(whoami)-XXXXXX)
+	fi
+	set -e
+}
+# end dbfb406a-b3c4-4c8d-84f3-4f54bef5d50e
+
 # start 7437f7c8-c360-4f96-91f6-b75dcd3b8cd7
 # If someone is connecting to Docker with "xterm", it's pretty much guaranteed to be a modern one.
 # By setting 256 colours, we can give tput more to work with.
