@@ -30,7 +30,7 @@ fi
 if which less > /dev/null 2>&1; then
 	less_prompt_move_on="Press h for help;?e: Enter for more (line %lb of %L).?e q to move on."
 
-	if ! less -cE~ -R -P "${less_prompt_move_on}" less-test; then
+	if ! less -E~ -R -P "${less_prompt_move_on}" less-test; then
 		echo "Please upgrade less."
 		exit 2
 	fi
@@ -124,10 +124,12 @@ fi
 echo 
 echo 
 echo "Verify that some of the words in this sentence are red.  (Checks grep --color.)" | ${GREP_BIN} --color=always "some of the words"
-echo "Verify that some of the words in $(tput setaf 1)$(tput bold)this sentence are also$(tput sgr0) red.  (Checks tput.)"
-echo "Verify that some of the words in this final sentence are red.  (Checks grep -P.)" | ${GREP_BIN} -P --color=always "(?<=Verify )that some of(?= the words)"
+echo "Verify that some of the words in this sentence are also red.  (Checks grep -P.)" | ${GREP_BIN} -P --color=always "(?<=Verify )that some of(?= the words)"
+echo "Verify that some of the words in $(tput setaf 1)$(tput bold)this final sentence are also$(tput sgr0) red.  (Checks tput.)"
 echo
 echo "All three sentences should have red words.  If they don't, you may want to"
 echo "check your terminal settings, your TERM environment variable, and/or"
-echo "your version of tput."
+echo "your version of tput.  The first two sentences must have red words for the"
+echo "exercises to make sense.  On FreeBSD, the last one is not likely to work,"
+echo "but it won't compromise the exercises."
 
