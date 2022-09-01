@@ -2163,6 +2163,10 @@ At the bottom of the text (or immediately if all the text fits) the prompt will 
 (or quit if it's the end of the lesson).  Once you're done reading all the text (including right now) press "q".
 EOL
 
+	# When using these scripts through SSH, not clearing the screen first can make it seem like a bunch of text went by and
+	# was lost.  The student can feel like they accidentally pressed q twice and missed something.  Clearing the screen
+	# before each invocation of less helps to prevent that.
+	clear
 	less -R -P "$less_prompt_move_on" $fmt_file
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL > $fmt_file
@@ -2247,6 +2251,10 @@ EOL
 
 	echo "" >> $fmt_file
 
+	# When using these scripts through SSH, not clearing the screen first can make it seem like a bunch of text went by and
+	# was lost.  The student can feel like they accidentally pressed q twice and missed something.  Clearing the screen
+	# before each invocation of less helps to prevent that.
+	clear
 	less -R -P "$less_prompt_move_on" $fmt_file
 
 	if [ ! -f "${LUS_PROGRESS}" ] || [ -z "${RANK:-}" ] || [ -z "${EXERCISE:-}" ]; then
