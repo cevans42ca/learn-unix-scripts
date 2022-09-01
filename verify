@@ -121,6 +121,12 @@ elif which ggrep > /dev/null 2>&1; then
 	GREP_BIN=ggrep
 fi
 
+if [ ! -r / ]; then
+	echo
+	echo "WARNING:  One of the exercises asks the student to list the files in the root"
+	echo "directory.  It's not readable.  Students may try and fail, then move on."
+fi
+
 echo 
 echo 
 echo "Verify that some of the words in this sentence are red.  (Checks grep --color.)" | ${GREP_BIN} --color=always "some of the words"
