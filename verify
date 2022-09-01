@@ -131,8 +131,3 @@ echo "All three sentences should have red words.  If they don't, you may want to
 echo "check your terminal settings, your TERM environment variable, and/or"
 echo "your version of tput."
 
-if [[ "${need_to_clean}" == "1" ]]; then
-	echo
-	echo "Unable to clean up after encfs test.  Please unmount any encfs mounts and delete"
-	echo "${script_dir}"/lus-testenc and "${script_dir}"/lus-testunenc/.
-fi
