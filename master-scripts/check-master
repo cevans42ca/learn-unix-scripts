@@ -61,10 +61,13 @@ LUS_STTY_COLUMNS=$(stty ${stty_options} | head -1 | sed 's/.*; \([0-9][0-9]*\) c
 
 # After trying out named pipes and fds across multiple operating systems, and the issues involved with having stdin
 # redirected, I finally gave up and just used temp files.
+previous_umask=$(umask)
+umask 077
 make_temp
-file_clean_up_array+=($fmt_file)
 # make_temp removes e, and we don't want that in this sourced script.
 set +e
+file_clean_up_array+=($fmt_file)
+umask ${previous_umask}
 
 if [ "${HISTTIMEFORMAT:-}" == "%F %T " ]; then
 	history 5 | tr -s ' ' | cut -d" " -f5- > $fmt_file
