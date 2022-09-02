@@ -27,6 +27,19 @@ if [ `whoami` == "root" ]; then
 	exit 1
 fi
 
+file_clean_up_array=()
+
+clean_up() {
+	if [ -n "${file_clean_up_array:-}" ]; then
+		for item in $file_clean_up_array; do
+			rm -f $item
+		done
+	fi
+}
+
+# It's a trap!  Run the clean_up subroutine on normal or aborted exit.
+trap clean_up EXIT
+
 if which less > /dev/null 2>&1; then
 	less_prompt_move_on="Press h for help;?e: Enter for more (line %lb of %L).?e q to move on."
 
@@ -70,6 +83,25 @@ if [ "${BASH_VERSINFO:-0}" -lt "4" ]; then
 		exit 5
 	fi 
 fi 
+
+tmp_file=$(mktemp --suffix_$(whoami) 2>/dev/null)
+RESULT=$?
+if [ $RESULT -ne 0 ]; then
+	tmp_file=$(mktemp -t $(whoami)-XXXXXX)
+fi
+
+file_clean_up_array+=($tmp_file)
+
+perms=$(ls -l -- "${tmp_file}")
+perms=${perms%% *}
+case $perms in
+????------)
+	echo "Umask sucessful."
+	;;
+*)
+	echo "Umask failed."
+	exit 11
+esac
 
 echo "Checking stty arguments."
 stty -a 2>&1 | grep -q 'rows'
