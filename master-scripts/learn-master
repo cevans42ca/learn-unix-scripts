@@ -696,6 +696,9 @@ also be used to get an up-to-date command history (which is normally inaccessibl
 doesn't change anything that can be checked directly, accessing the command history is the only way that the check
 script can verify that the correct command was issued.
 
+Further belts may ask you to source the check script, which means to execute "source check" (or equivalently execute
+". check").  Make a note of it so you can refer to it later.
+
 Once you have read and understood this text, execute ". check" for your (short) final exam.
 EOL
 
@@ -2301,7 +2304,51 @@ character, one directory level up.
 mv ..?* ..
 
 For this one, rememeber that it's possible and look up the syntax for globs if you need to later.
+
+Experiment with hidden files and directories and listing them now.  Remember that you can create new files with
+the following command.
+
+echo "Test text" > filename
+
+You can create hidden files the same way.  As a quick review, create a dirname directory with "mkdir dirname".
+Remove an empty directory named dirname with "rmdir dirname".  Start the dirname with a dot to make it hidden.
+
+If your "ls" is aliased and includes "-a", you may want to unalias "ls" by executing "unalias ls" so you can
+experiment with "ls" and "ls -a".  The alias will return the next time you login.  On most systems, hidden
+files are hidden by default.  When you login to a new Unix system, it's a good idea to check your aliases
+by executing "alias" (i.e. with no arguments).
+
+When you're done experimenting, execute ". check" as usual.
 EOL
+
+	complete_exercise
+}
+
+green_belt_exercise_pushd() { # Introducing pushd
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+It's quite common to have to change the working directory with "cd", do something there, and then come back.
+To make that easier, bash has the pushd and popd commands.  You can use the pushd command in place of cd.
+
+Make sure you're not already in the root directory, then execute "pushd /".
+EOL
+
+	complete_exercise
+}
+
+green_belt_exercise_popd() { # Introducing popd
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Execute "popd" to return to where you were.
+EOL
+
+	if [ -n "${SAVED_RANK:-}" ] || [ -n "${SAVED_EXERCISE:-}" ]; then
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+You're reviewing past exercises.  If you skipped to this exercise, you might not have anything in your directory
+stack.  If not, and you execute "popd" and get an error, you can still continue.  You could also push the root
+directory onto the directory stack first with "pushd /", then execute "popd", and then execute ". check".  If you
+just did the previous exercise, you can ignore all that and just execute "popd" and then ". check".
+EOL
+	fi
 
 	complete_exercise
 }

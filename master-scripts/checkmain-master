@@ -1111,8 +1111,6 @@ green_belt_exercise_ls_a_alias() {
 	do
 		if [[ "$item" =~ ^[\ ]*type[\ ][\ ]*ls([\ ]|$) ]]; then
 			good_work
-			echo ""
-			echo $'Execute "learn" when you\'re ready for the next exercise.'
 			unset IFS
 			return
 		fi
@@ -1125,6 +1123,42 @@ green_belt_exercise_ls_a_alias() {
 
 green_belt_exercise_hidden_files() {
 	keep_going
+}
+
+green_belt_exercise_pushd() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*pushd[\ ][\ ]*/([\ ]|$) ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
+green_belt_exercise_popd() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*popd([\ ]|$) ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
 }
 
 ####################

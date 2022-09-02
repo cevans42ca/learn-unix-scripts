@@ -90,6 +90,8 @@ i=1
 exercises["green_belt_$((i++))"]="ctrl_c"
 exercises["green_belt_$((i++))"]="ls_a_alias"
 exercises["green_belt_$((i++))"]="hidden_files"
+exercises["green_belt_$((i++))"]="pushd"
+exercises["green_belt_$((i++))"]="popd"
 
 declare -A belt_to_number
 belt_to_number["white_belt"]=0
