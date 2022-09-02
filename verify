@@ -131,7 +131,7 @@ echo
 echo 
 echo "Verify that some of the words in this sentence are red.  (Checks grep --color.)" | ${GREP_BIN} --color=always "some of the words"
 echo "Verify that some of the words in this sentence are also red.  (Checks grep -P.)" | ${GREP_BIN} -P --color=always "(?<=Verify )that some of(?= the words)"
-echo "Verify that some of the words in $(tput setaf 1)$(tput bold)this final sentence are also$(tput sgr0) red.  (Checks tput.)"
+echo "Verify that some of the words in $(tput setaf 1)$(tput bold)this final sentence are$(tput sgr0) red.  (Checks tput.)"
 echo
 echo "All three sentences should have red words.  If they don't, you may want to"
 echo "check your terminal settings, your TERM environment variable, and/or"
