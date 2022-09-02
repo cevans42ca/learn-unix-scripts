@@ -27,13 +27,9 @@ if [ `whoami` == "root" ]; then
 	exit 1
 fi
 
-file_clean_up_array=()
-
 clean_up() {
-	if [ -n "${file_clean_up_array:-}" ]; then
-		for item in $file_clean_up_array; do
-			rm -f $item
-		done
+	if [ -n "${tmp_file:-}" ]; then
+		rm -f "${tmp_file}"
 	fi
 }
 
@@ -90,8 +86,6 @@ RESULT=$?
 if [ $RESULT -ne 0 ]; then
 	tmp_file=$(mktemp -t $(whoami)-XXXXXX)
 fi
-
-file_clean_up_array+=($tmp_file)
 
 perms=$(ls -l -- "${tmp_file}")
 perms=${perms%% *}
