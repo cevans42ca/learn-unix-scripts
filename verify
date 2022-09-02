@@ -84,6 +84,7 @@ if [ "${BASH_VERSINFO:-0}" -lt "4" ]; then
 	fi 
 fi 
 
+umask 077
 tmp_file=$(mktemp --suffix_$(whoami) 2>/dev/null)
 RESULT=$?
 if [ $RESULT -ne 0 ]; then
