@@ -88,6 +88,7 @@ exercises["green_stripe_$((i++))"]="dev_and_mount"
 
 i=1
 exercises["green_belt_$((i++))"]="ctrl_c"
+exercises["green_belt_$((i++))"]="ls_a_alias"
 exercises["green_belt_$((i++))"]="hidden_files"
 
 declare -A belt_to_number

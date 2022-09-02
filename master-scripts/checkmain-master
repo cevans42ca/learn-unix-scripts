@@ -1103,6 +1103,26 @@ EOL
 	fi
 }
 
+green_belt_exercise_ls_a_alias() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*type[\ ][\ ]*ls([\ ]|$) ]]; then
+			good_work
+			echo ""
+			echo $'Execute "learn" when you\'re ready for the next exercise.'
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
 green_belt_exercise_hidden_files() {
 	keep_going
 }

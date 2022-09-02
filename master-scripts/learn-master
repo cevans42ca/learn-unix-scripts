@@ -2075,28 +2075,87 @@ follows a general pattern, programs can do whatever they like with these signals
 kills the process.  Programs never actually receive SIGKILL:  the operating system handles it.  Only a program
 running as the same user as the running program or root can send SIGKILL to a process.
 
-At some point, perhaps soon, you're going to need to stop a process that's taking too long, or perhaps you realized that you
-didn't actually want to run it.  If we were getting a file listing, and it was taking too long because there were too
-many files, stopping it with Ctrl+c would be no problem.  The worst case is having to stop something that's changing
-files on a filesystem.  We're going to look at the copy command, cp.  All of the core utilities, including cp,
-don't give us any progress information.  System administrators get a sense of how long things will take as they
-work with a system, and they'll learn patience.  There are ways to see how a copy is proceeding, but looking at it will slow
-the copy down.
+At some point, perhaps soon, you're going to need to stop a process that's taking too long, or perhaps you realized
+that you didn't actually want to run it.  If we were getting a file listing, and it was taking too long because
+there were too many files, stopping it with Ctrl+c would be no problem.  The worst case is having to stop something
+that's changing files on a filesystem.  We're going to look at the copy command, cp.  All of the core utilities,
+including cp, don't give us any progress information.  System administrators get a sense of how long things will
+take as they work with a system, and they'll learn patience.  There are ways to see how a copy is proceeding,
+but looking at it will slow the copy down.
 
 Let's say that we need to stop a copy.  We type Ctrl+c.  Our terminal interprets that keystroke and sends signal 2
-(SIGINT, or interrupt) to the currently running process, which is "cp".  Chances are, cp is in the middle of copying a
-block of data, because the drive access is what takes most of the time for the copy.  Programs don't write to devices
-themselves.  If every program that needed to print something knew how to communicate with every printer, that would be a
-mess.  So the kernel of the operating system takes care of the details (in this case, printer drivers, but the example
-extends to all devices).  So the "cp" command asked the kernel to write some data, and it's waiting for that to finish.
-The "cp" command can't take messages at the moment.  Once the block of data is written, the kernel notices that there's
-a pending signal for "cp", and sends it.  The "cp" command processes the signal and quits.
+(SIGINT, or interrupt) to the currently running process, which is "cp".  Chances are, cp is in the middle of copying
+a block of data, because the drive access is what takes most of the time for the copy.  Programs don't write to
+devices themselves.  If every program that needed to print something knew how to communicate with every printer, that
+would be a mess.  So the kernel of the operating system takes care of the details (in this case, printer drivers,
+but the example extends to all devices).  So the "cp" command asked the kernel to write some data, and it's waiting
+for that to finish.  The "cp" command can't take messages at the moment.  Once the block of data is written, the
+kernel notices that there's a pending signal for "cp", and sends it.  The "cp" command processes the signal and quits.
 
 Now, we have a partially written file, possibly with many other files that finished already.  If we were only copying
-one file, that wouldn't be too bad.  We could simply run the command again when it made sense.  Perhaps we needed to
-bring the system down for a kernel update.  If we were copying a large directory, it would be best to start at the
-beginning, and have the "cp" command overwrite any files that it already copied.  The "rsync" command may be of some use
-in completing an unfinished copy, but that's out of the scope of these exercises.
+one file, that wouldn't be too bad.  We could simply run the command again when it made sense.  Perhaps we needed
+to bring the system down for a kernel update.  If we were copying a large directory, it would be best to start at
+the beginning, and have the "cp" command overwrite any files that it already copied.  The "rsync" command may be
+of some use in completing an unfinished copy, but that's out of the scope of these exercises.
+
+This exercise introduced a lot of material, so execute ". check" for a small quiz.
+EOL
+
+	complete_exercise
+}
+
+green_belt_exercise_ls_a_alias() {
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Before we look at how to show hidden files, we need to check if you're settings show hidden files by default.
+That's normally done with an alias.
+
+Let's take a look at some examples of what you might see when you execute "type ls" and what they mean, then
+you'll do it.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+user@host [~]# type ls
+ls is /bin/ls
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+The previous output shows that "ls" is not aliased, which means that no extra arguments are automatically added.
+Since no arguments are added, the defaults are used, which means hidden files will be hidden unless you ask to
+see them (with the "-a" option).
+
+EOL
+
+	cat <<EOL >> $fmt_file
+user@host [~]# type ls
+ls is aliased to \`ls -F'
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+The output above shows that the "ls" command has been aliased to "ls -F".  The "-F" option shows a symbol at the
+end of each file indicating what kind of file it is.  The "-a" option isn't here, so the default for hidden files
+will be used, which means files will be hidden unless you ask to see them (with the "-a" option).
+
+EOL
+
+	cat <<EOL >> $fmt_file
+user@host [~]# type ls
+ls is aliased to \`/bin/ls \$LS_OPTIONS'
+user@host [~]# echo \$LS_OPTIONS
+--color=tty -F -a -b -T 0
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+In this one, the options are coming from an environment variable, so we need to echo \$LS_OPTIONS to see
+the options.  In tnis example, "-a" is included, which means that hidden files will be shown by default.
+
+You may also see "-A", which means hidden files and directories will be shown except for the special directories
+"." and "..".
+
+Execute "type ls".
 EOL
 
 	complete_exercise
@@ -2104,18 +2163,18 @@ EOL
 
 green_belt_exercise_hidden_files() { # Hidden files and globs
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-In this exercise, we'll introduce hidden files and show how to display them.  We'll also take a look at globs.
-These concepts are best covered together, so this exercise will be longer than most.
+In this exercise, we'll show how to work with hidden files.  We'll also take a look at globs, and how using globs with
+hidden files can be problematic.  These concepts are best covered together, so this exercise will be longer than most.
 
 If a period ( . ) is at the beginning of a file or directory name, the file or directory will be hidden by
-default. The period is also called a dot, full stop, or full point.
+default.  The period is also called a dot, full stop, or full point.
 
-We looked at the special directories "." and ".." in a previous belt. As a quick review, the "." directory refers
-to the current directory, and the ".." directory refers to the parent directory. These special directories are
+We looked at the special directories "." and ".." in a previous belt.  As a quick review, the "." directory refers
+to the current directory, and the ".." directory refers to the parent directory.  These special directories are
 hidden by default.
 
-Files and directories are hidden in two important ways. First, the "ls" command won't show them by default. We'll
-look at the second one in more detail now.
+Files and directories are hidden in two important ways.  First, the "ls" command won't show them by default.
+We'll look at the second one in more detail now.
 
 Let's imagine that you had a USB stick mounted on /mnt/usb and you wanted to copy some files in ${HOME}/abc
 to the stick.
@@ -2155,8 +2214,8 @@ You might try to add hidden files to our copy command as follows.
 
 cp ${HOME}/abc/* ~/.* /mnt/usb
 
-Unfortunately, ".*" will also match the special directory "..". It can be disastrous if you use ".*" with the "rm"
-command, so it's a good idea to avoid ".*" entirely. As is usual for Unix, there are lots of other options. We'll
+Unfortunately, ".*" will also match the special directory "..".  It can be disastrous if you use ".*" with the "rm"
+command, so it's a good idea to avoid ".*" entirely.  As is usual for Unix, there are lots of other options.  We'll
 look at one.
 
 The easiest way around this issue is to copy the whole directory with the -R (recursive) option, which we looked
@@ -2226,17 +2285,18 @@ The Windows Command Prompt only supports ? and * as special characters in globs.
 syntax for globs, some of which you will probably never use.
 
 The special glob .[^.]* (dot open-bracket caret dot close-bracket star) matches all files that start with a dot
-that don't have a dot as the second character.  Write it down.
+that don't have a dot as the second character.  Make a note of it.
 
 Continuing on what we had above, to move all files that start with a dot that don't have dot as the second
 character one directory level up, use the following command.
 
 mv .[^.]* ..
 
-In the very unlikely event that you have a file that starts with two dots, it won't be moved by the previous command.
-You might want to rename it so that it starts with one dot.  But your shell will let you match a file that starts
-with two dots without matching the parent directory as well.  The following command moves any file that starts
-with two dots and contains at least one more character one directory level up.
+In the very unlikely event that you have to deal with several files that start with two dots, they won't be moved by
+the previous command.  If there are only a few, you might want to rename them so that they start with only one dot,
+then move them.  But the bash shell will let you match files that start with two dots without matching the parent
+directory as well.  The following command moves all files that start with two dots and contain at least one more
+character, one directory level up.
 
 mv ..?* ..
 
