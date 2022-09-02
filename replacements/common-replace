@@ -84,7 +84,6 @@ exercises["green_stripe_$((i++))"]="ls_explore"
 exercises["green_stripe_$((i++))"]="ls_dash_h"
 exercises["green_stripe_$((i++))"]="ls_dash_f"
 exercises["green_stripe_$((i++))"]="df"
-exercises["green_stripe_$((i++))"]="midterm_exam"
 exercises["green_stripe_$((i++))"]="dev_and_mount"
 
 i=1

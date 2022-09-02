@@ -1988,10 +1988,6 @@ EOL
 	complete_exercise
 }
 
-green_stripe_exercise_midterm_exam() { # Midterm Exam
-	echo 'Execute ". check" for your midterm exam.'
-}
-
 green_stripe_exercise_dev_and_mount() { # The /dev Filesystem and Mounting
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 In this belt, we looked at several special devices across multiple platforms.
@@ -2106,9 +2102,145 @@ EOL
 	complete_exercise
 }
 
-green_belt_exercise_hidden_files() { # Hidden files
+green_belt_exercise_hidden_files() { # Hidden files and globs
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-This exercise will show how to display and work with hidden files.
+In this exercise, we'll introduce hidden files and show how to display them.  We'll also take a look at globs.
+These concepts are best covered together, so this exercise will be longer than most.
+
+If a period ( . ) is at the beginning of a file or directory name, the file or directory will be hidden by
+default. The period is also called a dot, full stop, or full point.
+
+We looked at the special directories "." and ".." in a previous belt. As a quick review, the "." directory refers
+to the current directory, and the ".." directory refers to the parent directory. These special directories are
+hidden by default.
+
+Files and directories are hidden in two important ways. First, the "ls" command won't show them by default. We'll
+look at the second one in more detail now.
+
+Let's imagine that you had a USB stick mounted on /mnt/usb and you wanted to copy some files in ${HOME}/abc
+to the stick.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+[user@host ~]$ cp ${HOME}/abc/* /mnt/usb
+[user@host ~]$ ls ${HOME}/abc/
+one  three  two
+[user@host ~]$ ls /mnt/usb
+one  three  two
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+Looks like all three files were copied, doesn't it?  What about hidden files, shown with ls -a?
+
+EOL
+
+	cat <<EOL >> $fmt_file
+[user@host ~]$ ls -a ${HOME}/abc/
+.  ..  .hiddenOne  .hiddenTwo  one  three  two
+[user@host ~]$ ls -a /mnt/usb
+one  three  two
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+Oops.  The hidden files weren't copied.  If you forgot about hidden files and directories, you'd see the same
+files in both places and think everything was fine, but one would have hidden files and the other wouldn't.
+
+On your system there may be an alias that adds the -a option to ls automatically.  However, you should always
+keep hidden files in mind as there are many systems that don't automatically show hidden files.
+
+You might try to add hidden files to our copy command as follows.
+
+cp ${HOME}/abc/* ~/.* /mnt/usb
+
+Unfortunately, ".*" will also match the special directory "..". It can be disastrous if you use ".*" with the "rm"
+command, so it's a good idea to avoid ".*" entirely. As is usual for Unix, there are lots of other options. We'll
+look at one.
+
+The easiest way around this issue is to copy the whole directory with the -R (recursive) option, which we looked
+at before.  As a quick review, The -R option will copy all the directories and any directories they have until
+they're all done.
+
+The cp command copies one or more sources to a target (or destination).  Sources can be files or directories.
+The target can be a file or directory.  If the target is a file, there must be one source, and it must be a file.
+(You can't copy a directory to a file.)
+
+Let's look at two very similar commands and what they do.
+
+cp -R ${HOME}/abc/ /mnt/usb
+
+EOL
+
+	cat <<EOL >> $fmt_file
+user@host [~]# cp -R ${HOME}/abc /mnt/usb
+user@host [~]# cd /mnt/usb
+user@host [usb]# ls
+abc
+user@host [usb]# cd abc
+user@host [abc]# ls
+one  three  two
+user@host [abc]# ls -a
+.  ..  .hiddenOne  .hiddenTwo  one  three  two
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+The command above copies all the files and directories in your ${HOME}/abc directory into /mnt/usb including
+the "abc" directory.  (Hopefully you can read the output above and see that it shows that as well.)
+
+cp -R ${HOME}/abc/. /mnt/usb
+
+The command above is the same as the previous one, except for a slash and dot on the source.  When these are present,
+the directory itself is not copied.  In other words, there will not be a /mnt/usb/abc directory, and everything
+will be under /mnt/usb.  Let's see what that looks like.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+user@host [~]# cp -R ~/abc/. /mnt/usb/
+user@host [~]# cd /mnt/usb
+user@host [/mnt/usb]# ls
+one  three  two
+user@host [/mnt/usb]# ls -a
+.  ..  .hiddenOne  .hiddenTwo  one  three  two
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+We looked at two sources:  "${HOME}/abc" and "${HOME}/abc/.".  You can also specify a source with a slash and no
+dot (${HOME}/abc/) but that can be dangerous when dealing with symbolic links.  (Symbolic links are out of scope
+for this course.)  Starting forming the habit now to avoid slashes at the end of a source for "cp", "mv", and "rm".
+
+Let's say we copied some files and included the directory by mistake.  Moving the non-hidden files and directories
+up one directory level is easy.
+
+mv * ..
+
+Now we need to move all the hidden files and directories up one level.  To do that, we need to be able to match
+only the hidden files and directories without matching the parent directory.  We can do that with a special glob.
+You've probably used globs like * and *.* before on Unix or Windows without knowing what they were called.  Globs are
+special sequences of characters that match filenames.  The glob "abc*" matches all filenames that start with abc.
+The Windows Command Prompt only supports ? and * as special characters in globs.  The bash shell has a richer
+syntax for globs, some of which you will probably never use.
+
+The special glob .[^.]* (dot open-bracket caret dot close-bracket star) matches all files that start with a dot
+that don't have a dot as the second character.  Write it down.
+
+Continuing on what we had above, to move all files that start with a dot that don't have dot as the second
+character one directory level up, use the following command.
+
+mv .[^.]* ..
+
+In the very unlikely event that you have a file that starts with two dots, it won't be moved by the previous command.
+You might want to rename it so that it starts with one dot.  But your shell will let you match a file that starts
+with two dots without matching the parent directory as well.  The following command moves any file that starts
+with two dots and contains at least one more character one directory level up.
+
+mv ..?* ..
+
+For this one, rememeber that it's possible and look up the syntax for globs if you need to later.
 EOL
 
 	complete_exercise
