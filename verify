@@ -100,7 +100,16 @@ case $perms in
 	echo "Umask sucessful."
 	;;
 *)
-	echo "Umask failed."
+	echo "Umask failed.  These scripts create a temp file with group and other permission"
+	echo "bits stripped that contains the last few commands from the history.  It's"
+	echo "necessary to check the history to ensure some of the tasks are completed"
+	echo "correctly.  Using a file (rather than a named pipe or fd) is necessary for"
+	echo "portability across systems."
+	echo
+	echo "Either the temp file couldn't be created, it had the wrong"
+	echo "permissions, or ls -l doesn't print permissions first on this system.  If the"
+	echo "issue is not resolved, these scripts might not work, or there might be a"
+	echo "security risk introduced."
 	exit 11
 esac
 
