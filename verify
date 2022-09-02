@@ -124,7 +124,8 @@ fi
 if [ ! -r / ]; then
 	echo
 	echo "WARNING:  One of the exercises asks the student to list the files in the root"
-	echo "directory.  It's not readable.  Students may try and fail, then move on."
+	echo "directory.  It's not readable.  Students may try and fail, and may not"
+	echo "realize that they can move on after failing."
 fi
 
 echo 
