@@ -2337,18 +2337,11 @@ EOL
 
 green_belt_exercise_popd() { # Introducing popd
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-Execute "popd" to return to where you were.
-EOL
+If you just did the previous exercise, execute "popd" to return to where you were.
 
-	if [ -n "${SAVED_RANK:-}" ] || [ -n "${SAVED_EXERCISE:-}" ]; then
-	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-
-You're reviewing past exercises.  If you skipped to this exercise, you might not have anything in your directory
-stack.  If not, and you execute "popd" and get an error, you can still continue.  You could also push the root
-directory onto the directory stack first with "pushd /", then execute "popd", and then execute ". check".  If you
-just did the previous exercise, you can ignore all that and just execute "popd" and then ". check".
+If you didn't just execute "pushd /" because you came back to this exercise later, please execute "pushd /" and then
+"popd".
 EOL
-	fi
 
 	complete_exercise
 }
