@@ -2107,7 +2107,7 @@ EOL
 	complete_exercise
 }
 
-green_belt_exercise_ls_a_alias() {
+green_belt_exercise_ls_a_alias() { # Is ls aliased?
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Before we look at how to show hidden files, we need to check if you're settings show hidden files by default.
 That's normally done with an alias.

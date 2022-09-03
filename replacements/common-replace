@@ -92,6 +92,7 @@ exercises["green_belt_$((i++))"]="ls_a_alias"
 exercises["green_belt_$((i++))"]="hidden_files"
 exercises["green_belt_$((i++))"]="pushd"
 exercises["green_belt_$((i++))"]="popd"
+exercises["green_belt_$((i++))"]="dir_stacks"
 
 declare -A belt_to_number
 belt_to_number["white_belt"]=0
