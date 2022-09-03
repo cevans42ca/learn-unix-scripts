@@ -1161,6 +1161,10 @@ green_belt_exercise_popd() {
 	return
 }
 
+green_belt_exercise_dir_stacks() {
+	keep_going
+}
+
 ####################
 # End of exercises #
 ####################

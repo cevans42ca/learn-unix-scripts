@@ -2353,7 +2353,47 @@ EOL
 	complete_exercise
 }
 
-# Green Belt:  Hidden files and directories; globbing; directory stacks
+green_belt_exercise_dir_stacks() { # Directory stacks
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Most of the time, you'll use "cd" to change directories.  Every once in a while, you might want to use "pushd" and
+"popd".
+
+This exercise is about what happens when you execute "pushd" multiple times before executing "popd".  You may never
+want to do that, so this exercise is optional.  If you want to skip it at any point, press "q" and source the check
+script as usual to move on to the final exam.
+
+
+If You're a Programmer
+
+The "pushd" and "popd" commands work with a directory stack.  If you're still getting into programming and haven't
+gotten into stacks yet, look up stacks online or continue reading below.
+
+
+If You're Not a Programmer
+
+Dinner plates are a very common way to teach how stacks work.
+
+Imagine a worker in a restaurant opening a dishwasher and taking out dinner plates.  We'll call him Tom.
+
+Tom sets the first plate on the counter.  The next plate goes on top of the first one.  When Tom is done, the last
+plate is on top.  The first plate he took out of the dishwasher is on the bottom.
+
+Jane takes the stack of plates and puts them on a cart.  The other stacks of plates on the cart aren't important.
+She rolls the cart out to the dining hall and leaves it next to the buffet.
+
+The dining hall, the food, and the people there aren't important, except for the customers taking plates off
+the stack.  Fred picks up the first plate, which is the last plate Tom put down.  One by one, plates are taken by
+customers in the opposite order of the way they were set down.  Susan takes the last plate in our stack, which was
+the first one Tom set down.  This stack of plates is now gone.
+
+The "pushd" and "popd" commands work on a directory stack the same way Tom and the diners worked with the stack
+of plates.  Each push adds a directory to the stack, and each pop removes a directory from the stack.  To see
+the list, use the "dirs" command.  The directories will be listed with spaces between them.  To see it as a
+stack, execute "dirs -p".
+EOL
+
+	complete_exercise
+}
 
 ####################
 # End of exercises #
