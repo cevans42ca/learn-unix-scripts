@@ -2109,7 +2109,12 @@ EOL
 
 green_belt_exercise_ls_a_alias() { # Is ls aliased?
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-Before we look at how to show hidden files, we need to check if you're settings show hidden files by default.
+We're going to use the term "hidden files" as a short form for "hidden files and hidden directories".
+In many cases, directories are considered to be a special type of file.  For maximum clarity, tests and
+quizzes will spell this phrase fully out as "hidden files and hidden directories".  We will also use
+the full phrase in the lesson text in a few key spots for clarity.
+
+Before we look at how to show hidden files, we need to check if your settings show hidden files by default.
 That's normally done with an alias.
 
 Let's take a look at some examples of what you might see when you execute "type ls" and what they mean, then
@@ -2155,8 +2160,7 @@ EOL
 In this one, the options are coming from an environment variable, so we need to echo \$LS_OPTIONS to see
 the options.  In tnis example, "-a" is included, which means that hidden files will be shown by default.
 
-You may also see "-A", which means hidden files and directories will be shown except for the special directories
-"." and "..".
+You may also see "-A", which means hidden files will be shown except for the special directories "." and "..".
 
 Execute "type ls".
 EOL
@@ -2174,7 +2178,7 @@ default.  The period is also called a dot, full stop, or full point.
 
 We looked at the special directories "." and ".." in a previous belt.  As a quick review, the "." directory refers
 to the current directory, and the ".." directory refers to the parent directory.  These special directories are
-hidden by default.
+hidden by default (because they start with a dot).
 
 Files and directories are hidden in two important ways.  First, the "ls" command won't show them by default.
 We'll look at the second one in more detail now.
@@ -2207,13 +2211,13 @@ EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
-Oops.  The hidden files weren't copied.  If you forgot about hidden files and directories, you'd see the same
-files in both places and think everything was fine, but one would have hidden files and the other wouldn't.
+Oops.  The hidden files weren't copied.  If you forgot about hidden files when you copied the directory, you'd see
+the same files in both places and think everything was fine, but one would have hidden files and the other wouldn't.
 
 On your system there may be an alias that adds the -a option to ls automatically.  However, you should always
-keep hidden files in mind as there are many systems that don't automatically show hidden files.
+keep hidden files in mind as most systems don't automatically show hidden files.
 
-You might try to add hidden files to our copy command as follows.
+If you look around a bit online, you might try to add hidden files to our copy command as follows.
 
 cp ${HOME}/abc/* ~/.* /mnt/usb
 
@@ -2280,12 +2284,12 @@ up one directory level is easy.
 
 mv * ..
 
-Now we need to move all the hidden files and directories up one level.  To do that, we need to be able to match
-only the hidden files and directories without matching the parent directory.  We can do that with a special glob.
-You've probably used globs like * and *.* before on Unix or Windows without knowing what they were called.  Globs are
-special sequences of characters that match filenames.  The glob "abc*" matches all filenames that start with abc.
-The Windows Command Prompt only supports ? and * as special characters in globs.  The bash shell has a richer
-syntax for globs, some of which you will probably never use.
+Now we need to move all the hidden files up one level.  To do that, we need to be able to match only the hidden
+files without matching the parent directory.  We can do that with a special glob.  You've probably used globs
+like * and *.* before on Unix or Windows without knowing what they were called.  Globs are special sequences of
+characters that match filenames.  The glob "abc*" matches all filenames that start with abc.  The Windows Command
+Prompt only supports ? and * as special characters in globs.  The bash shell has a richer syntax for globs, some
+of which you will probably never use.
 
 The special glob .[^.]* (dot open-bracket caret dot close-bracket star) matches all files that start with a dot
 that don't have a dot as the second character.  Make a note of it.
@@ -2305,8 +2309,7 @@ mv ..?* ..
 
 For this one, rememeber that it's possible and look up the syntax for globs if you need to later.
 
-Experiment with hidden files and directories and listing them now.  Remember that you can create new files with
-the following command.
+Experiment with hidden files and listing them now.  Remember that you can create new files with the following command.
 
 echo "Test text" > filename
 
@@ -2314,11 +2317,16 @@ You can create hidden files the same way.  As a quick review, create a dirname d
 Remove an empty directory named dirname with "rmdir dirname".  Start the dirname with a dot to make it hidden.
 
 If your "ls" is aliased and includes "-a", you may want to unalias "ls" by executing "unalias ls" so you can
-experiment with "ls" and "ls -a".  The alias will return the next time you login.  On most systems, hidden
-files are hidden by default.  When you login to a new Unix system, it's a good idea to check your aliases
-by executing "alias" (i.e. with no arguments).
+experiment with "ls" and "ls -a".  The alias will return the next time you login.  On most systems, hidden files
+are hidden by default.
 
-When you're done experimenting, execute ". check" as usual.
+When you login to a new Unix system, it's a good idea to check your aliases by executing "alias" (i.e. with no
+arguments).  Another thing to watch out for is if "cp", "mv", and "rm" are aliased with with "-i" option, which will
+ask you before overwriting files.  If you're used to being asked if you're sure on one system, you should be prepared
+that on some systems you won't be asked.  Most commands have pairs of opposite options so you can set an alias (or
+an environment variable in some cases) and then override it at the command line without needing to unalias the command.
+
+When you're done experimenting with "ls -a" and hidden files and hidden directories, execute ". check" as usual.
 EOL
 
 	complete_exercise
@@ -2438,7 +2446,7 @@ EOL
 
 	# When using these scripts through SSH, not clearing the screen first can make it seem like a bunch of text went by and
 	# was lost.  The student can feel like they accidentally pressed q twice and missed something.  Clearing the screen
-	# before each invocation of less helps to prevent that.
+	# before each invocation of less for the welcome text helps to prevent that.
 	clear
 	less -R -P "$less_prompt_move_on" $fmt_file
 
@@ -2489,19 +2497,19 @@ EOL
 	printf "\n`getBeltWithColours blue_stripe title`\n" >> $fmt_file
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-  Pipes; tee; redirection; head, tail, sort, grep
+  ZIP and tar archives; editing with vi
 EOL
 
 	printf "\n`getBeltWithColours blue_belt title`\n" >> $fmt_file
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-  Finding large files and dirs with du, sort, and head; mv; rm -Rf; diff
+  Pipes; tee; redirection; head, tail, sort, grep
 EOL
 
 	printf "\n`getBeltWithColours red_stripe title`\n" >> $fmt_file
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-  ZIP and tar archives
+  Finding large files and dirs with du, sort, and head; mv; rm -Rf; diff
 EOL
 
 	printf "\n`getBeltWithColours red_belt title`\n" >> $fmt_file
