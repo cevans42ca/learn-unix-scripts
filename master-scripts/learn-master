@@ -2039,6 +2039,7 @@ EOL
 
 # (End vim fold) }}}
 
+# Green belt exercises (Start vim fold) {{{
 green_belt_exercise_ctrl_c() { # What Does Ctrl+c Actually Do?
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Welcome to the advanced ranks!  It's time to revisit Ctrl+c and explain what happens when you type it.  It's important that you
@@ -2391,6 +2392,156 @@ The "pushd" and "popd" commands work on a directory stack the same way Tom and t
 of plates.  Each push adds a directory to the stack, and each pop removes a directory from the stack.  To see
 the list, use the "dirs" command.  The directories will be listed with spaces between them.  To see it as a
 stack, execute "dirs -p".
+EOL
+
+	complete_exercise
+}
+# }}}
+
+blue_stripe_exercise_archive_files() { # Archive files
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+An archive file is a file that contains the data from multiple files.  Archive files make it easier to move files
+between computers and are easier to back up.  ZIP is the most common archive file type on Windows, with RAR files
+arguably second.  On Unix, the most common archive file format is a tar.gz file, often called a tarball.
+
+To make a tar.gz file, we need to use both the "tar" command and the "gzip" command.  The way they work together is
+one simple example of the differences between Unix and Windows.  Tar creates one file out of multiple files.  Gzip
+compresses one file.  In Windows, these are done with a single program.  Unix has more programs that each have a
+smaller set of responsibilities, leading to more flexibility.  Modern versions of Windows have changed the trend
+of larger programs that do more with software like PowerShell.
+
+Unlike cp and rm, which require the -R option, tar is recursive by default.  In fact, tar comes from a time before
+options were standardized, so it works differently.  Most versions of tar support both the old and the new way of
+specifying options, and there are some surprises.
+
+Most versions of tar have an "interactive" mode (usually enabled with -w) that checks with you before doing
+various things.  Even in interactive mode, tar will wipe the file that it determines is the destination file with
+no warning.  The zip program is usually no different.
+
+There are two main ways to recover files on Unix:  from backups, and from specialized recovery tools. (It's the
+same for Windows, but the tools are different.  Windows also has the Recycle Bin, which is easier to use, but
+would not be involved here.)  Backups, assuming they were already set up, can still be a pain to use.  With some,
+you need to extract the backup into (or over top of) a working system or test system.  Specialized recovery tools
+don't require backups to work, but they require expert knowledge, they require that you bring down the system (so
+users can't use it while you're trying to recover something) and they may not be able to recover what you need if
+you weren't fast enough in kicking everyone off the system.
+
+You should consider the tar and zip commands the same as you would a very sharp kitchen knife.  One or the other
+may be exactly the right tool for the job, but that doesn't mean they won't hurt you if you use them incorrectly.
+
+Let's look at some potential pitfalls, and then we'll provide a recommended way to avoid them.
+
+Most versions of tar support the old way of doing arguments (without a dash) and the new way (with a dash).
+The most common options are as follows.
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH -s <<EOL >> $fmt_file
+"-c":  create an archive file from a bunch of files
+"-x":  extract an archive, recreating all the files in it
+"-f":  specify the archive file name
+"-v":  list every file added or extracted
+"-z":  compress when creating the archive; decompress when extracting the archive
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Arguments provided the old way and the new way don't do the same thing.  For example, the two commands:
+
+EOL
+
+	cat <<EOL >> $fmt_file
+     tar cfz archive.tar.gz file
+     tar -cfz archive.tar.gz file
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+are quite different.  The first example uses "archive.tar.gz" as the value for option "f" and recognizes the option
+"z".  The second example, however, uses "z" as the value for option "f" -- which means a file called "z" will be
+created, and it won't be compressed.
+
+Another common mistake is to use the "f" option but put the destination file last (the same way most commands work).
+Consider the following command line.
+
+tar cvzf one two three archive.tar.gz
+
+This situation is the worst one to be in.  We told tar to use the file called "one" as the archive file, because
+it's after the "f" option.  Tar goes ahead and wipes out the data in the "one" file, adds "two" and "three" to a
+new archive called "one", and then crashes as archive.tar.gz doesn't exist.
+
+If no file is provided and the output isn't piped to another command (we'll look at pipes next belt) the archive
+is dumped to the terminal (which may force you to close your terminal).
+
+Start with your operation: "c" to create a new archive or "x" to extract an archive back into individual files.
+If you want to see each file get added or extracted, add "v".  Keep in mind that verbose mode can significantly
+increase the time it takes to create or extract large archives.  For the time being, always use "z", then "f".
+There are four possibilities.  Make a note of what they are and what they do.  These will work with any version of tar.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+tar cvzf ...
+tar czf ...
+tar xvzf ...
+tar xzf ...
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+Always put the archive file next.  If you're creating an archive, follow that with one or more files (and/or
+directories).
+EOL
+
+# TODO:  create some files and ask the student to tar them
+#https://stackoverflow.com/questions/37475833/does-tar-follow-either-the-posix-and-or-gnu-command-line-options-conventions
+
+	complete_exercise
+}
+
+blue_stripe_exercise_vi() { # Introducion to vi
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+It's time to start talking about making changes to text files.
+
+In the very beginning was a text editor called ed.  It was replaced by em, which was replaced by ex (short for
+EXtended).
+
+"Ed" and "em" are gone, but "ex" is still around as a helper program for other programs to use.  Ex works on a
+set of lines at a time and only displays the lines you asked for, when you ask for them.  That may be difficult
+to imagine if you grew up with editors that display as much of a file as would fit in the window or terminal
+(all modern text editors do that).
+
+In 1976, Bill Joy wrote a visual mode for ex.  It behaves like a modern text editor, showing as many lines of the
+file as will fit in the terminal.  It's called "vi" for VIsual and pronounced "vee eye".  Later, this mode became
+both the default and the command to run to start it.
+
+Vi spawned a large number of clones and descendants.  Here's a partial list.
+
+BBStevie | bedit | Bvi | calvin | e3 | elvis | elwin | javi | jvi | lemmy | levee | Neatvi | Neovim | nvi | OakHill vi | PC-Vile | PVIC | STvi (STevie) | trived | tvi | vigor | vile | VIM | vip | viper | virus | Watcom-VI | WinVi | xvi
+
+Vi and its many descendants appeal to a small group of people.
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH -s <<EOL >> $fmt_file
+* People who grew up with it, who had nothing better
+* People who like a challenge (Of course I summited Everest!)
+* People who like to be challenged (What do you mean I can't ride a unicycle!?)
+* People who don't like using a mouse because it's too slow
+* People who make fewer than 3 mistakes in 100 typed characters
+* People who can remember what they put in multiple clipboards and macros, and what multiple bookmarks are for
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+It's more likely that these don't describe you.  Still, in some cases, vi might be all you have to work with.
+There are things you can do to cut down on all the memorization if you don't plan on being an expert:  only use
+one clipboard, one bookmark, and don't use macros.  Only memorize the basics: how to move around, how to change
+something, how to save, and how to close a file without saving (if you accidentally made a change you didn't want).
+
+It's also good to know how to do these basic things in vi as programs may automatically open vi for you, expecting
+you to do something (but it's not too likely to happen on a modern Unix).  Modern Unixes will have an easier to
+use editor set up by default like "nano" on Linux or "ee" on FreeBSD.
 EOL
 
 	complete_exercise
