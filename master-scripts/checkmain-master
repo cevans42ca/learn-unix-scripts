@@ -1103,8 +1103,127 @@ EOL
 	fi
 }
 
+green_belt_exercise_ls_a_alias() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*type[\ ][\ ]*ls([\ ]|$) ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
 green_belt_exercise_hidden_files() {
 	keep_going
+}
+
+green_belt_exercise_pushd() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*pushd[\ ][\ ]*/([\ ]|$) ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
+green_belt_exercise_popd() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*popd([\ ]|$) ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
+green_belt_exercise_dir_stacks() { # Final
+	luc_correct_answers=0
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 1/5
+
+Feel free to check your notes.  What does "mv .[^.]* .." do?
+
+EOL
+
+	luc_answers=( 'It moves all files in the current directory to the parent directory.' 'It moves all hidden files in the current directory to the parent directory as long as none of them start with two dots.' 'It moves all hidden files in the current directory to the parent directory.' 'It makes a hole in the space-time continuum.' )
+	handle_answer 'It moves all hidden files in the current directory to the parent directory as long as none of them start with two dots.'
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 2/5
+
+What does "cp -R /home/user/abc /mnt/usb/" do?
+
+EOL
+
+	luc_answers=( 'It copies the abc directory and everything in it (including hidden files and hidden directories) into /mnt/usb/, creating /mnt/usb/abc/ if necessary.' 'It copies everything inside the abc directory (including hidden files and hidden directories) into /mnt/usb/.' 'It copies anything recent with "abc" in it to /mnt/usb/.' )
+
+handle_answer 'It copies the abc directory and everything in it (including hidden files and hidden directories) into /mnt/usb/, creating /mnt/usb/abc/ if necessary.'
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 3/5
+
+What does "cp -R /home/user/abc/. /mnt/usb/" do?
+
+EOL
+
+	luc_answers=( 'It copies the abc directory and everything in it (including hidden files and hidden directories) into /mnt/usb/, creating /mnt/usb/abc/ if necessary.' 'It copies everything inside the abc directory (including hidden files and hidden directories) into /mnt/usb/.' 'It copies anything recent with "abc" in it to /mnt/usb/.' )
+
+	handle_answer 'It copies everything inside the abc directory (including hidden files and hidden directories) into /mnt/usb/.'
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 4/5
+
+Which command line shows hidden files and hidden directories, assuming ls is not aliased?
+
+EOL
+
+	luc_answers=( 'ls -a' 'ls -l' 'ls -R' 'ls -ohno' )
+	handle_answer 'ls -a'
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 5/5
+
+If you needed to check something quickly in the /tmp directory and then wanted to go back to where you were,
+what two command lines would you use?
+
+EOL
+
+	luc_answers=( '"pushd /tmp" and "popd"' '"pushd" and "popd /tmp"' '"pushd /" and "popd"' '"pushy /" and "poppy"' )
+	handle_answer '"pushd /tmp" and "popd"'
+
+	# Final check
+	if [ "$luc_correct_answers" == "5" ]; then
+		good_work
+	else
+		echo "Results:  $luc_correct_answers out of 6 correct"
+		echo ""
+		sorry
+	fi
 }
 
 ####################
@@ -1134,7 +1253,7 @@ belt_complete() {
 # End of function definitions #
 ###############################
 
-# Script execution will begin here.
+# Script execution begins here.  (Vim fold) {{{
 
 # If this script is switched back to being sourced, we'll need to change the "exit"s below to returns.
 
@@ -1273,3 +1392,5 @@ fi
 
 updateDotFile
 
+# }}}
+# vim: set foldmethod=marker:

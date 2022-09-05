@@ -47,8 +47,25 @@ if ([[ -n "${ZSH_EVAL_CONTEXT:-}" && "${ZSH_EVAL_CONTEXT:-}" == "toplevel" ]] ||
 	exit 0
 fi
 
+previous_umask=$(umask)
+
 # insert 1a88ef09-bbc8-4f7e-ac03-a1849fd03166 stty options
-# insert bef71a69-5f8d-43d4-af29-60608e9b56c7 file_clean_up_array and trap
+
+file_clean_up_array=()
+
+clean_up() {
+	if [ -n "${file_clean_up_array:-}" ]; then
+		for item in $file_clean_up_array; do
+			rm -f $item
+		done
+	fi
+
+	umask ${previous_umask}
+}
+
+# It's a trap!  Run the clean_up subroutine on normal or aborted exit.
+trap clean_up EXIT
+
 # insert dbfb406a-b3c4-4c8d-84f3-4f54bef5d50e make_temp
 
 # When we pipe in the history to the checkmain script through standard in, the TTY will be reset and it becomes harder to
@@ -61,12 +78,13 @@ LUS_STTY_COLUMNS=$(stty ${stty_options} | head -1 | sed 's/.*; \([0-9][0-9]*\) c
 
 # After trying out named pipes and fds across multiple operating systems, and the issues involved with having stdin
 # redirected, I finally gave up and just used temp files.
-previous_umask=$(umask)
 umask 077
 make_temp
 # make_temp removes e, and we don't want that in this sourced script.
 set +e
 file_clean_up_array+=($fmt_file)
+
+# Set umask back for checkmain.  If anything failed above, the trap will reset it.
 umask ${previous_umask}
 
 if [ "${HISTTIMEFORMAT:-}" == "%F %T " ]; then

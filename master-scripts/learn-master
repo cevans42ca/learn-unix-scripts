@@ -696,6 +696,9 @@ also be used to get an up-to-date command history (which is normally inaccessibl
 doesn't change anything that can be checked directly, accessing the command history is the only way that the check
 script can verify that the correct command was issued.
 
+Further belts may ask you to source the check script, which means to execute "source check" (or equivalently execute
+". check").  Make a note of it so you can refer to it later.
+
 Once you have read and understood this text, execute ". check" for your (short) final exam.
 EOL
 
@@ -2036,6 +2039,7 @@ EOL
 
 # (End vim fold) }}}
 
+# Green belt exercises (Start vim fold) {{{
 green_belt_exercise_ctrl_c() { # What Does Ctrl+c Actually Do?
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Welcome to the advanced ranks!  It's time to revisit Ctrl+c and explain what happens when you type it.  It's important that you
@@ -2075,28 +2079,91 @@ follows a general pattern, programs can do whatever they like with these signals
 kills the process.  Programs never actually receive SIGKILL:  the operating system handles it.  Only a program
 running as the same user as the running program or root can send SIGKILL to a process.
 
-At some point, perhaps soon, you're going to need to stop a process that's taking too long, or perhaps you realized that you
-didn't actually want to run it.  If we were getting a file listing, and it was taking too long because there were too
-many files, stopping it with Ctrl+c would be no problem.  The worst case is having to stop something that's changing
-files on a filesystem.  We're going to look at the copy command, cp.  All of the core utilities, including cp,
-don't give us any progress information.  System administrators get a sense of how long things will take as they
-work with a system, and they'll learn patience.  There are ways to see how a copy is proceeding, but looking at it will slow
-the copy down.
+At some point, perhaps soon, you're going to need to stop a process that's taking too long, or perhaps you realized
+that you didn't actually want to run it.  If we were getting a file listing, and it was taking too long because
+there were too many files, stopping it with Ctrl+c would be no problem.  The worst case is having to stop something
+that's changing files on a filesystem.  We're going to look at the copy command, cp.  All of the core utilities,
+including cp, don't give us any progress information.  System administrators get a sense of how long things will
+take as they work with a system, and they'll learn patience.  There are ways to see how a copy is proceeding,
+but looking at it will slow the copy down.
 
 Let's say that we need to stop a copy.  We type Ctrl+c.  Our terminal interprets that keystroke and sends signal 2
-(SIGINT, or interrupt) to the currently running process, which is "cp".  Chances are, cp is in the middle of copying a
-block of data, because the drive access is what takes most of the time for the copy.  Programs don't write to devices
-themselves.  If every program that needed to print something knew how to communicate with every printer, that would be a
-mess.  So the kernel of the operating system takes care of the details (in this case, printer drivers, but the example
-extends to all devices).  So the "cp" command asked the kernel to write some data, and it's waiting for that to finish.
-The "cp" command can't take messages at the moment.  Once the block of data is written, the kernel notices that there's
-a pending signal for "cp", and sends it.  The "cp" command processes the signal and quits.
+(SIGINT, or interrupt) to the currently running process, which is "cp".  Chances are, cp is in the middle of copying
+a block of data, because the drive access is what takes most of the time for the copy.  Programs don't write to
+devices themselves.  If every program that needed to print something knew how to communicate with every printer, that
+would be a mess.  So the kernel of the operating system takes care of the details (in this case, printer drivers,
+but the example extends to all devices).  So the "cp" command asked the kernel to write some data, and it's waiting
+for that to finish.  The "cp" command can't take messages at the moment.  Once the block of data is written, the
+kernel notices that there's a pending signal for "cp", and sends it.  The "cp" command processes the signal and quits.
 
 Now, we have a partially written file, possibly with many other files that finished already.  If we were only copying
-one file, that wouldn't be too bad.  We could simply run the command again when it made sense.  Perhaps we needed to
-bring the system down for a kernel update.  If we were copying a large directory, it would be best to start at the
-beginning, and have the "cp" command overwrite any files that it already copied.  The "rsync" command may be of some use
-in completing an unfinished copy, but that's out of the scope of these exercises.
+one file, that wouldn't be too bad.  We could simply run the command again when it made sense.  Perhaps we needed
+to bring the system down for a kernel update.  If we were copying a large directory, it would be best to start at
+the beginning, and have the "cp" command overwrite any files that it already copied.  The "rsync" command may be
+of some use in completing an unfinished copy, but that's out of the scope of these exercises.
+
+This exercise introduced a lot of material, so execute ". check" for a small quiz.
+EOL
+
+	complete_exercise
+}
+
+green_belt_exercise_ls_a_alias() { # Is ls aliased?
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+We're going to use the term "hidden files" as a short form for "hidden files and hidden directories".
+In many cases, directories are considered to be a special type of file.  For maximum clarity, tests and
+quizzes will spell this phrase fully out as "hidden files and hidden directories".  We will also use
+the full phrase in the lesson text in a few key spots for clarity.
+
+Before we look at how to show hidden files, we need to check if your settings show hidden files by default.
+That's normally done with an alias.
+
+Let's take a look at some examples of what you might see when you execute "type ls" and what they mean, then
+you'll do it.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+user@host [~]# type ls
+ls is /bin/ls
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+The previous output shows that "ls" is not aliased, which means that no extra arguments are automatically added.
+Since no arguments are added, the defaults are used, which means hidden files will be hidden unless you ask to
+see them (with the "-a" option).
+
+EOL
+
+	cat <<EOL >> $fmt_file
+user@host [~]# type ls
+ls is aliased to \`ls -F'
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+The output above shows that the "ls" command has been aliased to "ls -F".  The "-F" option shows a symbol at the
+end of each file indicating what kind of file it is.  The "-a" option isn't here, so the default for hidden files
+will be used, which means files will be hidden unless you ask to see them (with the "-a" option).
+
+EOL
+
+	cat <<EOL >> $fmt_file
+user@host [~]# type ls
+ls is aliased to \`/bin/ls \$LS_OPTIONS'
+user@host [~]# echo \$LS_OPTIONS
+--color=tty -F -a -b -T 0
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+In this one, the options are coming from an environment variable, so we need to echo \$LS_OPTIONS to see
+the options.  In tnis example, "-a" is included, which means that hidden files will be shown by default.
+
+You may also see "-A", which means hidden files will be shown except for the special directories "." and "..".
+
+Execute "type ls".
 EOL
 
 	complete_exercise
@@ -2104,18 +2171,18 @@ EOL
 
 green_belt_exercise_hidden_files() { # Hidden files and globs
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-In this exercise, we'll introduce hidden files and show how to display them.  We'll also take a look at globs.
-These concepts are best covered together, so this exercise will be longer than most.
+In this exercise, we'll show how to work with hidden files.  We'll also take a look at globs, and how using globs with
+hidden files can be problematic.  These concepts are best covered together, so this exercise will be longer than most.
 
 If a period ( . ) is at the beginning of a file or directory name, the file or directory will be hidden by
-default. The period is also called a dot, full stop, or full point.
+default.  The period is also called a dot, full stop, or full point.
 
-We looked at the special directories "." and ".." in a previous belt. As a quick review, the "." directory refers
-to the current directory, and the ".." directory refers to the parent directory. These special directories are
-hidden by default.
+We looked at the special directories "." and ".." in a previous belt.  As a quick review, the "." directory refers
+to the current directory, and the ".." directory refers to the parent directory.  These special directories are
+hidden by default (because they start with a dot).
 
-Files and directories are hidden in two important ways. First, the "ls" command won't show them by default. We'll
-look at the second one in more detail now.
+Files and directories are hidden in two important ways.  First, the "ls" command won't show them by default.
+We'll look at the second one in more detail now.
 
 Let's imagine that you had a USB stick mounted on /mnt/usb and you wanted to copy some files in ${HOME}/abc
 to the stick.
@@ -2145,18 +2212,18 @@ EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
-Oops.  The hidden files weren't copied.  If you forgot about hidden files and directories, you'd see the same
-files in both places and think everything was fine, but one would have hidden files and the other wouldn't.
+Oops.  The hidden files weren't copied.  If you forgot about hidden files when you copied the directory, you'd see
+the same files in both places and think everything was fine, but one would have hidden files and the other wouldn't.
 
 On your system there may be an alias that adds the -a option to ls automatically.  However, you should always
-keep hidden files in mind as there are many systems that don't automatically show hidden files.
+keep hidden files in mind as most systems don't automatically show hidden files.
 
-You might try to add hidden files to our copy command as follows.
+If you look around a bit online, you might try to add hidden files to our copy command as follows.
 
 cp ${HOME}/abc/* ~/.* /mnt/usb
 
-Unfortunately, ".*" will also match the special directory "..". It can be disastrous if you use ".*" with the "rm"
-command, so it's a good idea to avoid ".*" entirely. As is usual for Unix, there are lots of other options. We'll
+Unfortunately, ".*" will also match the special directory "..".  It can be disastrous if you use ".*" with the "rm"
+command, so it's a good idea to avoid ".*" entirely.  As is usual for Unix, there are lots of other options.  We'll
 look at one.
 
 The easiest way around this issue is to copy the whole directory with the -R (recursive) option, which we looked
@@ -2218,35 +2285,267 @@ up one directory level is easy.
 
 mv * ..
 
-Now we need to move all the hidden files and directories up one level.  To do that, we need to be able to match
-only the hidden files and directories without matching the parent directory.  We can do that with a special glob.
-You've probably used globs like * and *.* before on Unix or Windows without knowing what they were called.  Globs are
-special sequences of characters that match filenames.  The glob "abc*" matches all filenames that start with abc.
-The Windows Command Prompt only supports ? and * as special characters in globs.  The bash shell has a richer
-syntax for globs, some of which you will probably never use.
+Now we need to move all the hidden files up one level.  To do that, we need to be able to match only the hidden
+files without matching the parent directory.  We can do that with a special glob.  You've probably used globs
+like * and *.* before on Unix or Windows without knowing what they were called.  Globs are special sequences of
+characters that match filenames.  The glob "abc*" matches all filenames that start with abc.  The Windows Command
+Prompt only supports ? and * as special characters in globs.  The bash shell has a richer syntax for globs, some
+of which you will probably never use.
 
 The special glob .[^.]* (dot open-bracket caret dot close-bracket star) matches all files that start with a dot
-that don't have a dot as the second character.  Write it down.
+that don't have a dot as the second character.  Make a note of it.
 
 Continuing on what we had above, to move all files that start with a dot that don't have dot as the second
 character one directory level up, use the following command.
 
 mv .[^.]* ..
 
-In the very unlikely event that you have a file that starts with two dots, it won't be moved by the previous command.
-You might want to rename it so that it starts with one dot.  But your shell will let you match a file that starts
-with two dots without matching the parent directory as well.  The following command moves any file that starts
-with two dots and contains at least one more character one directory level up.
+In the very unlikely event that you have to deal with several files that start with two dots, they won't be moved by
+the previous command.  If there are only a few, you might want to rename them so that they start with only one dot,
+then move them.  But the bash shell will let you match files that start with two dots without matching the parent
+directory as well.  The following command moves all files that start with two dots and contain at least one more
+character, one directory level up.
 
 mv ..?* ..
 
 For this one, rememeber that it's possible and look up the syntax for globs if you need to later.
+
+Experiment with hidden files and listing them now.  Remember that you can create new files with the following command.
+
+echo "Test text" > filename
+
+You can create hidden files the same way.  As a quick review, create a dirname directory with "mkdir dirname".
+Remove an empty directory named dirname with "rmdir dirname".  Start the dirname with a dot to make it hidden.
+
+If your "ls" is aliased and includes "-a", you may want to unalias "ls" by executing "unalias ls" so you can
+experiment with "ls" and "ls -a".  The alias will return the next time you login.  On most systems, hidden files
+are hidden by default.
+
+When you login to a new Unix system, it's a good idea to check your aliases by executing "alias" (i.e. with no
+arguments).  Another thing to watch out for is if "cp", "mv", and "rm" are aliased with with "-i" option, which will
+ask you before overwriting files.  If you're used to being asked if you're sure on one system, you should be prepared
+that on some systems you won't be asked.  Most commands have pairs of opposite options so you can set an alias (or
+an environment variable in some cases) and then override it at the command line without needing to unalias the command.
+
+When you're done experimenting with "ls -a" and hidden files and hidden directories, execute ". check" as usual.
 EOL
 
 	complete_exercise
 }
 
-# Green Belt:  Hidden files and directories; globbing; directory stacks
+green_belt_exercise_pushd() { # Introducing pushd
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+It's quite common to have to change the working directory with "cd", do something there, and then come back.
+To make that easier, bash has the pushd and popd commands.  You can use the pushd command in place of cd.
+
+Make sure you're not already in the root directory, then execute "pushd /".
+EOL
+
+	complete_exercise
+}
+
+green_belt_exercise_popd() { # Introducing popd
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+If you just did the previous exercise, execute "popd" to return to where you were.
+
+If you didn't just execute "pushd /" because you came back to this exercise later, please execute "pushd /" and then
+"popd".
+EOL
+
+	complete_exercise
+}
+
+green_belt_exercise_dir_stacks() { # Directory stacks
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Most of the time, you'll use "cd" to change directories.  Every once in a while, you might want to use "pushd" and
+"popd".
+
+This exercise is about what happens when you execute "pushd" multiple times before executing "popd".  You may never
+want to do that, so this exercise is optional.  If you want to skip it at any point, press "q" and source the check
+script as usual to move on to the final exam.
+
+
+If You're a Programmer
+
+The "pushd" and "popd" commands work with a directory stack.  If you're still getting into programming and haven't
+gotten into stacks yet, look up stacks online or continue reading below.
+
+
+If You're Not a Programmer
+
+Dinner plates are a very common way to teach how stacks work.
+
+Imagine a worker in a restaurant opening a dishwasher and taking out dinner plates.  We'll call him Tom.
+
+Tom sets the first plate on the counter.  The next plate goes on top of the first one.  When Tom is done, the last
+plate is on top.  The first plate he took out of the dishwasher is on the bottom.
+
+Jane takes the stack of plates and puts them on a cart.  The other stacks of plates on the cart aren't important.
+She rolls the cart out to the dining hall and leaves it next to the buffet.
+
+The dining hall, the food, and the people there aren't important, except for the customers taking plates off
+the stack.  Fred picks up the first plate, which is the last plate Tom put down.  One by one, plates are taken by
+customers in the opposite order of the way they were set down.  Susan takes the last plate in our stack, which was
+the first one Tom set down.  This stack of plates is now gone.
+
+The "pushd" and "popd" commands work on a directory stack the same way Tom and the diners worked with the stack
+of plates.  Each push adds a directory to the stack, and each pop removes a directory from the stack.  To see
+the list, use the "dirs" command.  The directories will be listed with spaces between them.  To see it as a
+stack, execute "dirs -p".
+EOL
+
+	complete_exercise
+}
+# }}}
+
+blue_stripe_exercise_archive_files() { # Archive files
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+An archive file is a file that contains the data from multiple files.  Archive files make it easier to move files
+between computers and are easier to back up.  ZIP is the most common archive file type on Windows, with RAR files
+arguably second.  On Unix, the most common archive file format is a tar.gz file, often called a tarball.
+
+To make a tar.gz file, we need to use both the "tar" command and the "gzip" command.  The way they work together is
+one simple example of the differences between Unix and Windows.  Tar creates one file out of multiple files.  Gzip
+compresses one file.  In Windows, these are done with a single program.  Unix has more programs that each have a
+smaller set of responsibilities, leading to more flexibility.  Modern versions of Windows have changed the trend
+of larger programs that do more with software like PowerShell.
+
+Unlike cp and rm, which require the -R option, tar is recursive by default.  In fact, tar comes from a time before
+options were standardized, so it works differently.  Most versions of tar support both the old and the new way of
+specifying options, and there are some surprises.
+
+Most versions of tar have an "interactive" mode (usually enabled with -w) that checks with you before doing
+various things.  Even in interactive mode, tar will wipe the file that it determines is the destination file with
+no warning.  The zip program is usually no different.
+
+There are two main ways to recover files on Unix:  from backups, and from specialized recovery tools. (It's the
+same for Windows, but the tools are different.  Windows also has the Recycle Bin, which is easier to use, but
+would not be involved here.)  Backups, assuming they were already set up, can still be a pain to use.  With some,
+you need to extract the backup into (or over top of) a working system or test system.  Specialized recovery tools
+don't require backups to work, but they require expert knowledge, they require that you bring down the system (so
+users can't use it while you're trying to recover something) and they may not be able to recover what you need if
+you weren't fast enough in kicking everyone off the system.
+
+You should consider the tar and zip commands the same as you would a very sharp kitchen knife.  One or the other
+may be exactly the right tool for the job, but that doesn't mean they won't hurt you if you use them incorrectly.
+
+Let's look at some potential pitfalls, and then we'll provide a recommended way to avoid them.
+
+Most versions of tar support the old way of doing arguments (without a dash) and the new way (with a dash).
+The most common options are as follows.
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH -s <<EOL >> $fmt_file
+"-c":  create an archive file from a bunch of files
+"-x":  extract an archive, recreating all the files in it
+"-f":  specify the archive file name
+"-v":  list every file added or extracted
+"-z":  compress when creating the archive; decompress when extracting the archive
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Arguments provided the old way and the new way don't do the same thing.  For example, the two commands:
+
+EOL
+
+	cat <<EOL >> $fmt_file
+     tar cfz archive.tar.gz file
+     tar -cfz archive.tar.gz file
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+are quite different.  The first example uses "archive.tar.gz" as the value for option "f" and recognizes the option
+"z".  The second example, however, uses "z" as the value for option "f" -- which means a file called "z" will be
+created, and it won't be compressed.
+
+Another common mistake is to use the "f" option but put the destination file last (the same way most commands work).
+Consider the following command line.
+
+tar cvzf one two three archive.tar.gz
+
+This situation is the worst one to be in.  We told tar to use the file called "one" as the archive file, because
+it's after the "f" option.  Tar goes ahead and wipes out the data in the "one" file, adds "two" and "three" to a
+new archive called "one", and then crashes as archive.tar.gz doesn't exist.
+
+If no file is provided and the output isn't piped to another command (we'll look at pipes next belt) the archive
+is dumped to the terminal (which may force you to close your terminal).
+
+Start with your operation: "c" to create a new archive or "x" to extract an archive back into individual files.
+If you want to see each file get added or extracted, add "v".  Keep in mind that verbose mode can significantly
+increase the time it takes to create or extract large archives.  For the time being, always use "z", then "f".
+There are four possibilities.  Make a note of what they are and what they do.  These will work with any version of tar.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+tar cvzf ...
+tar czf ...
+tar xvzf ...
+tar xzf ...
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+Always put the archive file next.  If you're creating an archive, follow that with one or more files (and/or
+directories).
+EOL
+
+# TODO:  create some files and ask the student to tar them
+#https://stackoverflow.com/questions/37475833/does-tar-follow-either-the-posix-and-or-gnu-command-line-options-conventions
+
+	complete_exercise
+}
+
+blue_stripe_exercise_vi() { # Introducion to vi
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+It's time to start talking about making changes to text files.
+
+In the very beginning was a text editor called ed.  It was replaced by em, which was replaced by ex (short for
+EXtended).
+
+"Ed" and "em" are gone, but "ex" is still around as a helper program for other programs to use.  Ex works on a
+set of lines at a time and only displays the lines you asked for, when you ask for them.  That may be difficult
+to imagine if you grew up with editors that display as much of a file as would fit in the window or terminal
+(all modern text editors do that).
+
+In 1976, Bill Joy wrote a visual mode for ex.  It behaves like a modern text editor, showing as many lines of the
+file as will fit in the terminal.  It's called "vi" for VIsual and pronounced "vee eye".  Later, this mode became
+both the default and the command to run to start it.
+
+Vi spawned a large number of clones and descendants.  Here's a partial list.
+
+BBStevie | bedit | Bvi | calvin | e3 | elvis | elwin | javi | jvi | lemmy | levee | Neatvi | Neovim | nvi | OakHill vi | PC-Vile | PVIC | STvi (STevie) | trived | tvi | vigor | vile | VIM | vip | viper | virus | Watcom-VI | WinVi | xvi
+
+Vi and its many descendants appeal to a small group of people.
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH -s <<EOL >> $fmt_file
+* People who grew up with it, who had nothing better
+* People who like a challenge (Of course I summited Everest!)
+* People who like to be challenged (What do you mean I can't ride a unicycle!?)
+* People who don't like using a mouse because it's too slow
+* People who make fewer than 3 mistakes in 100 typed characters
+* People who can remember what they put in multiple clipboards and macros, and what multiple bookmarks are for
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+It's more likely that these don't describe you.  Still, in some cases, vi might be all you have to work with.
+There are things you can do to cut down on all the memorization if you don't plan on being an expert:  only use
+one clipboard, one bookmark, and don't use macros.  Only memorize the basics: how to move around, how to change
+something, how to save, and how to close a file without saving (if you accidentally made a change you didn't want).
+
+It's also good to know how to do these basic things in vi as programs may automatically open vi for you, expecting
+you to do something (but it's not too likely to happen on a modern Unix).  Modern Unixes will have an easier to
+use editor set up by default like "nano" on Linux or "ee" on FreeBSD.
+EOL
+
+	complete_exercise
+}
 
 ####################
 # End of exercises #
@@ -2298,7 +2597,7 @@ EOL
 
 	# When using these scripts through SSH, not clearing the screen first can make it seem like a bunch of text went by and
 	# was lost.  The student can feel like they accidentally pressed q twice and missed something.  Clearing the screen
-	# before each invocation of less helps to prevent that.
+	# before each invocation of less for the welcome text helps to prevent that.
 	clear
 	less -R -P "$less_prompt_move_on" $fmt_file
 
@@ -2349,19 +2648,19 @@ EOL
 	printf "\n`getBeltWithColours blue_stripe title`\n" >> $fmt_file
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-  Pipes; tee; redirection; head, tail, sort, grep
+  ZIP and tar archives; editing with vi
 EOL
 
 	printf "\n`getBeltWithColours blue_belt title`\n" >> $fmt_file
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-  Finding large files and dirs with du, sort, and head; mv; rm -Rf; diff
+  Pipes; tee; redirection; head, tail, sort, grep
 EOL
 
 	printf "\n`getBeltWithColours red_stripe title`\n" >> $fmt_file
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-  ZIP and tar archives
+  Finding large files and dirs with du, sort, and head; mv; rm -Rf; diff
 EOL
 
 	printf "\n`getBeltWithColours red_belt title`\n" >> $fmt_file
