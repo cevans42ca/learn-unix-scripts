@@ -243,9 +243,25 @@ elif [ "${luc_choice_2}" -eq "1" ]; then
 		echo "path, or you may need to add it to your path manually."
 		mkdir -p "${HOME}/bin"
 	fi
-	echo "Run make install."
+
+	if which make > /dev/null 2>&1; then
+		echo "Run make install."
+	else
+		echo "Run make install with your version of make, or:"
+		echo "cd main"
+		echo "./replace-all"
+		echo "cp dist/bin/* ~/bin/"
+	fi
 elif [ "${luc_choice_2}" -eq "2" ]; then
-	echo "Run make with no arguments, then run ${su_command} make install."
+	if which make > /dev/null 2>&1; then
+		echo "Run make with no arguments, then run ${su_command} make install."
+	else
+		echo "Run make with no arguments, then run ${su_command} make install."
+		echo "Or, if you don't have a version of make:"
+		echo "cd main"
+		echo "./replace-all"
+		echo "${su_command} cp dist/bin/* /usr/local/bin/"
+	fi
 else
 	echo "(1) Update the config.status with the INSTALL_PATH that you want."
 	echo "(2) Run make with no arguments."
