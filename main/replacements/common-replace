@@ -340,6 +340,7 @@ make_temp() {
 	if [ $RESULT -ne 0 ]; then
 		fmt_file=$(mktemp -t "$(whoami)-XXXXXX")
 	fi
+	fmt_file=${fmt_file// /_}
 	set -e
 }
 # end dbfb406a-b3c4-4c8d-84f3-4f54bef5d50e
