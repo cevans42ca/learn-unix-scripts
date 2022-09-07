@@ -295,6 +295,7 @@ make_temp_progress() {
 	if [ $RESULT -ne 0 ]; then
 		progress_file=$(mktemp -t "$(whoami)-XXXXXX")
 	fi
+	progress_file=${progress_file// /_}
 	set -e
 }
 
