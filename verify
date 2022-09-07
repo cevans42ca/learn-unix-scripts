@@ -39,7 +39,7 @@ trap clean_up EXIT
 if which less > /dev/null 2>&1; then
 	less_prompt_move_on="Press h for help;?e: Enter for more (line %lb of %L).?e q to move on."
 
-	if ! less -E~ -R -P "${less_prompt_move_on}" less-test; then
+	if ! less -E~ -R -P "${less_prompt_move_on}" main/less-test; then
 		echo "Please upgrade less."
 		exit 2
 	fi
@@ -173,6 +173,6 @@ echo
 echo "All three sentences should have red words.  If they don't, you may want to"
 echo "check your terminal settings, your TERM environment variable, and/or"
 echo "your version of tput.  The first two sentences must have red words for the"
-echo "exercises to make sense.  On FreeBSD, the last one is not likely to work,"
-echo "but it won't compromise the exercises."
+echo "exercises to make sense.  On FreeBSD 10, 11, and 12, the last one is not"
+echo "likely to work, but it won't compromise the exercises."
 

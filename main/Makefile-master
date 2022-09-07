@@ -1,0 +1,59 @@
+.PHONY: clean dist distclean install configure run replacetarget
+
+include config.status
+
+run: configure
+
+flags/configuretarget:
+	./configure
+
+configure: flags/configuretarget
+
+replace: flags/configuretarget flags/replacetarget
+
+clean: gitclean
+	rm -f main/dist/bin/*
+	rm -f flags/replacetarget
+	rm -f main/replace
+	rm -f Makefile
+	rm -f main/docker/Makefile 
+	rm -f config.status
+	rm -f main/docker/config.status
+	rm -f main/docker/flags/buildtarget
+	rm -f main/docker/flags/volumetarget
+	@echo
+	@echo "Run the ./configure script to create the Makefile."
+
+gitclean:
+	rm -f flags/configuretarget
+
+scripts = main/master-scripts/learn-master main/master-scripts/checkmain-master main/master-scripts/check-master
+replaced_scripts = main/dist/bin/learn main/dist/bin/checkmain main/dist/bin/check
+
+flags/replacetarget: $(scripts) main/replacements/* flags/configuretarget
+	main/replace-all
+	touch flags/replacetarget
+	@echo "Scripts prepared in ./main/dist/bin."
+
+replacetarget: flags/replacetarget
+
+main/docker/bin/%: main/dist/bin/%
+	cp main/dist/bin/$* main/docker/bin/$*
+
+dockerinstall: flags/replacetarget main/docker/bin/*
+
+install: flags/replacetarget
+	@# Quotes around the install path are already added by the configure script.
+	cp main/dist/bin/* ${INSTALL_PATH}
+
+dockerrun: dockerinstall
+	cd main/docker && make createuservolume
+	cd main/docker && make run
+
+dist:
+	mkdir -p dist
+	zip dist/learn-unix-scripts-dist.zip main/dist/bin/learn main/dist/bin/check main/dist/bin/checkmain LICENSE dist-readme
+	tar czvf dist/learn-unix-scripts-dist.tar.gz main/dist/bin/learn main/dist/bin/check main/dist/bin/checkmain LICENSE dist-readme
+
+distclean:
+	rm -Rf dist

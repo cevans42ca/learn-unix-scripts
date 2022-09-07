@@ -18,16 +18,15 @@ has bash installed or could have bash installed.  However, not all these
 systems are currently supported.  The "verify" script can check some
 requirements, but it's still a prototype.
 
+There are a few exercises that directly reference the Emacs keybindings
+in bash, but nearly all the exercises could run in another shell that
+supports the "history" command (assuming the output format matches).
+
 For Mac, you will need Homebrew with bash, ggrep, and shuf to run the
-first set of exercises.  If encfs (which requires FUSE) is not
-installed, a few exercises will not be interactive.  It's not easy to
-install FUSE, so you can skip the interactive parts, use Docker as
-described at the beginning of this readme, or run the ./configure script
-and choose to use Docker when it asks you.
+first set of exercises.
 
 For FreeBSD, you will need:  bash version 4 or later, a version of grep
-that supports -P, and shuf.  Having encfs is recommended.  Other BSDs
-are likely to need the same things.
+that supports -P, and shuf.  Other BSDs are likely to need the same things.
 
 This project is in alpha status.  Please check back for updates.
 
@@ -36,8 +35,8 @@ https://github.com/cevans42ca/learn-unix-scripts
 Although there's a roadmap for exercises from white belt to black belt,
 only about half of the planned exercises are complete.
 
-I will use the term "student" to refer to anyone who will be using the
-scripts in this project to learn Unix.
+For the next sections, I will use the term "student" to refer to anyone
+who will be using the scripts in this project to learn Unix.
 
 
 Student POV

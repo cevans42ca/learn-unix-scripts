@@ -1,9 +1,2 @@
-bin
-dist
-site
-replacetarget
-configuretarget
-replace
-Makefile
+flags
 config.status
-encfs.log

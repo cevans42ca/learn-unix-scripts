@@ -1,9 +1,9 @@
 #!/bin/sh
 
 rm -f config.status
-rm -f docker/config.status
+rm -f main/docker/config.status
 touch config.status
-touch docker/config.status
+touch main/docker/config.status
 mkdir -p flags
 
 if which bash > /dev/null; then
@@ -18,8 +18,8 @@ if which bash > /dev/null; then
 				echo "If you have a Mac, install Homebrew, then install bash."
 				exit 2
 			else
-				sed 's:#!/bin/bash:#!/usr/local/bin/bash:' replace-master > replace
-				chmod ug+x replace
+				sed 's:#!/bin/bash:#!/usr/local/bin/bash:' main/replace-master > main/replace
+				chmod ug+x main/replace
 				BASH_BIN=/usr/local/bin/bash
 			fi
 		else
@@ -28,8 +28,8 @@ if which bash > /dev/null; then
 			exit 2
 		fi 
 	else
-		sed "s:#!/bin/bash:#!${bash_bin}:" replace-master > replace
-		chmod ug+x replace
+		sed "s:#!/bin/bash:#!${bash_bin}:" main/replace-master > main/replace
+		chmod ug+x main/replace
 		BASH_BIN=$(which bash)
 	fi 
 else
@@ -71,17 +71,17 @@ case "${luc_choice}" in
 	exit 0
 	;;
 *2*)
-	sed 's/^run:.*/run: configure replace/' Makefile-master > Makefile
+	sed 's/^run:.*/run: configure replace/' main/Makefile-master > Makefile
 	echo "export DOCKER=0" >> config.status
 	;;
 *3*)
-	sed 's/^run:.*/run: configure dockerrun/' Makefile-master > Makefile
+	sed 's/^run:.*/run: configure dockerrun/' main/Makefile-master > Makefile
 	DOCKER=1
 	echo "export DOCKER=1" >> config.status
-	echo "export SHARED_VOLUME=single" >> docker/config.status
+	echo "export SHARED_VOLUME=single" >> main/docker/config.status
 	;;
 *4*)
-	sed 's/^run:.*/run: configure dockerrun/' Makefile-master > Makefile
+	sed 's/^run:.*/run: configure dockerrun/' main/Makefile-master > Makefile
 	DOCKER=1
 	echo "export DOCKER=1" >> config.status
 	echo "export SHARED_VOLUME=shared" >> docker/config.status
@@ -90,7 +90,7 @@ case "${luc_choice}" in
 	luc_choice=4
 	;;
 *5*)
-	sed 's/^run:.*/run: configure flags\/replacetarget/' Makefile-master > Makefile
+	sed 's/^run:.*/run: configure flags\/replacetarget/' main/Makefile-master > Makefile
 
 	if [ -n "${BASH_BIN:-}" ]; then
 		# This variable will be used by make, so we can't include quotes.
@@ -185,11 +185,11 @@ case "${result}" in
 	if [ "$total" -gt "150000" ]; then
 		echo "Enabling light mode."
 		echo "export DARK_MODE=0" >> config.status
-		echo "export DARK_MODE=0" >> docker/config.status
+		echo "export DARK_MODE=0" >> main/docker/config.status
 	else
 		echo "Enabling dark mode (traditional white on black)."
 		echo "export DARK_MODE=1" >> config.status
-		echo "export DARK_MODE=1" >> docker/config.status
+		echo "export DARK_MODE=1" >> main/docker/config.status
 	fi
 ;;
 *)
@@ -198,8 +198,8 @@ case "${result}" in
 	echo "export DARK_MODE=1" >> config.status
 esac
 
-if [ ! -f docker/Makefile ]; then
-	cp docker/Makefile-master docker/Makefile
+if [ ! -f main/docker/Makefile ]; then
+	cp main/docker/Makefile-master main/docker/Makefile
 fi
 
 if [ "${DOCKER:-0}" -eq "1" ]; then
@@ -207,7 +207,7 @@ if [ "${DOCKER:-0}" -eq "1" ]; then
 	echo "export GREP_BIN=grep" >> config.status
 
 	if [[ "${luc_choice}" == "4" ]]; then
-		( cd docker && make createsharedvolume )
+		( cd main/docker && make createsharedvolume )
 	fi
 else
 	if which gshuf > /dev/null 2>&1; then
