@@ -45,7 +45,7 @@ set -e -o nounset
 
 # insert 7437f7c8-c360-4f96-91f6-b75dcd3b8cd7
 
-if [ `whoami` == "root" ]; then
+if [ "$(whoami)" == "root" ]; then
 	echo "Run this script as yourself, not the root user.  (Don't use dzdo or sudo.)"
 	exit 1
 fi

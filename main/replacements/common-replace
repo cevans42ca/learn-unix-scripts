@@ -290,10 +290,10 @@ getBeltWithColours() {
 
 make_temp_progress() {
 	set +e
-	progress_file=$(mktemp --suffix_$(whoami) 2>/dev/null)
+	progress_file=$(mktemp "--suffix_$(whoami)" 2>/dev/null)
 	RESULT=$?
 	if [ $RESULT -ne 0 ]; then
-		progress_file=$(mktemp -t $(whoami)-XXXXXX)
+		progress_file=$(mktemp -t "$(whoami)-XXXXXX")
 	fi
 	set -e
 }
@@ -334,10 +334,10 @@ simple_trim() {
 make_temp() {
 	umask 077
 	set +e
-	fmt_file=$(mktemp --suffix_$(whoami) 2>/dev/null)
+	fmt_file=$(mktemp "--suffix_$(whoami)" 2>/dev/null)
 	RESULT=$?
 	if [ $RESULT -ne 0 ]; then
-		fmt_file=$(mktemp -t $(whoami)-XXXXXX)
+		fmt_file=$(mktemp -t "$(whoami)-XXXXXX")
 	fi
 	set -e
 }

@@ -22,7 +22,7 @@
 
 # This script was developed in a 130x30 terminal.
 
-if [ `whoami` == "root" ]; then
+if [ "$(whoami)" == "root" ]; then
 	echo "Run this script as a normal user, not the root user.  (Don't use dzdo or sudo.)"
 	exit 1
 fi
@@ -48,7 +48,7 @@ else
 	exit 2
 fi
 
-parent_proc_name=`ps -p $PPID -o comm=`
+parent_proc_name=$(ps -p "$PPID")
 echo "Checking that the parent process is bash."
 case "$parent_proc_name" in
 *bash*)
@@ -81,17 +81,17 @@ if [ "${BASH_VERSINFO:-0}" -lt "4" ]; then
 fi 
 
 umask 077
-tmp_file=$(mktemp --suffix_$(whoami) 2>/dev/null)
+tmp_file=$(mktemp "--suffix_$(whoami)" 2>/dev/null)
 RESULT=$?
 if [ $RESULT -ne 0 ]; then
-	tmp_file=$(mktemp -t $(whoami)-XXXXXX)
+	tmp_file=$(mktemp -t "$(whoami)-XXXXXX")
 fi
 
 perms=$(ls -l -- "${tmp_file}")
 perms=${perms%% *}
 case $perms in
 ????------)
-	echo "Umask sucessful."
+	echo "Umask successful."
 	;;
 *)
 	echo "Umask failed.  These scripts create a temp file with group and other permission"
@@ -173,6 +173,6 @@ echo
 echo "All three sentences should have red words.  If they don't, you may want to"
 echo "check your terminal settings, your TERM environment variable, and/or"
 echo "your version of tput.  The first two sentences must have red words for the"
-echo "exercises to make sense.  On FreeBSD 10, 11, and 12, the last one is not"
-echo "likely to work, but it won't compromise the exercises."
+echo "exercises to make sense.  On FreeBSD the last one is not likely to work,"
+echo "but it won't compromise the exercises."
 
