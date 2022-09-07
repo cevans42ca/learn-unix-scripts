@@ -257,7 +257,7 @@ In particular, this exercise has the most reading and the least to do.
 EOL
 
 	printf "\n\n${underline}Your Prompt${no_underline}\n\n" >> $fmt_file
-		x="$(PS1=\"${PS1:-}\" echo -n | bash -i 2>&1 | sed $'s/.*\007//' | tr '\r' '\n')"
+		x="$(PS1=\"${PS1:-}\" echo -n | bash -i 2>&1 | sed $'s/.*\007//' | tr '\r' '\n' | sed 's/stdin: is not a tty//')"
 		# If the prompt starts with "bash", it's probably a default prompt, and not the real one.
 		# Checking if $PS1 is set doesn't seem to work in all cases.
 		if [[ "${x}" =~ ^bash.* ]]; then
