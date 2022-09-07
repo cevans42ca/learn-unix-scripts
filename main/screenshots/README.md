@@ -6,7 +6,9 @@ The scripts can also handle small terminal sizes (smaller than 80 columns).  The
 
 The second screenshot is what the user sees after pressing "q".  It's from Terminus on an iPhone (with the Pro theme) connected to an Ubuntu server running in AWS.
 
+<p align="center">
 <img src="./Terminus-iPhone-Welcome-Beginner.png" alt="Beginner Material Summary" width="600"/>
+</p>
 
 The third screenshot shows an overview of the material for the advanced belts.  It's from WSL 2 in Windows 10 running Ubuntu 22.04 LTS.
 
