@@ -236,7 +236,7 @@ else
 	fi
 
 	if [ "${grep_found}" = "0" ]; then
-		if  -x /usr/local/bin/grep; then
+		if [ -x /usr/local/bin/grep ]; then
 			verify_grep /usr/local/bin/grep
 		fi
 	fi
