@@ -14,4 +14,6 @@ The third screenshot shows an overview of the material for the advanced belts.  
 
 ![Advanced Material Summary](./WSL-2-Welcome-Advanced.png)
 
+The next screenshot shows an SSH connection from Mac OS X to a FreeBSD instance in AWS.  FreeBSD doesn't have full colour support as it has a different version of tput.  The scripts can also run directly on Mac OS X or on Mac OS X through Docker.
 
+![Screenshot of FreeBSD](./Mac-OS-X-Terminal-SSH-to-AWS-FreeBSD.png)
