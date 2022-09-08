@@ -1,5 +1,18 @@
 #!/bin/sh
 
+verify_grep() {
+	output=$(echo ":test:" | "${1}" -Po "(?<=:)test(?=:)")
+	if [ $? == "0" ]; then
+		if [ "$output" == "test" ]; then
+			echo "${1} has a working -P."
+			echo "export GREP_BIN=${1}" >> config.status
+			grep_found=1
+		fi
+	else
+		echo "A grep was found in the PATH but it doesn't support -P."
+	fi
+}
+
 rm -f config.status
 rm -f main/docker/config.status
 touch config.status
@@ -97,7 +110,7 @@ case "${luc_choice}" in
 		echo "export BASH_BIN=${BASH_BIN}" >> config.status
 	fi
 
-	if echo "Test" | fmt -u 2>/dev/null; then
+	if echo "Test" | fmt -u >/dev/null 2>&1; then
 		echo "export FMT_OPTIONS=-u --width=" >> config.status
 	else
 		echo "export FMT_OPTIONS=-" >> config.status
@@ -209,11 +222,30 @@ if [ "${DOCKER:-0}" -eq "1" ]; then
 		( cd main/docker && make createsharedvolume )
 	fi
 else
+	grep_found=0
+	if which grep > /dev/null 2>&1; then
+		verify_grep grep
+	else
+		echo "Couldn't find grep."
+	fi
+
+	if [ "${grep_found}" = "0" ]; then
+		if which ggrep > /dev/null 2>&1; then
+			verify_grep ggrep
+		fi
+	fi
+
+	if [ "${grep_found}" = "0" ]; then
+		if  -x /usr/local/bin/grep; then
+			verify_grep /usr/local/bin/grep
+		fi
+	fi
+	
 	# Notes:  on FreeBSD pkg install perl5
-	if [ -x /usr/local/bin/grep ]; then
-		echo "export GREP_BIN=/usr/local/bin/grep" >> config.status
-	elif which ggrep > /dev/null 2>&1; then
-		echo "export GREP_BIN=ggrep" >> config.status
+	# Try perl
+	if [ "${grep_found}" = "0" ]; then
+		echo "Unable to find a usable grep."
+		exit 20
 	fi
 fi
 
