@@ -227,6 +227,30 @@ prepareLusHome() {
 	fi
 }
 
+show_script_path_in_path() {
+	if [ "${GREP_P_STRATEGY:-}" != "perl" ]; then
+		# Use positive lookbehind and positive lookahead to match the exact path, whether it's at the beginning of the
+		# $PATH, the end, or in the middle.  This way, we can both highlight the exact path and show the entire $PATH.
+		# It won't work if the path in $PATH has a trailing slash, but trailing slashes shouldn't be there.
+		printf '%s\n' "$PATH" | ${GREP_BIN} -P --color=always "(?<=^|:)${script_path}(?=:|\$)" >> $fmt_file
+	else
+		perl -e "$(cat <<'EOF'
+use Term::ANSIColor;
+$script_path=$ARGV[0];
+
+open(FH, ">>$ARGV[1]") or die "Unable to open $ARGV[1].";
+
+if ($ENV{"PATH"} =~ /(^|.*:)(\Q${script_path}\E)(:.*|$)/)
+{ print FH $1 . color('bold red') . $2 . color('reset') . $3 . "\n"; }
+else
+{ print FH "Unable to find ${script_path} in " . $ENV["PATH"] . ".\n"; }
+
+close(FH);
+EOF
+)" "${script_path}" "${fmt_file}"
+	fi
+}
+
 # (End vim fold) }}}
 
 # White belt exercises (Start vim fold) {{{
@@ -627,10 +651,7 @@ This script is in $script_path and the full path to it is $script_path/$script_n
 EOL
 
 	echo "" >> $fmt_file
-	# Use positive lookbehind and positive lookahead to match the exact path, whether it's at the beginning of the
-	# $PATH, the end, or in the middle.  This way, we can both highlight the exact path and show the entire $PATH.
-	# It won't work if the path in $PATH has a trailing slash, but trailing slashes shouldn't be there.
-	printf '%s\n' "$PATH" | ${GREP_BIN} -P --color=always "(?<=^|:)${script_path}(?=:|\$)" >> $fmt_file
+	show_script_path_in_path
 	echo "" >> $fmt_file
 
 	less -R -P "$less_prompt_move_on" $fmt_file
