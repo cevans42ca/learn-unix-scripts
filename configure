@@ -219,6 +219,7 @@ else
 		exit 1
 	fi
 
+	# Notes:  on FreeBSD pkg install perl5
 	if [ -x /usr/local/bin/grep ]; then
 		echo "export GREP_BIN=/usr/local/bin/grep" >> config.status
 	elif which ggrep > /dev/null 2>&1; then

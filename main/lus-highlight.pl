@@ -1,19 +1,9 @@
 #!/usr/bin/env perl
 
 use Term::ANSIColor;
-
 $script_path=$ARGV[0];
 
 if ($ENV{"PATH"} =~ /(^|.*:)(\Q${script_path}\E)(:.*|$)/)
-{
-	print $1;
-	print color('bold red');
-	print $2;
-	print color('reset');
-	print $3;
-	print "\n";
-}
+{ print $1 . color('bold red') . $2 . color('reset') . $3 . "\n"; }
 else
-{
-	print "Unable to find ${script_path} in " . $ENV["PATH"] . ".\n";
-}
+{ print "Unable to find ${script_path} in " . $ENV["PATH"] . ".\n"; }
