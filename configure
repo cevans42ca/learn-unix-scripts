@@ -1,7 +1,7 @@
 #!/bin/sh
 
 verify_grep() {
-	output=$(echo ":test:" | "${1}" -Po "(?<=:)test(?=:)")
+	output=$(echo ":test:" | "${1}" -Po "(?<=:)test(?=:)" 2>/dev/null)
 	if [ $? == "0" ]; then
 		if [ "$output" == "test" ]; then
 			echo "${1} has a working -P."
