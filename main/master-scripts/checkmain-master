@@ -64,7 +64,6 @@ LUS_HOME=${LUS_HOME:-"$HOME/lus"}
 # insert ffa9e74e-2b02-4d72-9c82-9f9db2915c62 associative arrays for exercises and belt levels
 
 FMT_OPTIONS="-u --width="
-SHUF_BIN=shuf
 
 luc_good_work_array[0]="Good work!"
 luc_good_work_array[1]="Excellent!"
@@ -161,12 +160,28 @@ process_choice() {
 
 # insert 37333148-8746-4468-826e-544e532f1ebc updateDotFile, getBeltWithColours
 
-handle_answer() {
-	luc_shuffled_answers=()
-	while read -r item; do
-	    luc_shuffled_answers+=("$item")
-	done < <(${SHUF_BIN} -e "${luc_answers[@]}")
+# Yes, it's overkill.  But I can't pass up tested, working code.
+# From http://mywiki.wooledge.org/BashFAQ/026
+# in the section Shuffling an array.
+shuffle() {
+   local i tmp size max rand
 
+   # $RANDOM % (i+1) is biased because of the limited range of $RANDOM
+   # Compensate by using a range which is a multiple of the array size.
+   luc_shuffled_answers=( "${luc_answers[@]}" )
+   size=${#luc_shuffled_answers[*]}
+   max=$(( 32768 / size * size ))
+
+   for ((i=size-1; i>0; i--)); do
+      while (( (rand=$RANDOM) >= max )); do :; done
+      rand=$(( rand % (i+1) ))
+      tmp=${luc_shuffled_answers[i]} luc_shuffled_answers[i]=${luc_shuffled_answers[rand]} luc_shuffled_answers[rand]=$tmp
+   done
+}
+
+
+handle_answer() {
+	shuffle
 	luc_num=1
 	for item in "${luc_shuffled_answers[@]}"
 	do

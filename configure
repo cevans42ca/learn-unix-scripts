@@ -203,22 +203,12 @@ if [ ! -f main/docker/Makefile ]; then
 fi
 
 if [ "${DOCKER:-0}" -eq "1" ]; then
-	echo "export SHUF_BIN=shuf" >> config.status
 	echo "export GREP_BIN=grep" >> config.status
 
 	if [[ "${luc_choice}" == "4" ]]; then
 		( cd main/docker && make createsharedvolume )
 	fi
 else
-	if which gshuf > /dev/null 2>&1; then
-		echo "export SHUF_BIN=gshuf" >> config.status
-	elif which shuf > /dev/null 2>&1; then
-		echo "export SHUF_BIN=shuf" >> config.status
-	else
-		echo "Neither shuf or gshuf were found.  On Mac with Homebrew, brew install coreutils."
-		exit 1
-	fi
-
 	if [ -x /usr/local/bin/grep ]; then
 		echo "export GREP_BIN=/usr/local/bin/grep" >> config.status
 	elif which ggrep > /dev/null 2>&1; then
