@@ -24,7 +24,7 @@
 
 # This script was developed in a 130x30 terminal.
 
-source main/configure-verify-common
+. ./main/configure-verify-common
 
 rm -f config.status
 rm -f main/docker/config.status

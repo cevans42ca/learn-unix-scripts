@@ -39,7 +39,7 @@ clean_up() {
 # It's a trap!  Run the clean_up subroutine on normal or aborted exit.
 trap clean_up EXIT
 
-source main/configure-verify-common
+. ./main/configure-verify-common
 
 demo_perl_highlighting() {
 	perl -e "$(cat <<'EOF'
