@@ -14,19 +14,19 @@ prompts, but you may need some other things first (see below).
 
 Although the scripts are written in bash, I intend the exercises
 to be broad enough to work on FreeBSD, Macs, Linux, and any system that
-has bash installed or could have bash installed.  However, not all these
-systems are currently supported.  The "verify" script can check some
-requirements, but it's still a prototype.
+has bash installed or could have bash installed.  Run the "verify" script
+to check requirements.
 
 There are a few exercises that directly reference the Emacs keybindings
 in bash, but nearly all the exercises could run in another shell that
 supports the "history" command (assuming the output format matches).
+Almost all of the lessons could be ported to another shell as is.
 
-For Mac, you will need Homebrew with bash, ggrep, and shuf to run the
-first set of exercises.
+For Mac, you will need Homebrew with bash.
 
-For FreeBSD, you will need:  bash version 4 or later, a version of grep
-that supports -P, and shuf.  Other BSDs are likely to need the same things.
+For FreeBSD, you will need:  bash version 4 or later, and bash needs to
+be the user's shell.  You will also need either a version of grep that
+supports -P or perl.  Other BSDs are likely to need the same things.
 
 This project is in alpha status.  Please check back for updates.
 
