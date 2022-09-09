@@ -24,18 +24,7 @@
 
 # This script was developed in a 130x30 terminal.
 
-verify_grep() {
-	output=$(echo ":test:" | "${1}" -Po "(?<=:)test(?=:)" 2>/dev/null)
-	if [ $? == "0" ]; then
-		if [ "$output" == "test" ]; then
-			echo "${1} has a working -P."
-			echo "export GREP_BIN=${1}" >> config.status
-			grep_found=1
-		fi
-	else
-		echo "A grep was found in the PATH but it doesn't support -P."
-	fi
-}
+source main/configure-verify-common
 
 rm -f config.status
 rm -f main/docker/config.status
@@ -246,67 +235,7 @@ if [ "${DOCKER:-0}" -eq "1" ]; then
 		( cd main/docker && make createsharedvolume )
 	fi
 else
-	grep_found=0
-	if which grep > /dev/null 2>&1; then
-		verify_grep grep
-	else
-		echo "Couldn't find grep."
-	fi
-
-	if [ "${grep_found}" = "0" ]; then
-		if which ggrep > /dev/null 2>&1; then
-			verify_grep ggrep
-		fi
-	fi
-
-	if [ "${grep_found}" = "0" ]; then
-		if [ -x /usr/local/bin/grep ]; then
-			verify_grep /usr/local/bin/grep
-		fi
-	fi
-	
-	# Try perl
-	perl_found=0
-	if [ "${grep_found}" = "0" ]; then
-		echo "Unable to find a usable grep."
-		if which perl >/dev/null 2>&1; then
-			if which perldoc >/dev/null 2>&1; then
-				if perldoc -lm Term::ANSIColor >/dev/null 2>&1; then
-					echo "Found perl."
-					perl -e "$(cat <<'EOF'
-use Term::ANSIColor;
-
-if (":test:" !~ /(^|.*:)(\Qtest\E)(:.*|$)/)
-{ exit 1; }
-EOF
-)"
-					if [ $? = "0" ]; then
-						perl_found=1
-					else
-						echo "Unable to run a perl heredoc."
-					fi
-				else
-					echo "Please install perl's Term::ANSIColor module."
-				fi
-			else
-				echo "perl found but perldoc not found.  Please install or reinstall perl."
-			fi
-		fi
-	fi
-
-	if [ "${grep_found}" = "0" ] && [ "${perl_found}" = "0" ]; then
-		echo "Unable to find a grep that supports -P, or perl."
-		echo "On FreeBSD, you can either:"
-		echo "(1) install a grep that supports -P"
-		echo "    (a) as ggrep"
-		echo "    (b) as /usr/local/bin/grep"
-		echo "    (c) as /usr/local/bin/ggrep"
-		echo
-		echo "OR"
-		echo
-		echo "(2) install Perl 5 or later (pkg install perl5)"
-		exit 20
-	fi
+	check_grep_perl
 fi
 
 touch flags/configuretarget
