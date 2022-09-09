@@ -61,6 +61,7 @@ less_prompt_quit="Press h for help;?e: Enter for more (line %lb of %L).?e q to q
 
 FMT_OPTIONS="-u --width="
 GREP_BIN=grep
+LUS_PERL=0
 
 get_rows_and_columns() {
 	STTY_ROWS=$(stty ${stty_options} | head -1 | sed 's/.*; \([0-9][0-9]*\) rows.*/\1/;s/.*; rows \([0-9][0-9]*\).*/\1/')

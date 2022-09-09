@@ -160,6 +160,12 @@ if [ -n "${GREP_BIN:-}" ]; then
 	mv "${intermediate_temp_file}" "${intermediate_file}"
 fi
 
+if [ -n "${LUS_PERL:-}" ]; then
+	echo sed "s:^LUS_PERL=.*:LUS_PERL=${LUS_PERL}:" "${intermediate_file}" > "${intermediate_temp_file}"
+	sed "s:^LUS_PERL=.*:LUS_PERL=${LUS_PERL}:" "${intermediate_file}" > "${intermediate_temp_file}"
+	mv "${intermediate_temp_file}" "${intermediate_file}"
+fi
+
 final_file="${@: -1:1}"
 mv "${intermediate_file}" "$final_file"
 chmod u+x "$final_file"
