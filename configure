@@ -1,5 +1,29 @@
 #!/bin/sh
 
+# This file is part of the "learn-unix-scripts" project.
+#
+# This script prepares the other scripts to be run natively or with Docker.
+#
+# The "learn-unix-scripts" project is free software: you can redistribute it and/or modify it under the terms of the GNU
+# General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option)
+# any later version.
+#
+# The "learn-unix-scripts" project is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License along with this project; if not, write to the
+# Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA, 02111-1307, USA.
+#
+# Copyright (C) 2021 Christopher Evans
+
+# This verify script's purpose is to help in confirming that all features and dependencies that the scripts use are
+# available.  This script should be run the same way students are expected to run these scripts (for example, if students
+# are expected to run these scripts by using PuTTY to SSH into an on-campus server, this script should be run the same
+# way).
+
+# This script was developed in a 130x30 terminal.
+
 verify_grep() {
 	output=$(echo ":test:" | "${1}" -Po "(?<=:)test(?=:)" 2>/dev/null)
 	if [ $? == "0" ]; then
@@ -134,7 +158,7 @@ case "${luc_choice}" in
 		echo 'export INSTALL_PATH="/usr/local/bin"' >> config.status
 		luc_choice_2=2
 		;;
-	*3*)
+	l3*)
 		echo 'export INSTALL_PATH="/usr/local/bin"' >> config.status
 		luc_choice_2=3
 		custom_install=1
@@ -173,7 +197,7 @@ stty raw -echo min 0 time 0
 # stty raw -echo min 0 time 1
 printf "\033]$Ps;?\033\\"
 # xterm needs the sleep (or "time 1", but that is 1/10th second).
-sleep 0.01
+sleep 0.5
 read -r answer
 result=${answer#*;}
 stty $oldstty
@@ -241,10 +265,46 @@ else
 		fi
 	fi
 	
-	# Notes:  on FreeBSD pkg install perl5
 	# Try perl
+	perl_found=0
 	if [ "${grep_found}" = "0" ]; then
 		echo "Unable to find a usable grep."
+		if which perl >/dev/null 2>&1; then
+			if which perldoc >/dev/null 2>&1; then
+				if perldoc -lm Term::ANSIColor >/dev/null 2>&1; then
+					echo "Found perl."
+					perl -e "$(cat <<'EOF'
+use Term::ANSIColor;
+
+if (":test:" !~ /(^|.*:)(\Qtest\E)(:.*|$)/)
+{ exit 1; }
+EOF
+)"
+					if [ $? = "0" ]; then
+						perl_found=1
+					else
+						echo "Unable to run a perl heredoc."
+					fi
+				else
+					echo "Please install perl's Term::ANSIColor module."
+				fi
+			else
+				echo "perl found but perldoc not found.  Please install or reinstall perl."
+			fi
+		fi
+	fi
+
+	if [ "${perl_found}" = "0" ]; then
+		echo "Unable to find a grep that supports -P, or perl."
+		echo "On FreeBSD, you can either:"
+		echo "(1) install a grep that supports -P"
+		echo "    (a) as ggrep"
+		echo "    (b) as /usr/local/bin/grep"
+		echo "    (c) as /usr/local/bin/ggrep"
+		echo
+		echo "OR"
+		echo
+		echo "(2) install Perl 5 or later (pkg install perl5)"
 		exit 20
 	fi
 fi
