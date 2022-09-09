@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# This script verifies that all dependencies are installed and working.
+#
 # This file is part of the "learn-unix-scripts" project.
 #
 # The "learn-unix-scripts" project is free software: you can redistribute it and/or modify it under the terms of the GNU
