@@ -231,11 +231,14 @@ fi
 if [ "${DOCKER:-0}" -eq "1" ]; then
 	echo "export GREP_BIN=grep" >> config.status
 
-	if [[ "${luc_choice}" == "4" ]]; then
+	if [ "${luc_choice}" = "4" ]; then
 		( cd main/docker && make createsharedvolume )
 	fi
 else
 	check_grep_perl
+	if [ "${perl_found:-}" = "1" ]; then
+		echo "export LUS_PERL=1" >> config.status
+	fi
 fi
 
 touch flags/configuretarget
