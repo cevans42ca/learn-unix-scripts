@@ -294,7 +294,7 @@ EOF
 		fi
 	fi
 
-	if [ "${perl_found}" = "0" ]; then
+	if [ "${grep_found}" = "0" ] && [ "${perl_found}" = "0" ]; then
 		echo "Unable to find a grep that supports -P, or perl."
 		echo "On FreeBSD, you can either:"
 		echo "(1) install a grep that supports -P"
