@@ -160,13 +160,6 @@ if ! which man > /dev/null; then
 	exit 9
 fi
 
-if ! which shuf > /dev/null; then
-	if ! which gshuf > /dev/null; then
-		echo "Neither shuf or gshuf were found.  On Mac with Homebrew, brew install coreutils."
-		exit 10
-	fi
-fi
-
 check_grep_perl
 if [ -z "${GREP_BIN}" ]; then
 	# We can still use the default grep, which might not support -P, for other things.
