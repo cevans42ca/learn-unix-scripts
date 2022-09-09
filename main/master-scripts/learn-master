@@ -229,7 +229,7 @@ prepareLusHome() {
 }
 
 show_script_path_in_path() {
-	if [ "${GREP_P_STRATEGY:-}" != "perl" ]; then
+	if [ "${LUS_PERL:-}" == "0" ]; then
 		# Use positive lookbehind and positive lookahead to match the exact path, whether it's at the beginning of the
 		# $PATH, the end, or in the middle.  This way, we can both highlight the exact path and show the entire $PATH.
 		# It won't work if the path in $PATH has a trailing slash, but trailing slashes shouldn't be there.
