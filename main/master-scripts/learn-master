@@ -213,7 +213,7 @@ complete_exercise() {
 
 prepareLusHome() {
 	if [[ "${INSIDE_DOCKER:-0}" == "0" ]]; then
-		if [ ! -d $LUS_HOME ]; then
+		if [ ! -d "${LUS_HOME}" ]; then
 			mkdir -p "${LUS_HOME}"
 			if [[ "${SHARED_VOLUME:-}" == "1" ]]; then
 				chmod go-rwx
