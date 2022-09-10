@@ -15,7 +15,7 @@ Students run the "learn" script, which allows the student to review the current 
 
 A terminal of 100x30 is recommended, though an 80x24 terminal won't have much text getting improperly wrapped (in the middle of words).  It's possible to use Terminus on iPhone to connect to a server where the scripts are installed and use the 61x28 terminal that Terminus provides in portrait mode, but there will be quite a lot of issues with improperly wrapped text, and may require the student to scroll on occasion.
 
-[See more!](main/screenshots/README.md)
+[Show me more!](main/screenshots/README.md)
 
 # Security
 
