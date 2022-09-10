@@ -39,6 +39,7 @@ clean_up() {
 # It's a trap!  Run the clean_up subroutine on normal or aborted exit.
 trap clean_up EXIT
 
+perl_found=0
 . ./main/configure-verify-common
 
 demo_perl_highlighting() {
@@ -177,8 +178,8 @@ fi
 echo 
 echo 
 echo "Verify that some of the words in this sentence are red.  (Checks grep --color.)" | ${GREP_BIN} --color=always "some of the words"
-if [ -z "${perl_found}" ] && [ "${perl_found}" == "0" ]; then
-	echo "Verify that some words in this sentence are also red.  (Checks perl regexes.)" | ${GREP_BIN} -P --color=always "(?<=Verify )that some of(?= the words)"
+if [ "${perl_found}" = "0" ]; then
+	echo "Verify that some words in this sentence are also red.  (Checks perl regexes.)" | ${GREP_BIN} -P --color=always "(?<=Verify )that some words(?= in this sentence)"
 else
 	demo_perl_highlighting
 fi
