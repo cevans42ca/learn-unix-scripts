@@ -2423,6 +2423,51 @@ EOL
 # }}}
 
 blue_stripe_exercise_archive_files() { # Archive files
+	prepareLusHome
+
+	if [ -f "${LUS_HOME}"/blue-stripe ]; then
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+This exercise uses the directory ${LUS_HOME}/blue-stripe, which already exists as a file.  You will need to move it or
+rename it by executing "mv $LUS_HOME/blue-stripe newname", then executing "learn" again.
+EOL
+
+		complete_exercise
+		exit 1
+	fi
+
+	mkdir -p "${LUS_HOME}/blue-stripe/to-archive/dir1"
+	mkdir -p "${LUS_HOME}/blue-stripe/to-archive/dir2"
+
+	echo "file1" > "${LUS_HOME}/blue-stripe/to-archive/file1"
+	echo "file2" > "${LUS_HOME}/blue-stripe/to-archive/file2"
+	echo "file3" > "${LUS_HOME}/blue-stripe/to-archive/file3"
+	echo "file4" > "${LUS_HOME}/blue-stripe/to-archive/dir1/file4"
+	echo "file5" > "${LUS_HOME}/blue-stripe/to-archive/dir1/file5"
+	echo "file6" > "${LUS_HOME}/blue-stripe/to-archive/dir2/file6"
+
+	set +e
+	diff <( cd ~/lus/blue-stripe/to-archive && find . -print | sort ) <(cat <<EOL
+.
+./dir1
+./dir1/file4
+./dir1/file5
+./dir2
+./dir2/file6
+./file1
+./file2
+./file3
+EOL
+)
+	if [[ $? == "1" ]]; then
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Unexpected files found in ${LUS_HOME}/blue-stripe/to-archive.  Please move or rename this directory with
+mv "${LUS_HOME}/blue-stripe/to-archive" newname.
+EOL
+
+		complete_exercise
+	fi
+	set -e
+
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 An archive file is a file that contains the data from multiple files.  Archive files make it easier to move files
 between computers and are easier to back up.  ZIP is the most common archive file type on Windows, with RAR files
