@@ -345,14 +345,6 @@ make_temp() {
 }
 # end dbfb406a-b3c4-4c8d-84f3-4f54bef5d50e
 
-# start 7437f7c8-c360-4f96-91f6-b75dcd3b8cd7
-# If someone is connecting to Docker with "xterm", it's pretty much guaranteed to be a modern one.
-# By setting 256 colours, we can give tput more to work with.
-if [[ "${INSIDE_DOCKER:-0}" == "1" ]] && [[ "$TERM" == "xterm" ]]; then
-	TERM=xterm-256color
-fi
-# end 7437f7c8-c360-4f96-91f6-b75dcd3b8cd7
-
 # start 1a88ef09-bbc8-4f7e-ac03-a1849fd03166
 if stty --version 2>&1 | grep -q 'version'; then
     # BusyBox and other streamlined systems don't support --version.

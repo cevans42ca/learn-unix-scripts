@@ -41,9 +41,7 @@ set -e -o nounset
 
 # DARK_MODE Replacement Tag:  if not running in Docker, replace this line with DARK_MODE=0 for black text on white
 
-# insert 17fa07e6-24b8-4e35-bc1a-094427fd8699 xterm fix
-
-# insert 7437f7c8-c360-4f96-91f6-b75dcd3b8cd7
+# insert 17fa07e6-24b8-4e35-bc1a-094427fd8699
 
 if [ "$(whoami)" == "root" ]; then
 	echo "Run this script as yourself, not the root user.  (Don't use dzdo or sudo.)"
@@ -2511,8 +2509,24 @@ EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
-Always put the archive file next.  If you're creating an archive, follow that with one or more files (and/or
-directories).
+Always put the archive file next.  If you're creating an archive, follow that with one or more directories.  Don't add
+files (without a directory) to a tar archive:  that's called a tarbomb.  It can also lead to those files getting wiped
+if you're not careful.  Well constructed tar files are expected by the community to have one or more directories
+(ideally one) so if an unsuspecting person untars your archive and finds a bunch of files mixed in, it's a pain to move
+them all where they need to go.  (Especially if there are other files already in the directory.)
+
+If all of these warnings seem to be a bit too much, take solace in the fact that you are not alone.
+
+https://www.explainxkcd.com/wiki/index.php/1168:_tar
+
+In 1989, Mark H. Colburn published the first public implementation of a utility called "pax" (1).  Pax was intended to
+provide a portable replacement to tar.  Here, portable means that it would run on a variety of operating systems with
+the same options.
+
+(1) According to Wikipedia as of Sep. 9, 2022
+
+As of the time of this writing, pax enjoys relatively little popularity or adoption.
+
 EOL
 
 # TODO:  create some files and ask the student to tar them
