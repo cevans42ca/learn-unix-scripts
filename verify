@@ -177,7 +177,7 @@ fi
 echo 
 echo 
 echo "Verify that some of the words in this sentence are red.  (Checks grep --color.)" | ${GREP_BIN} --color=always "some of the words"
-if [ -z "${perl_found}" ]; then
+if [ -z "${perl_found}" ] && [ "${perl_found}" == "0" ]; then
 	echo "Verify that some words in this sentence are also red.  (Checks perl regexes.)" | ${GREP_BIN} -P --color=always "(?<=Verify )that some of(?= the words)"
 else
 	demo_perl_highlighting
