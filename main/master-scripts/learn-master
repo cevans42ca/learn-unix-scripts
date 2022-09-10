@@ -898,8 +898,9 @@ EOL
 	fi
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-The "rmdir" command removes directories.  The directory must be empty for "rmdir" to work.  We will look at deleting whole
-trees of directories later.  Read these commands and see if you can follow what they do.
+The "rmdir" command removes directories.  The directory must be empty for "rmdir" to work.  We will look at deleting
+whole trees of directories later.  If you want to delete a directory, and it's empty, use "rmdir" as it's safer.  Read
+these commands and see if you can follow what they do.
 
 EOL
 
@@ -963,13 +964,14 @@ new location.  The "R" stands for recursive.
 
 cp -R /tmp/foo /tmp/bar
 
-If you want to copy a file called "-R" and a file called "foo" in "/tmp/" to "/tmp/bar" then you could use the following command.
+If you want to copy a file called "-R" and a file called "foo" in "/tmp/" to "/tmp/bar" then you could use the following
+command.
 
 cp -- -R /tmp/foo /tmp/bar
 
-The core tools (like copy "cp", move "mv", and remove "rm") support the "--" argument to indicate all the options are done
-and everything after that is a file or directory.  Don't expect other programs will be able to work with files that start
-with a dash.
+The core tools (like copy "cp", move "mv", and remove "rm") support the "--" argument to indicate all the options
+are done and everything after that is a file or directory.  Don't expect other programs will be able to work with files
+that start with a dash.
 
 The other special characters that aren't allowed on Windows are a little easier to work with, though you'll need to put the
 file name in single quotes (not double quotes).  We'll do more with single quotes and double quotes soon.
@@ -2132,7 +2134,7 @@ green_belt_exercise_ls_a_alias() { # Is ls aliased?
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 We're going to use the term "hidden files" as a short form for "hidden files and hidden directories".
 In many cases, directories are considered to be a special type of file.  For maximum clarity, tests and
-quizzes will spell this phrase fully out as "hidden files and hidden directories".  We will also use
+quizzes will spell this phrase out fully as "hidden files and hidden directories".  We will also use
 the full phrase in the lesson text in a few key spots for clarity.
 
 Before we look at how to show hidden files, we need to check if your settings show hidden files by default.
@@ -2243,8 +2245,8 @@ If you look around a bit online, you might try to add hidden files to our copy c
 cp ${HOME}/abc/* ~/.* /mnt/usb
 
 Unfortunately, ".*" will also match the special directory "..".  It can be disastrous if you use ".*" with the "rm"
-command, so it's a good idea to avoid ".*" entirely.  As is usual for Unix, there are lots of other options.  We'll
-look at one.
+command (which deletes files and directories) so it's a good idea to avoid ".*" entirely.  As is usual for Unix, there
+are lots of other options.  We'll look at one.
 
 The easiest way around this issue is to copy the whole directory with the -R (recursive) option, which we looked
 at before.  As a quick review, The -R option will copy all the directories and any directories they have until
@@ -2334,8 +2336,10 @@ Experiment with hidden files and listing them now.  Remember that you can create
 
 echo "Test text" > filename
 
-You can create hidden files the same way.  As a quick review, create a dirname directory with "mkdir dirname".
-Remove an empty directory named dirname with "rmdir dirname".  Start the dirname with a dot to make it hidden.
+You can create hidden files the same way.  As a quick review, create a dirname directory with "mkdir dirname".  Remove
+an empty directory named dirname with "rmdir dirname".  The "rmdir" command only removes empty directories, so it's
+safer than other ways to delete directories.  Use it when you can.  If you start the dirname with a dot, it will be
+hidden.
 
 If your "ls" is aliased and includes "-a", you may want to unalias "ls" by executing "unalias ls" so you can
 experiment with "ls" and "ls -a".  The alias will return the next time you login.  On most systems, hidden files
@@ -2434,20 +2438,23 @@ Unlike cp and rm, which require the -R option, tar is recursive by default.  In 
 options were standardized, so it works differently.  Most versions of tar support both the old and the new way of
 specifying options, and there are some surprises.
 
+The "rm" command, which can delete a whole filesystem, is obviously dangerous, and so you want to triple check any
+command line with rm in it before you run it.  What's more dangerous is the gun you don't think is loaded.
 Most versions of tar have an "interactive" mode (usually enabled with -w) that checks with you before doing
 various things.  Even in interactive mode, tar will wipe the file that it determines is the destination file with
 no warning.  The zip program is usually no different.
 
-There are two main ways to recover files on Unix:  from backups, and from specialized recovery tools. (It's the
-same for Windows, but the tools are different.  Windows also has the Recycle Bin, which is easier to use, but
-would not be involved here.)  Backups, assuming they were already set up, can still be a pain to use.  With some,
-you need to extract the backup into (or over top of) a working system or test system.  Specialized recovery tools
-don't require backups to work, but they require expert knowledge, they require that you bring down the system (so
-users can't use it while you're trying to recover something) and they may not be able to recover what you need if
-you weren't fast enough in kicking everyone off the system.
+Shifting metaphors, you should consider the tar and zip commands the same as you would a very sharp kitchen knife.  One
+or the other may be exactly the right tool for the job, but that doesn't mean they won't hurt you if you use them
+incorrectly.
 
-You should consider the tar and zip commands the same as you would a very sharp kitchen knife.  One or the other
-may be exactly the right tool for the job, but that doesn't mean they won't hurt you if you use them incorrectly.
+There are two main ways to recover files on Unix:  from backups, and from specialized recovery tools. (It's the same for
+Windows, but the tools are different.  Windows also has the Recycle Bin, which is easier to use, but would not be
+involved when a system program is making the changes at the user's request.)  Backups, assuming they were already set
+up, can still be a pain to use.  With some, you need to extract the backup into (or over top of) a working system or
+test system.  Specialized recovery tools don't require backups to work, but they require expert knowledge, they require
+that you bring down the system (so users can't use it while you're trying to recover something) and they may not be able
+to recover what you need if you weren't fast enough in kicking everyone off the system.
 
 Let's look at some potential pitfalls, and then we'll provide a recommended way to avoid them.
 
@@ -2477,21 +2484,23 @@ EOL
 EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-are quite different.  The first example uses "archive.tar.gz" as the value for option "f" and recognizes the option
-"z".  The second example, however, uses "z" as the value for option "f" -- which means a file called "z" will be
-created, and it won't be compressed.
+are quite different.  The first example uses "archive.tar.gz" as the value for option "f" and recognizes the option "z"
+(so it will compress the data and store it in archive.tar.gz).  The second example uses "z" as the value for option "f":
+which means the data will be stored in a file called "z", and it won't be compressed.
 
 Another common mistake is to use the "f" option but put the destination file last (the same way most commands work).
 Consider the following command line.
 
 tar cvzf one two three archive.tar.gz
 
-This situation is the worst one to be in.  We told tar to use the file called "one" as the archive file, because
-it's after the "f" option.  Tar goes ahead and wipes out the data in the "one" file, adds "two" and "three" to a
-new archive called "one", and then crashes as archive.tar.gz doesn't exist.
+This situation is the worst one to be in.  We told tar to use the file called "one" as the archive file, because it's
+after the "f" option.  Tar wipes out the data in the "one" file, adds "two" and "three" to a new archive called "one",
+and then crashes as archive.tar.gz doesn't exist.
 
 If no file is provided and the output isn't piped to another command (we'll look at pipes next belt) the archive
-is dumped to the terminal (which may force you to close your terminal).
+could be dumped to the terminal (which may force you to terminate your terminal).
+
+That's enough fear mongering.  How do we safely use tar?
 
 Start with your operation: "c" to create a new archive or "x" to extract an archive back into individual files.
 If you want to see each file get added or extracted, add "v".  Keep in mind that verbose mode can significantly
@@ -2510,18 +2519,30 @@ EOL
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
 Always put the archive file next.  If you're creating an archive, follow that with one or more directories.  Don't add
-files (without a directory) to a tar archive:  that's called a tarbomb.  It can also lead to those files getting wiped
+files (without a directory) to a tar archive:  that's called a tarbomb.  It can also lead to the first file getting wiped
 if you're not careful.  Well constructed tar files are expected by the community to have one or more directories
 (ideally one) so if an unsuspecting person untars your archive and finds a bunch of files mixed in, it's a pain to move
 them all where they need to go.  (Especially if there are other files already in the directory.)
 
-If all of these warnings seem to be a bit too much, take solace in the fact that you are not alone.
+If all of these warnings seem to be a bit too much, you are not alone in thinking that (see the link below).
 
 https://www.explainxkcd.com/wiki/index.php/1168:_tar
 
+Modern versions of tar do have some checks to prevent the destruction of data.  For example, consider the following
+command line.
+
+tar cvzf archive.tar.gz
+
+What we probably want to do with one archive file is extract it, but the "c" option was given instead of the "x" option.
+Older tars would create a new archive called archive.tar.gz, destroying the data that was in the file.  Newer tars
+give the error "Cowardly refusing to create an empty archive" or "no files or directories specified".  Do not depend
+on tar giving you a warning.
+
+You might be asking yourself, why hasn't anyone come up with a replacement?
+
 In 1989, Mark H. Colburn published the first public implementation of a utility called "pax" (1).  Pax was intended to
-provide a portable replacement to tar.  Here, portable means that it would run on a variety of operating systems with
-the same options.
+provide a portable replacement to tar.  Portable means that it would run on a variety of operating systems the same way
+with the same options.
 
 (1) According to Wikipedia as of Sep. 9, 2022
 
