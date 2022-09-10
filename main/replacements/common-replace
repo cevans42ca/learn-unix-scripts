@@ -20,8 +20,8 @@ if [ "${enable_tput}" == "1" ]; then
 	blue_on_black="$(tput setab 0)$(tput setaf 4)$(tput bold)"
 	red_on_black="$(tput setab 0)$(tput setaf 1)$(tput bold)"
 
-	underline="\033[4m"
-	no_underline="\033[m"
+	underline="$(tput smul)"
+	no_underline="$(tput rmul)"
 
 	nc=$(tput sgr0) # No colour
 else
