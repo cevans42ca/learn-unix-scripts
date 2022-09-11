@@ -1244,7 +1244,7 @@ EOL
 blue_stripe_exercise_archive_files() {
 	archive_file="${LUS_HOME}/blue-stripe/archive-one.tar.gz"
 	if [ -f "${archive_file}" ]; then
-		file_type=$(file "${archive_file})
+		file_type=$(file "${archive_file}")
 		if [[ "${file_type}" =~ "gzip compressed data" ]]; then
 			echo "Exercise incomplete."
 		else
