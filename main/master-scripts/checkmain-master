@@ -1247,7 +1247,54 @@ blue_stripe_exercise_archive_files() {
 		file_type=$(file "${archive_file}")
 		if [[ "${file_type}" =~ "gzip compressed data" ]]; then
 			inner_file_type=$(gunzip -c "${archive_file}" | file -)
-			echo $inner_file_type
+			if [[ "${inner_file_type}" =~ "tar archive" ]]; then
+				set +e
+				diff <( tar tzf "${archive_file}" | sort ) <(cat <<EOL
+to-archive/
+to-archive/dir1/
+to-archive/dir1/file4
+to-archive/dir1/file5
+to-archive/dir2/
+to-archive/dir2/file6
+to-archive/file1
+to-archive/file2
+to-archive/file3
+EOL
+)
+				diff_result=$?
+				set -e
+				if [ "${diff_result}" == "0" ]; then
+					# Check all file data with grep .*
+					echo "So far so good.  But the exercise is incomplete."
+				else
+					echo "We were expecting to see the following in the archive."
+					cat <<EOL
+to-archive/
+to-archive/dir1/
+to-archive/dir1/file4
+to-archive/dir1/file5
+to-archive/dir2/
+to-archive/dir2/file6
+to-archive/file1
+to-archive/file2
+to-archive/file3
+EOL
+
+					echo
+					echo "But instead, the archive contains the following."
+					tar tzf "${archive_file}" | sort
+
+					# Check for a tarbomb
+					# Check for too many directories
+				fi
+
+			else
+				fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+The file "${LUS_HOME}/blue-stripe/archive-one.tar.gz" isn't a valid tar.gz file.  Please use the tar command to create
+the archive.  If you need more hints, execute "learn" again.
+EOL
+				sorry
+			fi
 		else
 			echo "Did you forget to use the 'z' option to compress the archive?"
 			sorry
