@@ -34,7 +34,7 @@
 
 # insert 17fa07e6-24b8-4e35-bc1a-094427fd8699
 
-if [ `whoami` == "root" ]; then
+if [ "$(whoami)" == "root" ]; then
 	echo "Run this script as yourself, not the root user."
 	exit 1
 fi
