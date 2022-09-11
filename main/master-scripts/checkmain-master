@@ -1246,7 +1246,7 @@ blue_stripe_exercise_archive_files() {
 	if [ -f "${archive_file}" ]; then
 		file_type=$(file "${archive_file}")
 		if [[ "${file_type}" =~ "gzip compressed data" ]]; then
-			inner_file_type=$(gunzip -c "${archive_file}" | file)
+			inner_file_type=$(gunzip -c "${archive_file}" | file -)
 			echo $inner_file_type
 		else
 			echo "Did you forget to use the 'z' option to compress the archive?"
