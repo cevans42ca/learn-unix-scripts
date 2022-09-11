@@ -1242,6 +1242,7 @@ EOL
 }
 
 blue_stripe_exercise_archive_files() {
+	success=0
 	archive_file="${LUS_HOME}/blue-stripe/archive-one.tar.gz"
 	if [ -f "${archive_file}" ]; then
 		file_type=$(file "${archive_file}")
@@ -1249,7 +1250,7 @@ blue_stripe_exercise_archive_files() {
 			inner_file_type=$(gunzip -c "${archive_file}" | file -)
 			if [[ "${inner_file_type}" =~ "tar archive" ]]; then
 				set +e
-				diff <( tar tzf "${archive_file}" | sort ) <(cat <<EOL
+				diff -q <( tar tzf "${archive_file}" | sort ) <(cat <<EOL
 to-archive/
 to-archive/dir1/
 to-archive/dir1/file4
@@ -1260,13 +1261,60 @@ to-archive/file1
 to-archive/file2
 to-archive/file3
 EOL
-)
+) > /dev/null
 				diff_result=$?
 				set -e
 				if [ "${diff_result}" == "0" ]; then
 					# Check all file data with grep .*
-					echo "So far so good.  But the exercise is incomplete."
+					if [ -f "${LUS_HOME}/blue-stripe/to-archive-extract-check" ]; then
+						fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+We need to extract the archive to ${LUS_HOME}/blue-stripe/to-archive-extract-check, but it's a file, not a directory.
+Is it OK to overwrite it?
+EOL
+
+						read CHOICE
+
+						if [[ ! "$CHOICE" =~ ^\s*[Yy].* ]]; then
+							exit 2
+						fi
+					fi
+
+					mkdir "${LUS_HOME}/blue-stripe/to-archive-extract-check"
+					cd "${LUS_HOME}/blue-stripe/to-archive-extract-check"
+					tar xzf "${archive_file}"
+
+					set +e
+					diff -q <( find . -type f -print -exec grep -Hin ".*" {} \; | sort ) <(cat <<EOL
+./to-archive/dir1/file4
+./to-archive/dir1/file4:1:file4
+./to-archive/dir1/file5
+./to-archive/dir1/file5:1:file5
+./to-archive/dir2/file6
+./to-archive/dir2/file6:1:file6
+./to-archive/file1
+./to-archive/file1:1:file1
+./to-archive/file2
+./to-archive/file2:1:file2
+./to-archive/file3
+./to-archive/file3:1:file3
+EOL
+) > /dev/null
+
+					diff_result=$?
+					set -e
+					if [[ "${diff_result}" == "0" ]]; then
+						echo "You have successfully created a flawless archive!"
+						good_work
+						success=1
+					else	
+						sorry
+						fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+All the files are there in the archive, but the data in them isn't correct.  Run the learn script again to update the
+files and try again.
+EOL
+					fi
 				else
+					sorry
 					echo "We were expecting to see the following in the archive."
 					cat <<EOL
 to-archive/
@@ -1283,27 +1331,50 @@ EOL
 					echo
 					echo "But instead, the archive contains the following."
 					tar tzf "${archive_file}" | sort
+					echo
 
-					# Check for a tarbomb
-					# Check for too many directories
+					if tar tzf "${archive_file}" | grep -q "blue-stripe"; then
+						fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+The archive file should only contain the "to-archive" directory.  Make sure you're in the right directory when you make it.
+Try again.  Run the learn script again if you need to.
+EOL
+					elif tar tzf "${archive_file}" | grep -q -v "to-archive"; then
+						fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Oh no!  This is a tarbomb!  Try again.  Run the learn script again if you need to.
+EOL
+					fi
 				fi
-
 			else
+				sorry
 				fmt ${FMT_OPTIONS:-}$luc_width <<EOL
 The file "${LUS_HOME}/blue-stripe/archive-one.tar.gz" isn't a valid tar.gz file.  Please use the tar command to create
 the archive.  If you need more hints, execute "learn" again.
 EOL
-				sorry
 			fi
 		else
-			echo "Did you forget to use the 'z' option to compress the archive?"
 			sorry
+			echo "Did you forget to use the 'z' option to compress the archive?"
 		fi
+
+		# We're still in the "if the file exists" block.
+		if [ "$success" = "0" ]; then
+			fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+
+Keep in mind that if you run tar again on the same archive, it will add more files to it.  You're going to want to
+delete it first by executing the following.
+
+rm "${archive_file}"
+EOL
+	fi
 	else
-		echo "Unable to find a file called \"${LUS_HOME}/blue-stripe/archive-one.tar.gz\"."
+		sorry
+		echo "Can't find a file called \"${LUS_HOME}/blue-stripe/archive-one.tar.gz\"."
 		echo "Did you create the archive file with exactly the right name?"
 		echo "UNIX is case sensitive."
-		sorry
+	fi
+
+	if [ -d "${LUS_HOME}/blue-stripe/to-archive-extract-check" ]; then
+		rm -Rf "${LUS_HOME}/blue-stripe/to-archive-extract-check"
 	fi
 }
 
