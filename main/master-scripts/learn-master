@@ -2569,7 +2569,12 @@ if you're not careful.  Well constructed tar files are expected by the community
 (ideally one) so if an unsuspecting person untars your archive and finds a bunch of files mixed in, it's a pain to move
 them all where they need to go.  (Especially if there are other files already in the directory.)
 
-If all of these warnings seem to be a bit too much, you are not alone in thinking that (see the link below).
+Your current directory matters.  Let's say you're in /home/user/ and you want to add /home/user/abc/def to an archive.
+The "abc" directory will be added too, so when you unarchive the file, you'll get an "abc" directory with a "def"
+directory inside.  If you only want the "def" directory:  cd to /home/user/abc/ first, or execute "man tar" to get a
+list of options for your version of tar.
+
+If all of these warnings seem to be a bit too much, you're not alone in thinking that (see the link below).
 
 https://www.explainxkcd.com/wiki/index.php/1168:_tar
 
@@ -2593,10 +2598,13 @@ with the same options.
 
 As of the time of this writing, pax enjoys relatively little popularity or adoption.
 
-EOL
+Now, it's time for you to make a tar file.  Be patient and think it through.
 
-# TODO:  create some files and ask the student to tar them
-#https://stackoverflow.com/questions/37475833/does-tar-follow-either-the-posix-and-or-gnu-command-line-options-conventions
+We created some files and directories in "${LUS_HOME}/blue-stripe/to-archive".  Use tar to archive them into a file
+called "${LUS_HOME}/blue-stripe/archive-one.tar.gz".  Compress the archive when you make it.  Don't mess up any of the
+files and don't create a tarbomb.  The archive should contain one directory called "to-archive" that contains the rest
+of the files and directories.
+EOL
 
 	complete_exercise
 }
@@ -2648,6 +2656,10 @@ EOL
 
 	complete_exercise
 }
+
+# TODO
+#https://stackoverflow.com/questions/37475833/does-tar-follow-either-the-posix-and-or-gnu-command-line-options-conventions
+
 
 ####################
 # End of exercises #
