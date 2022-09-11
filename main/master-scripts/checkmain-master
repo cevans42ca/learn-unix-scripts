@@ -1269,7 +1269,7 @@ EOL
 					if [ -f "${LUS_HOME}/blue-stripe/to-archive-extract-check" ]; then
 						fmt ${FMT_OPTIONS:-}$luc_width <<EOL
 We need to extract the archive to ${LUS_HOME}/blue-stripe/to-archive-extract-check, but it's a file, not a directory.
-Is it OK to overwrite it?
+Is it OK to overwrite it (y/N)?
 EOL
 
 						read CHOICE
@@ -1279,7 +1279,22 @@ EOL
 						fi
 					fi
 
-					mkdir "${LUS_HOME}/blue-stripe/to-archive-extract-check"
+					if [ -d "${LUS_HOME}/blue-stripe/to-archive-extract-check" ]; then
+						fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+We need to extract the archive to ${LUS_HOME}/blue-stripe/to-archive-extract-check, but it already exists.  Is it OK to
+delete everything in it (y/N)?
+EOL
+
+						read CHOICE
+
+						if [[ ! "$CHOICE" =~ ^\s*[Yy].* ]]; then
+							exit 2
+						fi
+
+						rm -Rf "${LUS_HOME}/blue-stripe/to-archive-extract-check"
+					fi
+
+					mkdir -p "${LUS_HOME}/blue-stripe/to-archive-extract-check"
 					cd "${LUS_HOME}/blue-stripe/to-archive-extract-check"
 					tar xzf "${archive_file}"
 
