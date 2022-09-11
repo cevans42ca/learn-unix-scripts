@@ -2471,13 +2471,13 @@ EOL
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 An archive file is a file that contains the data from multiple files.  Archive files make it easier to move files
 between computers and are easier to back up.  ZIP is the most common archive file type on Windows, with RAR files
-arguably second.  On Unix, the most common archive file format is a tar.gz file, often called a tarball.
+arguably second.  On Unix, the most common archive file format is a tar.gz (or tgz) file, often called a tarball.
 
-To make a tar.gz file, we need to use both the "tar" command and the "gzip" command.  The way they work together is
-one simple example of the differences between Unix and Windows.  Tar creates one file out of multiple files.  Gzip
-compresses one file.  In Windows, these are done with a single program.  Unix has more programs that each have a
-smaller set of responsibilities, leading to more flexibility.  Modern versions of Windows have changed the trend
-of larger programs that do more with software like PowerShell.
+To make a tar.gz (or tgz) file, we need to use both the "tar" command and the "gzip" command.  The way they work
+together is one simple example of the differences between Unix and Windows.  Tar creates one file out of multiple files.
+Gzip compresses one file.  In Windows, these are done with a single program.  Unix has more programs that each have a
+smaller set of responsibilities, leading to more flexibility.  Modern versions of Windows have changed the trend of
+larger programs that do more with software like PowerShell.
 
 Unlike cp and rm, which require the -R option, tar is recursive by default.  In fact, tar comes from a time before
 options were standardized, so it works differently.  Most versions of tar support both the old and the new way of
@@ -2604,6 +2604,9 @@ We created some files and directories in "${LUS_HOME}/blue-stripe/to-archive".  
 called "${LUS_HOME}/blue-stripe/archive-one.tar.gz".  Compress the archive when you make it.  Don't mess up any of the
 files and don't create a tarbomb.  The archive should contain one directory called "to-archive" that contains the rest
 of the files and directories.
+
+Don't be discouraged if this task takes you multiple attempts.  The check script will give you hints if you don't get
+it right.
 EOL
 
 	complete_exercise
