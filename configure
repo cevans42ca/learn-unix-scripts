@@ -17,10 +17,8 @@
 #
 # Copyright (C) 2021 Christopher Evans
 
-# This verify script's purpose is to help in confirming that all features and dependencies that the scripts use are
-# available.  This script should be run the same way students are expected to run these scripts (for example, if students
-# are expected to run these scripts by using PuTTY to SSH into an on-campus server, this script should be run the same
-# way).
+# This configure script offers the user options for different kinds of installations, and prepares appropriate Makefiles.
+# If make isn't detected, a list of commands is shown.
 
 # This script was developed in a 130x30 terminal.
 
@@ -42,6 +40,7 @@ if which bash > /dev/null; then
 			if [ "$homebrew" -lt "4" ]; then
 				echo "Associative array support, added in Bash 4.0, is required.  Homebrew bash not found either."
 				echo "If you have a Mac, install Homebrew, then install bash."
+				echo "For FreeBSD:  run pkg install bash."
 				exit 2
 			else
 				sed 's:#!/bin/bash:#!/usr/local/bin/bash:' main/replace-master > main/replace
@@ -51,6 +50,7 @@ if which bash > /dev/null; then
 		else
 			echo "Associative array support, added in Bash 4.0, is required."
 			echo "If you have a Mac, install Homebrew, then install bash."
+			echo "For FreeBSD:  run pkg install bash."
 			exit 2
 		fi 
 	else
@@ -62,6 +62,7 @@ else
 	echo "Bash not found."
 	echo "Associative array support, added in Bash 4.0, is required."
 	echo "If you have a Mac, install Homebrew, then install bash."
+	echo "For FreeBSD:  run pkg install bash."
 fi
 
 # TODO:  Figure out how to do relative dates to ensure files created by touch are recent
@@ -182,11 +183,11 @@ echo "you may see some strange characters."
 
 sleep 2
 
-stty raw -echo min 0 time 0
+stty raw -echo min 0 time 2
 # stty raw -echo min 0 time 1
 printf "\033]$Ps;?\033\\"
 # xterm needs the sleep (or "time 1", but that is 1/10th second).
-sleep 0.5
+sleep 0.1
 read -r answer
 result=${answer#*;}
 stty $oldstty
@@ -267,6 +268,8 @@ elif [ "${luc_choice_2}" -eq "1" ]; then
 		echo "./replace-all"
 		echo "cp dist/bin/* ~/bin/"
 	fi
+		echo
+		echo "Then run the learn script."
 elif [ "${luc_choice_2}" -eq "2" ]; then
 	if which make > /dev/null 2>&1; then
 		echo "Run make with no arguments, then run ${su_command} make install."
@@ -277,8 +280,12 @@ elif [ "${luc_choice_2}" -eq "2" ]; then
 		echo "./replace-all"
 		echo "${su_command} cp dist/bin/* /usr/local/bin/"
 	fi
+
+	echo
+	echo "Then run the learn script."
 else
 	echo "(1) Update the config.status with the INSTALL_PATH that you want."
 	echo "(2) Run make with no arguments."
 	echo "(3) Run ${su_command} make install."
+	echo "(4) Run the learn script."
 fi
