@@ -1385,7 +1385,7 @@ EOL
 		sorry
 		echo "Can't find a file called \"${LUS_HOME}/blue-stripe/archive-one.tar.gz\"."
 		echo "Did you create the archive file with exactly the right name?"
-		echo "UNIX is case sensitive."
+		echo "UNIX is (usually) case sensitive."
 	fi
 
 	if [ -d "${LUS_HOME}/blue-stripe/to-archive-extract-check" ]; then

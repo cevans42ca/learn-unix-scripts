@@ -850,6 +850,11 @@ EOL
 	fi
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Before we make directories, you should be aware of the differences between Unix and Windows.  Older versions of Windows
+allowed a file and a directory in the same place to have the same name.  That's no longer allowed, and was never allowed
+in Unix.  Unix (except for Mac) is case sensitive, so a file called "File" is not the same file as a file called "file".
+These two examples can be in the same directory at the same time (but not on Mac).
+
 The "mkdir" command creates directories.  Given what you know about "." and "..", think about the following commands.
 
 EOL
@@ -976,10 +981,11 @@ that start with a dash.
 The other special characters that aren't allowed on Windows are a little easier to work with, though you'll need to put the
 file name in single quotes (not double quotes).  We'll do more with single quotes and double quotes soon.
 
-Another thing to keep in mind is that Unix filesystems are usually case-sensitive.  If you create a file called test and try
-to open a file called Test, you will receive an error that the file cannot be found.
+Remember that Unix filesystems are usually case sensitive.  If you create a file called test and try to open a file
+called Test, you should expect to receive an error that the file cannot be found.
 
-Execute the following commands, remembering that Unix is case sensitive.  It will create a new file with the filename "yellow".
+Execute the following commands, remembering that Unix is (usually) case sensitive.  It will create a new file with the
+filename "yellow".
 
 EOL
 
