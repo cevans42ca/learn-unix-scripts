@@ -87,6 +87,7 @@ if [ "${BASH_VERSINFO:-0}" -lt "4" ]; then
 		if [ "$homebrew" -le "4" ]; then
 			echo "Associative array support, added in Bash 4.0, is required.  Homebrew bash not found either."
 			echo "If you have a Mac, install Homebrew, then install bash."
+			echo "For FreeBSD:  run pkg install bash."
 			exit 4
 		#else
 			#echo "Homebrew bash installed."
@@ -94,6 +95,7 @@ if [ "${BASH_VERSINFO:-0}" -lt "4" ]; then
 	else
 		echo "Associative array support, added in Bash 4.0, is required."
 		echo "If you have a Mac, install Homebrew, then install bash."
+		echo "For FreeBSD:  run pkg install bash."
 		exit 5
 	fi 
 fi 
