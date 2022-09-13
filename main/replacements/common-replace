@@ -96,6 +96,7 @@ exercises["green_belt_$((i++))"]="dir_stacks"
 
 i=1
 exercises["blue_stripe_$((i++))"]="archive_files"
+exercises["blue_stripe_$((i++))"]="archive_files_extract"
 exercises["blue_stripe_$((i++))"]="vi"
 
 declare -A belt_to_number

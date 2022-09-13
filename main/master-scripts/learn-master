@@ -2618,6 +2618,64 @@ EOL
 	complete_exercise
 }
 
+blue_stripe_exercise_archive_files_extract() { # Extracting archive files
+	prepareLusHome
+
+	if [ -f "${LUS_HOME}"/blue-stripe ]; then
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+This exercise uses the directory ${LUS_HOME}/blue-stripe, which already exists as a file.  You will need to move it or
+rename it by executing "mv $LUS_HOME/blue-stripe newname", then executing "learn" again.
+EOL
+
+		complete_exercise
+		exit 1
+	fi
+
+	mkdir -p "${LUS_HOME}/blue-stripe/from-archive-tmp/from-archive/dir1"
+	mkdir -p "${LUS_HOME}/blue-stripe/from-archive-tmp/from-archive/dir2"
+
+	echo "file7" > "${LUS_HOME}/blue-stripe/from-archive-tmp/from-archive/file7"
+	echo "file8" > "${LUS_HOME}/blue-stripe/from-archive-tmp/from-archive/file8"
+	echo "file9" > "${LUS_HOME}/blue-stripe/from-archive-tmp/from-archive/file9"
+	echo "file10" > "${LUS_HOME}/blue-stripe/from-archive-tmp/from-archive/dir1/file10"
+	echo "file11" > "${LUS_HOME}/blue-stripe/from-archive-tmp/from-archive/dir1/file11"
+	echo "file12" > "${LUS_HOME}/blue-stripe/from-archive-tmp/from-archive/dir2/file12"
+
+	set +e
+	diff <( cd ~/lus/blue-stripe/from-archive-tmp && find . -print | sort ) <(cat <<EOL
+.
+./from-archive
+./from-archive/dir1
+./from-archive/dir1/file10
+./from-archive/dir1/file11
+./from-archive/dir2
+./from-archive/dir2/file12
+./from-archive/file7
+./from-archive/file8
+./from-archive/file9
+EOL
+)
+	if [[ $? == "1" ]]; then
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Unexpected files found in ${LUS_HOME}/blue-stripe/from-archive-tmp.  Please move or rename this directory with
+mv "${LUS_HOME}/blue-stripe/from-archive-tmp" newname.
+EOL
+
+		complete_exercise
+		exit 2
+	fi
+	set -e
+
+	( cd "${LUS_HOME}/blue-stripe/from-archive-tmp" && tar czf ../archive-two.tar.gz from-archive )
+	rm -Rf "${LUS_HOME}/blue-stripe/from-archive-tmp"
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+We created an archive file called archive-two.tar.gz in ${LUS_HOME}/blue-stripe/.  Go to the directory where it is and extract it right there.
+EOL
+
+		complete_exercise
+}
+
 blue_stripe_exercise_vi() { # Introducion to vi
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 It's time to start talking about making changes to text files.
