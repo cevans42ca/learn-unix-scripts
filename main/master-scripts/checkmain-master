@@ -1393,6 +1393,45 @@ EOL
 	fi
 }
 
+blue_stripe_exercise_archive_files_extract() {
+	if [ -d "${LUS_HOME}/blue-stripe/from-archive" ]; then
+		set +e
+		diff -q <( cd "${LUS_HOME}/blue-stripe/from-archive" && find . -type f -print -exec grep -Hin ".*" {} \; | sort ) <(cat <<EOL
+./dir1/file10
+./dir1/file10:1:file10
+./dir1/file11
+./dir1/file11:1:file11
+./dir2/file12
+./dir2/file12:1:file12
+./file7
+./file7:1:file7
+./file8
+./file8:1:file8
+./file9
+./file9:1:file9
+EOL
+)
+
+		diff_result=$?
+		set -e
+		if [[ "${diff_result}" == "0" ]]; then
+			echo "You have successfully extracted the archive to the correct location."
+			good_work
+			success=1
+		else	
+			sorry
+			fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+There's unexpected data.  Please rename or move \"${LUS_HOME}/blue-stripe/from-archive\" and try again.
+EOL
+		fi
+	else
+		sorry
+		fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Unable to find \"${LUS_HOME}/blue-stripe/from-archive\", which should have been created when you extracted the archive.
+EOL
+	fi
+}
+
 ####################
 # End of exercises #
 ####################
