@@ -1432,10 +1432,134 @@ EOL
 	fi
 }
 
+blue_stripe_exercise_vi() { # Introducion to vi
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*vi([\ ]|$) ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
+blue_stripe_exercise_moving_around_in_vi() {
+	set +e
+	diff -q "${LUS_HOME}/blue-stripe/vi-intro.txt" <(cat <<EOL
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
+eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo,
+fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
+imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
+Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate
+eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
+enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
+viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
+eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo,
+fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
+imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
+Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate
+eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
+enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
+viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
+eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo,
+fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
+imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
+Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate
+eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
+enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
+viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
+eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo,
+fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
+imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
+Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate
+eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
+enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
+viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
+eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo,
+fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
+imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
+Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate
+eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
+enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
+viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
+eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo,
+fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
+imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
+Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate
+eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
+enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
+viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
+eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo,
+fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
+imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
+Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate
+eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
+enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
+viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
+eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo,
+fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
+imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
+Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate
+eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
+enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
+viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+EOL
+)
+
+	if [[ $? == "1" ]]; then
+		set -e
+		good_work
+	else
+		set -e
+		echo "The file hasn't been changed."
+		sorry
+	fi
+}
+
 ####################
 # End of exercises #
 ####################
 
+# Function definitions (Vim fold) {{{
 belt_complete() {
 	rank_exercises_completed=$RANK
 	rank_attained=$(getNextBelt $RANK)
@@ -1458,6 +1582,7 @@ belt_complete() {
 ###############################
 # End of function definitions #
 ###############################
+# }}}
 
 # Script execution begins here.  (Vim fold) {{{
 

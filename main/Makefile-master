@@ -32,6 +32,7 @@ replaced_scripts = main/dist/bin/learn main/dist/bin/checkmain main/dist/bin/che
 
 flags/replacetarget: $(scripts) main/replacements/* flags/configuretarget
 	main/replace-all
+	cp main/fmt-s.sh main/dist/bin
 	touch flags/replacetarget
 	@echo "Scripts prepared in ./main/dist/bin."
 

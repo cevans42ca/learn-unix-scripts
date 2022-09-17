@@ -2680,6 +2680,8 @@ blue_stripe_exercise_vi() { # Introducion to vi
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 It's time to start talking about making changes to text files.
 
+We included the following notes for general interest.
+
 In the very beginning was a text editor called ed.  It was replaced by em, which was replaced by ex (short for
 EXtended).
 
@@ -2700,7 +2702,7 @@ Vi and its many descendants appeal to a small group of people.
 
 EOL
 
-	fmt ${FMT_OPTIONS:-}$WIDTH -s <<EOL >> $fmt_file
+	fmt-s.sh $WIDTH <<EOL >> $fmt_file
 * People who grew up with it, who had nothing better
 * People who like a challenge (Of course I summited Everest!)
 * People who like to be challenged (What do you mean I can't ride a unicycle!?)
@@ -2709,7 +2711,7 @@ EOL
 * People who can remember what they put in multiple clipboards and macros, and what multiple bookmarks are for
 EOL
 
-	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH -d '.?!:' <<EOL >> $fmt_file
 
 It's more likely that these don't describe you.  Still, in some cases, vi might be all you have to work with.
 There are things you can do to cut down on all the memorization if you don't plan on being an expert:  only use
@@ -2719,6 +2721,200 @@ something, how to save, and how to close a file without saving (if you accidenta
 It's also good to know how to do these basic things in vi as programs may automatically open vi for you, expecting
 you to do something (but it's not too likely to happen on a modern Unix).  Modern Unixes will have an easier to
 use editor set up by default like "nano" on Linux or "ee" on FreeBSD.
+
+And now, the important bit:  what you really need to know (and what's on the test).
+
+First, we'll teach you how to escape from vi.  It can be difficult to tell that you're in vi, espcially if you're
+looking at a file that takes up the whole terminal.  If you see a header or footer, you're probably not in vi.
+
+Escaping from vi starts, rather naturally, with pressing the Escape key.  When you do that, you may not see anything.
+You might not see anything because it wasn't actually necessary, or because the version of vi you're using is old.
+Either way (or both ways) it does no harm to press it, and it may be necessary.
+
+Next, you need to press the colon ( : ).  Now you'll see something.  If you are, in fact, in vi and have pressed
+Escape first, when you press the colon key, you will see a colon at the bottom left of your screen.  The cursor will
+jump next to it.  Then you need to type a lowercase q (for quit).  If you see an uppercase Q next to the colon,
+press Backspace, check Caps Lock, and type a lowercase q.
+
+Next, type an exclamation point ( ! ), which is Shift+1 on most keyboards.  Then press Enter.  You'll get back to
+a prompt.
+
+Let's review.  Pressing Escape gets you out of insert mode (if you're in it).  We'll look at insert mode in the next
+lesson.  The colon starts an ex command.  (We talked about ex earlier in the lesson.)  The ex command "q!" means
+to quit without saving.
+
+That's how you escape from vi.  You should always have these notes handy.  In the next lesson, we'll look at making
+changes and saving.
+
+If you run vi with no arguments, it will create an empty buffer for you to start writing in.  Do that, then leave
+vi without saving.
+EOL
+
+	complete_exercise
+}
+
+blue_stripe_exercise_moving_around_in_vi() { # Moving around in vi
+	cat <<EOL > "${LUS_HOME}/blue-stripe/vi-intro.txt"
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
+eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo,
+fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
+imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
+Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate
+eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
+enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
+viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
+eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo,
+fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
+imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
+Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate
+eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
+enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
+viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
+eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo,
+fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
+imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
+Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate
+eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
+enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
+viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
+eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo,
+fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
+imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
+Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate
+eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
+enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
+viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
+eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo,
+fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
+imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
+Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate
+eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
+enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
+viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
+eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo,
+fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
+imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
+Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate
+eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
+enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
+viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
+eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo,
+fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
+imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
+Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate
+eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
+enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
+viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
+eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo,
+fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
+imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
+Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate
+eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
+enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
+viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+The vi editor has three different "modes".  Modes in software are widely criticised by user experience experts.  In
+particular, Larry Tesler at Apple had a vanity license plate that read "NOMODES".  You can read all about it online if
+you like.
+
+Newer descendents and clones of vi show "--- INSERT ---" in the bottom left of the screen when you're in insert mode.
+In older ones, you have to remember.  The Escape key takes you from insert mode to command mode.
+
+When you're in insert mode, what you type is put into a buffer.  It isn't added to a file until you save it (vi has
+that in common with most software).  Vi will keep changes in a swap file, so if you're connected to a computer over
+the internet and your internet connection drops, you may still be able to recover your unsaved changes.
+
+In almost all cases, you will be able to use the arrow keys to get around.  You should make a note that h, j, k, and l
+are available if the arrow keys don't work (probably due to incorrect terminal settings).
+
+EOL
+
+	fmt-s.sh $WIDTH <<EOL >> $fmt_file
+h - one character left
+j - one character down
+k - one character up
+l - one character right
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+These only work if Caps Lock is off.  They have completely different behaviour when capitalized.  (You don't need
+to know these.)
+
+EOL
+
+	fmt-s.sh $WIDTH <<EOL >> $fmt_file
+H - top of buffer/terminal
+J - join with next line
+K - open man on word at cursor
+L - bottom of buffer/terminal
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+Make a note:  if you suddenly start experiencing all sorts of strange things, you should press Escape and check that
+Caps Lock is off.
+
+You can go from command mode to insert mode by pressing i (lowercase I).  By default, you can't go back before where you
+started insert mode.  In other words, if you go into insert mode in the middle of a sentence and hold down Backspace,
+you will only wipe out the characters you typed after starting insert mode.  It depends on your settings though.
+
+In command mode, you can use the arrow keys or "hjkl" to get you where you need to go, then use "x" to delete one
+character and "i" to insert more text.
+
+In command mode, press colon to start an ex command.  We looked at "q!" before, which quits even if there are changes.
+Use the ex command "wq" to write and quit vi.  That's the bare minimum of what you need to make and save changes.
+
+ex commands:
+EOL
+
+	fmt-s.sh $WIDTH <<EOL >> $fmt_file
+w  - write (save) the file and keep vi open
+q  - quit, warn if there were changes
+q! - quit without saving
+wq - write (save) and quit
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+When you use "i", you might find that where you start typing is a bit awkward.  If that's the case, use "a" instead.
+Use vi to open the file "${LUS_HOME}/blue-stripe/vi-intro.txt".   You will pass the check if you make any changes and
+save the file, so make sure to try out both "i" and "a" to add text, returning to command mode with Escape each time.
+Also try out "x".
 EOL
 
 	complete_exercise
