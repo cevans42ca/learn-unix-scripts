@@ -2724,10 +2724,6 @@ EOL
 	complete_exercise
 }
 
-# TODO
-#https://stackoverflow.com/questions/37475833/does-tar-follow-either-the-posix-and-or-gnu-command-line-options-conventions
-
-
 ####################
 # End of exercises #
 ####################
