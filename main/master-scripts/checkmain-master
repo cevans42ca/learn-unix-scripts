@@ -1453,95 +1453,49 @@ blue_stripe_exercise_vi() { # Introducion to vi
 blue_stripe_exercise_moving_around_in_vi() {
 	set +e
 	diff -q "${LUS_HOME}/blue-stripe/vi-intro.txt" <(cat <<EOL
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
-eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
-montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
-eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo,
-fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
-imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
-Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate
-eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
-enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
-viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
-ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
-eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
-montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
-eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo,
-fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
-imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
-Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate
-eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
-enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
-viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
-ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
-eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
-montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
-eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo,
-fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
-imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
-Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate
-eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
-enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
-viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
-ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
-eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
-montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
-eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo,
-fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
-imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
-Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate
-eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
-enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
-viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
-ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
-eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
-montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
-eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo,
-fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
-imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
-Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate
-eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
-enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
-viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
-ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
-eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
-montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
-eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo,
-fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
-imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
-Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate
-eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
-enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
-viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
-ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
-eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
-montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
-eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo,
-fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
-imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
-Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate
-eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
-enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
-viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
-ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
-eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
-montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
-eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo,
-fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
-imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.
-Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate
-eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
-enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
-viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
-ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum malesuada ut
+quam at ullamcorper. Praesent cursus tellus in convallis pulvinar. Sed
+facilisis, urna nec venenatis mattis, orci ex consequat nibh, id aliquet diam
+lectus at turpis. Morbi porttitor bibendum sem ut faucibus. Interdum et
+malesuada fames ac ante ipsum primis in faucibus. Morbi ac sagittis dui. Aliquam
+fermentum magna nec faucibus imperdiet. In hac habitasse platea dictumst.
+Curabitur imperdiet lorem fringilla leo pellentesque, quis fermentum augue
+vestibulum. Nunc pellentesque in massa et cursus. Suspendisse at euismod leo, ac
+volutpat ex. Phasellus vel finibus diam.
+
+Pellentesque malesuada felis in justo pretium feugiat. Vivamus lobortis, urna
+nec rhoncus viverra, nulla quam semper ante, non vehicula orci tortor vitae
+eros. Donec eget eros faucibus, tristique sem non, condimentum arcu. Morbi quis
+bibendum magna. Ut bibendum purus nunc, non porta justo aliquam eget. Praesent
+vel odio quis tellus feugiat viverra. Pellentesque mollis et mauris in sagittis.
+
+Quisque suscipit efficitur nisi in tempor. Donec nulla quam, pretium ut dapibus
+vestibulum, iaculis ac ante. Ut facilisis ante ac imperdiet viverra. Vivamus
+lectus lectus, fermentum non turpis quis, facilisis congue metus. Nullam ut
+tellus vulputate, mattis est vitae, dapibus orci. Integer condimentum quis risus
+ac fringilla. Quisque efficitur posuere eleifend. Cras eget neque eget ante
+scelerisque imperdiet. Proin lorem lorem, malesuada non condimentum eu, accumsan
+at odio. Integer laoreet venenatis lacus, at iaculis massa venenatis ac.
+
+Vivamus iaculis et neque eu porta. Duis quam felis, placerat eu rhoncus a,
+feugiat nec neque. Duis rhoncus justo non lectus sollicitudin vulputate. Vivamus
+ac libero finibus, commodo lacus a, suscipit mi. Praesent lacinia ex arcu, at
+elementum eros ornare sed. Curabitur non nisi sapien. Suspendisse vehicula ex id
+congue laoreet. Duis posuere tortor a quam blandit, vel molestie ex aliquet.
+Vestibulum tempus lacus in diam viverra, sit amet semper lorem consectetur.
+Donec leo quam, tincidunt sed ipsum ac, posuere interdum felis. Nunc quis metus
+sit amet nunc feugiat consequat sit amet eget urna. Nullam bibendum convallis
+enim eu luctus. Aliquam vitae scelerisque augue, a ullamcorper enim. Nam
+hendrerit dui in nibh ornare, ut consequat lectus suscipit.
+
+Vestibulum molestie pellentesque sodales. Nunc tincidunt ipsum eu viverra
+tincidunt. Nulla facilisi. Etiam consequat finibus nibh, fermentum imperdiet
+libero dictum in. Sed erat ex, laoreet ut aliquam et, dapibus eu magna.
+Vestibulum at posuere arcu. Mauris a ligula at nisl tincidunt imperdiet. Quisque
+dapibus, turpis et ornare venenatis, tortor diam pretium ipsum, vitae semper
+lectus arcu ac est. Maecenas vestibulum risus eu lacinia blandit. Sed vel est
+sapien. Vestibulum et ullamcorper est, fermentum elementum sem. Aliquam et
+placerat sapien.
 EOL
 )
 
@@ -1552,6 +1506,17 @@ EOL
 		set -e
 		echo "The file hasn't been changed."
 		sorry
+	fi
+}
+
+blue_stripe_exercise_searching_in_vi() {
+	set +e
+	if grep -q "in tempor" "${LUS_HOME}/blue-stripe/vi-intro.txt"; then
+		set -e
+		sorry
+	else
+		set -e
+		good_work
 	fi
 }
 
