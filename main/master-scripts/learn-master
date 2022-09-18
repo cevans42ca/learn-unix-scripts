@@ -606,31 +606,75 @@ EOL
 
 	if [[ `pwd` == "$HOME" ]]; then
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-This exercise was going to ask you to go back to your home directory, but you're already there.  Use the "cd" command to
-change directory to somewhere else (like "cd /").  You can any one of the following commands to return to your home directory.
+This exercise was going to ask you to go back to your home directory, but you're already there.  Use a "cd" command (a
+command that begins with "cd") to change directory (like "cd /").  You can any one of the following commands to return
+to your home directory.  Since you're already in your home directory, you can run them, but they won't have any effect.
+
+If your home directory ($HOME) has a space in it (possible in Windows with Cygwin, Git Bash, MinGW, etc.) then you'll
+need to quote it.  If you have a space in your user name on a Windows machine and you plan to install some Unix-like
+software for Windows (like Cygwin, Git Bash, MingGW, etc.) you might want to keep that in mind.  In these cases, you'll
+want to stick to the first two.  We'll look at quoting in the next belt.
+
+EOL
+
+cat <<EOL >> $fmt_file
+cd
+cd ~
+cd $HOME
+cd ${HOME}/
+EOL
+
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
 Then execute ". check".
 EOL
 	else
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-Let's return to your home directory.  The following commands are equivalent.  Execute one of them, then execute ". check".
+Let's return to your home directory.  The following commands are equivalent.
+
+If your home directory ($HOME) has a space in it (possible in Windows with Cygwin, Git Bash, MinGW, etc.) then you'll
+need to quote it.  If that's the case, stick to the first two for now.  We'll look at quoting in the next belt.
+
+EOL
+
+cat <<EOL >> $fmt_file
+cd
+cd ~
+cd $HOME
+cd ${HOME}/
+EOL
+
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Execute one of them, then execute ". check".
 EOL
 	fi
-
-	echo "" >> $fmt_file
-	echo "cd" >> $fmt_file
-	echo "cd ~" >> $fmt_file
-	echo "cd $HOME" >> $fmt_file
-	echo "cd ${HOME}/" >> $fmt_file
 
 	complete_exercise
 }
 
 white_belt_exercise_set() { # The "set" Command
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-There are four ways to pass settings to programs:  environment variables, arguments, standard input, and configuration files.
+Usually, programs need some information from us on what they need to do.  The "cp" (CoPy) program needs to know what we
+want to copy and where to put the copy.  Sometimes, programs don't need anything else.  The "clear" program clears the
+screen.  You don't need to give it anything more.  The "pwd" program doesn't need anything either.  If you execute "pwd"
+it will tell you the full path of your current directory.
 
-We will be looking at environment variables next.  The "set" command will show you the current environment variables.
-If you run it as is, most of the output will scroll past, but go ahead anyway and execute "set".
+In a previous exercise we executed "cd /".  We passed "/" as an argument to "cd" to create the command "cd /".
+
+Many references will use the term "command" to refer to a program.  In the case of a program that has no arguments, they
+are essentially the same thing.  Technically, a command is a program possibly followed by arguments.  These terms are
+often used interchangeably because it rarely causes confusion.
+
+There are four ways to pass settings to programs:  environment variables, arguments, standard input, and configuration
+files.
+
+We will be looking at environment variables next.  Environment variables are good if you have settings that you want to
+always use.  One commonly used environment variable is "EDITOR".  Many programs (like crontab and git) automatically
+open a text editor for you to make changes to something.  By setting an environment variable in your profile file, you
+can permanately set your preference.  (It's an example.  We're not going to be doing that right now.)
+
+The "set" command will show you the current environment variables.  If you run it as is, most of the output will scroll
+past, but go ahead anyway and execute "set".
 
 Remember to execute ". check" after.
 EOL
@@ -648,9 +692,10 @@ EOL
 
 white_belt_exercise_set_more() { # The "more" Command
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-To go page by page, add "| more" to a command.  The pipe ( | ) can be used to send the output of one command to the input
-of another command.  We'll be going into more detail on pipes later.  The pipe character is rarely used outside
-of technical fields.  On many keyboard layouts, you can type it with Shift+Backslash.
+To go page by page, add "| more" to a command.  The pipe ( | ) can be used to send the output of one command to the
+input of another command.  They are separate commands.  The pipe is not an argument to "set".  Our shell runs both
+programs and connects them together.  We'll be going into more detail on pipes much later.  The pipe character is rarely
+used outside of technical fields.  On many keyboard layouts, you can type it with Shift+Backslash.
 
 When you execute "set | more", you will be able to move a page at a time by pressing Space.  Move a line at a time by
 pressing Enter.  To quit before the end, press "q".  With some flavours of Unix, if you quit before the end, you will see
@@ -732,7 +777,7 @@ of the "check" script.  Normally, when you run a program, it runs in its own pro
 go more into detail about what a process is.
 
 Unix systems allow many people to do work on the same computer at the same time.  At any point in time, multiple people
-might be running the "ls" command.  We don't want these to get mixed up.  A process is a running* copy of a program.
+might be running an "ls" command.  We don't want these to get mixed up.  A process is a running* copy of a program.
 Processes allow Unix to keep the different running copies (or instances) of programs straight.
 
 Unix creates an entry in the process table for each copy or instance of all running programs.  You can think of the
@@ -1153,7 +1198,7 @@ lot of different situations.  Try out the following.
 
 EOL
 
-cat <<EOL >> $fmt_file
+	cat <<EOL >> $fmt_file
 echo "HOME"
 echo "\$HOME"
 echo '\$HOME'
@@ -2720,10 +2765,82 @@ EOL
 	rm -Rf "${LUS_HOME}/blue-stripe/from-archive-tmp"
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-We created an archive file called archive-two.tar.gz in ${LUS_HOME}/blue-stripe/.  Go to the directory where it is and extract it right there.
+We created an archive file called archive-two.tar.gz in ${LUS_HOME}/blue-stripe/.  Go to the directory where it is and
+extract it right there.
 EOL
 
-		complete_exercise
+	complete_exercise
+}
+
+blue_stripe_exercise_zip() { # Introduction to zip and unzip
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+The programs "zip" and "unzip" are easier to use than tar.  Because they're separate programs, you don't need the "x"
+or "c" options.  Because they compress by default, you don't need a "z" option.  You do need to remember to put the
+archive file first whether you're using zip or unzip, and you should only add directories to an archive (ideally
+exactly one) for the same reasons you would with tar.
+
+Because zip is a newer program, it works the same way as "cp", "mv", and "rm" in that you need to give it an option
+to "recurse", which will add directories and everything in them.  Unlike those other programs, you need to give zip
+the "-r" option instead of the "-R" option, which does something else.  Putting all of that together, here is the
+command you need to zip a directory called directoryname (and everything in it).
+
+zip -r archive.zip directoryname
+
+If you forget the -r, zip will add an empty directory to the archive, and you will see the following.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+[user@host dir]$ zip archive.zip to-archive/
+  adding: to-archive/ (stored 0%)
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+If you accidentally use -R instead of -r, you will see the following.
+
+
+EOL
+
+	cat <<EOL >> $fmt_file
+[user@host dir$ zip -R archive.zip to-archive
+
+zip error: Nothing to do! (archive.zip)
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+
+Moving on, to unzip a zip archive into the current directory, use the following command.
+
+unzip archive.zip
+
+EOL
+
+	set +e
+	if which zip > /dev/null 2>&1; then
+		set -e
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+The zip program is installed, so you'll be able to try out zip and unzip.  When you're done, source the "check" script
+as usual to move on.
+EOL
+		if [[ "${INSIDE_DOCKER:-0}" == "1" ]]; then
+			fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+You're using a Docker container, so only files and directories you put in $HOME/sandbox will be kept.  If you don't want
+to keep your experiments around for the next time you run a Docker container, put them in a different directory under
+$HOME.  Leave $HOME/lus for things the exercises ask you to do specifically.
+EOL
+		fi
+	else
+		set -e
+#		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+#Unfortunately, zip isn't installed here, so you won't be able to try it out.  Make a note of how to use it and then
+#source the "check" script as usual to move on.
+#EOL
+	fi
+
+	complete_exercise
 }
 
 blue_stripe_exercise_vi() { # Introducion to vi
@@ -2752,20 +2869,25 @@ Vi and its many descendants appeal to a small group of people.
 
 EOL
 
-	fmt-s.sh $WIDTH <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL | sed '/^$/d'  >> $fmt_file
 * People who grew up with it, who had nothing better
+  
 * People who like a challenge (Of course I summited Everest!)
+
 * People who like to be challenged (What do you mean I can't ride a unicycle!?)
+
 * People who don't like using a mouse because it's too slow
+
 * People who make fewer than 3 mistakes in 100 typed characters
+
 * People who can remember what they put in multiple clipboards and macros, and what multiple bookmarks are for
 EOL
 
-	fmt ${FMT_OPTIONS:-}$WIDTH -d '.?!:' <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
 It's more likely that these don't describe you.  Still, in some cases, vi might be all you have to work with.
 There are things you can do to cut down on all the memorization if you don't plan on being an expert:  only use
-one clipboard, one bookmark, and don't use macros.  Only memorize the basics: how to move around, how to change
+one clipboard, one bookmark, and don't use macros.  Only memorize the basics:  how to move around, how to change
 something, how to save, and how to close a file without saving (if you accidentally made a change you didn't want).
 
 It's also good to know how to do these basic things in vi as programs may automatically open vi for you, expecting
@@ -2778,8 +2900,8 @@ First, we'll teach you how to escape from vi.  It can be difficult to tell that 
 looking at a file that takes up the whole terminal.  If you see a header or footer, you're probably not in vi.
 
 Escaping from vi starts, rather naturally, with pressing the Escape key.  When you do that, you may not see anything.
-You might not see anything because it wasn't actually necessary, or because the version of vi you're using is old.
-Either way (or both ways) it does no harm to press it, and it may be necessary.
+If you don't see anything happen, that might be because it wasn't actually necessary, or because the version of vi
+you're using is old.  Either way (or both ways) it does no harm to press it, and it may be necessary.
 
 Next, you need to press the colon ( : ).  Now you'll see something.  If you are, in fact, in vi and have pressed
 Escape first, when you press the colon key, you will see a colon at the bottom left of your screen.  The cursor will
@@ -2796,8 +2918,8 @@ to quit without saving.
 That's how you escape from vi.  You should always have these notes handy.  In the next lesson, we'll look at making
 changes and saving.
 
-If you run vi with no arguments, it will create an empty buffer for you to start writing in.  Do that, then leave
-vi without saving.
+If you execute vi with no arguments, it will create an empty buffer for you to start writing.  Do that, then escape
+from vi (leave vi without saving).
 EOL
 
 	complete_exercise
@@ -2811,19 +2933,20 @@ The vi editor has three different "modes".  Modes in software are widely critici
 particular, Larry Tesler at Apple had a vanity license plate that read "NOMODES".  You can read all about it online if
 you like.
 
-Newer descendents and clones of vi show "--- INSERT ---" in the bottom left of the screen when you're in insert mode.
+Newer descendents and clones of vi show "--- INSERT ---" in the bottom left of the terminal when you're in insert mode.
 In older ones, you have to remember.  The Escape key takes you from insert mode to command mode.
 
 When you're in insert mode, what you type is put into a buffer.  It isn't added to a file until you save it (vi has
 that in common with most software).  Vi will keep changes in a swap file, so if you're connected to a computer over
 the internet and your internet connection drops, you may still be able to recover your unsaved changes.
 
-In almost all cases, you will be able to use the arrow keys to get around.  You should make a note that h, j, k, and l
-are available if the arrow keys don't work (probably due to incorrect terminal settings).
+In almost all cases, you will be able to use the arrow keys to get around.  You should make a note (and always keep it
+with you) that h, j, k, and l are available if the arrow keys don't work (probably due to incorrect terminal settings).
+These keys also work in less and other programs.
 
 EOL
 
-	fmt-s.sh $WIDTH <<EOL >> $fmt_file
+	cat <<EOL >> $fmt_file
 h - one character left
 j - one character down
 k - one character up
@@ -2837,7 +2960,7 @@ to know the following.)
 
 EOL
 
-	fmt-s.sh $WIDTH <<EOL >> $fmt_file
+	cat <<EOL >> $fmt_file
 H - top of buffer/terminal
 J - join with next line
 K - open man on word at cursor
@@ -2862,7 +2985,7 @@ Use the ex command "wq" to write and quit vi.  That's the bare minimum of what y
 ex commands:
 EOL
 
-	fmt-s.sh $WIDTH <<EOL >> $fmt_file
+	cat <<EOL >> $fmt_file
 w  - write (save) the file and keep vi open
 q  - quit, warn if there were changes
 q! - quit without saving
@@ -2953,8 +3076,8 @@ At the bottom of the text (or immediately if all the text fits) the prompt will 
 (or quit if it's the end of the lesson).  Once you're done reading all the text (including right now) press "q".
 EOL
 
-	# When using these scripts through SSH, not clearing the screen first can make it seem like a bunch of text went by and
-	# was lost.  The student can feel like they accidentally pressed q twice and missed something.  Clearing the screen
+	# When using these scripts through SSH, not clearing the terminal first can make it seem like a bunch of text went by and
+	# was lost.  The student can feel like they accidentally pressed q twice and missed something.  Clearing the terminal
 	# before each invocation of less for the welcome text helps to prevent that.
 	clear
 	less -R -P "$less_prompt_move_on" $fmt_file
@@ -3041,8 +3164,8 @@ EOL
 
 	echo "" >> $fmt_file
 
-	# When using these scripts through SSH, not clearing the screen first can make it seem like a bunch of text went by and
-	# was lost.  The student can feel like they accidentally pressed q twice and missed something.  Clearing the screen
+	# When using these scripts through SSH, not clearing the terminal first can make it seem like a bunch of text went by and
+	# was lost.  The student can feel like they accidentally pressed q twice and missed something.  Clearing the terminal
 	# before each invocation of less helps to prevent that.
 	clear
 	less -R -P "$less_prompt_move_on" $fmt_file

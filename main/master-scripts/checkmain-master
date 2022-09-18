@@ -1432,6 +1432,10 @@ EOL
 	fi
 }
 
+blue_stripe_exercise_zip() { # Introduction to zip and unzip
+	keep_going
+}
+
 blue_stripe_exercise_vi() { # Introducion to vi
 	IFS='
 '

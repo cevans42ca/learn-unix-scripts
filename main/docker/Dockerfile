@@ -24,8 +24,10 @@ RUN apk add ncurses
 # For man magic
 RUN apk add file-doc
 
+RUN apk add zip
+
 # Various documentation
-RUN apk add mandoc man-pages mandoc-apropos less less-doc
+RUN apk add mandoc man-pages mandoc-apropos less less-doc zip-doc unzip-doc
 RUN apk add bash-doc busybox-doc mandoc-apropos coreutils-doc
 
 FROM base AS branch-version-single

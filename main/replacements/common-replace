@@ -97,6 +97,7 @@ exercises["green_belt_$((i++))"]="dir_stacks"
 i=1
 exercises["blue_stripe_$((i++))"]="archive_files"
 exercises["blue_stripe_$((i++))"]="archive_files_extract"
+exercises["blue_stripe_$((i++))"]="zip"
 exercises["blue_stripe_$((i++))"]="vi"
 exercises["blue_stripe_$((i++))"]="moving_around_in_vi"
 exercises["blue_stripe_$((i++))"]="searching_in_vi"
