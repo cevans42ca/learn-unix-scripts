@@ -10,7 +10,7 @@ The first screen shown to the student describes and demonstrates how the materia
 
 ![A screenshot of the very first screen the user sees](./Welcome-Cygwin-Windows-10.png?raw=true)
 
-The second screenshot is what the user sees after pressing "q".  It's from Terminus on an iPhone (with the Pro theme) connected to an Ubuntu server running in AWS.
+The second screenshot is what the user sees after pressing "q".  It's from Terminus on an iPhone (with the Pro theme) connected to an Ubuntu server running in AWS.  You might notice that the previous screenshot didn't have "Beginner Ranks" underlined but the next screenshot does have "Advanced Ranks" underlined.  What features are available are up to the terminal and terminal settings.  You can use the verify script to check terminal features that are required for the exercises.
 
 <p align="center">
 <img src="./Terminus-iPhone-Welcome-Beginner.png" alt="Beginner Material Summary" width="600"/>
