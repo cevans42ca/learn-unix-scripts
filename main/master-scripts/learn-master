@@ -376,7 +376,7 @@ the "c" key.  Do not use either Shift key.)  There are only a few cases where ty
 and return you to a prompt.  We will be covering two of these soon.  Make a note of it.
 
 For now, it's a good thing that Ctrl+c will get you out of most situations.  Later, you will learn to be more careful
-about using Ctrl+c, and you will learn other things you might want to try first.
+about using Ctrl+c, and we will go over other things you might want to try first.
 
 EOL
 
@@ -2674,10 +2674,12 @@ EOL
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
 Always put the archive file next.  If you're creating an archive, follow that with one or more directories.  Don't add
-files (without a directory) to a tar archive:  that's called a tarbomb.  It can also lead to the first file getting wiped
-if you're not careful.  Well constructed tar files are expected by the community to have one or more directories
+files (without a directory) to a tar archive:  that's called a tarbomb.  It can also lead to the first file getting
+wiped if you're not careful.  Well constructed tar files are expected by the community to have one or more directories
 (ideally one) so if an unsuspecting person untars your archive and finds a bunch of files mixed in, it's a pain to move
-them all where they need to go.  (Especially if there are other files already in the directory.)
+them all where they need to go.  (Especially if there are other files already in the directory.)  If you don't have a
+directory where all the files are, make one.  If you have a lot of large files that you don't want to move or copy into
+a directory to tar them, check tar's man page for options.
 
 Your current directory matters.  Let's say you're in /home/user/ and you want to add /home/user/abc/def to an archive.
 The "abc" directory will be added too, so when you unarchive the file, you'll get an "abc" directory with a "def"
