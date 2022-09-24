@@ -1529,6 +1529,10 @@ blue_stripe_exercise_searching_in_vi() {
 }
 
 blue_stripe_exercise_wrap_up_of_vi() {
+	keep_going
+}
+
+blue_stripe_exercise_nano_and_ee() {
 	if ask_review_final_exam; then
 		keep_going
 		return 0

@@ -2904,7 +2904,7 @@ EOL
 	complete_exercise
 }
 
-blue_stripe_exercise_vi() { # Introducion to vi
+blue_stripe_exercise_vi() { # Introduction to vi
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 It's time to start talking about making changes to text files.
 
@@ -2912,6 +2912,8 @@ We included the following notes for general interest.
 
 In the very beginning was a text editor called ed.  It was replaced by em, which was replaced by ex (short for
 EXtended).
+
+As usual, the history lesson is not on the test.
 
 "Ed" and "em" are gone, but "ex" is still around as a helper program for other programs to use.  Ex works on a
 set of lines at a time and only displays the lines you asked for, when you ask for them.  That may be difficult
@@ -2953,23 +2955,24 @@ There are things you can do to cut down on all the memorization if you don't pla
 one clipboard, one bookmark, and don't use macros.  Only memorize the basics:  how to move around, how to change
 something, how to save, and how to close a file without saving (if you accidentally made a change you didn't want).
 
-It's also good to know how to do these basic things in vi as programs may automatically open vi for you, expecting
-you to do something (but it's not too likely to happen on a modern Unix).  Modern Unixes will have an easier to
-use editor set up by default like "nano" on Linux or "ee" on FreeBSD.
+It's also good to know how to do these basic things in vi as programs may automatically open vi for you, expecting you
+to do something.  Modern Unixes with helpful system administrators will provide an easier to use editor like "nano" on
+Linux or "ee" on FreeBSD.
 
 And now, the important bit:  what you really need to know (and what's on the test).
 
 First, we'll teach you how to escape from vi.  It can be difficult to tell that you're in vi, espcially if you're
-looking at a file that takes up the whole terminal.  If you see a header or footer, you're probably not in vi.
+looking at a file that takes up the whole terminal.
 
 Escaping from vi starts, rather naturally, with pressing the Escape key.  When you do that, you may not see anything.
 If you don't see anything happen, that might be because it wasn't actually necessary, or because the version of vi
-you're using is old.  Either way (or both ways) it does no harm to press it, and it may be necessary.
+you're using is old.  Either way (or both ways) it does no harm to press it, and it may be necessary.  In fact, the
+Escape key is the only safe key to press in vi.
 
-Next, you need to press the colon ( : ).  Now you'll see something.  If you are, in fact, in vi and have pressed
-Escape first, when you press the colon key, you will see a colon at the bottom left of your screen.  The cursor will
-jump next to it.  Then you need to type a lowercase q (for quit).  If you see an uppercase Q next to the colon,
-press Backspace, check Caps Lock, and type a lowercase q.
+Next, you need to type a colon ( : ).  Now you'll see something.  If you are, in fact, in vi and have pressed Escape
+first, when you press Shift and semicolon to make a colon, you will see a colon at the bottom left of your screen.  The
+cursor will jump next to it.  Then you need to type a lowercase q (for quit).  If you see an uppercase Q next to the
+colon, press Backspace, check Caps Lock, and type a lowercase q.
 
 Next, type an exclamation point ( ! ), which is Shift+1 on most keyboards.  Then press Enter.  You'll get back to
 a prompt.
@@ -3112,11 +3115,57 @@ suddenly somewhere you didn't expect to be in your file, type two backticks to g
 
 The backtick ( \` ) is usually on the same key as tilde ( ~ ), just above Tab.
 
-If vi is something you'd like to master, start by opening vi and typing ":help" (without the quotes).
+If vi is something you'd like to master (now or later) open vi, type ":help" (without the quotes) and Enter.
+
+Further exploration of vi is up to you, so the check script doesn't check anything this time.  When you're ready to move
+on, source the check script.
+EOL
+
+	complete_exercise
+}
+
+blue_stripe_exercise_nano_and_ee() { # Nano and ee
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Nano and ee are popular editors for beginners.  Nano tends to be installed on Linux systems, and ee tends to be
+installed on FreeBSD.  Both of them show help information prominently on the screen (which is different from vi).  Nano
+expects you to know that ^X is a short form for Ctrl+x (and likewise, ^G is a short form for Ctrl+g).  In contrast, ee
+displays some text explaining it.  When you run the command "nano" on a Mac, you may get Pico instead, which shows ^X as
+what you need to type to exit, but actually it's a lowercase x that you need to use.  Depending on the version of nano
+you have, you might be able to use both Ctrl+Shift+x (Ctrl+X) and Ctrl+x to exit.
+
+EOL
+
+	set +e
+	if which nano > /dev/null 2>&1; then
+		if which ee > /dev/null 2>&1; then
+			fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Aren't you lucky!  Both nano and ee are installed here, so you can try both of them out.  If you run them with no
+arguments, they'll open an empty document for you to start writing in.
+EOL
+		else
+			fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Nano is installed here, so you can try it out.  If you run it with no arguments, it will open an empty document for you
+to start writing in.
+EOL
+		fi
+	else
+		if which ee > /dev/null 2>&1; then
+			fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+The ee (easy editor) program is installed here, so you can try it out.  If you run it with no arguments, it will open an
+empty document for you to start writing in.
+EOL
+		else
+			fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Tough break.  Neither nano nor ee is installed here.
+EOL
+		fi
+	fi
+	set -e
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
 When you're ready for the final exam, source the check script as usual.
 EOL
-
 	complete_exercise
 }
 
