@@ -101,6 +101,7 @@ exercises["blue_stripe_$((i++))"]="zip"
 exercises["blue_stripe_$((i++))"]="vi"
 exercises["blue_stripe_$((i++))"]="moving_around_in_vi"
 exercises["blue_stripe_$((i++))"]="searching_in_vi"
+exercises["blue_stripe_$((i++))"]="wrap_up_of_vi"
 
 declare -A belt_to_number
 belt_to_number["white_belt"]=0

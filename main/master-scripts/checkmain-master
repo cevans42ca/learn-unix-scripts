@@ -1235,7 +1235,7 @@ EOL
 	if [ "$luc_correct_answers" == "5" ]; then
 		good_work
 	else
-		echo "Results:  $luc_correct_answers out of 6 correct"
+		echo "Results:  $luc_correct_answers out of 5 correct"
 		echo ""
 		sorry
 	fi
@@ -1521,6 +1521,100 @@ blue_stripe_exercise_searching_in_vi() {
 	else
 		set -e
 		good_work
+	fi
+}
+
+blue_stripe_exercise_wrap_up_of_vi() {
+	if ask_review_final_exam; then
+		keep_going
+		return 0
+	fi
+
+	luc_correct_answers=0
+
+	# Question 1
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 1/7
+
+Which of the following commands creates a tar archive called archive.tar.gz and fills it with the contents of dir1?
+
+EOL
+
+	luc_answers=( 'tar czf archive.tar.gz dir1' 'tar -cfz archive.tar.gz dir1' 'tar xvzf archive.tar.gz dir1' 'tar xzf archive.tar.gz dir1' 'tar --feather archive.tar.gz' )
+	handle_answer 'tar czf archive.tar.gz dir1'
+
+	# Question 2
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 2/7
+
+Which of the following commands extracts a tar archive called archive.tar.gz?
+
+EOL
+
+	luc_answers=( 'tar xzf archive.tar.gz' 'tar -xfz archive.tar.gz dir1' 'tar cvzf archive.tar.gz' 'tar czf archive.tar.gz' 'solvent' )
+	handle_answer 'tar xzf archive.tar.gz'
+
+	# Question 3
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 3/7
+
+Which of the following commands creates a zip archive called "archive.zip" that contains the contents of dir1?
+
+EOL
+
+	luc_answers=( 'zip -r archive.zip dir1' 'zip archive.zip dir1' 'unzip -r archive.zip dir1' 'unzip archive.zip dir1' 'Coat' )
+	handle_answer 'zip -r archive.zip dir1'
+
+	# Question 4
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 4/7
+
+Which of the following commands unzips a zip archive called "archive.zip" into the current directory?
+
+EOL
+
+	luc_answers=( 'zip -r archive.zip' 'zip archive.zip' 'unzip -r archive.zip' 'unzip archive.zip' 'Jacket' )
+	handle_answer 'unzip archive.zip'
+
+	# Question 5
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 5/7
+
+How do you "escape" from vi (quit without saving)?
+
+EOL
+
+	luc_answers=( 'Escape :q! Enter' 'Escape Escape' 'Keep pressing Escape until vi gives up' 'Escape :wq Enter' )
+	handle_answer 'Escape :q! Enter'
+
+	# Question 6
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 6/7
+
+How do you save and quit vi?
+
+EOL
+
+	luc_answers=( 'Escape :q! Enter' 'Escape Escape' 'Keep pressing Escape until vi gives up' 'Escape :wq Enter' )
+	handle_answer 'Escape :wq Enter'
+
+	# Question 7
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 7/7
+
+What do you type to search in vi (in normal mode, not in insert mode)?
+
+EOL
+
+	luc_answers=( '/ (Slash)' ': (Colon)' '| (Pipe)' '~ (Tilde)' )
+	handle_answer '/ (Slash)'
+
+	if [ "$luc_correct_answers" == "7" ]; then
+		good_work
+	else
+		echo "Results:  $luc_correct_answers out of 7 correct"
+		echo ""
+		sorry
 	fi
 }
 

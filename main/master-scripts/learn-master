@@ -2637,8 +2637,11 @@ EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 are quite different.  The first example uses "archive.tar.gz" as the value for option "f" and recognizes the option "z"
-(so it will compress the data and store it in archive.tar.gz).  The second example uses "z" as the value for option "f":
-which means the data will be stored in a file called "z", and it won't be compressed.
+(so it will compress the data and store it in archive.tar.gz).
+
+The second example uses "z" as the value for option "f": which means the data will be stored in a file called "z", and
+it won't be compressed.  Next, tar will try to add "archive.tar.gz" to the "z" archive.  If "archive.tar.gz" doesn't
+exist, then tar will fail with an error.
 
 Another common mistake is to use the "f" option but put the destination file last (the same way most commands work).
 Consider the following command line.
@@ -2647,7 +2650,7 @@ tar cvzf one two three archive.tar.gz
 
 This situation is the worst one to be in.  We told tar to use the file called "one" as the archive file, because it's
 after the "f" option.  Tar wipes out the data in the "one" file, adds "two" and "three" to a new archive called "one",
-and then crashes as archive.tar.gz doesn't exist.
+and crashes, as archive.tar.gz doesn't exist.
 
 If no file is provided and the output isn't piped to another command (we'll look at pipes next belt) the archive
 could be dumped to the terminal (which may force you to terminate your terminal).
@@ -2887,6 +2890,8 @@ EOL
 * People who make fewer than 3 mistakes in 100 typed characters
 
 * People who can remember what they put in multiple clipboards and macros, and what multiple bookmarks are for
+
+* People who believe that they only get a certain number of keystrokes before they die
 EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
@@ -2940,7 +2945,7 @@ particular, Larry Tesler at Apple had a vanity license plate that read "NOMODES"
 you like.
 
 Newer descendents and clones of vi show "--- INSERT ---" in the bottom left of the terminal when you're in insert mode.
-In older ones, you have to remember.  The Escape key takes you from insert mode to command mode.
+In older ones, you have to remember.  The Escape key takes you from insert mode to normal mode.
 
 When you're in insert mode, what you type is put into a buffer.  It isn't added to a file until you save it (vi has
 that in common with most software).  Vi will keep changes in a swap file, so if you're connected to a computer over
@@ -2978,14 +2983,14 @@ EOL
 Make a note:  if you suddenly start experiencing all sorts of strange things, you should press Escape and check that
 Caps Lock is off.
 
-You can go from command mode to insert mode by pressing i (lowercase I).  By default, you can't go back before where you
+You can go from normal mode to insert mode by pressing i (lowercase I).  By default, you can't go back before where you
 started insert mode.  In other words, if you go into insert mode in the middle of a sentence and hold down Backspace,
 you will only wipe out the characters you typed after starting insert mode.  It depends on your settings though.
 
-In command mode, you can use the arrow keys or "hjkl" to get you where you need to go, then use "x" to delete one
+In normal mode, you can use the arrow keys or "hjkl" to get you where you need to go, then use "x" to delete one
 character and "i" to insert more text.
 
-In command mode, press colon to start an ex command.  We looked at "q!" before, which quits even if there are changes.
+In normal mode, press colon to start an ex command.  We looked at "q!" before, which quits even if there are changes.
 Use the ex command "wq" to write and quit vi.  That's the bare minimum of what you need to make and save changes.
 
 ex commands:
@@ -3002,7 +3007,7 @@ EOL
 
 When you use "i", you might find that where you start typing is a bit awkward.  If that's the case, use "a" instead.
 Use vi to open the file "${LUS_HOME}/blue-stripe/vi-intro.txt".   You will pass the check if you make any changes and
-save the file, so make sure to try out both "i" and "a" to add text, returning to command mode with Escape each time.
+save the file, so make sure to try out both "i" and "a" to add text, returning to normal mode with Escape each time.
 Also try out "x".
 EOL
 
@@ -3021,14 +3026,43 @@ key.
 
 Don't confuse it with backslash ( \ ), which is usually above the Enter or Return key.
 
-After you type the slash (in command mode) you type what you want to find.  Modern versions of vi will find the next
+After you type the slash (in normal mode) you type what you want to find.  Modern versions of vi will find the next
 match from the cursor position as you type each character.  For now, avoid using punctuation in your search.  Special
 characters (anything except letters, numbers, and spaces) need to be escaped, and it's not done the same way you escape
 characters for your shell.
 
-Open the same file as before in vi ("${LUS_HOME}/blue-stripe/vi-intro.txt").  This time, press slash in command mode (vi
-starts in command mode).  Look for the words "in tempor", delete them by pressing "x" (in command mode) until they're
-gone and save the file and quit.
+Open the same file as before in vi ("${LUS_HOME}/blue-stripe/vi-intro.txt").  This time, press slash in normal mode (vi
+starts in normal mode).  Look for the words "in tempor", delete them by pressing "x" (in normal mode) until they're
+gone.  Save the file and quit.
+EOL
+
+	complete_exercise
+}
+
+blue_stripe_exercise_wrap_up_of_vi() { # Wrap up of vi
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+You may be thinking of vi as a relic of the past, and it is.  But it can also be very powerful and fast.  In normal
+mode, every lowercase letter does something and every uppercase letter does something.  If you don't like what they do,
+you can change it.  You can provide a "motion" to most commands that can be complex, like "d2w" to delete two words
+or "y2w" to "yank" (copy) two words.  Paste the text by pressing "p" (or "P" for before the cursor position).
+Turn on even more speed by typing Ctrl+[ instead of Escape so you don't have to move your hands every time you leave
+insert mode.
+
+Set a bookmark with two keystrokes.  Go there with two keystrokes.  A single period lets you repeat what you just did
+somewhere else at the place where your cursor is now.  Ex commands let you delete all lines matching (or not matching)
+a pattern.  Do a complex search and replace in five more keystrokes than it takes to type in the search and replace parts.
+If you master it, you will be pleasantly surprised to find it on pretty much any Unix-like OS.
+
+It comes at a cost though.  If you mistype something, you may end up careening wildly through your file, making changes
+you didn't intend to make.  Modern clones and descendants have an unlimited undo buffer, so if you recognize it quickly,
+you can press Escape, check the Caps Lock key, and undo the changes by pressing "u" until you're done.  If you're
+suddenly somewhere you didn't expect to be in your file, type two backticks to go back to where you were.
+
+The backtick ( \` ) is usually on the same key as tilde ( ~ ), just above Tab.
+
+If vi is something you'd like to master, start by opening vi and typing ":help" (without the quotes).
+
+When you're ready for the final exam, source the check script as usual.
 EOL
 
 	complete_exercise
