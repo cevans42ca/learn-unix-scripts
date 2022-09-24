@@ -148,10 +148,13 @@ case "${luc_choice}" in
 		echo 'export INSTALL_PATH="/usr/local/bin"' >> config.status
 		luc_choice_2=2
 		;;
-	l3*)
+	*3*)
 		echo 'export INSTALL_PATH="/usr/local/bin"' >> config.status
 		luc_choice_2=3
 		custom_install=1
+		;;
+	*)
+		exit 1
 		;;
 	esac
 	;;
