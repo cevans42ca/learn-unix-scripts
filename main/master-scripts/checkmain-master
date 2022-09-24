@@ -1118,6 +1118,10 @@ EOL
 	fi
 }
 
+green_belt_exercise_ctrl_l() {
+	keep_going
+}
+
 green_belt_exercise_ls_a_alias() {
 	IFS='
 '

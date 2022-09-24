@@ -2179,9 +2179,9 @@ We're going to take a brief look at a few of the layers of a Unix operating syst
 We're going to go deeper than that, though.  What is a computer?  What picture comes to your mind?  Depending on
 your experience with computers, you might think of a laptop, or a desktop.  You might have seen pictures or a
 short video clip of an aisle between rows of clear cabinets housing thousands of small, twinkling blue lights and
-many thick wires.  You might not think of a modern phone or a smartwatch, but these are also computers.  They also
+many thick wires.  You might not think of a modern phone or a smart watch, but these are also computers.  They also
 likely run some kind of Unix.  A computer might be a server, in which case it probably doesn't have a monitor,
-keyboard, or mouse, but receives requests from a network (perhaps for a webpage) and replies the same way.
+keyboard, or mouse, but receives requests from a network (perhaps for a webpage) and replies over the network.
 
 When reduced to the essentials, a computer is a machine that follows instructions.  The part that carries out those
 instructions is the CPU or Central Processing Unit.  The CPU is hardware, which means it's a physical component that
@@ -2194,7 +2194,7 @@ RAM (Random Access Memory) is in the middle between the caches and the drives, o
 An operating system's kernel is usually described (and shown in diagrams) as running on top of the hardware.
 It acts as a personal assistant to the hardware, drawing up a schedule of meetings (determining who gets how much
 CPU time) and making sure the hardware isn't too heavily loaded.  The kernel decides who gets access to how much
-memory and swap space (drive space used to improve efficiency).
+memory and swap space.  Swap space is dedicated space on a drive used to improve efficiency.
 
 There's one last thing to cover before we look at Ctrl+c again, and that's signals.  In Unix, a process can send a
 signal to another process (which goes through the kernel).  The operating system can also send a signal to a process
@@ -2206,32 +2206,82 @@ These signal numbers also have names starting with "SIG", because humans remembe
 Signal 2 (SIGINT) is sent to a program when the user types Ctrl+c (and in other cases).  Although signal handling
 follows a general pattern, programs can do whatever they like with these signals, except for 9 (SIGKILL), which
 kills the process.  Programs never actually receive SIGKILL:  the operating system handles it.  Only a program
-running as the same user as the running program or root can send SIGKILL to a process.
+running as the same user as the running program, the operating system, or root can send SIGKILL to a process.
 
-At some point, perhaps soon, you're going to need to stop a process that's taking too long, or perhaps you realized
-that you didn't actually want to run it.  If we were getting a file listing, and it was taking too long because
-there were too many files, stopping it with Ctrl+c would be no problem.  The worst case is having to stop something
-that's changing files on a filesystem.  We're going to look at the copy command, cp.  All of the core utilities,
-including cp, don't give us any progress information.  System administrators get a sense of how long things will
-take as they work with a system, and they'll learn patience.  There are ways to see how a copy is proceeding,
-but looking at it will slow the copy down.
+At some point, perhaps soon, you're going to need to stop a process that's taking too long, or perhaps you realized that
+you didn't actually want to run it.  If we were getting a file listing, and it was taking too long because there were
+too many files, stopping it with Ctrl+c would be no problem.  (Though stopping a long file listing with Ctrl+c can take
+some time.)  The worst case is having to stop something that's changing files on a filesystem.  We're going to look at
+the copy command, cp.  All of the core utilities, including cp, don't give us any progress information.  System
+administrators get a sense of how long things will take as they work with a system, and they'll learn patience.  There
+are ways to see how a copy is proceeding, but looking at it will slow the copy down.
 
 Let's say that we need to stop a copy.  We type Ctrl+c.  Our terminal interprets that keystroke and sends signal 2
 (SIGINT, or interrupt) to the currently running process, which is "cp".  Chances are, cp is in the middle of copying
 a block of data, because the drive access is what takes most of the time for the copy.  Programs don't write to
 devices themselves.  If every program that needed to print something knew how to communicate with every printer, that
-would be a mess.  So the kernel of the operating system takes care of the details (in this case, printer drivers,
+would be a mess.  So the kernel of the operating system takes care of the details (in this example, printer drivers,
 but the example extends to all devices).  So the "cp" command asked the kernel to write some data, and it's waiting
 for that to finish.  The "cp" command can't take messages at the moment.  Once the block of data is written, the
 kernel notices that there's a pending signal for "cp", and sends it.  The "cp" command processes the signal and quits.
 
 Now, we have a partially written file, possibly with many other files that finished already.  If we were only copying
-one file, that wouldn't be too bad.  We could simply run the command again when it made sense.  Perhaps we needed
+one file, that wouldn't be too bad.  We could simply run the command again when it makes sense.  Perhaps we needed
 to bring the system down for a kernel update.  If we were copying a large directory, it would be best to start at
 the beginning, and have the "cp" command overwrite any files that it already copied.  The "rsync" command may be
 of some use in completing an unfinished copy, but that's out of the scope of these exercises.
 
 This exercise introduced a lot of material, so execute ". check" for a small quiz.
+EOL
+
+	complete_exercise
+}
+
+green_belt_exercise_ctrl_l() { # Ctrl+l
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+In the previous exercise, we looked at an example of when you don't want to type Ctrl+c.  Another handy keystroke to
+keep a note of is Ctrl+l (lowercase L).  It tells your terminal to clear the screen, which can be helpful in a lot
+of cases.  You should type Ctrl+l in all of the following cases.
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL | sed '/^$/d'  >> $fmt_file
+* You find yourself able to backspace over part of your prompt.
+
+* You think you should see a prompt but you don't.
+
+* You already typed Ctrl+q and you still can't see what you're typing.
+
+* You see a prompt but your cursor isn't next to it.
+
+* You typed some stuff but can't backspace over it.
+
+* There's stuff you didn't type between your prompt and your cursor.
+
+* You simply want to clear the screen.
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+Unlike Ctrl+c, Ctrl+l is safe.  Make a note of it and plan to memorize it.
+
+Like Ctrl+c, Ctrl+l has no easy way to remember it.  Typing Ctrl+l produces a character with the ASCII code of 12, which
+is equivalent to a form feed, which was originally a control code for printers.  A form feed would cause the printer to
+go to the next page.  This idea of a "next page" was brought into a terminal window as meaning "clear the screen" from
+the world of printer terminals, before terminals had screens.
+
+Ctrl+c is even more esoteric.  Check it out on Wikipedia* if you care.  The reasons why Ctrl+c and Ctrl+l are what they
+are don't connect with a modern audience.  It's harder to remember why they are what they are than to simply memorize
+them.
+
+* https://en.wikipedia.org/wiki/Control-C#In_command-line_environments
+
+Try out typing part of a command and then type Ctrl+l.  Try Ctrl+l without typing a command first.  If you type nothing
+at a command prompt and press Enter, you'll get another prompt.  That will help you fill up the screen so you can see
+something happen when you clear it.  Remember:  if you have part of a command and you don't want to execute it and/or
+you want to save it for later, type Ctrl+a, #, Enter.
+
+This time, the check script doesn't check anything.  It's up to you how much you want to try out Ctrl+l.
 EOL
 
 	complete_exercise
