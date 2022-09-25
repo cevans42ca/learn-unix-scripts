@@ -1281,6 +1281,8 @@ EOL
 						if [[ ! "$CHOICE" =~ ^\s*[Yy].* ]]; then
 							exit 2
 						fi
+
+						rm -f "${LUS_HOME}/blue-stripe/to-archive-extract-check"
 					fi
 
 					if [ -d "${LUS_HOME}/blue-stripe/to-archive-extract-check" ]; then
@@ -1623,6 +1625,97 @@ EOL
 		echo "Results:  $luc_correct_answers out of 7 correct"
 		echo ""
 		sorry
+	fi
+}
+
+blue_belt_exercise_intro_to_pipes() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*set[\ ]*\|[\ ]*wc[\ ][\ ]*-l$ ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
+blue_belt_exercise_stdout_and_stderr() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*set[\ ]*\|[\ ]*grep[\ ][\ ]*BASH[\ ]*$ ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
+blue_belt_exercise_chaining_pipes() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*set[\ ]*\|[\ ]*grep[\ ][\ ]*\^BASH[\ ]*\|[\ ]*wc[\ ][\ ]*-l$ ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
+blue_belt_exercise_cut() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		compressed_item=$(tr -s ' ' <<< "$item")
+		if [[ "$item" =~ ^[\ ]*set[\ ]*\|[\ ]*grep\ \^BASH[\ ]*\|[\ ]*cut\ -d\'=\'\ -f1[\ ]*$ ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
+blue_belt_exercise_redirection() {
+	if [ ! -f "${LUS_HOME}/blue-belt/bash-names" ]; then
+		sorry
+	else
+		set +e
+		if grep "^BASH$" "${LUS_HOME}/blue-belt/bash-names" > /dev/null 2>&1; then
+			if grep "^BASH_VERSION$" "${LUS_HOME}/blue-belt/bash-names" > /dev/null 2>&1; then
+				good_work
+			else
+				sorry
+			fi
+		else
+			sorry
+		fi
+		set -e
 	fi
 }
 
