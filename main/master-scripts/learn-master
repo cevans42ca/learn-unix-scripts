@@ -1213,7 +1213,7 @@ EOL
 	complete_exercise
 }
 
-yellow_stripe_exercise_escaping_quotes() { # Escaping Characters
+yellow_stripe_exercise_escaping_quotes() { # Escaping Characters; Making Files with "echo"
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Double quotes let you use environment variables.   If you want to work with a file that has a dollar sign, you need to
 use single quotes.  Now is a good time to talk about literals.  Your shell treats a lot of characters in a special way.
@@ -1230,7 +1230,7 @@ you can escape the spaces with backslashes rather than putting the whole thing i
 the following two command lines produce the same result.
 EOL
 
-	fmt ${FMT_OPTIONS:-} -s --width=$WIDTH <<EOL >> $fmt_file
+cat <<EOL >> $fmt_file
 
 echo "Hello world." > "file with spaces"
 echo "Hello world." > file\\ with\\ spaces
@@ -1238,14 +1238,14 @@ echo "Hello world." > file\\ with\\ spaces
 EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-You can try them out, but keep in mind that you won't be told if you're overwriing an existing file.  Make sure you're not
+You can try them out, but keep in mind that you won't be told if you're overwriting an existing file.  Make sure you're not
 overwriting anything important first.
 
 Try the following just before executing ". check".
 
 EOL
 
-	fmt ${FMT_OPTIONS:-} -s --width=$WIDTH <<EOL >> $fmt_file
+cat <<EOL >> $fmt_file
 echo "\"HOME\""
 echo "\"\$HOME\""
 echo "'\$HOME'"
@@ -1276,7 +1276,9 @@ If you need to work with a filename that has single quotes, it's best to put the
 If you have single quotes, double quotes, and other special characters like dollar sign ( $ ), you may be better off using
 the trick above.
 
-Execute ". check" for your final exam.
+Execute ". check" for your final exam.  This test is likely to be one of the hardest.  Remember that you can take the
+test as many times as you need to.  If you have trouble with any of the questions, remember the trick of using an echo
+command to create files with specific names.  Try out anything in any questions you're unsure of to find the answer.
 EOL
 
 	complete_exercise
@@ -1676,7 +1678,7 @@ argument of the fifth last command you typed.
 
 EOL
 
-	fmt ${FMT_OPTIONS:-}$WIDTH -s <<EOL >> $fmt_file
+cat <<EOL >> $fmt_file
 [user@host:~]$ echo 100 98 96
 100 98 96
 [user@host:~]$ echo 94 92 90
@@ -1706,7 +1708,7 @@ if the directory name is long or it's a full path (which is long).
 
 EOL
 
-	fmt ${FMT_OPTIONS:-}$WIDTH -s <<EOL >> $fmt_file
+cat <<EOL >> $fmt_file
 [user@host:~]$ mkdir dirname
 [user@host:~]$ cd !$
 cd dirname
@@ -1931,20 +1933,18 @@ In the example below, ll is aliased to "ls -l" (plus two more options, "a", and 
 
 EOL
 
-	fmt ${FMT_OPTIONS:-} -s --width=$WIDTH <<EOL >> $fmt_file
+cat <<EOL >> $fmt_file
 [user@host:~]$ type ll
 ll is aliased to \`ls -alF'
-EOL
-
-	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
 In the following example, ll is not aliased.
 
-EOL
-	fmt ${FMT_OPTIONS:-} -s --width=$WIDTH <<EOL >> $fmt_file
 [user@host:~]$ type ll
 bash: type: ll: not found
 
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Check to see if you have the "ll" alias.  List the files in $LUS_HOME/list/ord and $LUS_HOME/list/count with the "-l" option.
 EOL
 
@@ -1957,7 +1957,7 @@ It's time to use the man pages again.  This time, you'll be looking for somethin
 
 When you're using "less", you can look for something specific with slash ( / ).  Type a slash, type what you're looking
 for, and press Enter.  You're using "less" right now, but everything is probably on one page in your terminal, so
-searching for something is likely to be a bit boring.  (But nothing's stopping you.)
+searching for something is likely to be boring.  (But nothing's stopping you.)
 
 Use the question mark ( ? ) to go back.  Type the letter "h" for more ways to move around.
 
@@ -2287,7 +2287,7 @@ EOL
 	complete_exercise
 }
 
-green_belt_exercise_ls_a_alias() { # Is ls aliased?
+green_belt_exercise_ls_a_alias() { # Is ls Aliased?
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 We're going to use the term "hidden files" as a short form for "hidden files and hidden directories".
 In many cases, directories are considered to be a special type of file.  For maximum clarity, tests and
@@ -2348,7 +2348,7 @@ EOL
 	complete_exercise
 }
 
-green_belt_exercise_hidden_files() { # Hidden files and globs
+green_belt_exercise_hidden_files() { # Hidden Files and Globs
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 In this exercise, we'll show how to work with hidden files.  We'll also take a look at globs, and how using globs with
 hidden files can be problematic.  These concepts are best covered together, so this exercise will be longer than most.
@@ -2536,7 +2536,7 @@ EOL
 	complete_exercise
 }
 
-green_belt_exercise_dir_stacks() { # Directory stacks
+green_belt_exercise_dir_stacks() { # Directory Stacks
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Most of the time, you'll use "cd" to change directories.  Every once in a while, you might want to use "pushd" and
 "popd".
@@ -2580,7 +2580,7 @@ EOL
 # }}}
 
 # Blue stripe exercises (Start vim fold) {{{
-blue_stripe_exercise_archive_files() { # Archive files
+blue_stripe_exercise_archive_files() { # Archive Files
 	prepareLusHome
 
 	if [ -f "${LUS_HOME}"/blue-stripe ]; then
@@ -2792,7 +2792,7 @@ EOL
 	complete_exercise
 }
 
-blue_stripe_exercise_archive_files_extract() { # Extracting archive files
+blue_stripe_exercise_archive_files_extract() { # Extracting Archive Files
 	prepareLusHome
 
 	if [ -f "${LUS_HOME}"/blue-stripe ]; then
@@ -2851,7 +2851,7 @@ EOL
 	complete_exercise
 }
 
-blue_stripe_exercise_zip() { # Introduction to zip and unzip
+blue_stripe_exercise_zip() { # Introduction to "zip" and "unzip"
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 The programs "zip" and "unzip" are easier to use than tar.  Because they're separate programs, you don't need the "x"
 or "c" options.  Because they compress by default, you don't need a "z" option.  You do need to remember to put the
@@ -2922,7 +2922,7 @@ EOL
 	complete_exercise
 }
 
-blue_stripe_exercise_vi() { # Introduction to vi
+blue_stripe_exercise_vi() { # Introduction to "vi"
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 It's time to start talking about making changes to text files.
 
@@ -3009,7 +3009,7 @@ EOL
 	complete_exercise
 }
 
-blue_stripe_exercise_moving_around_in_vi() { # Moving around in vi
+blue_stripe_exercise_moving_around_in_vi() { # Moving Around in vi
 	blue_stripe_lorem_ipsum	
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
@@ -3112,7 +3112,7 @@ EOL
 	complete_exercise
 }
 
-blue_stripe_exercise_wrap_up_of_vi() { # Wrap up of vi
+blue_stripe_exercise_wrap_up_of_vi() { # Wrap Up of vi
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 You may be thinking of vi as a relic of the past, and it is.  But it can also be very powerful and fast.  In normal
 mode, every lowercase letter does something and every uppercase letter does something.  If you don't like what they do,
@@ -3142,7 +3142,7 @@ EOL
 	complete_exercise
 }
 
-blue_stripe_exercise_nano_and_ee() { # Nano and ee
+blue_stripe_exercise_nano_and_ee() { # "Nano" and "ee"
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Nano and ee are popular editors for beginners.  Nano tends to be installed on Linux systems, and ee tends to be
 installed on FreeBSD.  Both of them show help information prominently on the screen (which is different from vi).  Nano
@@ -3203,7 +3203,7 @@ EOL
 	complete_exercise
 }
 
-blue_belt_exercise_stdout_and_stderr() { # Standard out, Standard error, grep
+blue_belt_exercise_stdout_and_stderr() { # Standard out, Standard error, "grep"
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 The output was a single number.  What if the set command printed an error message instead, or in addition to the other
 output?  Would we see "1" or would the total increase by one?  Would we miss the error message?
@@ -3235,7 +3235,7 @@ EOL
 	complete_exercise
 }
 
-blue_belt_exercise_chaining_pipes() { # Chaining pipes
+blue_belt_exercise_chaining_pipes() { # Chaining Pipes
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 We can use multiple pipes to chain commands together.  Let's look at how many environment variables have BASH in them
 by adding "| wc -l".
@@ -3249,7 +3249,7 @@ EOL
 	complete_exercise
 }
 
-blue_belt_exercise_cut() { # The cut program
+blue_belt_exercise_cut() { # The "cut" Program
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 The "cut" program pulls out a field or set of fields from a file or file descriptor.  The set command gives us two
 fields:  a name and a value separated by an equals sign.  We use the "-d'='" parameter to tell cut to look for an
@@ -3378,7 +3378,7 @@ It's likely that you will only understand them if you already have some
 experience with them.  Consider them like chapter headings in a textbook you recently received.
 EOL
 
-	printf "\n${underline}Beginner and Advanced Ranks${no_underline}\n" >> $fmt_file
+	printf "\n${underline}Beginner and Intermediate Ranks${no_underline}\n" >> $fmt_file
 
 	printf "\n`getBeltWithColours white_belt title`\n" >> $fmt_file
 
