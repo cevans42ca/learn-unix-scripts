@@ -2629,6 +2629,7 @@ EOL
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 An archive file is a file that contains the data from multiple files.  You may be familiar with ZIP files, which is
 one type of archive.  Let's look at why archive files are useful.
+
 EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL | sed '/^$/d'  >> $fmt_file
@@ -2645,6 +2646,7 @@ EOL
 
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
 ZIP is the most common archive file type on Windows, with RAR files arguably second.  On Unix, the most common archive
 file format is a tar.gz (or tgz) file, often called a tarball.
 
@@ -2683,16 +2685,20 @@ The most common options are as follows.
 
 EOL
 
-	fmt ${FMT_OPTIONS:-}$WIDTH -s <<EOL >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL | sed '/^$/d'  >> $fmt_file
 "-c":  create an archive file from a bunch of files
-"-x":  extract an archive, recreating all the files in it
-"-f":  specify the archive file name
-"-v":  list every file added or extracted
-"-z":  compress when creating the archive; decompress when extracting the archive
 
+"-x":  extract an archive, recreating all the files in it
+
+"-f":  specify the archive file name
+
+"-v":  list every file added or extracted
+
+"-z":  compress when creating the archive; decompress when extracting the archive
 EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
 Arguments provided the old way and the new way don't do the same thing.  For example, the two commands:
 
 EOL
