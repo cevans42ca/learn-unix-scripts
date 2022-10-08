@@ -111,6 +111,7 @@ exercises["blue_belt_$((i++))"]="stdout_and_stderr"
 exercises["blue_belt_$((i++))"]="chaining_pipes"
 exercises["blue_belt_$((i++))"]="cut"
 exercises["blue_belt_$((i++))"]="redirection"
+exercises["blue_belt_$((i++))"]="tee"
 
 declare -A belt_to_number
 belt_to_number["white_belt"]=0

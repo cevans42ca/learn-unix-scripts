@@ -42,7 +42,11 @@ main/docker/bin/%: main/dist/bin/%
 
 dockerinstall: flags/replacetarget main/docker/bin/*
 
-install: flags/replacetarget
+# Copy the scripts that don't need replacement to main/dist/bin
+nonreplace:
+	cp main/master-scripts/df* main/dist/bin
+
+install: flags/replacetarget nonreplace
 	@# Quotes around the install path are already added by the configure script.
 	cp main/dist/bin/* ${INSTALL_PATH}
 

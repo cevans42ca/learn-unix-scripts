@@ -1719,6 +1719,10 @@ blue_belt_exercise_redirection() {
 	fi
 }
 
+blue_belt_exercise_tee() {
+	blue_belt_exercise_redirection
+}
+
 ####################
 # End of exercises #
 ####################
