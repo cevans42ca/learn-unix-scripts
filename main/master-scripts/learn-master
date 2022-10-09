@@ -3682,7 +3682,7 @@ if [[ "${all_args}" =~ (white|yellow|green|blue|red|black).*(stripe|belt)[^0-9]*
 		# Advanced sed:  if an exercise exists, skip to the :x label.  If not, replace the line with "No Title".
 		# Use cat -n to add a line number (which is the exercise number).
 		# Exercises must be in order in this file for it to work.
-		bash -c "grep -E ${regex} ~/bin/learn | sed -e 's/.* #[:space:]*//;tx' -e 's/.*/No Title/' -e ':x' -e 's/^[ \t]*//' | cat -n"
+		bash -c "grep -E ${regex} ~/bin/learn | sed -e 's/.* #[[:space:]]*//;tx' -e 's/.*/No Title/' -e ':x' -e 's/^[ \t]*//' | cat -n"
 		exit 0
 	fi
 

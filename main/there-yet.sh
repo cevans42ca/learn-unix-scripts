@@ -75,7 +75,7 @@ awk -f <(cat - <<-'EOF'
 		if ( type == "value" ) {
 			# y = mx + b
 			result = slope * time + inter
-			printf("%.15f\n", result)
+			printf("%.7f\n", result)
 		}
 
 		if ( type == "time" ) {
@@ -89,7 +89,7 @@ awk -f <(cat - <<-'EOF'
 
 		if ( type == "x" ) {
 			result = (value - inter) / slope
-			printf("%.15f\n", result)
+			printf("%.7f\n", result)
 		}
 	    }
 	EOF
