@@ -1723,6 +1723,34 @@ blue_belt_exercise_tee() {
 	blue_belt_exercise_redirection
 }
 
+blue_belt_exercise_cat_revisited() {
+	if [ -f "${LUS_HOME}/blue-belt/cat-output" ]; then
+		file_lines=$(cat "${LUS_HOME}/blue-belt/cat-output" | wc -l)
+		if [[ "$file_lines" == "3" ]]; then
+			good_work
+		else
+			sorry
+			echo "The file ${LUS_HOME}/blue-belt/cat-output has ${file_lines} lines."
+		fi 
+	else
+		sorry
+		echo "The file ${LUS_HOME}/blue-belt/cat-output doesn't exist."
+	fi
+}
+
+blue_belt_exercise_predicting_the_future() {
+	luc_correct_answers=0
+	luc_answers=( '5 pm' '6 pm' '7 pm' '8 pm' 'Never' )
+
+	handle_answer "8 pm"
+
+	if [ "$luc_correct_answers" == "1" ]; then
+		good_work
+	else
+		sorry
+	fi
+}
+
 ####################
 # End of exercises #
 ####################

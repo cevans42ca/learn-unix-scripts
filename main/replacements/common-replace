@@ -112,6 +112,9 @@ exercises["blue_belt_$((i++))"]="chaining_pipes"
 exercises["blue_belt_$((i++))"]="cut"
 exercises["blue_belt_$((i++))"]="redirection"
 exercises["blue_belt_$((i++))"]="tee"
+exercises["blue_belt_$((i++))"]="cat_revisited"
+exercises["blue_belt_$((i++))"]="predicting_the_future"
+exercises["blue_belt_$((i++))"]="epoch_time"
 
 declare -A belt_to_number
 belt_to_number["white_belt"]=0

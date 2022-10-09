@@ -3253,7 +3253,7 @@ in files (or file descriptors).  Grep takes a "regular expression", which is a k
 
 We looked at globs before, where abc*.txt can find (or match) abcdef.txt and abcghi.txt.  Regular expressions
 take that up several notches into space.  Even if you have a particularly good memory, regular expressions are
-not something you should sit down and learn but something you grow with over time as you need things (like vi).
+not something you should sit down and learn, but something you grow with over time as you need things (like vi).
 You're more likely to remember something that you learned when you needed it.  (And even more likely to remember
 it if you were excited about finding a solution to a problem.)
 
@@ -3351,6 +3351,97 @@ The most common use of "tee" is to provide it one file name.  It will send the i
 Execute the following command, using the techniques from yellow belt to avoid typing the whole thing.
 
 set | grep ^BASH | cut -d'=' -f1 | tee "${LUS_HOME}/blue-belt/bash-names"
+EOL
+
+	complete_exercise
+}
+
+blue_belt_exercise_cat_revisited() { # The cat came back 
+	prepareLusHome
+	prepareBlueBelt
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+We looked at "cat" before as a way to print small files to the terminal.  It can also be used to create small
+files using redirection.  This exercise will be different.  Instead of getting a prompt when you press Enter,
+your cursor will go back to the beginning of the line.  When you're providing multiline input at the terminal,
+you indicate that you're done with Ctrl+d.
+
+EOL
+
+cat <<EOL >> $fmt_file
+[user@host dir]$ cat > my-file
+Line 1
+Line 2
+Line 3
+    (Type Ctrl+d)
+[user@host dir]$
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+Use the output above as an example to ceate a file called "${LUS_HOME}/blue-belt/cat-output" with three lines in it.
+The file can contain any text you want, but it must have exactly three lines (including blank ones).
+EOL
+
+	complete_exercise
+}
+
+blue_belt_exercise_predicting_the_future() { # Multiline input:  predicting the future
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+We're going to do something useful with multiline input now:  predicting the future.  (If you're a mathemetician or
+statistician, we'll be using a simple and straightforward linear regression implementation.  If not, don't worry,
+the script will do all the work.)
+
+Let's say that at 2 pm, a drive is 20% full.  At 4 pm, the drive is 40% full.  When will it be full (100%)?
+We use the "--find-x-given 100" arguments to calculate what the first value will be when the second one is 100.
+Then we type in the (multiline) data.
+
+EOL
+
+cat <<EOL >> $fmt_file
+[user@host dir]$ there-yet --find-x-given 100
+2 20
+4 40
+    (Ctrl+d)
+
+The program responds:
+10.0000000
+
+So the answer is 10 pm.
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+If the drive is 20% full at 2 pm, and 60% full at 5 pm, when will it be completely full?  The check script
+will verify your answer.
+
+If you want to try out the example, and you're using the copy and paste functions of your terminal, take care to
+copy and paste the command and then the data, or you'll get a division by zero error.
+EOL
+
+	complete_exercise
+}
+
+blue_belt_exercise_epoch_time() { # Epoch time
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+In the previous exercise, we took a look at a program that can provide a predicition based on past data.  I hope you're
+wondering, "What about minutes?  What if it takes until the next day?"  If you are, compliments for being curious!
+
+Math on dates is a mess.  Unix has a built in way of dealing with that.  It may be called any of the following.
+EOL
+
+cat <<EOL >> $fmt_file
+* Unix time
+* Epoch time
+* POSIX time
+* Seconds since the epoch
+* Unix timestamp
+* Unix Epoch time
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+The number of seconds since midnight (00:00:00) UTC on January 1, 1970.
 EOL
 
 	complete_exercise
