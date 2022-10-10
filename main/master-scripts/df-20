@@ -1,0 +1,9 @@
+#!/bin/sh
+
+echo "Filesystem      Size  Used Avail Use% Mounted on"
+echo "devtmpfs        474M     0  474M   0% /dev"
+echo "tmpfs           483M     0  483M   0% /dev/shm"
+echo "tmpfs           483M  404K  483M   1% /run"
+echo "tmpfs           483M     0  483M   0% /sys/fs/cgroup"
+echo "/dev/xvda1      100G   20G   80G  20% /"
+echo "tmpfs            97M     0   97M   0% /run/user/1000"

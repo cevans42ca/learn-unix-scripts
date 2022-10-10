@@ -733,7 +733,7 @@ on your terminal settings) you will be able to move up and down with the cursor 
 As before, Space will go a page forward, Enter will show one more line, and "q" will quit.
 
 Most commands will quit when you type Ctrl+c, but "less" doesn't quit by default with Ctrl+c.  When you press Ctrl+c in
-"less", it will stop whatever you're doing within "less".  For example, when you have "less" open you can search
+"less", it will stop whatever you're doing within "less".  For example, when you have "less" open, you can search
 for something, which might take a long time if it's a big file.  You can stop the search by pressing Ctrl+c.  You will need
 to press "q" to quit.  Take a note.  If you miss it, you will be stuck, just as with Ctrl+s.
 
@@ -745,16 +745,23 @@ EOL
 
 white_belt_exercise_path_and_sourcing() { # $PATH, Sourcing, Processes, Final Exam
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-We're going to look at one specific environment variable now:  \$PATH.  Environment variables are usually printed with a
-dollar sign ( \$ ) in front of them.  Currently, \$PATH is set to the following value.
+The command lines "set | more" and "set | less" show a glimmer of the power and beauty of Unix.  Unix is filled
+with small, simple programs that create text files and perform operations on them.  By chaining them together,
+perhaps with multiple commands and multiple pipes, we can accomplish a wide variety of tasks.
+
+But before we get there, we need to cover more of the basics:  working with directories, ways to speed up what
+you're doing so you're not typing the same things over and over, and archive files (which are espeically useful
+if you need to ask for help from someone).
+
+We're going to look at one specific environment variable now:  \$PATH.  Environment variables are usually printed
+with a dollar sign ( \$ ) in front of them.  Currently, \$PATH is set to the following value.
 
 $PATH
 EOL
 
 	echo "" >> $fmt_file
 
-	# I copied this code from Stack Overflow.  It's probably overkill.
-	# https://stackoverflow.com/questions/4774054/reliable-way-for-a-bash-script-to-get-the-full-path-to-itself
+	# From https://stackoverflow.com/questions/4774054/reliable-way-for-a-bash-script-to-get-the-full-path-to-itself
 	script_name=`basename $0`
 	# Don't resolve symlinks, as /home is symlinked to /usr/home on FreeBSD.
 	script_path=$(dirname "${0}")
@@ -3392,9 +3399,18 @@ We're going to do something useful with multiline input now:  predicting the fut
 statistician, we'll be using a simple and straightforward linear regression implementation.  If not, don't worry,
 the script will do all the work.)
 
-Let's say that at 2 pm, a drive is 20% full.  At 4 pm, the drive is 40% full.  When will it be full (100%)?
-We use the "--find-x-given 100" arguments to calculate what the first value will be when the second one is 100.
-Then we type in the (multiline) data.
+Over the next few exercises, we're going to be putting something together.  We'll look at a simple script for
+making predictions.  We'll look at how most programs in Unix work with dates and times.  We'll look at how to
+build commands that pull together data from multiple sources and use them to make data files.  Then we'll take
+the data file we made and use it to make predictions.  We hope to show off the power and beauty of Unix:  the
+abillity to take smaller elements and combine them to give us something we need, something powerful and useful.
+
+We'll begin with the script that makes predictions based on past data.
+
+Let's say that at 2 pm, a drive is 20% full.  At 4 pm, the drive is 40% full.  Assuming everything stays the same,
+when will it be full (100%)?  We use the "--find-x-given 100" arguments to calculate what the first value will be
+when the second one is 100.  Then we type in the (multiline) data, following it with Ctrl+d.  Be careful to type
+it only once.  If you type it again, your terminal session will terminate, and you'll have to open a new one.
 
 EOL
 
@@ -3441,8 +3457,81 @@ EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
-The number of seconds since midnight (00:00:00) UTC on January 1, 1970.
+Epoch time is the number of seconds since midnight (00:00:00) UTC on January 1, 1970.  If you're not familiar with
+UTC, the important point is that it's an international standard.  The epoch time is the same everywhere in the world.
+(If it's 1660000123 in New York, it's also 1660000123 in Australia.)
+
+On most Unix systems, we can get the current epoch time with the following command.
+
+date +"%s"
+
+(That's the word "date" followed by a space, a plus sign, a double quote, a percent sign, the letter "s", and
+another double quote.)
+
+On some Unix systems, we need to get the current epoch time with the following command.  If the command above
+didn't work, make a note of this one and use it now.  It's not on the test.
+
+awk 'BEGIN{srand(); print srand()}'
 EOL
+
+	complete_exercise
+}
+
+blue_belt_exercise_fake_df() { # Adventures in Piping Pipes
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+We have a command that takes two numbers per line.  Now it's time to take the output of df and cut it down to a
+single number for use by the prediction program.  We don't want to fill up any real drives, so we're going to use
+some canned output.  We've prepared a script called df-20 that prints some output that shows that the main drive
+is 20% used.  We'll use this script instead of the real df program.
+
+The "cut" program expects a single delimiter between each field, so we're going to use "tr" to squeeze the spaces
+together.
+
+EOL
+
+cat <<EOL >> $fmt_file
+user@host [~]# df-20
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        474M     0  474M   0% /dev
+tmpfs           483M     0  483M   0% /dev/shm
+tmpfs           483M  404K  483M   1% /run
+tmpfs           483M     0  483M   0% /sys/fs/cgroup
+/dev/xvda1      100G   20G   80G  20% /
+tmpfs            97M     0   97M   0% /run/user/1000
+user@host [~]# df-20 | grep xvda1
+/dev/xvda1      100G   20G   80G  20% /
+user@host [~]# df-20 | grep xvda1 | tr -s ' '
+/dev/xvda1 100G 20G 80G 20% /
+user@host [~]# df-20 | grep xvda1 | tr -s ' ' | cut -f5 -d' '
+20%
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+We're almost there.  The number has a percent sign.  We need to remove it.  We'll use "tr" again to remove all
+percent signs.
+
+EOL
+
+cat <<EOL >> $fmt_file
+user@host [~]# df-20 | grep xvda1 | tr -s ' ' | cut -f5 -d' ' | tr -d '%'
+20
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+We have percentage used by itself, but we also need another number, the one that represents the time.  The prediction
+program expects them together on the same line.  We looked at "echo" before and how it can be used to create small
+files.  We can use the output of the command line just above as an argument to "echo", and add the other number.
+To use a command line as an argument, you put it between "\$(" and ")".  Are you ready?  We're almost done.
+
+EOL
+
+cat <<EOL >> $fmt_file
+user@host [~]# echo 1 \$(df-20 | grep xvda1 | tr -s ' ' | cut -f5 -d' ' | tr -d '%')
+1 20
+EOL
+
 
 	complete_exercise
 }

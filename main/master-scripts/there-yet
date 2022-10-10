@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+
+# The "learn-unix-scripts" project is free software: you can redistribute it and/or modify it under the terms of the GNU
+# General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option)
+# any later version.
+#
+# The "learn-unix-scripts" project is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License along with this project; if not, write to the
+# Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA, 02111-1307, USA.
+#
+# Copyright (C) 2021 Christopher Evans
+
+print_usage() {
+	cat <<EOL
+Usage:  there-yet.sh --find-x-given <value>
+        there-yet.sh --find-time-given <value>
+        there-yet.sh --find-value-given <epoch>
+
+Takes X and Y values on stdin separated by space, comma, or tab, one
+pair per line, then calculates predictions based on that data.  If the
+X values are epoch times and --find-time-given is specified, the output
+will be a formatted date based on the default output of the date command.
+EOL
+}
+
+if [ "$#" -ne 2 ]; then
+	print_usage
+	exit 1
+fi
+
+if [ "$1" == "--find-x-given" ]; then
+	awk_args="-v type=x -v value=$2"
+elif [ "$1" == "--find-time-given" ]; then
+	awk_args="-v type=time -v value=$2"
+elif [ "$1" == "--find-value-given" ]; then
+	awk_args="-v type=value -v time=$2"
+else
+	print_usage
+	exit 1
+fi
+
+# awk script adapted from http://www.dayofthenewdan.com/2012/12/26/AWK_Linear_Regression.html
+
+output=$(
+awk -f <(cat - <<-'EOF'
+	BEGIN { FS = "[ ,\t]+" }
+	NF == 2 { x_sum += $1
+		  y_sum += $2
+		  xy_sum += $1*$2
+		  x2_sum += $1*$1
+		  num += 1
+		  x[NR] = $1
+		  y[NR] = $2
+		}
+	END {
+		mean_x = x_sum / num
+		mean_y = y_sum / num
+		mean_xy = xy_sum / num
+		mean_x2 = x2_sum / num
+		slope = (mean_xy - (mean_x*mean_y)) / (mean_x2 - (mean_x*mean_x))
+		inter = mean_y - slope * mean_x
+		for (i = num; i > 0; i--) {
+			ss_total += (y[i] - mean_y)**2
+			ss_residual += (y[i] - (slope * x[i] + inter))**2
+		}
+		r2 = 1 - (ss_residual / ss_total)
+
+		#printf("Slope      :  %g\n", slope)
+		#printf("Intercept  :  %g\n", inter)
+		#printf("R-Squared  :  %g\n", r2)
+
+		if ( type == "value" ) {
+			# y = mx + b
+			result = slope * time + inter
+			printf("%.7f\n", result)
+		}
+
+		if ( type == "time" ) {
+			# y = mx + b
+			# y - b = mx
+			# (y - b)/m = x
+			# x = (y - b)/m
+			result = (value - inter) / slope
+			printf("%d\n", result)
+		}
+
+		if ( type == "x" ) {
+			result = (value - inter) / slope
+			printf("%.7f\n", result)
+		}
+	    }
+	EOF
+) $awk_args
+)
+
+if [ "$1" == "--find-time-given" ]; then
+	if ! date -d @"$output" 2>/dev/null; then
+		if ! date -r $output 2>/dev/null; then
+			date -d "1970-01-01 UTC + $output seconds"
+		fi
+	fi
+else
+	echo $output
+fi
+

@@ -1751,6 +1751,10 @@ blue_belt_exercise_predicting_the_future() {
 	fi
 }
 
+blue_belt_exercise_epoch_time() {
+	keep_going
+}
+
 ####################
 # End of exercises #
 ####################
