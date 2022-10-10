@@ -3532,6 +3532,48 @@ user@host [~]# echo 1 \$(df-20 | grep xvda1 | tr -s ' ' | cut -f5 -d' ' | tr -d 
 1 20
 EOL
 
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+We used the number 1 as a placeholder in the previous command line.  We'll use the same \$() trick to add the real
+epoch time.  You may need to use the other command instead.
+
+EOL
+
+cat <<EOL >> $fmt_file
+user@host [~]# echo \$(date +"%s") \$(df-20 | grep xvda1 | tr -s ' ' | cut -f5 -d' ' | tr -d '%')
+$(awk 'BEGIN{srand(); print srand()}') 20
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+And now, the finishing touch:  we're going to send the output to a file.  We're going to use ">>" instead of ">"
+to add the line to the file instead of overwriting it, so we can add more lines the same way.  If you use ">>"
+with a file that doesn't exist yet, it will be created.
+
+EOL
+
+cat <<EOL >> $fmt_file
+user@host [~]# echo \$(date +"%s") \$(df-20 | grep xvda1 | tr -s ' ' | cut -f5 -d' ' | tr -d '%') >> ~/past-df-data
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+We hope you're able to see the power and beauty of composing small programs together to solve a problem.  This
+demonstration shows a large part of the Unix philosophy.  You can read more about the Unix philosophy on
+Wikipedia if you're interested.
+
+We could continue to build on what we have so far.  We could set this command line up to run on a schedule (with
+"cron" or "anacron"), at particular times (with "at"), or periodically (with "watch").  All of these are beyond
+the scope of the coloured belt exercises.
+
+If watch is installed, you could check the man page and try it out, but quoting the command line will be tricky.
+It would be best to switch all the single quotes to double quotes and put the whole thing in double quotes.  Also,
+you'll want to use "tee -a" so you both see the output and it gets appended to the file.  (But only do all that
+if you really want to.)
+
+Take some time now to experiment with the "df-20" and "df-40" scripts, epoch dates, and the there-yet script.
+If you use the "--find-time-given" option to there-yet, it will convert the predicted value into a readable date.
+EOL
 
 	complete_exercise
 }
