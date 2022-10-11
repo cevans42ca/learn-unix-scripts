@@ -1755,6 +1755,10 @@ blue_belt_exercise_epoch_time() {
 	keep_going
 }
 
+blue_belt_exercise_converting_epoch_time() {
+	keep_going
+}
+
 ####################
 # End of exercises #
 ####################

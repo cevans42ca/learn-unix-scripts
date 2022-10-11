@@ -3469,9 +3469,80 @@ date +"%s"
 another double quote.)
 
 On some Unix systems, we need to get the current epoch time with the following command.  If the command above
-didn't work, make a note of this one and use it now.  It's not on the test.
+didn't work, make a note of this one and use it now.  It's not on the test.  The character after "BEGIN" is a
+open/left curly brace.  The character before the final single quote is a close/right curly brace.
 
 awk 'BEGIN{srand(); print srand()}'
+EOL
+
+	complete_exercise
+}
+
+blue_belt_exercise_converting_epoch_time() { # Converting to Epoch Time
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Although all Unix-like operating systems use epoch time to get around issues when using math with dates,
+they disagree on how to convert back and forth.  We're going to go over several different ways to convert
+a "human-readable" date like September 12, 2022 into an epoch time.  You don't need to make a note of
+all of these.  You only need one that works for you.
+
+In Linux, to convert "September 9, 2022 10:20 am" to an epoch time, you would write the following.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+user@linux [~]$ date +"%s" -d "September 9, 2022 10:20 am"
+1662733200
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+The version of the date program provided in Linux also allows "second Sunday", "last Thursday", and many other formats.
+Even if you're using a BSD-based system, this version of date might be installed as "gdate".  We used "type" earlier
+to check if a program is aliased, but we can also use it to see if a program exists and can be run.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+[user@freebsd ~]$ type gdate
+gdate is /usr/local/bin/gdate
+[user@freebsd ~]$ type notarealprogram
+-bash: type: notarealprogram: not found
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+If you're using a BSD-based system (including a Mac) without "gdate", then we recommend that you provide a format.
+Here are some examples.  If you want, you can provide only a time, and the current day will be assumed.  Everything
+but the minutes is optional.  If you want to work with words instead of numbers, check the man page (or the info
+page in some cases) for the appropriate "specifiers".  All of these assume 24-hour time.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+[user@freebsd ~]$ date -j -f "%Y-%m-%d %H:%M:%S" "2022-10-01 02:03:04" +"%s"
+1664589784
+[user@freebsd ~]$ date -j -f "%Y-%m-%dT%H:%M:%S" "2022-10-01T02:03:04" +"%s"
+1664589784
+[user@freebsd ~]$ date -j -f "%Y%m%dT%H%M%S" "20221001T020304" +"%s"
+1664589784
+
+There's a default format, but the year goes after the hours and minutes, and seconds go after the year (if you want
+to supply them).
+
+# October 1, 2:03 am, 2022
+[user@freebsd ~]$ date -j "100102032022" +"%s"
+1664604180
+
+# October 1, 2:03 am, 2022, and 4 seconds
+[user@freebsd ~]$ date -j "100102032022.04" +"%s"
+1664604184
+
+Find one that works for you and make a note of it.  Remember that you can review this lesson text as many times
+as you want before you move on by executing "learn".  The check script will not check anything this time.  It's up
+to you to choose to move on when you're confident you have it.
+
+If you source the check script and need to come back, execute "learn blue belt list" to find the exercise number
+and then execute "learn blue belt 10" if it's the tenth exercise.
 EOL
 
 	complete_exercise
@@ -3588,7 +3659,7 @@ EOL
 
 ask_about_putty_font_size() {
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
-Was that text comfortable to read?  It looks like you're connected with SSH, so chances are, you're using PuTTY.
+Was that text comfortable to read?  It looks like you're connected with SSH.
 If you're using PuTTY, would you like any help to increase the font size (y/N)?
 EOL
 
@@ -3687,7 +3758,7 @@ EOL
 	printf "\n`getBeltWithColours blue_belt title`\n" >> $fmt_file
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-  Pipes; tee; redirection; head, tail, sort, grep
+  Pipes; tee; redirection; grep; epoch time; prediction
 EOL
 
 	printf "\n`getBeltWithColours red_stripe title`\n" >> $fmt_file

@@ -115,6 +115,7 @@ exercises["blue_belt_$((i++))"]="tee"
 exercises["blue_belt_$((i++))"]="cat_revisited"
 exercises["blue_belt_$((i++))"]="predicting_the_future"
 exercises["blue_belt_$((i++))"]="epoch_time"
+exercises["blue_belt_$((i++))"]="converting_epoch_time"
 exercises["blue_belt_$((i++))"]="fake_df"
 
 declare -A belt_to_number
