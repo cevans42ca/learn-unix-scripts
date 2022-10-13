@@ -352,17 +352,18 @@ EOL
 
 	printf "\n\n${underline}Your Prompt${no_underline}\n\n" >> $fmt_file
 		x="$(PS1=\"${PS1:-}\" echo -n | bash -i 2>&1 | sed $'s/.*\007//' | tr -d '\r' | sed 's/stdin: is not a tty//')"
-		# If the prompt starts with "bash", it's probably a default prompt, and not the real one.
+		# If the prompt starts with "bash", it's probably a default prompt, not the real one.
 		# Checking if $PS1 is set doesn't seem to work in all cases.
 		if [[ "${x}" =~ ^bash.* ]]; then
 			fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Here are some examples of prompts.  Real prompts will have 'user', 'host', and 'directory' filled in with the real
-values based on who is logged in, what directory they're in, and what host they're using.
+values based on who is logged in, the current hostname, and the directory the user is in.
 EOL
 			echo >> $fmt_file
 			echo "[user:host directory]$" >> $fmt_file
 			echo "host:directory user$" >> $fmt_file
-			echo "user@host directory$" >> $fmt_file
+			echo "[user@host] directory$" >> $fmt_file
+			echo "user@host [directory]$" >> $fmt_file
 			echo
 			echo "They usually end with a dollar sign ( $ )."
 		else
@@ -839,8 +840,14 @@ also be used to get an up-to-date command history (which is normally inaccessibl
 doesn't change anything that can be checked directly, accessing the command history is the only way that the check
 script can verify that the correct command was issued.
 
-Further belts may ask you to source the check script, which means to execute "source check" (or equivalently execute
+Further belts may ask you to source the check script, which means to execute "source check" (or equivalently, execute
 ". check").  Make a note of it so you can refer to it later.
+
+Each belt has a final exam.  It's called a final exam not to scare you, but to give you a sense of accomplishment.
+If you don't pass, you can review the lesson names and numbers by executing "learn white belt list" and review
+(for example) lesson 6 with "learn white belt 6".  All final exams are open book, and you can attempt the exams
+as many times as you like.  You must pass an exam to move on to the next belt, but you can review past lessons
+(including past exams) whenever you want.
 
 Once you have read and understood this text, execute ". check" for your (short) final exam.
 EOL
