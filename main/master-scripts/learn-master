@@ -3532,10 +3532,16 @@ EOL
 1664589784
 [user@freebsd ~]$ date -j -f "%Y%m%dT%H%M%S" "20221001T020304" +"%s"
 1664589784
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
 There's a default format, but the year goes after the hours and minutes, and seconds go after the year (if you want
 to supply them).
 
+EOL
+
+	cat <<EOL >> $fmt_file
 # October 1, 2:03 am, 2022
 [user@freebsd ~]$ date -j "100102032022" +"%s"
 1664604180
