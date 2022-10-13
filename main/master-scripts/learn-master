@@ -3478,12 +3478,12 @@ EOL
 	complete_exercise
 }
 
-blue_belt_exercise_converting_epoch_time() { # Converting to Epoch Time
+blue_belt_exercise_converting_to_epoch_time() { # Converting to Epoch Time
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-Although all Unix-like operating systems use epoch time to get around issues when using math with dates,
-they disagree on how to convert back and forth.  We're going to go over several different ways to convert
-a "human-readable" date like September 12, 2022 into an epoch time.  You don't need to make a note of
-all of these.  You only need one that works for you.
+Although all Unix-like operating systems use epoch time to simply using math with dates, they disagree on how to
+convert back and forth.  We're going to go over several different ways to convert a "human-readable" date like
+September 12, 2022 into an epoch time.  You don't need to make a note of all of these.  You only need one that
+works for you.
 
 In Linux, to convert "September 9, 2022 10:20 am" to an epoch time, you would write the following.
 
@@ -3548,6 +3548,32 @@ EOL
 	complete_exercise
 }
 
+blue_belt_exercise_converting_from_epoch_time() { # Converting from Epoch Time
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Convtering from epoch time to a human-readable format is more straightforward (if you're not picky about the format).
+
+Here's how to convert 1660000123 to a human-readable format.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+Linux:    date -d @1660000123
+Mac/BSD:  date -r 1660000123
+Older:    date -d "1970-01-01 UTC + 1660000123 seconds"
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+If you happen to be on a system where GNU coreutils is older than version 5.3, you'll have to use the last one,
+but coreutils-5.3 is from 2004/2005, so you're not likely to run into it.
+
+Try them out now and make a note of the one that works.  Convert back and forth to make sure you have a working
+example of both.  Continue when you're comfortable.
+EOL
+
+	complete_exercise
+}
+
 blue_belt_exercise_fake_df() { # Adventures in Piping Pipes
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 We have a command that takes two numbers per line.  Now it's time to take the output of df and cut it down to a
@@ -3584,7 +3610,8 @@ percent signs.
 
 EOL
 
-cat <<EOL >> $fmt_file
+	# Don't try to format command lines, no matter how long they get.  Formatting may break copy and paste.
+	cat <<EOL >> $fmt_file
 user@host [~]# df-20 | grep xvda1 | tr -s ' ' | cut -f5 -d' ' | tr -d '%'
 20
 EOL
@@ -3629,21 +3656,71 @@ EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
-We hope you're able to see the power and beauty of composing small programs together to solve a problem.  This
-demonstration shows a large part of the Unix philosophy.  You can read more about the Unix philosophy on
-Wikipedia if you're interested.
+We hope you're able to see the power and beauty of composing small programs together to solve a problem.
+This demonstration shows a large part of the Unix philosophy.  If you're interested, you can read more about the
+Unix philosophy on Wikipedia.
 
-We could continue to build on what we have so far.  We could set this command line up to run on a schedule (with
-"cron" or "anacron"), at particular times (with "at"), or periodically (with "watch").  All of these are beyond
-the scope of the coloured belt exercises.
+Each of the commands above use the df-20 script, so you'll be able to try them out and get consistent output.
 
-If watch is installed, you could check the man page and try it out, but quoting the command line will be tricky.
-It would be best to switch all the single quotes to double quotes and put the whole thing in double quotes.  Also,
-you'll want to use "tee -a" so you both see the output and it gets appended to the file.  (But only do all that
-if you really want to.)
+Add on each piece, command by command, so you understand what each command does.  When you're ready, move on as usual.
+EOL
+
+	complete_exercise
+}
+
+blue_belt_exercise_beyond_pipes() { # Beyond Pipes
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+We could continue to build on what we have so far, but all of the following is for general interest (and won't be
+on the test).
+
+We have a command line that will take the current time and current percentage used for a drive and put them into
+a file.  Ideally, we would run it periodically to capture data over time.
+
+Unix has many ways of running something periodically.  Cron runs programs on a schedule (like every hour, or at
+1 p.m. on weekdays).  That can be problematic if there are programs to run overnight and the host is shut down.
+Anacron runs programs periodically (for example, every day or every month) but doesn't guarantee exactly when.
+Sometimes, non-root users are set up to be able to use these.  You can also schedule programs to run with systemd
+timers.  All of these are out of scope for the coloured belt exercises.
+
+A command called "watch" will let a regular user run a command periodically (every 10 seconds, every minute, etc.)
+but this command is usually found only on Linux systems.  A "watch" command may be available on BSD systems,
+but it's likely to be a program that lets you look at TTY devices.  Check "man watch" to see if it's there, and
+if so, which one it is.  It may be called "gnu-watch" on BSD-like systems, or there may be a similar program
+called "cmdwatch".
+
+We'll go ahead and show how we can expand on the command line we've built up so far with "watch".  The first thing
+we need to do is put the whole thing in quotes, so we're going to change all the quotes to double quotes.
+
+echo \$(date +"%s") \$(df-20 | grep xvda1 | tr -s " " | cut -f5 -d" " | tr -d "%") >> ~/past-df-data
+
+Now, we can put the whole thing in single quotes.  Keep in mind that we're still using our fake df here.
+
+EOL
+
+	# Don't try to format command lines, no matter how long they get.  Formatting may break copy and paste.
+	cat <<EOL >> $fmt_file
+watch -n 10 'echo \$(date +"%s") \$(df-20 | grep xvda1 | tr -s " " | cut -f5 -d" " | tr -d "%") >> ~/past-df-data'
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+That won't show anything though, because we're redirecting to a file.  We could use "tee", but what we really want
+to see is the estimated time that the drive will be full.  To do that, we need to run a second command.  The "&&"
+operator runs a second command if the first one succeeds.  After the "&&", we use cat to pass the file into the program.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+watch -n 10 'echo $(date +"%s") $(df-20 | grep xvda1 | tr -s " " | cut -f5 -d" " | tr -d "%") >> ~/past-df-data.txt && cat ~/past-df-data.txt | there-yet --find-time-given 100'
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+And the demo is complete.
 
 Take some time now to experiment with the "df-20" and "df-40" scripts, epoch dates, and the there-yet script.
-If you use the "--find-time-given" option to there-yet, it will convert the predicted value into a readable date.
+You may want to try editing the input file to there-yet or adding your own lines with echo.  If you use the
+"--find-time-given" option with there-yet, it will convert the predicted value into a readable date.
 EOL
 
 	complete_exercise

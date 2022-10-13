@@ -1755,7 +1755,19 @@ blue_belt_exercise_epoch_time() {
 	keep_going
 }
 
-blue_belt_exercise_converting_epoch_time() {
+blue_belt_exercise_converting_to_epoch_time() {
+	keep_going
+}
+
+blue_belt_exercise_converting_from_epoch_time() {
+	keep_going
+}
+
+blue_belt_exercise_fake_df() {
+	keep_going
+}
+
+blue_belt_exercise_beyond_pipes() {
 	keep_going
 }
 
