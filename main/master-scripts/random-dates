@@ -5,7 +5,7 @@ current_epoch=$(awk 'BEGIN{srand();print(srand())}')
 offset_answer=$(( $current_epoch + ( 86400 * $correct_offset ) ))
 
 # We can't just % 86400 because that will be midnight UTC.
-if [[ "${BSD_DATE}" -eq "1" ]]; then
+if [[ "${BSD_DATE:-}" -eq "1" ]]; then
 	date_only=$(date -r ${offset_answer} +"%Y-%m-%d")
 	epoch_date_only=$(date -j -f "%Y-%m-%d %H:%M:%S" "${date_only} 00:00:00" +"%s")
 else
@@ -18,23 +18,22 @@ fi
 door=$(( $RANDOM % 3 ))
 
 if [[ "$door" -eq "0" ]]; then
-	echo "Door #1"
 	door_1=${epoch_date_only}
 	door_2=$(( ${epoch_date_only} + 10 * 86400 ))
 	door_3=$(( ${epoch_date_only} + 20 * 86400 ))
 elif [[ "$door" -eq "1" ]]; then
-	echo "Door #2"
 	door_1=$(( ${epoch_date_only} - 10 * 86400 ))
 	door_2=${epoch_date_only}
 	door_3=$(( ${epoch_date_only} + 10 * 86400 ))
 else
-	echo "Door #3"
 	door_1=$(( ${epoch_date_only} - 20 * 86400 ))
 	door_2=$(( ${epoch_date_only} - 10 * 86400 ))
 	door_3=${epoch_date_only}
 fi
 
-echo $(date -d@${door_1} +"%B %-d, %Y")
-echo $(date -d@${door_2} +"%B %-d, %Y")
-echo $(date -d@${door_3} +"%B %-d, %Y")
+if [[ "${BSD_DATE:-}" -eq "1" ]]; then
+	echo $(date -r ${epoch_date_only} +"%B %-d, %Y")
+else
+	echo $(date -d@${epoch_date_only} +"%B %-d, %Y")
+fi
 
