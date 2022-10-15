@@ -3701,8 +3701,10 @@ but it's likely to be a program that lets you look at TTY devices.  Check "man w
 if so, which one it is.  It may be called "gnu-watch" on BSD-like systems, or there may be a similar program
 called "cmdwatch".
 
-We'll go ahead and show how we can expand on the command line we've built up so far with "watch".  The first thing
-we need to do is put the whole thing in quotes, so we're going to change all the quotes to double quotes.
+We'll go ahead and show how we can expand on the command line we've built up so far with "watch".  The first thing we
+need to do is put the whole thing in quotes, so we're going to change all the quotes to double quotes.  It's not always
+possible to change all single quotes to double quotes in a command line and have it work the same way, but it works in
+this case.
 
 echo \$(date +"%s") \$(df-20 | grep xvda1 | tr -s " " | cut -f5 -d" " | tr -d "%") >> ~/past-df-data
 
