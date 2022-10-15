@@ -5,8 +5,13 @@ current_epoch=$(awk 'BEGIN{srand();print(srand())}')
 offset_answer=$(( $current_epoch + ( 86400 * $correct_offset ) ))
 
 # We can't just % 86400 because that will be midnight UTC.
-date_only=$(date -r ${offset_answer} +"%Y-%m-%d")
-epoch_date_only=$(date -j -f "%Y-%m-%d %H:%M:%S" "${date_only} 00:00:00" +"%s")
+if [[ "${BSD_DATE}" -eq "1" ]]; then
+	date_only=$(date -r ${offset_answer} +"%Y-%m-%d")
+	epoch_date_only=$(date -j -f "%Y-%m-%d %H:%M:%S" "${date_only} 00:00:00" +"%s")
+else
+	date_only=$(date -d@{offset_answer} +"%Y-%m-%d")
+	epoch_date_only=$(date +"%s" -d "${date_only}")
+fi
 
 # Is the correct answer behind door #1, door #2, or door #3?
 door=$(( $RANDOM % 3 ))
