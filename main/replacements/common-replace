@@ -333,6 +333,9 @@ updateDotFile() {
 		echo "EXERCISE=${EXERCISE}" >> "${progress_file}"
 		echo "SAVED_RANK=${SAVED_RANK:-}" >> "${progress_file}"
 		echo "SAVED_EXERCISE=${SAVED_EXERCISE:-}" >> "${progress_file}"
+		if [ -n "${LUS_SECRET:-}" ]; then
+			echo "LUS_SECRET=${LUS_SECRET}" >> "${progress_file}"
+		fi
 
 		# Leave the temp file to be cleaned up by the trap.
 		cp "${progress_file}" "${LUS_PROGRESS}"

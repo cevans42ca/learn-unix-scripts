@@ -60,6 +60,7 @@ less_prompt_quit="Press h for help;?e: Enter for more (line %lb of %L).?e q to q
 FMT_OPTIONS="-u --width="
 GREP_BIN=grep
 LUS_PERL=0
+BSD_DATE=0
 
 get_rows_and_columns() {
 	STTY_ROWS=$(stty ${stty_options} | head -1 | sed 's/.*; \([0-9][0-9]*\) rows.*/\1/;s/.*; rows \([0-9][0-9]*\).*/\1/')
@@ -207,6 +208,26 @@ complete_exercise() {
 	# Print the exercise (or the last part of the exercise) to the terminal.  Since "less" cleans up after itself, if we
 	# don't do this, the user has nothing to reference to finish the task.
 	cat $fmt_file
+}
+
+random_midnight_date() {
+	correct_offset=$(( ($RANDOM % 60) - 30 ))
+	current_epoch=$(awk 'BEGIN{srand();print(srand())}')
+	offset_answer=$(( $current_epoch + ( 86400 * $correct_offset ) ))
+
+	# We can't just % 86400 because that will be midnight UTC.
+	if [[ "${BSD_DATE:-}" -eq "1" ]]; then
+		date_only=$(date -r ${offset_answer} +"%Y-%m-%d")
+		epoch_date_only=$(date -j -f "%Y-%m-%d %H:%M:%S" "${date_only} 00:00:00" +"%s")
+		date -r ${offset_answer} +"%B %d, %Y"
+	else
+		date_only=$(date -d@${offset_answer} +"%Y-%m-%d")
+		epoch_date_only=$(date +"%s" -d "${date_only}")
+		date -d@${epoch_date_only} +"%B %d, %Y"
+	fi
+
+	LUS_SECRET=${epoch_date_only}
+	updateDotFile
 }
 
 # insert 37333148-8746-4468-826e-544e532f1ebc updateDotFile, getBeltWithColours
@@ -3486,6 +3507,8 @@ EOL
 }
 
 blue_belt_exercise_converting_to_epoch_time() { # Converting to Epoch Time
+	target_date=$(random_midnight_date)
+
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Although all Unix-like operating systems use epoch time to simply using math with dates, they disagree on how to
 convert back and forth.  We're going to go over several different ways to convert a "human-readable" date like
@@ -3550,12 +3573,8 @@ EOL
 [user@freebsd ~]$ date -j "100102032022.04" +"%s"
 1664604184
 
-Find one that works for you and make a note of it.  Remember that you can review this lesson text as many times
-as you want before you move on by executing "learn".  The check script will not check anything this time.  It's up
-to you to choose to move on when you're confident you have it.
-
-If you source the check script and need to come back, execute "learn blue belt list" to find the exercise number
-and then execute "learn blue belt 10" if it's the tenth exercise.
+Find one that works for you and make a note of it.  When you're done experimenting, find the epoch time for
+${target_date} and source the check script.
 EOL
 
 	complete_exercise

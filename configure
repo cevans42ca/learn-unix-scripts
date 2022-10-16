@@ -238,12 +238,48 @@ if [ "${DOCKER:-0}" -eq "1" ]; then
 	if [ "${luc_choice}" = "4" ]; then
 		( cd main/docker && make createsharedvolume )
 	fi
+
+	BSD_DATE=0
 else
 	check_grep_perl
 	if [ "${perl_found:-}" = "1" ]; then
 		echo "export LUS_PERL=1" >> config.status
 	fi
+
+	if date +"%s" -d "October 1, 2022 00:00" > /dev/null 2>&1; then
+		BSD_DATE=0
+	elif date -j "100100002022" +"%s" > /dev/null 2>&1; then
+		BSD_DATE=1
+	else
+		echo "This project needs either of the following to work."
+		echo '   date +"%s" -d "October 1, 2022 00:00"'
+		echo '   date -j "100100002022" +"%s"'
+		echo "Unable to use the currently installed date program."
+		exit 2
+	fi
+
+	if [ "${BSD_DATE}" -eq "0" ]; then
+		if ! date -d@1662733200 +"%Y-%m-%d" > /dev/null 2>&1; then
+			echo 'The command'
+			echo '   date +"%s" -d "October 1, 2022 00:00"'
+			echo 'worked, but'
+			echo '   date -d@1662733200 +"%Y-%m-%d"'
+			echo "didn't.  The version of date that's installed appears to be inconsistent."
+			exit 2
+		fi
+	else
+		if ! date -r 1662733200 +"%Y-%m-%d" > /dev/null 2>&1; then
+			echo 'The command'
+			echo '   date -j "100100002022" +"%s"'
+			echo 'worked, but'
+			echo '   date -r 1662733200 +"%Y-%m-%d"'
+			echo "didn't.  The version of date that's installed appears to be inconsistent."
+			exit 2
+		fi
+	fi
 fi
+
+echo "export BSD_DATE=${BSD_DATE}" >> config.status
 
 touch flags/configuretarget
 

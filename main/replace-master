@@ -149,8 +149,8 @@ if [ "${DOCKER:-0}" -eq "0" ] && [ "${DARK_MODE:-1}" -eq "0" ]; then
 	mv "${intermediate_temp_file}" "${intermediate_file}"
 fi
 
-if [ -n "${SHUF_BIN:-}" ]; then
-	sed "s/^SHUF_BIN=.*/SHUF_BIN=${SHUF_BIN}/" "${intermediate_file}" > "${intermediate_temp_file}"
+if [ -n "${BSD_DATE:-}" ]; then
+	sed "s/^BSD_DATE=.*/BSD_DATE=\"${BSD_DATE}\"/" "${intermediate_file}" > "${intermediate_temp_file}"
 	mv "${intermediate_temp_file}" "${intermediate_file}"
 fi
 
