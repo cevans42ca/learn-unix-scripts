@@ -1393,6 +1393,460 @@ EOL
 	fi
 }
 
+blue_stripe_exercise_archive_files_extract() {
+	if [ -d "${LUS_HOME}/blue-stripe/from-archive" ]; then
+		set +e
+		diff -q <( cd "${LUS_HOME}/blue-stripe/from-archive" && find . -type f -print -exec grep -Hin ".*" {} \; | sort ) <(cat <<EOL
+./dir1/file10
+./dir1/file10:1:file10
+./dir1/file11
+./dir1/file11:1:file11
+./dir2/file12
+./dir2/file12:1:file12
+./file7
+./file7:1:file7
+./file8
+./file8:1:file8
+./file9
+./file9:1:file9
+EOL
+)
+
+		diff_result=$?
+		set -e
+		if [[ "${diff_result}" == "0" ]]; then
+			echo "You have successfully extracted the archive to the correct location."
+			good_work
+			success=1
+		else	
+			sorry
+			fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+There's unexpected data.  Please rename or move \"${LUS_HOME}/blue-stripe/from-archive\" and try again.
+EOL
+		fi
+	else
+		sorry
+		fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Unable to find \"${LUS_HOME}/blue-stripe/from-archive\", which should have been created when you extracted the archive.
+EOL
+	fi
+}
+
+blue_stripe_exercise_zip() { # Introduction to zip and unzip
+	keep_going
+}
+
+blue_stripe_exercise_vi() { # Introducion to vi
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*vi([\ ]|$) ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
+blue_stripe_exercise_moving_around_in_vi() {
+	set +e
+	diff -q "${LUS_HOME}/blue-stripe/vi-intro.txt" <(cat <<EOL
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum malesuada ut
+quam at ullamcorper. Praesent cursus tellus in convallis pulvinar. Sed
+facilisis, urna nec venenatis mattis, orci ex consequat nibh, id aliquet diam
+lectus at turpis. Morbi porttitor bibendum sem ut faucibus. Interdum et
+malesuada fames ac ante ipsum primis in faucibus. Morbi ac sagittis dui. Aliquam
+fermentum magna nec faucibus imperdiet. In hac habitasse platea dictumst.
+Curabitur imperdiet lorem fringilla leo pellentesque, quis fermentum augue
+vestibulum. Nunc pellentesque in massa et cursus. Suspendisse at euismod leo, ac
+volutpat ex. Phasellus vel finibus diam.
+
+Pellentesque malesuada felis in justo pretium feugiat. Vivamus lobortis, urna
+nec rhoncus viverra, nulla quam semper ante, non vehicula orci tortor vitae
+eros. Donec eget eros faucibus, tristique sem non, condimentum arcu. Morbi quis
+bibendum magna. Ut bibendum purus nunc, non porta justo aliquam eget. Praesent
+vel odio quis tellus feugiat viverra. Pellentesque mollis et mauris in sagittis.
+
+Quisque suscipit efficitur nisi in tempor. Donec nulla quam, pretium ut dapibus
+vestibulum, iaculis ac ante. Ut facilisis ante ac imperdiet viverra. Vivamus
+lectus lectus, fermentum non turpis quis, facilisis congue metus. Nullam ut
+tellus vulputate, mattis est vitae, dapibus orci. Integer condimentum quis risus
+ac fringilla. Quisque efficitur posuere eleifend. Cras eget neque eget ante
+scelerisque imperdiet. Proin lorem lorem, malesuada non condimentum eu, accumsan
+at odio. Integer laoreet venenatis lacus, at iaculis massa venenatis ac.
+
+Vivamus iaculis et neque eu porta. Duis quam felis, placerat eu rhoncus a,
+feugiat nec neque. Duis rhoncus justo non lectus sollicitudin vulputate. Vivamus
+ac libero finibus, commodo lacus a, suscipit mi. Praesent lacinia ex arcu, at
+elementum eros ornare sed. Curabitur non nisi sapien. Suspendisse vehicula ex id
+congue laoreet. Duis posuere tortor a quam blandit, vel molestie ex aliquet.
+Vestibulum tempus lacus in diam viverra, sit amet semper lorem consectetur.
+Donec leo quam, tincidunt sed ipsum ac, posuere interdum felis. Nunc quis metus
+sit amet nunc feugiat consequat sit amet eget urna. Nullam bibendum convallis
+enim eu luctus. Aliquam vitae scelerisque augue, a ullamcorper enim. Nam
+hendrerit dui in nibh ornare, ut consequat lectus suscipit.
+
+Vestibulum molestie pellentesque sodales. Nunc tincidunt ipsum eu viverra
+tincidunt. Nulla facilisi. Etiam consequat finibus nibh, fermentum imperdiet
+libero dictum in. Sed erat ex, laoreet ut aliquam et, dapibus eu magna.
+Vestibulum at posuere arcu. Mauris a ligula at nisl tincidunt imperdiet. Quisque
+dapibus, turpis et ornare venenatis, tortor diam pretium ipsum, vitae semper
+lectus arcu ac est. Maecenas vestibulum risus eu lacinia blandit. Sed vel est
+sapien. Vestibulum et ullamcorper est, fermentum elementum sem. Aliquam et
+placerat sapien.
+EOL
+)
+
+	if [[ $? == "1" ]]; then
+		set -e
+		good_work
+	else
+		set -e
+		echo "The file hasn't been changed."
+		sorry
+	fi
+}
+
+blue_stripe_exercise_searching_in_vi() {
+	set +e
+	if grep -q "in tempor" "${LUS_HOME}/blue-stripe/vi-intro.txt"; then
+		set -e
+		sorry
+	else
+		set -e
+		good_work
+	fi
+}
+
+blue_stripe_exercise_wrap_up_of_vi() {
+	keep_going
+}
+
+blue_stripe_exercise_nano_and_ee() {
+	if ask_review_final_exam; then
+		keep_going
+		return 0
+	fi
+
+	luc_correct_answers=0
+
+	# Question 1
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 1/7
+
+Which of the following commands creates a tar archive called archive.tar.gz and fills it with the contents of dir1?
+
+EOL
+
+	luc_answers=( 'tar czf archive.tar.gz dir1' 'tar -cfz archive.tar.gz dir1' 'tar xvzf archive.tar.gz dir1' 'tar xzf archive.tar.gz dir1' 'tar --feather archive.tar.gz' )
+	handle_answer 'tar czf archive.tar.gz dir1'
+
+	# Question 2
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 2/7
+
+Which of the following commands extracts a tar archive called archive.tar.gz?
+
+EOL
+
+	luc_answers=( 'tar xzf archive.tar.gz' 'tar -xfz archive.tar.gz dir1' 'tar cvzf archive.tar.gz' 'tar czf archive.tar.gz' 'solvent' )
+	handle_answer 'tar xzf archive.tar.gz'
+
+	# Question 3
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 3/7
+
+Which of the following commands creates a zip archive called "archive.zip" that contains the contents of dir1?
+
+EOL
+
+	luc_answers=( 'zip -r archive.zip dir1' 'zip archive.zip dir1' 'unzip -r archive.zip dir1' 'unzip archive.zip dir1' 'Coat' )
+	handle_answer 'zip -r archive.zip dir1'
+
+	# Question 4
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 4/7
+
+Which of the following commands unzips a zip archive called "archive.zip" into the current directory?
+
+EOL
+
+	luc_answers=( 'zip -r archive.zip' 'zip archive.zip' 'unzip -r archive.zip' 'unzip archive.zip' 'Jacket' )
+	handle_answer 'unzip archive.zip'
+
+	# Question 5
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 5/7
+
+How do you "escape" from vi (quit without saving)?
+
+EOL
+
+	luc_answers=( 'Escape :q! Enter' 'Escape Escape' 'Keep pressing Escape until vi gives up' 'Escape :wq Enter' )
+	handle_answer 'Escape :q! Enter'
+
+	# Question 6
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 6/7
+
+How do you save and quit vi?
+
+EOL
+
+	luc_answers=( 'Escape :q! Enter' 'Escape Escape' 'Keep pressing Escape until vi gives up' 'Escape :wq Enter' )
+	handle_answer 'Escape :wq Enter'
+
+	# Question 7
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 7/7
+
+What do you type to search in vi (in normal mode, not in insert mode)?
+
+EOL
+
+	luc_answers=( '/ (Slash)' ': (Colon)' '| (Pipe)' '~ (Tilde)' )
+	handle_answer '/ (Slash)'
+
+	if [ "$luc_correct_answers" == "7" ]; then
+		good_work
+	else
+		echo "Results:  $luc_correct_answers out of 7 correct"
+		echo ""
+		sorry
+	fi
+}
+
+blue_belt_exercise_intro_to_pipes() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*set[\ ]*\|[\ ]*wc[\ ][\ ]*-l$ ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
+blue_belt_exercise_stdout_and_stderr() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*set[\ ]*\|[\ ]*grep[\ ][\ ]*BASH[\ ]*$ ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
+blue_belt_exercise_chaining_pipes() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*set[\ ]*\|[\ ]*grep[\ ][\ ]*\^BASH[\ ]*\|[\ ]*wc[\ ][\ ]*-l$ ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
+blue_belt_exercise_cut() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		compressed_item=$(tr -s ' ' <<< "$item")
+		if [[ "$item" =~ ^[\ ]*set[\ ]*\|[\ ]*grep\ \^BASH[\ ]*\|[\ ]*cut\ -d\'=\'\ -f1[\ ]*$ ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
+blue_belt_exercise_redirection() {
+	if [ ! -f "${LUS_HOME}/blue-belt/bash-names" ]; then
+		sorry
+	else
+		set +e
+		if grep "^BASH$" "${LUS_HOME}/blue-belt/bash-names" > /dev/null 2>&1; then
+			if grep "^BASH_VERSION$" "${LUS_HOME}/blue-belt/bash-names" > /dev/null 2>&1; then
+				good_work
+			else
+				sorry
+			fi
+		else
+			sorry
+		fi
+		set -e
+	fi
+}
+
+blue_belt_exercise_tee() {
+	blue_belt_exercise_redirection
+}
+
+blue_belt_exercise_cat_revisited() {
+	if [ -f "${LUS_HOME}/blue-belt/cat-output" ]; then
+		file_lines=$(cat "${LUS_HOME}/blue-belt/cat-output" | wc -l)
+		if [[ "$file_lines" == "3" ]]; then
+			good_work
+		else
+			sorry
+			echo "The file ${LUS_HOME}/blue-belt/cat-output has ${file_lines} lines."
+		fi 
+	else
+		sorry
+		echo "The file ${LUS_HOME}/blue-belt/cat-output doesn't exist."
+	fi
+}
+
+blue_belt_exercise_predicting_the_future() {
+	luc_correct_answers=0
+	luc_answers=( '5 pm' '6 pm' '7 pm' '8 pm' 'Never' )
+
+	handle_answer "8 pm"
+
+	if [ "$luc_correct_answers" == "1" ]; then
+		good_work
+	else
+		sorry
+	fi
+}
+
+blue_belt_exercise_epoch_time() {
+	keep_going
+}
+
+epoch_to_human_readable() {
+	if [[ "${BSD_DATE:-}" -eq "1" ]]; then
+		echo $(date -r $1 +"%B %-d, %Y")
+	else
+		echo $(date -d@$1 +"%B %-d, %Y")
+	fi
+}
+
+epoch_quiz_main() {
+	epoch_date_only=${LUS_SECRET}
+
+	# Is the correct answer behind door #1, door #2, or door #3?
+	door=$(( $RANDOM % 3 ))
+
+	if [[ "$door" -eq "0" ]]; then
+		door_1=${epoch_date_only}
+		door_2=$(( ${epoch_date_only} + 10 * 86400 ))
+		door_3=$(( ${epoch_date_only} + 20 * 86400 ))
+	elif [[ "$door" -eq "1" ]]; then
+		door_1=$(( ${epoch_date_only} - 10 * 86400 ))
+		door_2=${epoch_date_only}
+		door_3=$(( ${epoch_date_only} + 10 * 86400 ))
+	else
+		door_1=$(( ${epoch_date_only} - 20 * 86400 ))
+		door_2=$(( ${epoch_date_only} - 10 * 86400 ))
+		door_3=${epoch_date_only}
+	fi
+}
+
+epoch_quiz_human_readable() {
+	door_1h=$(epoch_to_human_readable ${door_1})
+	door_2h=$(epoch_to_human_readable ${door_2})
+	door_3h=$(epoch_to_human_readable ${door_3})
+}
+
+blue_belt_exercise_converting_to_epoch_time() {
+	if [ -z "${LUS_SECRET:-}" ]; then
+		echo "Please run the learn script first."
+		exit 1
+	fi
+
+	epoch_quiz_main
+
+	luc_correct_answers=0
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question l/1
+
+What is the epoch time for $(epoch_to_human_readable ${LUS_SECRET})?
+
+EOL
+
+	luc_answers=( -17 $door_1 $door_2 $door_3 650696040000 )
+	do_shuffle=
+	handle_answer ${LUS_SECRET}
+
+	if [ "$luc_correct_answers" == "1" ]; then
+		good_work
+	else
+		sorry
+	fi
+}
+
+blue_belt_exercise_converting_from_epoch_time() {
+	if [ -z "${LUS_SECRET:-}" ]; then
+		echo "Please run the learn script first."
+		exit 1
+	fi
+
+	epoch_quiz_main
+	epoch_quiz_human_readable
+
+	luc_correct_answers=0
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question l/1
+
+What is the date corresponding to epoch time ${LUS_SECRET}?
+
+EOL
+
+	luc_answers=( "May 28, -585" "$door_1h" "$door_2h" "$door_3h" "September 28, 22586" )
+	do_shuffle=
+	handle_answer $(epoch_to_human_readable ${LUS_SECRET})
+
+	if [ "$luc_correct_answers" == "1" ]; then
+		good_work
+	else
+		sorry
+	fi
+}
+
+blue_belt_exercise_fake_df() {
+	keep_going
+}
+
+blue_belt_exercise_beyond_pipes() {
+	keep_going
+}
+
 ####################
 # End of exercises #
 ####################
