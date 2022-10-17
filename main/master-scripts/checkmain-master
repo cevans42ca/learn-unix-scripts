@@ -40,7 +40,7 @@ set -e -o nounset
 
 # DARK_MODE Replacement Tag:  if not running in Docker, replace this line with DARK_MODE=0 for black text on white
 
-# insert bef71a69-5f8d-43d4-af29-60608e9b56c7 temp file clean up
+# insert bef71a69-5f8d-43d4-af29-60608e9b56c7 temp file clean up and debug
 
 # insert 17fa07e6-24b8-4e35-bc1a-094427fd8699
 
@@ -1775,6 +1775,7 @@ blue_belt_exercise_converting_to_epoch_time() {
 		echo "Please run the learn script first."
 		exit 1
 	fi
+}
 
 epoch_quiz_main() {
 	epoch_date_only=${LUS_SECRET}
@@ -1849,7 +1850,7 @@ EOL
 
 	luc_answers=( "May 28, -585" "$door_1h" "$door_2h" "$door_3h" "September 28, 22586" )
 	do_shuffle=
-	handle_answer $(epoch_to_human_readable ${LUS_SECRET})
+	handle_answer "$(epoch_to_human_readable ${LUS_SECRET})"
 
 	if [ "$luc_correct_answers" == "1" ]; then
 		good_work

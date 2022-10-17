@@ -287,6 +287,16 @@ clean_up() {
 
 # It's a trap!  Run the clean_up subroutine on normal or aborted exit.
 trap clean_up EXIT
+
+aggressive_debug() {
+	PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+	set -x
+}
+
+debug() {
+	PS4='Line ${LINENO}: '
+	set -x
+}
 # end bef71a69-5f8d-43d4-af29-60608e9b56c7
 
 # start 37333148-8746-4468-826e-544e532f1ebc
