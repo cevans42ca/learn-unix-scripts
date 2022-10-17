@@ -3610,7 +3610,7 @@ EOL
 	complete_exercise
 }
 
-blue_belt_exercise_fake_df() { # Adventures in Piping Pipes
+blue_belt_exercise_piping_pipes() { # Adventures in Piping Pipes
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 We have a command that takes two numbers per line.  Now it's time to take the output of df and cut it down to a
 single number for use by the prediction program.  We don't want to fill up any real drives, so we're going to use
@@ -3641,8 +3641,8 @@ EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
-We're almost there.  The number has a percent sign.  We need to remove it.  We'll use "tr" again to remove all
-percent signs.
+We've come a long way, but we still have a little ways to go.  The number has a percent sign.  We need to remove it.
+We'll use "tr" again to remove all percent signs.
 
 EOL
 
@@ -3712,10 +3712,10 @@ on the test).
 We have a command line that will take the current time and current percentage used for a drive and put them into
 a file.  Ideally, we would run it periodically to capture data over time.
 
-Unix has many ways of running something periodically.  Cron runs programs on a schedule (like every hour, or at
-1 p.m. on weekdays).  That can be problematic if there are programs to run overnight and the host is shut down.
+Unix has many ways of running something periodically.  Cron runs programs on a schedule (like every hour, or at 1 p.m.
+on weekdays).  That can be problematic if there are programs configured to run overnight and the host is shut down.
 Anacron runs programs periodically (for example, every day or every month) but doesn't guarantee exactly when.
-Sometimes, non-root users are set up to be able to use these.  You can also schedule programs to run with systemd
+Sometimes, non-root users are allowed to use cron and anacron.  You can also schedule programs to run with systemd
 timers.  All of these are out of scope for the coloured belt exercises.
 
 A command called "watch" will let a regular user run a command periodically (every 10 seconds, every minute, etc.)
@@ -3756,9 +3756,14 @@ EOL
 
 And the demo is complete.
 
-Take some time now to experiment with the "df-20" and "df-40" scripts, epoch dates, and the there-yet script.
-You may want to try editing the input file to there-yet or adding your own lines with echo.  If you use the
-"--find-time-given" option with there-yet, it will convert the predicted value into a readable date.
+Take some time now to experiment with the "df-20" and "df-40" scripts, epoch dates, and the there-yet script.  You may
+want to try editing the input file to there-yet or adding your own lines with echo.  If you use the "--find-time-given"
+option with there-yet, it will convert the predicted value into a readable date.
+
+Keep in mind that you should trust the predicted values about as much as any other progress bar.  Good predictions are
+only possible if everything stays the same, which is rarely the case.
+
+When you're done experimenting, source the check script for your final exam.
 EOL
 
 	complete_exercise

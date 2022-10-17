@@ -1859,11 +1859,19 @@ EOL
 	fi
 }
 
-blue_belt_exercise_fake_df() {
+blue_belt_exercise_piping_pipes() {
 	keep_going
 }
 
 blue_belt_exercise_beyond_pipes() {
+	# What stdout/stderr
+	# What does > do?
+	# What does >> do?
+	# What does tr do?
+	# What does cut do?
+	# What does grep do?
+	# What does tee do?
+	# What is epoch time?
 	keep_going
 }
 
