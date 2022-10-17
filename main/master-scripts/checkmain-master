@@ -1776,6 +1776,7 @@ blue_belt_exercise_converting_to_epoch_time() {
 		exit 1
 	fi
 
+epoch_quiz_main() {
 	epoch_date_only=${LUS_SECRET}
 
 	# Is the correct answer behind door #1, door #2, or door #3?
@@ -1794,6 +1795,21 @@ blue_belt_exercise_converting_to_epoch_time() {
 		door_2=$(( ${epoch_date_only} - 10 * 86400 ))
 		door_3=${epoch_date_only}
 	fi
+}
+
+epoch_quiz_human_readable() {
+	door_1h=$(epoch_to_human_readable ${door_1})
+	door_2h=$(epoch_to_human_readable ${door_2})
+	door_3h=$(epoch_to_human_readable ${door_3})
+}
+
+blue_belt_exercise_converting_to_epoch_time() {
+	if [ -z "${LUS_SECRET:-}" ]; then
+		echo "Please run the learn script first."
+		exit 1
+	fi
+
+	epoch_quiz_main
 
 	luc_correct_answers=0
 	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
@@ -1815,7 +1831,31 @@ EOL
 }
 
 blue_belt_exercise_converting_from_epoch_time() {
-	keep_going
+	if [ -z "${LUS_SECRET:-}" ]; then
+		echo "Please run the learn script first."
+		exit 1
+	fi
+
+	epoch_quiz_main
+	epoch_quiz_human_readable
+
+	luc_correct_answers=0
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question l/1
+
+What is the date corresponding to epoch time ${LUS_SECRET}?
+
+EOL
+
+	luc_answers=( "May 28, -585" "$door_1h" "$door_2h" "$door_3h" "September 28, 22586" )
+	do_shuffle=
+	handle_answer $(epoch_to_human_readable ${LUS_SECRET})
+
+	if [ "$luc_correct_answers" == "1" ]; then
+		good_work
+	else
+		sorry
+	fi
 }
 
 blue_belt_exercise_fake_df() {
