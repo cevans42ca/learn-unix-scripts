@@ -1864,15 +1864,121 @@ blue_belt_exercise_piping_pipes() {
 }
 
 blue_belt_exercise_beyond_pipes() {
-	# What stdout/stderr
-	# What does > do?
-	# What does >> do?
-	# What does tr do?
-	# What does cut do?
-	# What does grep do?
-	# What does tee do?
-	# What is epoch time?
-	keep_going
+	if ask_review_final_exam; then
+		keep_going
+		return 0
+	fi
+
+	luc_correct_answers=0
+
+	# Question 1
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 1/9
+
+What is "standard out" (aka "stdout")?
+
+EOL
+
+	luc_answers=( 'The normal output of a process (which can be redirected with a pipe or right angle bracket)' 'The end of anti-exceptionalism.' 'The error output of a process (usually error messages, if there are any)' 'The difference between the height of the regression line and a data point.' )
+	handle_answer 'The normal output of a process (which can be redirected with a pipe or right angle bracket)'
+
+	# Question 2
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 2/9
+
+What is "standard error" (aka "stderr")?
+
+EOL
+
+	luc_answers=( 'The normal output of a process (which can be redirected with a pipe or right angle bracket)' 'The end of anti-exceptionalism.' 'The error output of a process (usually error messages, if there are any)' 'The difference between the height of the regression line and a data point.' )
+	handle_answer 'The error output of a process (usually error messages, if there are any)'
+
+	# Question 3
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 3/9
+
+When you use ">" after a command and before a filename at a prompt (in your shell) what does it do?
+
+EOL
+
+	luc_answers=( 'It redirects the output of the command to the filename, wiping the file if it exists.' 'It redirects the output of the command to the filename, appending to the file if it exists.' 'It returns true if the return value of the first command is larger than the return value of the second command.' )
+	handle_answer 'It redirects the output of the command to the filename, wiping the file if it exists.'
+
+	# Question 4
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 4/9
+
+When you use ">>" after a command and before a filename at a prompt (in your shell) what does it do?
+
+EOL
+
+	luc_answers=( 'It redirects the output of the command to the filename, wiping the file if it exists.' 'It redirects the output of the command to the filename, appending to the file if it exists.' 'It returns true if the return value of the first command is much larger than the return value of the second command.' )
+	handle_answer 'It redirects the output of the command to the filename, appending to the file if it exists.'
+
+	# Question 5
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 5/9
+
+What does the tr program do (among other things)?
+
+EOL
+
+	luc_answers=( 'It replaces runs of characters with a single one (for example, replacing a series of spaces with one space). It can also delete all examples of a specific character.' 'It pulls out one field or specific fields from the input.' 'It searches for things in the input and prints out any matches.' 'It sends its input to two (or more) places at the same time, for example, to both the terminal and a file.' )
+	handle_answer 'It replaces runs of characters with a single one (for example, replacing a series of spaces with one space). It can also delete all examples of a specific character.'
+
+	# Question 6
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 6/9
+
+What does the cut program do?
+
+EOL
+
+	luc_answers=( 'It replaces runs of characters with a single one (for example, replacing a series of spaces with one space). It can also delete all examples of a specific character.' 'It pulls out one field or specific fields from the input.' 'It searches for things in the input and prints out any matches.' 'It sends its input to two (or more) places at the same time, for example, to both the terminal and a file.' )
+	handle_answer 'It pulls out one field or specific fields from the input.'
+
+	# Question 7
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 7/9
+
+What does the grep program do?
+
+EOL
+
+	luc_answers=( 'It replaces runs of characters with a single one (for example, replacing a series of spaces with one space). It can also delete all examples of a specific character.' 'It pulls out one field or specific fields from the input.' 'It searches for things in the input and prints out any matches.' 'It sends its input to two (or more) places at the same time, for example, to both the terminal and a file.' )
+	handle_answer 'It searches for things in the input and prints out any matches.'
+
+	# Question 8
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 8/9
+
+What does the tee program do?
+
+EOL
+
+	luc_answers=( 'It replaces runs of characters with a single one (for example, replacing a series of spaces with one space). It can also delete all examples of a specific character.' 'It pulls out one field or specific fields from the input.' 'It searches for things in the input and prints out any matches.' 'It sends its input to two (or more) places at the same time, for example, to both the terminal and a file.' )
+	handle_answer 'It sends its input to two (or more) places at the same time, for example, to both the terminal and a file.'
+
+	# Question 9
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 9/9
+
+What is epoch time?
+
+EOL
+
+	do_shuffle=
+	luc_answers=( 'The number of seconds since midnight January 1, 1960 UTC' 'The number of seconds since July 20, 1969, at 20:17 UTC' 'The number of seconds since midnight January 1, 1970 UTC' 'The number of seconds since midnight January 1, 1980 UTC' )
+	handle_answer 'The number of seconds since midnight January 1, 1970 UTC'
+
+	# Final check
+	if [ "$luc_correct_answers" == "9" ]; then
+		good_work
+	else
+		echo "Results:  $luc_correct_answers out of 9 correct"
+		echo ""
+		sorry
+	fi
 }
 
 ####################
