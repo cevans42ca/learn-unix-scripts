@@ -3581,6 +3581,8 @@ EOL
 }
 
 blue_belt_exercise_converting_from_epoch_time() { # Converting from Epoch Time
+	random_midnight_date
+
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Convtering from epoch time to a human-readable format is more straightforward (if you're not picky about the format).
 
@@ -3593,8 +3595,6 @@ Linux:    date -d @1660000123
 Mac/BSD:  date -r 1660000123
 Older:    date -d "1970-01-01 UTC + 1660000123 seconds"
 EOL
-
-	target_date=$(random_midnight_date)
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
