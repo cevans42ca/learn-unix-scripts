@@ -359,10 +359,10 @@ rules (also called British practice, British style, and logical punctuation).
 
 If this script says to execute "set", that means to type the letters s, e, t, and press Enter.  Don't type the double quotes.
 
-If an exercise asks you to execute "scp bcompcd101:/tmp/file.txt ." then the space and dot at the end, before the final
+If an exercise asks you to execute "scp myserver101:/tmp/file.txt ." then the space and dot at the end, before the final
 double quote, are important and must be typed before pressing Enter.
 
-At the end of a sentence, you will see: "scp bcompcd101:/tmp/file.txt .".
+At the end of a sentence, you will see: "scp myserver101:/tmp/file.txt .".
 
 To see the overview of what is covered in each belt, execute "learn --welcome".
 
@@ -400,7 +400,7 @@ EOL
 When you see your prompt, that means that the previous commands have completed and your shell is ready for another command.
 (We'll be going into more detail on shells later.)  Prompts are one of the most heavily customized aspects of Unix, ranging
 from a simple dollar sign to multi-line creations.  You should expect your prompt to look similar across different computers
-(or hosts) run by the same people, but different as you move elsewhere.
+(or hosts) run by the same people (like your school or work) but different as you move elsewhere.
 EOL
 
 	printf "\n\n${underline}I'm Stuck!${no_underline}\n\n" >> $fmt_file
@@ -410,13 +410,16 @@ call out for you to make a note of, things you're always going to want to have h
 like (Evernote, a personal wiki, on your phone, Microsoft OneNote, a mind map, or good old pen and paper) but make sure it
 will be available whenever you're at a Unix terminal.
 
-Characters include letters, numbers, and punctuation.  Space is a character.  There are non-printable characters like
-tab, carriage return, and Ctrl+a through Ctrl+z.  We're not going to get into Chinese, Japanese, and Korean, where things
-are even more complicated.
+The first thing we're going to cover is the first thing you need to try when your terminal seems to be stuck.  It's
+called your interrupt character.  Characters include letters, numbers, and punctuation.  Space is a character.  There
+are non-printable characters like tab, carriage return, and Ctrl+a through Ctrl+z.  We're not going to get into Chinese,
+Japanese, and Korean, where things are even more complicated.
 
 Your interrupt character is Ctrl+c (don't type it now, but in order to type it, hold one of the Ctrl keys down and press
 the "c" key.  Do not use either Shift key.)  There are only a few cases where typing Ctrl+c will not stop what's happening
-and return you to a prompt.  We will be covering two of these soon.  Make a note of it.
+and return you to a prompt.  One noteworthy time when Ctrl+c won't get you back to a prompt is when you're looking at
+a lesson (as in, right now).  Make a note of Ctrl+c now.  We'll be covering the other case where Ctrl+c won't help soon,
+and what to do.
 
 For now, it's a good thing that Ctrl+c will get you out of most situations.  Later, you will learn to be more careful
 about using Ctrl+c, and we will go over other things you might want to try first.
@@ -425,8 +428,12 @@ EOL
 
 	printf "\n\n${underline}Moving On${no_underline}\n\n" >> $fmt_file
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-After reading the text for each exercise, you will need to do three things.  For white belt, you only need to remember
-the first step.  All the white belt exercises will tell you what to do for step 2 and will remind you to do step 3.
+After reading the text for each exercise, you will need to do three things:  quit the lesson, do anything the lesson
+asked you to do, and run a script to check that you did it correctly.  If you don't have time, you can execute "learn"
+again later.  For white belt, you only need to remember the first step (quitting).  All the white belt exercises will
+tell you what to do for step 2 and will remind you to do step 3.
+
+Here are the steps in full.  Read them but don't do them yet.
 
 (1) Quit the lesson by pressing "q" (which will return you to your prompt).
 
