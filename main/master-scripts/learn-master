@@ -346,8 +346,11 @@ EOL
 
 # White belt exercises (Start vim fold) {{{
 white_belt_exercise_what_execute_means() { # What "Execute" Means, and Your Prompt
-	yellow_stripe="${yellow_on_black}yellow ${nc}${bright_white_on_black}stripe${nc}"
-	printf "${underline}The Bare Essentials${no_underline}\n\n" >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Welcome to the first exercise, which includes how to use the "learn" and "check" scripts, so it's longer than most exercises.
+EOL
+
+	printf "\n${underline}The Bare Essentials${no_underline}\n\n" >> $fmt_file
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 In the United States and Canada, grammar rules say to put the period inside the double quotes.
