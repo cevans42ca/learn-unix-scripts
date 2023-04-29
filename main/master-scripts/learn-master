@@ -465,9 +465,10 @@ The second thing you should try is typing Ctrl+q (Ctrl with a lowercase "q", or 
 including shift).
 
 Ctrl+q and Ctrl+s are holdovers of an ancient age when it was more common to print output to a printer than a screen.
-Printers were much slower and needed time to catch up.  These continued to be used with displays to freeze the screen so
-that users could read something that was quickly scrolling by.  Ctrl+q and Ctrl+s can still be used that way, but there are
-generally better options available now that allow programs to continue to run while the user is looking at something.
+Printers were much slower and needed time to catch up.  These key combinations continued to be used with displays to
+freeze the screen so that users could read something that was quickly scrolling by.  Ctrl+q and Ctrl+s can still be used
+that way, but there are generally better options available now that allow programs to continue to run while the user is
+looking at something.
 
 Please make a note of these now.  There will be a question later about it.  (The history lesson is not on the test.)
 
