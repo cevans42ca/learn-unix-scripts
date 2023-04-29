@@ -3254,8 +3254,12 @@ EOL
 # Blue belt exercises (Start vim fold) {{{
 blue_belt_exercise_intro_to_pipes() { # Introduction to Pipes
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-Congratulations on your blue belt!  These exercises will be a little bit different from those before.  All Unix
-and Unix-like operating systems provide a considerable number of small programs for processing text.  We'll be
+Congratulations on your blue belt!
+
+We took a look at piping one program's output to another program all the way back in white belt.  In this belt, we'll
+be looking at using pipes with more than two programs.
+
+All Unix and Unix-like operating systems provide a considerable number of small programs for processing text.  We'll be
 going through several of these quickly, so be sure to take some notes about each one.
 
 We took a look at pipes a long time ago with "set | more" and "set | less".  The pipe tells your shell to run both
@@ -3282,9 +3286,10 @@ By default, both standard out and standard error go to your terminal.  If you ra
 normal output and errors, you would see both.  If you execute "set | wc -l", any errors will still show up on your
 terminal.
 
-Let's look at grep next.  The name "grep" comes from the ed command "g/re/p" or "global/regular expression/print".
-In this case, the history is harder to remember than the command itself.  Grep is used to look for things
-in files (or file descriptors).  Grep takes a "regular expression", which is a kind of special search string.
+Let's look at grep next.  There is no need to know or memorize that the name "grep" comes from the ed command "g/re/p"
+which is short for "global/regular expression/print".  In this case, the history is harder to remember than the command
+itself.  Grep is used to look for things in files (or file descriptors).  Grep takes a "regular expression", which is a
+special kind of search string.
 
 We looked at globs before, where abc*.txt can find (or match) abcdef.txt and abcghi.txt.  Regular expressions
 take that up several notches into space.  Even if you have a particularly good memory, regular expressions are
@@ -3292,7 +3297,7 @@ not something you should sit down and learn, but something you grow with over ti
 You're more likely to remember something that you learned when you needed it.  (And even more likely to remember
 it if you were excited about finding a solution to a problem.)
 
-We'll start with the simplest regular expression:  one with only letters.  We're going to look at all the environment
+We'll start with the simplest regular expression:  one with only letters.  We're going to look at environment
 variables associated with the currently running bash shell.  We're going to use the regular expression "BASH" which
 will find all instances of that string.  It's similar to the glob "*BASH*".  Unless you say otherwise, the search
 string will be found anywhere on any line (unlike a glob, which needs * on both sides for that).  By default, the
@@ -3306,11 +3311,11 @@ EOL
 
 blue_belt_exercise_chaining_pipes() { # Chaining Pipes
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-We can use multiple pipes to chain commands together.  Let's look at how many environment variables have BASH in them
-by adding "| wc -l".
+We can use multiple pipes to chain commands together.  Let's look at how many environment variables have BASH in them by
+adding "| wc -l".
 
-We can also restrict the search to lines that start with BASH by adding a caret ( ^ ) to the beginning of the
-search string.
+We can also restrict the search to lines that start with BASH by adding a caret ( ^ ) to the beginning of the search
+string.
 
 Execute "set | grep ^BASH | wc -l".
 EOL
@@ -3391,7 +3396,7 @@ EOL
 	complete_exercise
 }
 
-blue_belt_exercise_cat_revisited() { # The cat came back 
+blue_belt_exercise_cat_revisited() { # The Cat Came Back
 	prepareLusHome
 	prepareBlueBelt
 
@@ -3414,14 +3419,14 @@ EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
-Use the output above as an example to ceate a file called "${LUS_HOME}/blue-belt/cat-output" with three lines in it.
+Use the output above as an example to create a file called "${LUS_HOME}/blue-belt/cat-output" with three lines in it.
 The file can contain any text you want, but it must have exactly three lines (including blank ones).
 EOL
 
 	complete_exercise
 }
 
-blue_belt_exercise_predicting_the_future() { # Multiline input:  predicting the future
+blue_belt_exercise_predicting_the_future() { # Multiline Input:  Predicting the Future
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 We're going to do something useful with multiline input now:  predicting the future.  (If you're a mathemetician or
 statistician, we'll be using a simple and straightforward linear regression implementation.  If not, don't worry,
@@ -3466,7 +3471,7 @@ EOL
 	complete_exercise
 }
 
-blue_belt_exercise_epoch_time() { # Epoch time
+blue_belt_exercise_epoch_time() { # Epoch Time
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 In the previous exercise, we took a look at a program that can provide a predicition based on past data.  I hope you're
 wondering, "What about minutes?  What if it takes until the next day?"  If you are, compliments for being curious!

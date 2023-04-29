@@ -1,4 +1,4 @@
-.PHONY: clean dist distclean install configure run replacetarget
+.PHONY: clean dist distclean install configure run replacetarget nonreplacescripts nonreplace
 
 include config.status
 
@@ -40,13 +40,15 @@ replacetarget: flags/replacetarget
 main/docker/bin/%: main/dist/bin/%
 	cp main/dist/bin/$* main/docker/bin/$*
 
-dockerinstall: flags/replacetarget main/docker/bin/*
+dockerinstall: flags/replacetarget nonreplace nonreplacedocker main/docker/bin/*
 
 main/dist/bin/%: main/master-scripts/%
 	cp main/master-scripts/$* main/dist/bin/$*
 
 # Copy the scripts that don't need replacement to main/dist/bin
-nonreplace: main/dist/bin/there-yet main/dist/bin/df-20 main/dist/bin/df-40
+nonreplacescripts: there-yet df-20 df-40
+nonreplace: $(nonreplacescripts:%=main/dist/bin/%)
+nonreplacedocker: main/docker/bin/there-yet main/docker/bin/df-20 main/docker/bin/df-40
 
 install: flags/replacetarget nonreplace
 	@# Quotes around the install path are already added by the configure script.
