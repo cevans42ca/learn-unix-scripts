@@ -346,8 +346,11 @@ EOL
 
 # White belt exercises (Start vim fold) {{{
 white_belt_exercise_what_execute_means() { # What "Execute" Means, and Your Prompt
-	yellow_stripe="${yellow_on_black}yellow ${nc}${bright_white_on_black}stripe${nc}"
-	printf "${underline}The Bare Essentials${no_underline}\n\n" >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Welcome to the first exercise, which includes how to use the "learn" and "check" scripts, so it's longer than most exercises.
+EOL
+
+	printf "\n${underline}The Bare Essentials${no_underline}\n\n" >> $fmt_file
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 In the United States and Canada, grammar rules say to put the period inside the double quotes.
@@ -359,10 +362,10 @@ rules (also called British practice, British style, and logical punctuation).
 
 If this script says to execute "set", that means to type the letters s, e, t, and press Enter.  Don't type the double quotes.
 
-If an exercise asks you to execute "scp bcompcd101:/tmp/file.txt ." then the space and dot at the end, before the final
+If an exercise asks you to execute "scp myserver101:/tmp/file.txt ." then the space and dot at the end, before the final
 double quote, are important and must be typed before pressing Enter.
 
-At the end of a sentence, you will see: "scp bcompcd101:/tmp/file.txt .".
+At the end of a sentence, you will see: "scp myserver101:/tmp/file.txt .".
 
 To see the overview of what is covered in each belt, execute "learn --welcome".
 
@@ -400,7 +403,7 @@ EOL
 When you see your prompt, that means that the previous commands have completed and your shell is ready for another command.
 (We'll be going into more detail on shells later.)  Prompts are one of the most heavily customized aspects of Unix, ranging
 from a simple dollar sign to multi-line creations.  You should expect your prompt to look similar across different computers
-(or hosts) run by the same people, but different as you move elsewhere.
+(or hosts) run by the same people (like your school or work) but different as you move elsewhere.
 EOL
 
 	printf "\n\n${underline}I'm Stuck!${no_underline}\n\n" >> $fmt_file
@@ -410,13 +413,16 @@ call out for you to make a note of, things you're always going to want to have h
 like (Evernote, a personal wiki, on your phone, Microsoft OneNote, a mind map, or good old pen and paper) but make sure it
 will be available whenever you're at a Unix terminal.
 
-Characters include letters, numbers, and punctuation.  Space is a character.  There are non-printable characters like
-tab, carriage return, and Ctrl+a through Ctrl+z.  We're not going to get into Chinese, Japanese, and Korean, where things
-are even more complicated.
+The first thing we're going to cover is the first thing you need to try when your terminal seems to be stuck.  It's
+called your interrupt character.  Characters include letters, numbers, and punctuation.  Space is a character.  There
+are non-printable characters like tab, carriage return, and Ctrl+a through Ctrl+z.  We're not going to get into Chinese,
+Japanese, and Korean, where things are even more complicated.
 
 Your interrupt character is Ctrl+c (don't type it now, but in order to type it, hold one of the Ctrl keys down and press
 the "c" key.  Do not use either Shift key.)  There are only a few cases where typing Ctrl+c will not stop what's happening
-and return you to a prompt.  We will be covering two of these soon.  Make a note of it.
+and return you to a prompt.  One noteworthy time when Ctrl+c won't get you back to a prompt is when you're looking at
+a lesson (as in, right now).  Make a note of Ctrl+c now.  We'll be covering the other case where Ctrl+c won't help soon,
+and what to do.
 
 For now, it's a good thing that Ctrl+c will get you out of most situations.  Later, you will learn to be more careful
 about using Ctrl+c, and we will go over other things you might want to try first.
@@ -425,8 +431,12 @@ EOL
 
 	printf "\n\n${underline}Moving On${no_underline}\n\n" >> $fmt_file
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-After reading the text for each exercise, you will need to do three things.  For white belt, you only need to remember
-the first step.  All the white belt exercises will tell you what to do for step 2 and will remind you to do step 3.
+After reading the text for each exercise, you will need to do three things:  quit the lesson, do anything the lesson
+asked you to do, and run a script to check that you did it correctly.  If you don't have time, you can execute "learn"
+again later.  For white belt, you only need to remember the first step (quitting).  All the white belt exercises will
+tell you what to do for step 2 and will remind you to do step 3.
+
+Here are the steps in full.  Read them but don't do them yet.
 
 (1) Quit the lesson by pressing "q" (which will return you to your prompt).
 
@@ -435,8 +445,10 @@ Almost all the other exercises will ask you to something for this step.
 
 (3) Execute ". check".
 
-Do these now.  There was a lot of text since we covered what execute means.  If you're not sure on this one, press the Up
+There was a lot of text since we covered what execute means.  If you're not sure on this one, press the Up
 Arrow key to go back.  If the Up Arrow key doesn't work, you can press the k key to go back.
+
+Once you've finished reading this lesson, do the three steps.
 EOL
 
 	complete_exercise
@@ -453,9 +465,10 @@ The second thing you should try is typing Ctrl+q (Ctrl with a lowercase "q", or 
 including shift).
 
 Ctrl+q and Ctrl+s are holdovers of an ancient age when it was more common to print output to a printer than a screen.
-Printers were much slower and needed time to catch up.  These continued to be used with displays to freeze the screen so
-that users could read something that was quickly scrolling by.  Ctrl+q and Ctrl+s can still be used that way, but there are
-generally better options available now that allow programs to continue to run while the user is looking at something.
+Printers were much slower and needed time to catch up.  These key combinations continued to be used with displays to
+freeze the screen so that users could read something that was quickly scrolling by.  Ctrl+q and Ctrl+s can still be used
+that way, but there are generally better options available now that allow programs to continue to run while the user is
+looking at something.
 
 Please make a note of these now.  There will be a question later about it.  (The history lesson is not on the test.)
 
@@ -3440,10 +3453,10 @@ abillity to take smaller elements and combine them to give us something we need,
 
 We'll begin with the script that makes predictions based on past data.
 
-Let's say that at 2 pm, a drive is 20% full.  At 4 pm, the drive is 40% full.  Assuming everything stays the same,
-when will it be full (100%)?  We use the "--find-x-given 100" arguments to calculate what the first value will be
-when the second one is 100.  Then we type in the (multiline) data, following it with Ctrl+d.  Be careful to type
-it only once.  If you type it again, your terminal session will terminate, and you'll have to open a new one.
+Let's say that at 2 pm, a drive is 20% full.  At 4 pm, the drive is 40% full.  Assuming everything stays the same, when
+will it be full (100%)?  We use the "--find-x-given 100" arguments to calculate what the first value will be when the
+second one is 100.  Then we type in the (multiline) data, following it with Ctrl+d.  Be careful not to type Ctrl+d a
+second time.  If you type it again, your terminal session will terminate, and you'll have to open a new one.
 
 EOL
 
@@ -3515,7 +3528,7 @@ blue_belt_exercise_converting_to_epoch_time() { # Converting to Epoch Time
 	target_date=$(random_midnight_date)
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-Although all Unix-like operating systems use epoch time to simply using math with dates, they disagree on how to
+Although all Unix-like operating systems use epoch time to simplify using math with dates, they disagree on how to
 convert back and forth.  We're going to go over several different ways to convert a "human-readable" date like
 September 12, 2022 into an epoch time.  You don't need to make a note of all of these.  You only need one that
 works for you.
@@ -3533,7 +3546,8 @@ EOL
 
 The version of the date program provided in Linux also allows "second Sunday", "last Thursday", and many other formats.
 Even if you're using a BSD-based system, this version of date might be installed as "gdate".  We used "type" earlier
-to check if a program is aliased, but we can also use it to see if a program exists and can be run.
+to check if a program is aliased, but we can also use it to see if a program exists and can be run.  Here's an example
+of what it looks like when a program is available, and one that isn't available.
 
 EOL
 
@@ -3564,21 +3578,23 @@ EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
-There's a default format, but the year goes after the hours and minutes, and seconds go after the year (if you want
-to supply them).
+The default format on Mac has the year going after the hours and minutes, and seconds going after the year (if you want
+to supply them).  By specifying a format (as above) you can use the same command on Mac and FreeBSD.
 
 EOL
 
 	cat <<EOL >> $fmt_file
 # October 1, 2:03 am, 2022
-[user@freebsd ~]$ date -j "100102032022" +"%s"
+[user@mac ~]$ date -j "100102032022" +"%s"
 1664604180
 
 # October 1, 2:03 am, 2022, and 4 seconds
-[user@freebsd ~]$ date -j "100102032022.04" +"%s"
+[user@mac ~]$ date -j "100102032022.04" +"%s"
 1664604184
 
-Find one that works for you and make a note of it.  When you're done experimenting, find the epoch time for
+Find one that works for you and make a note of it.  Remember that if you don't provide hours, minutes, and seconds, the
+current ones will be added automatically.  For best results, make sure your format string includes hours, minutes, and
+seconds, and make sure you supply zeros for them.  When you're done experimenting, find the epoch time for
 ${target_date} and source the check script.
 EOL
 

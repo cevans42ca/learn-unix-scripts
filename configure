@@ -248,12 +248,12 @@ else
 
 	if date +"%s" -d "October 1, 2022 00:00" > /dev/null 2>&1; then
 		BSD_DATE=0
-	elif date -j "100100002022" +"%s" > /dev/null 2>&1; then
+	elif date -j -f "%m%d%H%M%Y" "100100002022" +"%s" > /dev/null 2>&1; then
 		BSD_DATE=1
 	else
 		echo "This project needs either of the following to work."
 		echo '   date +"%s" -d "October 1, 2022 00:00"'
-		echo '   date -j "100100002022" +"%s"'
+		echo '   date -j -f "%m%d%H%M%Y" "100100002022" +"%s"'
 		echo "Unable to use the currently installed date program."
 		exit 2
 	fi
@@ -270,7 +270,7 @@ else
 	else
 		if ! date -r 1662733200 +"%Y-%m-%d" > /dev/null 2>&1; then
 			echo 'The command'
-			echo '   date -j "100100002022" +"%s"'
+			echo '   date -j -f "%m%d%H%M%Y" "100100002022" +"%s"'
 			echo 'worked, but'
 			echo '   date -r 1662733200 +"%Y-%m-%d"'
 			echo "didn't.  The version of date that's installed appears to be inconsistent."
@@ -299,23 +299,49 @@ elif [ "${luc_choice_2}" -eq "1" ]; then
 		mkdir -p "${HOME}/bin"
 	fi
 
-	if which make > /dev/null 2>&1; then
-		echo "Run make install."
+	if which make 2>&1 > /dev/null 2>&1; then
+		if make --version | grep -q "GNU Make"; then
+			echo "Run make install."
+		elif which gmake 2>&1 > /dev/null; then
+			echo "Run gmake install."
+		else
+			echo "Install gmake and run gmake install, or:"
+			echo "cd main"
+			echo "cp master-scripts/bob* master-scripts/df-* master-scripts/there-yet ~/bin/"
+			echo "./replace-all"
+			echo "cp dist/bin/* ~/bin/"
+		fi
 	else
-		echo "Run make install with your version of make, or:"
+		echo "Install GNU make, then run make install, gmake install, or:"
 		echo "cd main"
+		echo "cp master-scripts/bob* master-scripts/df-* master-scripts/there-yet ~/bin/"
 		echo "./replace-all"
 		echo "cp dist/bin/* ~/bin/"
 	fi
-		echo
-		echo "Then run the learn script."
+
+	echo
+	echo "Then run the learn script."
 elif [ "${luc_choice_2}" -eq "2" ]; then
 	if which make > /dev/null 2>&1; then
-		echo "Run make with no arguments, then run ${su_command} make install."
+		if make --version | grep -q "GNU Make"; then
+			echo "Run make with no arguments, then run ${su_command} make install."
+		elif which gmake 2>&1 > /dev/null; then
+			echo "Run gmake with no arguments, then run ${su_command} gmake install."
+		else
+			echo "Install GNU make, then run make or gmake with no arguments,"
+			echo "then run ${su_command} make install."
+			echo
+			echo "Or, if you can't or don't want to install GNU make:"
+			echo "cd main"
+			echo "cp master-scripts/bob* master-scripts/df-* master-scripts/there-yet dist/bin/"
+			echo "./replace-all"
+			echo "${su_command} cp dist/bin/* /usr/local/bin/"
+		fi
 	else
 		echo "Run make with no arguments, then run ${su_command} make install."
-		echo "Or, if you don't have a version of make:"
+		echo "Or, if you can't or don't want to install GNU make:"
 		echo "cd main"
+		echo "cp master-scripts/bob* master-scripts/df-* master-scripts/there-yet dist/bin/"
 		echo "./replace-all"
 		echo "${su_command} cp dist/bin/* /usr/local/bin/"
 	fi
