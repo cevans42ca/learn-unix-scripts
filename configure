@@ -300,9 +300,9 @@ elif [ "${luc_choice_2}" -eq "1" ]; then
 	fi
 
 	if which make 2>&1 > /dev/null 2>&1; then
-		if make --version | grep "GNU Make"; then
+		if make --version | grep -q "GNU Make"; then
 			echo "Run make install."
-		elif which gmake 2>&1 > /dev/null
+		elif which gmake 2>&1 > /dev/null; then
 			echo "Run gmake install."
 		else
 			echo "Install gmake and run gmake install, or:"
@@ -323,9 +323,9 @@ elif [ "${luc_choice_2}" -eq "1" ]; then
 	echo "Then run the learn script."
 elif [ "${luc_choice_2}" -eq "2" ]; then
 	if which make > /dev/null 2>&1; then
-		if make --version | grep "GNU Make"; then
+		if make --version | grep -q "GNU Make"; then
 			echo "Run make with no arguments, then run ${su_command} make install."
-		elif which gmake 2>&1 > /dev/null
+		elif which gmake 2>&1 > /dev/null; then
 			echo "Run gmake with no arguments, then run ${su_command} gmake install."
 		else
 			echo "Install GNU make, then run make or gmake with no arguments,"
