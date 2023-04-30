@@ -3448,10 +3448,10 @@ abillity to take smaller elements and combine them to give us something we need,
 
 We'll begin with the script that makes predictions based on past data.
 
-Let's say that at 2 pm, a drive is 20% full.  At 4 pm, the drive is 40% full.  Assuming everything stays the same,
-when will it be full (100%)?  We use the "--find-x-given 100" arguments to calculate what the first value will be
-when the second one is 100.  Then we type in the (multiline) data, following it with Ctrl+d.  Be careful to type
-it only once.  If you type it again, your terminal session will terminate, and you'll have to open a new one.
+Let's say that at 2 pm, a drive is 20% full.  At 4 pm, the drive is 40% full.  Assuming everything stays the same, when
+will it be full (100%)?  We use the "--find-x-given 100" arguments to calculate what the first value will be when the
+second one is 100.  Then we type in the (multiline) data, following it with Ctrl+d.  Be careful not to type Ctrl+d a
+second time.  If you type it again, your terminal session will terminate, and you'll have to open a new one.
 
 EOL
 
