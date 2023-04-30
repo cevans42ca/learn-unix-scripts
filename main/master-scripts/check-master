@@ -93,4 +93,4 @@ else
 	history 5 | tr -s ' ' | cut -d" " -f3- > $fmt_file
 fi
 
-checkmain $fmt_file $LUS_STTY_ROWS $LUS_STTY_COLUMNS
+checkmain $fmt_file $LUS_STTY_ROWS $LUS_STTY_COLUMNS "$@"

@@ -314,7 +314,7 @@ white_belt_exercise_set() {
 	return
 }
 
-white_belt_exercise_frozen() {
+white_belt_frozen_test() {
 	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
 Question 1/1
 
@@ -326,6 +326,10 @@ EOL
 	luc_answers=( 'Give up and go back to Windows' 'Type Ctrl+q' 'Type Ctrl+s' 'Type Ctrl+u' 'Scream in panic' 'Open another terminal' )
 
 	handle_answer "Type Ctrl+q"
+}
+
+white_belt_exercise_frozen() {
+	white_belt_frozen_test
 
 	if [ "$luc_correct_answers" == "1" ]; then
 		good_work
@@ -385,6 +389,16 @@ white_belt_exercise_path_and_sourcing() {
 		return 0
 	fi
 
+	if white_belt_final_exam; then
+		good_work
+	else
+		echo "Results:  $luc_correct_answers out of 5 correct"
+		echo ""
+		sorry
+	fi
+}
+
+white_belt_final_exam() {
 	luc_correct_answers=0
 
 	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
@@ -445,11 +459,37 @@ EOL
 	handle_answer 'Using less (including man) and accidentally typing Ctrl+s'
 
 	if [ "$luc_correct_answers" == "5" ]; then
-		good_work
+		return 0
 	else
-		echo "Results:  $luc_correct_answers out of 5 correct"
-		echo ""
+		return 1
+	fi
+}
+
+white_belt_test_out() {
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+The white belt tests consist of a one question quiz and a five question final exam.  You must answer all questions
+correctly to pass.  Are you ready (y/N)?
+EOL
+
+	read CHOICE
+
+	if [[ ! "$CHOICE" =~ ^\s*[Yy].* ]]; then
+		exit 2
+	fi
+
+	white_belt_frozen_test
+
+	if [[ "$luc_correct_answers" != "1" ]]; then
 		sorry
+		echo $'You can try again, or execute "learn" to continue with the next exercise.'
+		exit 1
+	fi
+
+	if white_belt_final_exam; then
+		echo "You have successfully tested out of white belt."
+	else
+		sorry
+		echo $'You can try again, or execute "learn" to continue with the next exercise.'
 	fi
 }
 
@@ -2065,8 +2105,30 @@ EOL
 	exit 1
 fi
 
-function_name="${RANK}_exercise_${exercise_name}"
-eval $function_name
+skip_exercise=0
+if [[ -n "${4:-}" ]] && [[ "${4,,}" == "exam" ]]; then
+	if [ -n "${SAVED_EXERCISE:-}" ] || [ -n "${SAVED_RANK:-}" ]; then
+		echo "Testing out can only be done when not reviewing exercises."
+		echo "Find the exam with learn ${RANK} list, then skip to it."
+	else
+		if declare -F "${RANK}_test_out" > /dev/null; then
+			if ${RANK}_test_out; then
+				skip_exercise=1
+				EXERCISE=$(( ${luc_num_exercises}+1 ))
+			else
+				exit 0
+			fi
+		else
+			printf "It's not currently possible to test out of `getBeltWithColours ${RANK}`.\n"
+			exit 3
+		fi
+	fi
+fi
+
+if [[ "${skip_exercise}" == "0" ]]; then
+	function_name="${RANK}_exercise_${exercise_name}"
+	eval $function_name
+fi
 
 if [ "${EXERCISE:-}" == "${SAVED_EXERCISE:-}" ] && [ "${SAVED_RANK:-}" == "${RANK:-}" ]; then
 	SAVED_RANK=""
