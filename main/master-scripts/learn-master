@@ -3434,7 +3434,7 @@ EOL
 	complete_exercise
 }
 
-blue_belt_exercise_predicting_the_future() { # Multiline input:  predicting the future
+blue_belt_exercise_predicting_the_future() { # Multiline Input:  Predicting the Future
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 We're going to do something useful with multiline input now:  predicting the future.  (If you're a mathemetician or
 statistician, we'll be using a simple and straightforward linear regression implementation.  If not, don't worry,
@@ -3479,7 +3479,7 @@ EOL
 	complete_exercise
 }
 
-blue_belt_exercise_epoch_time() { # Epoch time
+blue_belt_exercise_epoch_time() { # Epoch Time
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 In the previous exercise, we took a look at a program that can provide a predicition based on past data.  I hope you're
 wondering, "What about minutes?  What if it takes until the next day?"  If you are, compliments for being curious!
