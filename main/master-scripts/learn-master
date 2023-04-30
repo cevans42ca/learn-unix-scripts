@@ -3523,7 +3523,7 @@ blue_belt_exercise_converting_to_epoch_time() { # Converting to Epoch Time
 	target_date=$(random_midnight_date)
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-Although all Unix-like operating systems use epoch time to simply using math with dates, they disagree on how to
+Although all Unix-like operating systems use epoch time to simplify using math with dates, they disagree on how to
 convert back and forth.  We're going to go over several different ways to convert a "human-readable" date like
 September 12, 2022 into an epoch time.  You don't need to make a note of all of these.  You only need one that
 works for you.
@@ -3541,7 +3541,8 @@ EOL
 
 The version of the date program provided in Linux also allows "second Sunday", "last Thursday", and many other formats.
 Even if you're using a BSD-based system, this version of date might be installed as "gdate".  We used "type" earlier
-to check if a program is aliased, but we can also use it to see if a program exists and can be run.
+to check if a program is aliased, but we can also use it to see if a program exists and can be run.  Here's an example
+of what it looks like when a program is available, and one that isn't available.
 
 EOL
 
@@ -3572,21 +3573,23 @@ EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
-There's a default format, but the year goes after the hours and minutes, and seconds go after the year (if you want
-to supply them).
+The default format on Mac has the year going after the hours and minutes, and seconds going after the year (if you want
+to supply them).  By specifying a format (as above) you can use the same command on Mac and FreeBSD.
 
 EOL
 
 	cat <<EOL >> $fmt_file
 # October 1, 2:03 am, 2022
-[user@freebsd ~]$ date -j "100102032022" +"%s"
+[user@mac ~]$ date -j "100102032022" +"%s"
 1664604180
 
 # October 1, 2:03 am, 2022, and 4 seconds
-[user@freebsd ~]$ date -j "100102032022.04" +"%s"
+[user@mac ~]$ date -j "100102032022.04" +"%s"
 1664604184
 
-Find one that works for you and make a note of it.  When you're done experimenting, find the epoch time for
+Find one that works for you and make a note of it.  Remember that if you don't provide hours, minutes, and seconds, the
+current ones will be added automatically.  For best results, make sure your format string includes hours, minutes, and
+seconds, and make sure you supply zeros for them.  When you're done experimenting, find the epoch time for
 ${target_date} and source the check script.
 EOL
 
