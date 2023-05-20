@@ -200,23 +200,30 @@ case "${result}" in
 	echo
 	echo "Detected RGB " $result
 
-	colours=$(echo ${result} | sed 's/rgb://' | sed 's/[^[:print:]]//g')
+	if which bc > /dev/null; then
+		colours=$(echo ${result} | sed 's/rgb://' | sed 's/[^[:print:]]//g')
 
-	redhex=$(echo "$colours" | cut -f1 -d'/' | tr '[:lower:]' '[:upper:]')
-	greenhex=$(echo "$colours" | cut -f2 -d'/' | tr '[:lower:]' '[:upper:]')
-	bluehex=$(echo "$colours" | cut -f3 -d'/' | tr '[:lower:]' '[:upper:]')
+		redhex=$(echo "$colours" | cut -f1 -d'/' | tr '[:lower:]' '[:upper:]')
+		greenhex=$(echo "$colours" | cut -f2 -d'/' | tr '[:lower:]' '[:upper:]')
+		bluehex=$(echo "$colours" | cut -f3 -d'/' | tr '[:lower:]' '[:upper:]')
 
-	red=$(echo "ibase=16; $redhex" | bc)
-	green=$(echo "ibase=16; $greenhex" | bc)
-	blue=$(echo "ibase=16; $bluehex" | bc)
+		red=$(echo "ibase=16; $redhex" | bc)
+		green=$(echo "ibase=16; $greenhex" | bc)
+		blue=$(echo "ibase=16; $bluehex" | bc)
 
-	total=$(echo "$red + $green + $blue" | bc)
+		total=$(echo "$red + $green + $blue" | bc)
 
-	if [ "$total" -gt "150000" ]; then
-		echo "Enabling light mode."
-		echo "export DARK_MODE=0" >> config.status
-		echo "export DARK_MODE=0" >> main/docker/config.status
+		if [ "$total" -gt "150000" ]; then
+			echo "Enabling light mode."
+			echo "export DARK_MODE=0" >> config.status
+			echo "export DARK_MODE=0" >> main/docker/config.status
+		else
+			echo "Enabling dark mode (traditional white on black)."
+			echo "export DARK_MODE=1" >> config.status
+			echo "export DARK_MODE=1" >> main/docker/config.status
+		fi
 	else
+		echo "bc not found."
 		echo "Enabling dark mode (traditional white on black)."
 		echo "export DARK_MODE=1" >> config.status
 		echo "export DARK_MODE=1" >> main/docker/config.status
