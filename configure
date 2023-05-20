@@ -202,13 +202,13 @@ case "${result}" in
 
 	colours=$(echo ${result} | sed 's/rgb://' | sed 's/[^[:print:]]//g')
 
-	redhex=$(echo $colours | cut -f1 -d'/')
-	greenhex=$(echo $colours | cut -f2 -d'/')
-	bluehex=$(echo $colours | cut -f3 -d'/')
+	redhex=$(echo "$colours" | cut -f1 -d'/' | tr '[:lower:]' '[:upper:]')
+	greenhex=$(echo "$colours" | cut -f2 -d'/' | tr '[:lower:]' '[:upper:]')
+	bluehex=$(echo "$colours" | cut -f3 -d'/' | tr '[:lower:]' '[:upper:]')
 
-	red=$(printf "%d" $((16#$redhex)))
-	green=$(printf "%d" $((16#$greenhex)))
-	blue=$(printf "%d" $((16#$bluehex)))
+	red=$(echo "ibase=16; $redhex" | bc)
+	green=$(echo "ibase=16; $greenhex" | bc)
+	blue=$(echo "ibase=16; $bluehex" | bc)
 
 	total=$(echo "$red + $green + $blue" | bc)
 
