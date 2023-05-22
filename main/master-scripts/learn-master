@@ -268,6 +268,34 @@ EOL
 	fi
 }
 
+prepareRedStripe() {
+	if [ -f "${LUS_HOME}/red-stripe" ]; then
+		fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+We need ${LUS_HOME}/red-stripe to be a directory, but it's a file.
+Is it OK to overwrite it (y/N)?
+EOL
+
+		read CHOICE
+
+		if [[ ! "$CHOICE" =~ ^\s*[Yy].* ]]; then
+			exit 2
+		fi
+
+		rm -f "${LUS_HOME}/red-stripe"
+	fi
+
+	if [ ! -d "${LUS_HOME}/red-stripe" ]; then
+		mkdir -p "${LUS_HOME}/red-stripe/foo"
+		dd if=/dev/zero of="${LUS_HOME}/red-stripe/foo/one.txt" bs=1K count=1
+		dd if=/dev/zero of="${LUS_HOME}/red-stripe/foo/two.txt" bs=2K count=1
+		dd if=/dev/zero of="${LUS_HOME}/red-stripe/foo/three.txt" bs=3K count=1
+		mkdir -p "${LUS_HOME}/red-stripe/bar"
+		dd if=/dev/zero of="${LUS_HOME}/red-stripe/bar/four.txt" bs=1M count=1
+		dd if=/dev/zero of="${LUS_HOME}/red-stripe/bar/five.txt" bs=2M count=1
+		mkdir -p "${LUS_HOME}/red-stripe/baz"
+	fi
+}
+
 show_script_path_in_path() {
 	if [ "${LUS_PERL:-}" == "0" ]; then
 		# Use positive lookbehind and positive lookahead to match the exact path, whether it's at the beginning of the
@@ -763,13 +791,13 @@ EOL
 
 white_belt_exercise_set_less() { # The "less" Command
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-The "more" command will only give you more.  If you want to back up, add "| less" to a command.  In many cases (but depending
-on your terminal settings) you will be able to move up and down with the cursor keys and use the Page Up and Page Down keys.
-As before, Space will go a page forward, Enter will show one more line, and "q" will quit.
+The "more" command will only give you more.  If you want to back up, add "| less" to a command.  In many cases (but
+depending on your terminal settings) you will be able to move up and down with the cursor keys and use the Page Up and
+Page Down keys.  As before, Space will go a page forward, Enter will show one more line, and "q" will quit.
 
 Most commands will quit when you type Ctrl+c, but "less" doesn't quit by default with Ctrl+c.  When you press Ctrl+c in
-"less", it will stop whatever you're doing within "less".  For example, when you have "less" open, you can search
-for something, which might take a long time if it's a big file.  You can stop the search by pressing Ctrl+c.  You will need
+"less", it will stop whatever you're doing within "less".  For example, when you have "less" open, you can search for
+something, which might take a long time if it's a big file.  You can stop the search by pressing Ctrl+c.  You will need
 to press "q" to quit.  Take a note.  If you miss it, you will be stuck, just as with Ctrl+s.
 
 Execute "set | less" and remember to execute ". check" after.
@@ -3821,13 +3849,13 @@ about 1 MB.
 A gigabyte is 1024 megabytes.  As of the time of this writing, phone storage space is advertised in gigabytes, and laptop
 or desktop computer storage is given in terabytes.
 
-Each one of the following takes up around 1 GB:
+Each one of the following takes up around 1 GB.  All are rough estimates and depend on quality and compression settings.
 
 EOL
 
 	cat <<EOL >> $fmt_file
 * 250 downloaded songs (assuming 4 minute MP3 files)
-* 200-500 12-megapixel photos (depending on compression)
+* 200-500 12-megapixel photos
 * 50,000 average emails with no attachments
 * 3,333 average emails with standard-sized attachments
 * 5 hours of standard-definition movies
@@ -3843,6 +3871,9 @@ EOL
 }
 
 red_stripe_exercise_du() { # Introduction to du
+	prepareLusHome
+	prepareRedStripe
+
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 To get a full list of all files and directories from a particular directory down and how much space they take up, we use
 the "du" (Disk Usage) program.  We could also use ls -lR, but du will print a size for each directory, which makes it
@@ -3851,6 +3882,7 @@ easier to find large files and directories when sorted.
 Like most programs, du prints sizes in blocks by default.  We're going to use the -h option to print human readable
 sizes.  We're also going to use the -a option to print all files and directories.  In our first example, we're going to
 start in the current directory (".").  Putting that together, we have "du -ah .".
+EOL
 
 cat <<EOL >> $fmt_file
 user@host [red-stripe]$ du -ah .
@@ -3950,16 +3982,26 @@ welcome() {
 	file_clean_up_array+=($fmt_file)
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL > $fmt_file
-When you see a prompt like "Press h for help; Enter for more", press Enter for one more line and Space for one more page.
+Welcome to the Learn Unix Scripts interactive course.
 
-If there's more text than will fit in your terminal, the Up and Down arrow keys should work in addition to Enter and Space
-(but it depends on your terminal settings).  Press "h" for other alternatives.
+Let's begin with navigation.
 
-If all the text fits in your terminal, you'll immediately see a prompt to press "q".  Pressing Enter, Space, or the arrow
-keys will have no effect.
+Every exercise has something to read and something to do.  When you see a prompt like "Press h for help; Enter for
+more", press Enter for one more line and Space for one more page.
 
-At the bottom of the text (or immediately if all the text fits) the prompt will change, asking you to press "q" to move on
-(or quit if it's the end of the lesson).  Once you're done reading all the text (including right now) press "q".
+There are two possibilities we need to cover for each exercise.  Either the text for an exercise will fit in your
+terminal or it won't.  (We'll go over what a terminal is later.)
+
+If the exercise has more text than will fit in your terminal, the Up and Down arrow keys should work in addition to
+Enter and Space (but it depends on your terminal settings).  Press "h" for alternatives.  When you get to the bottom of
+the text, the prompt will change, asking you to press "q" to move on (or quit if it's the end of the lesson).
+
+If all the text fits in your terminal, you'll immediately see "Press h for help; q to move on" or "Press h for help; q
+to quit".  Pressing Enter, Space, or the arrow keys will have no effect.
+
+Even if all the text fits now, remember that many exercises won't.  Make sure you understand what to do in both cases.
+
+Once you're done reading all the text in an exercise (and right now) press "q".
 EOL
 
 	# When using these scripts through SSH, not clearing the terminal first can make it seem like a bunch of text went by and

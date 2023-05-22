@@ -2116,8 +2116,11 @@ fi
 skip_exercise=0
 if [[ -n "${4:-}" ]] && [[ "${4,,}" == "exam" ]]; then
 	if [ -n "${SAVED_EXERCISE:-}" ] || [ -n "${SAVED_RANK:-}" ]; then
-		echo "Testing out can only be done when not reviewing exercises."
-		echo "Find the exam with learn ${RANK} list, then skip to it."
+		echo "Testing out of a belt can only be done when not reviewing exercises."
+		echo "Instead of testing out, find the lesson that has the exam with"
+		echo "learn ${RANK/_/ } list, then skip to it.  For more, execute "'"'"learn --help"'"'"."
+
+		exit 1
 	else
 		if declare -F "${RANK}_test_out" > /dev/null; then
 			if ${RANK}_test_out; then
