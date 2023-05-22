@@ -120,6 +120,10 @@ exercises["blue_belt_$((i++))"]="converting_from_epoch_time"
 exercises["blue_belt_$((i++))"]="piping_pipes"
 exercises["blue_belt_$((i++))"]="beyond_pipes"
 
+i=1
+exercises["red_stripe_$((i++))"]="storage_size_terms"
+exercises["red_stripe_$((i++))"]="du"
+
 declare -A belt_to_number
 belt_to_number["white_belt"]=0
 belt_to_number["yellow_stripe"]=1

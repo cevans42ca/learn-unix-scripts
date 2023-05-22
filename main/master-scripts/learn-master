@@ -241,7 +241,7 @@ prepareLusHome() {
 			fi
 		fi
 	else
-		if [ ! -d "$LUS_DOCKER_BASE/lus" ]; then
+		if [ ! -d "${LUS_DOCKER_BASE}/lus" ]; then
 			mkdir -p "${LUS_DOCKER_BASE}"/lus
 		fi
 	fi
@@ -1002,7 +1002,7 @@ EOL
 yellow_stripe_exercise_mkdir_and_relative_paths() { # The "mkdir" Command and Relative Paths
 	prepareLusHome
 
-	if [ -d $LUS_HOME/parent ]; then
+	if [ -d "${LUS_HOME}/parent" ]; then
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 This exercise involves creating the directory $LUS_HOME/parent, which already exists.  You will need to move it or rename
 it by executing "mv $LUS_HOME/parent newname", then executing "learn" again.
@@ -1023,7 +1023,7 @@ The "mkdir" command creates directories.  Given what you know about "." and ".."
 
 EOL
 
-	echo "cd $LUS_HOME" >> $fmt_file
+	echo "cd "'"'"$LUS_HOME"'"' >> $fmt_file
 	echo "mkdir parent" >> $fmt_file
 	echo "cd parent" >> $fmt_file
 	echo "mkdir one" >> $fmt_file
@@ -1058,9 +1058,9 @@ EOL
 		read CHOICE
 
 		if [[ "${CHOICE:-}" =~ ^\s*[Yy].* ]]; then
-			mkdir -p $LUS_HOME/parent/one
-			mkdir -p $LUS_HOME/parent/two
-			mkdir -p $LUS_HOME/parent/three
+			mkdir -p "$LUS_HOME/parent/one"
+			mkdir -p "$LUS_HOME/parent/two"
+			mkdir -p "$LUS_HOME/parent/three"
 		else
 			exit 2
 		fi
@@ -1073,7 +1073,7 @@ these commands and see if you can follow what they do.
 
 EOL
 
-	echo "cd $LUS_HOME" >> $fmt_file
+	echo "cd "'"'"$LUS_HOME"'"' >> $fmt_file
 	echo "rmdir parent/one" >> $fmt_file
 	echo "cd parent" >> $fmt_file
 	echo "rmdir two" >> $fmt_file
@@ -1093,7 +1093,7 @@ EOL
 yellow_stripe_exercise_special_characters() { # Special Characters in Filenames and Directory Names
 	prepareLusHome
 	
-	if [ -f $LUS_HOME/yellow ]; then
+	if [ -f "$LUS_HOME/yellow" ]; then
 		less -R -P "$less_prompt_move_on" $fmt_file
 	
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
@@ -1103,7 +1103,7 @@ EOL
 		read CHOICE
 
 		if [[ "$CHOICE" =~ ^\s*[Yy].* ]]; then
-			rm -f $LUS_HOME/yellow
+			rm -f "$LUS_HOME/yellow"
 		else
 			exit 2
 		fi
@@ -1159,7 +1159,7 @@ filename "yellow".
 
 EOL
 
-	echo "cd $LUS_HOME" >> $fmt_file
+	echo "cd "'"'"$LUS_HOME"'"' >> $fmt_file
 	echo 'echo "Hello world." > yellow' >> $fmt_file
 
 	complete_exercise
@@ -1168,7 +1168,7 @@ EOL
 yellow_stripe_exercise_file() { # The "file" Command and Magic
 	prepareLusHome
 	
-	if [ ! -f $LUS_HOME/yellow ]; then
+	if [ ! -f "$LUS_HOME/yellow" ]; then
 		less -R -P "$less_prompt_move_on" $fmt_file
 	
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
@@ -1178,7 +1178,7 @@ EOL
 		read CHOICE
 
 		if [[ "$CHOICE" =~ ^\s*[Yy].* ]]; then
-			echo "Hello world." > $LUS_HOME/yellow
+			echo "Hello world." > "$LUS_HOME/yellow"
 		else
 			exit 2
 		fi
@@ -1195,8 +1195,11 @@ is usually named "magic".  If you're interested in more details, you can check "
 
 The program that can check a file's type is named "file".
 
-Execute "cd $LUS_HOME", then execute "file yellow".
+Execute the following two commands in order.
 EOL
+
+	echo "cd "'"'"$LUS_HOME"'"' >> $fmt_file
+	echo "file yellow" >> $fmt_file
 
 	complete_exercise
 }
@@ -1204,7 +1207,7 @@ EOL
 yellow_stripe_exercise_cat_less() { # Comparing "cat" and "less"
 	prepareLusHome
 	
-	if [ ! -f $LUS_HOME/yellow ]; then
+	if [ ! -f "$LUS_HOME/yellow" ]; then
 		less -R -P "$less_prompt_move_on" $fmt_file
 	
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
@@ -1214,7 +1217,7 @@ EOL
 		read CHOICE
 
 		if [[ "$CHOICE" =~ ^\s*[Yy].* ]]; then
-			echo "Hello world." > $LUS_HOME/yellow
+			echo "Hello world." > "$LUS_HOME/yellow"
 		else
 			exit 2
 		fi
@@ -1225,11 +1228,15 @@ The simplest way to see what's in a file is with the "cat" command (which is sho
 you need to know that it's a small file.  (We'll look at file sizes later.)  If you accidentally "cat" a large file, your
 terminal may be stuck for a while, even if you type Ctrl+c.
 
-In a previous exercise, you executed "set | less", but you can also provide an argument to "less" to use "less" to look at a file.
-It's safe to use "less" on large files.  Remember that you need to press "q" to quit less.
+In a previous exercise, you executed "set | less", but you can also provide an argument to "less" to use "less" to look
+at a file.  It's safe to use "less" on large files.  Remember that you need to press "q" to quit less.
 
-Execute "cd $LUS_HOME", then execute "cat yellow", then execute "less yellow".
+Execute the following three commands in order.
 EOL
+
+	echo "cd "'"'"$LUS_HOME"'"' >> $fmt_file
+	echo "cat yellow" >> $fmt_file
+	echo "less yellow" >> $fmt_file
 
 	complete_exercise
 }
@@ -3790,6 +3797,121 @@ EOL
 	complete_exercise
 }
 
+# }}}
+
+# Red stripe exercises (Start vim fold) {{{
+red_stripe_exercise_storage_size_terms() { # Bytes, KB, MB, GB, TB, PB
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Congratulations on your red stripe!
+
+In this belt, we're going to look at how to find files and directories that are taking up large amounts of space and how
+to get rid of them.
+
+First, let's review the terms associated with storage space and files.  If you're already familiar with terms like
+kilobyte, megabyte, etc., you can press "q" right now and skip this exercise.
+
+We looked at kilobytes (KB) back in green stripe.  To review, one byte can hold a single character like "a", "1", or
+"$", or a number from 0 to 255.  A kilobyte (1 KB) is 1024 bytes.  A page of text or a short email with no pictures or
+attachments can be stored in a kilobyte or two.  (If you try it yourself, make sure to save the file in text format.)
+
+A megabyte is 1024 kilobytes.  You may also hear the term mebibyte.  If you store the characters from about four books
+as a text file, you'll use about 1 MB.  Small images online are usually a few MB.  A minute of MP3 quality audio takes
+about 1 MB.
+
+A gigabyte is 1024 megabytes.  As of the time of this writing, phone storage space is advertised in gigabytes, and laptop
+or desktop computer storage is given in terabytes.
+
+Each one of the following takes up around 1 GB:
+
+EOL
+
+	cat <<EOL >> $fmt_file
+* 250 downloaded songs (assuming 4 minute MP3 files)
+* 200-500 12-megapixel photos (depending on compression)
+* 50,000 average emails with no attachments
+* 3,333 average emails with standard-sized attachments
+* 5 hours of standard-definition movies
+* 353 one-minute YouTube videos
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+Source the check script as usual to continue.
+EOL
+
+	complete_exercise
+}
+
+red_stripe_exercise_du() { # Introduction to du
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+To get a full list of all files and directories from a particular directory down and how much space they take up, we use
+the "du" (Disk Usage) program.  We could also use ls -lR, but du will print a size for each directory, which makes it
+easier to find large files and directories when sorted.
+
+Like most programs, du prints sizes in blocks by default.  We're going to use the -h option to print human readable
+sizes.  We're also going to use the -a option to print all files and directories.  In our first example, we're going to
+start in the current directory (".").  Putting that together, we have "du -ah .".
+
+cat <<EOL >> $fmt_file
+user@host [red-stripe]$ du -ah .
+2.0M	./foo/two.txt
+3.0M	./foo/three.txt
+1.0M	./foo/one.txt
+6.0M	./foo
+  0B	./baz
+5.0M	./bar/three.txt
+5.0M	./bar
+ 11M	.
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+In this example, the current directory contains three directories named foo, bar, and baz.  The "foo" directory has
+three files, the "bar" directory has one file, and the "baz" directory has no files.  Each directory is printed after
+the files in it (as a summary or total).  The last line is the summary for all the files and folders.
+EOL
+
+# TODO:  Create the files.  Create an exercise.
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+The sort command can work with the human readable output of du with its own -h option.  We're going to do a reversed
+sort so that the biggest files and directories are listed first.  Putting that together, we have "sort -hr".
+
+Finally, we're going to list only the top 10 results by piping the output through the "head" program.
+
+du -ah . | sort -hr | head -n 10
+
+Let's take a look at some example output from the command above.  In our example, the current directory contains three
+directories, named foo, bar, and baz.  The "foo" directory has three files, the "bar" directory has one file, and the
+"baz" directory has no files.
+
+EOL
+
+cat <<EOL >> $fmt_file
+ 11M	.
+6.0M	./foo
+5.0M	./bar/five.txt
+5.0M	./bar
+3.0M	./foo/three.txt
+2.0M	./foo/two.txt
+1.0M	./foo/one.txt
+  0B	./baz
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+Human readable output has a number and a letter.  The letter indicates bytes (B), kilobytes (K), megabytes (M),
+gigabytes (G), and if you're really lucky, terabytes (T), and petabytes (P).  If you're reading documentation, you'll
+see these written as bytes, KB, MB, GB, TB, and PB.
+
+We'll look at each line of output one at a time.  The first line tells us that the current directory contains 11 MB of data.
+The next line says the "foo" directory contains 6 MB of files total, including all subdirectories.
+
+The third line says that there is a 5 MB file called "five.txt" in the "bar" directory.  Because the output is sorted, the
+"five.txt" file is the largest file anywhere under the current directory (".").
+EOL
+
+	complete_exercise
+}
 # }}}
 
 ####################

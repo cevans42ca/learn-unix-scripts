@@ -2021,6 +2021,14 @@ EOL
 	fi
 }
 
+red_stripe_exercise_storage_size_terms() {
+	keep_going
+}
+
+red_stripe_exercise_du() {
+	keep_going
+}
+
 ####################
 # End of exercises #
 ####################
