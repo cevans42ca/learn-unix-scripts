@@ -3877,73 +3877,208 @@ red_stripe_exercise_du() { # Introduction to du
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 To get a full list of all files and directories from a particular directory down and how much space they take up, we use
 the "du" (Disk Usage) program.  We could also use ls -lR, but du will print a size for each directory, which makes it
-easier to find large files and directories when sorted.
+easier to find large files and directories when sorted.  We'll be looking at other differences between the output of
+"du" and "ls" shortly.
 
 Like most programs, du prints sizes in blocks by default.  We're going to use the -h option to print human readable
-sizes.  We're also going to use the -a option to print all files and directories.  In our first example, we're going to
-start in the current directory (".").  Putting that together, we have "du -ah .".
-EOL
-
-cat <<EOL >> $fmt_file
-user@host [red-stripe]$ du -ah .
-2.0M	./foo/two.txt
-3.0M	./foo/three.txt
-1.0M	./foo/one.txt
-6.0M	./foo
-  0B	./baz
-5.0M	./bar/three.txt
-5.0M	./bar
- 11M	.
-EOL
-
-	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-In this example, the current directory contains three directories named foo, bar, and baz.  The "foo" directory has
-three files, the "bar" directory has one file, and the "baz" directory has no files.  Each directory is printed after
-the files in it (as a summary or total).  The last line is the summary for all the files and folders.
-EOL
-
-# TODO:  Create the files.  Create an exercise.
-
-	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-The sort command can work with the human readable output of du with its own -h option.  We're going to do a reversed
-sort so that the biggest files and directories are listed first.  Putting that together, we have "sort -hr".
-
-Finally, we're going to list only the top 10 results by piping the output through the "head" program.
-
-du -ah . | sort -hr | head -n 10
-
-Let's take a look at some example output from the command above.  In our example, the current directory contains three
-directories, named foo, bar, and baz.  The "foo" directory has three files, the "bar" directory has one file, and the
-"baz" directory has no files.
+sizes.  We're also going to use the -a option to print all files and directories.  Putting that together, we have
+"du -ah".
 
 EOL
 
 cat <<EOL >> $fmt_file
- 11M	.
-6.0M	./foo
-5.0M	./bar/five.txt
-5.0M	./bar
-3.0M	./foo/three.txt
-2.0M	./foo/two.txt
-1.0M	./foo/one.txt
-  0B	./baz
+user@host [red-stripe]$ du -ah
+4.0K    ./foo/two.txt
+4.0K    ./foo/three.txt
+4.0K    ./foo/one.txt
+ 12K    ./foo
+  0B    ./baz
+1.0M    ./bar/four.txt
+2.0M    ./bar/five.txt
+3.0M    ./bar
+3.0M    .
 EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
-Human readable output has a number and a letter.  The letter indicates bytes (B), kilobytes (K), megabytes (M),
-gigabytes (G), and if you're really lucky, terabytes (T), and petabytes (P).  If you're reading documentation, you'll
-see these written as bytes, KB, MB, GB, TB, and PB.
+The human readable sizes are on the left.  Human readable output has a number and a letter.  The letter indicates bytes
+(B), kilobytes (K), megabytes (M), gigabytes (G), and if you're really lucky, terabytes (T), and petabytes (P).  If
+you're reading documentation, you'll see these written as bytes, KB, MB, GB, TB, and PB.
 
-We'll look at each line of output one at a time.  The first line tells us that the current directory contains 11 MB of data.
-The next line says the "foo" directory contains 6 MB of files total, including all subdirectories.
+Here's the output of "ls -lR" on the same parent directory.
 
-The third line says that there is a 5 MB file called "five.txt" in the "bar" directory.  Because the output is sorted, the
-"five.txt" file is the largest file anywhere under the current directory (".").
+EOL
+
+cat <<EOL >> $fmt_file
+user@host [red-stripe]$ ls -lR
+total 0
+drwx------  4 user    staff  128 May 22 10:35 bar
+drwx------  2 user    staff   64 May 22 10:35 baz
+drwx------  5 user    staff  160 May 22 10:35 foo
+
+./bar:
+total 6144
+-rw-------  1 user    staff  2097152 May 22 10:35 five.txt
+-rw-------  1 user    staff  1048576 May 22 10:35 four.txt
+
+./baz:
+total 0
+
+./foo:
+total 24
+-rw-------  1 user    staff  1024 May 22 10:35 one.txt
+-rw-------  1 user    staff  3072 May 22 10:35 three.txt
+-rw-------  1 user    staff  2048 May 22 10:35 two.txt
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+There's quite a lot of information here.  The first line of output from the command is "total 0".  There are no files in
+the parent directory (only directories) so the total number of blocks taken up by files is 0.
+
+We introduced blocks in green stripe.  As a quick review, all operating systems organize data that's saved on a drive in
+blocks, which as of the time of this writing is almost always 4 KB.  If the last part of a file doesn't take up a whole
+block, a whole block is assigned anyway, which trades off a tiny bit of wasted space per file for a lot of speed and
+significantly easier drive management.  Imagine trying to figure out how to load a ship if every shipping container
+was a different size and had different restrictions on how much weight could be put on top of it.
+
+The first line of output from "ls -l" (above) is "total 0".   If your terminal is small, you may want to go back to
+take another look.  If Up Arrow doesn't work, press "h" for alternatives.
+
+After the total line, we have the contents of the parent directory, which contains three directories.
+
+The first directory under the parent directory is called "bar".  The files in this directory take up a total of 6144
+blocks.  The file "four.txt" has 1,048,576 bytes and the file "five.txt" has 2,097,152 bytes.  The number "1" between
+the permissions and the user that owns the files is the number of blocks that the directory entry takes up (which is
+usually one).  Keep in mind that the operating system not only has to store the file's contents, it also needs to
+store other information like the filename, permissions, and who owns the file.  This metadata is not part of the file's
+contents, and it takes up another block.
+
+Next is the baz directory, which is empty.
+
+Finally, we have the "foo" directory, which has three files.  The files' sizes are 1,024 bytes, 2,048 bytes, and 3,072
+bytes.
+
+Here is the output from "du -ah" again for reference.
+
+EOL
+
+cat <<EOL >> $fmt_file
+user@host [red-stripe]$ du -ah
+4.0K    ./foo/two.txt
+4.0K    ./foo/three.txt
+4.0K    ./foo/one.txt
+ 12K    ./foo
+  0B    ./baz
+1.0M    ./bar/four.txt
+2.0M    ./bar/five.txt
+3.0M    ./bar
+3.0M    .
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+We hope you spotted the following differences.
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL | sed '/^$/d'  >> $fmt_file
+* "du" shows the actual space used (blocks) and "ls -l" shows file sizes.
+
+* du's output is much more compact.
+
+* du's output is not sorted by default, which is also called "directory order".
+
+* "du" prints each directory after the files in it (as a summary or total).  The last line is the summary for all the
+files and folders.
+
+* "ls" prints the directory before the files in it, with the total number of bytes before the contents of the directory.
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL | sed '/^$/d'  >> $fmt_file
+
+These files have been created in "${LUS_HOME}/red-stripe".  Try out "ls -lR" and "du -ah".
 EOL
 
 	complete_exercise
 }
+	
+red_stripe_exercise_du_sort() { # du Redux:  Sorting Human Readable Output
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+The sort program can work with the human readable output of du with its own -h option.  We're going to do a reversed
+sort so that the biggest files and directories are listed first.  Putting that together, we have "sort -hr".
+
+EOL
+
+cat <<EOL >> $fmt_file
+user@host [red-stripe]$ du -ah | sort -hr
+3.0M    ./bar
+3.0M    .
+2.0M    ./bar/five.txt
+1.0M    ./bar/four.txt
+ 12K    ./foo
+4.0K    ./foo/two.txt
+4.0K    ./foo/three.txt
+4.0K    ./foo/one.txt
+  0B    ./baz
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+We'll look at each line of output one at a time.  The first line tells us that the "bar" directory contains 3 MB of data
+(including all subdirectories and files).  The second line tells us that the current directory (the parent) also
+contains 3 MB of data.  In fact, the current directory contains slightly more than 3 MB of data, but it rounds closer to
+3.0 MB than 3.1 MB.
+
+The next lines show that "five.txt" takes up 2 MB of space and "four.txt" takes up 1 MB of space.  Because the output
+is sorted, we know that these are the largest files anywhere under the current directory.
+
+Try out "du -ah | sort -hr" in "${LUS_HOME}/red-stripe".
+EOL
+
+	complete_exercise
+}
+
+red_stripe_exercise_du_sort_head() { # Looking for Large Files and Directories
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+If we're looking at a real example with lots of files and directories, we can list only the top 10 results by piping the
+output through the "head" program.  By default, head returns the first 10 lines of input.
+
+The example below requires some knowledge of how much space directories normally take.  If you're planning to be a
+sysadmin for a particular host, you should have a sense of what things look like when everything's fine.  In the
+example below, we get a list of all the large files and directories under /usr.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+ec2-user@freebsd:/usr $ du -ah | sort -hr | head
+4.8G    .
+2.2G    ./lib
+1.9G    ./local
+1.7G    ./lib/debug
+1.2G    ./lib/debug/usr
+1.0G    ./local/apache-tomcat-9.0/logs/catalina.out
+1.0G    ./local/apache-tomcat-9.0/logs
+1.0G    ./local/apache-tomcat-9.0
+794M    ./lib/debug/usr/bin
+474M    ./lib/debug/boot
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+If you were a sysadmin for this particular host, you would know that about 2 GB for the lib and local directories is
+about right.  The problem here is the 1 GB log file in /usr/local/apache-tomcat-9.0/logs/.  Again, it takes some
+knowledge of what is normal to diagnose issues.  To solve this issue, we would set up log rotation (but that's beyond
+the scope of the coloured belt exercises).  If we were out of space on the mount and needed to do something immediately,
+we would stop the application server and move or compress the file, then start the application server back up (which is
+also out of scope for this course).
+
+There's nothing to check for this exercise.
+EOL
+
+	complete_exercise
+}
+
 # }}}
 
 ####################
