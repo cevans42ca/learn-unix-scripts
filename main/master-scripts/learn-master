@@ -4073,7 +4073,7 @@ the scope of the coloured belt exercises).  If we were out of space on the mount
 we would stop the application server and move or compress the file, then start the application server back up (which is
 also out of scope for this course).
 
-There's nothing to check for this exercise.
+Try out "du -ah | sort -hr | head" in "${LUS_HOME}/red-stripe".
 EOL
 
 	complete_exercise
