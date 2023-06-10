@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # bobsleep - not nearly as long as the Odinsleep.
 # Checks periodically if its parent has died, and if so, gives up.
