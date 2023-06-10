@@ -125,6 +125,7 @@ exercises["red_stripe_$((i++))"]="storage_size_terms"
 exercises["red_stripe_$((i++))"]="du"
 exercises["red_stripe_$((i++))"]="du_sort"
 exercises["red_stripe_$((i++))"]="du_sort_head"
+exercises["red_stripe_$((i++))"]="diff"
 exercises["red_stripe_$((i++))"]="rm_rf"
 exercises["red_stripe_$((i++))"]="final"
 

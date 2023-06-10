@@ -232,7 +232,7 @@ random_midnight_date() {
 	updateDotFile
 }
 
-prepareLusHome() {
+prepare_lus_home() {
 	if [[ "${INSIDE_DOCKER:-0}" == "0" ]]; then
 		if [ ! -d "${LUS_HOME}" ]; then
 			mkdir -p "${LUS_HOME}"
@@ -268,7 +268,7 @@ EOL
 	fi
 }
 
-prepareRedStripe() {
+prepare_lus_home_red_stripe() {
 	if [ -f "${LUS_HOME}/red-stripe" ]; then
 		fmt ${FMT_OPTIONS:-}$luc_width <<EOL
 We need ${LUS_HOME}/red-stripe to be a directory, but it's a file.
@@ -320,10 +320,8 @@ EOF
 	fi
 }
 
-blue_stripe_lorem_ipsum() {
-	prepareLusHome
-
-	cat <<EOL > "${LUS_HOME}/blue-stripe/vi-intro.txt"
+lorem() {
+	cat <<EOL > "${1}"
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum malesuada ut
 quam at ullamcorper. Praesent cursus tellus in convallis pulvinar. Sed
 facilisis, urna nec venenatis mattis, orci ex consequat nibh, id aliquet diam
@@ -339,7 +337,20 @@ nec rhoncus viverra, nulla quam semper ante, non vehicula orci tortor vitae
 eros. Donec eget eros faucibus, tristique sem non, condimentum arcu. Morbi quis
 bibendum magna. Ut bibendum purus nunc, non porta justo aliquam eget. Praesent
 vel odio quis tellus feugiat viverra. Pellentesque mollis et mauris in sagittis.
+EOL
 
+	if [ -n "${2:-}" ]; then
+		cat <<EOL >> "${1}"
+Quisque suscipit efficitur nisi in tempor. Donec nulla quam, pretium ut dapibus
+vestibulum. Ut facilisis ante ac imperdiet viverra. Vivamus
+lectus lectus, fermentum non turpis quis, facilisis congue metus. Nullam ut
+tellus vulputate, mattis est vitae, dapibus orci. Integer condimentum quis risus
+ac fringilla. Quisque efficitur posuere eleifend. Cras eget neque eget ante
+scelerisque imperdiet. Proin lorem lorem, malesuada non condimentum eu, accumsan
+at odio. Integer laoreet venenatis lacus, at iaculis massa venenatis ac.
+EOL
+	else
+		cat <<EOL >> "${1}"
 Quisque suscipit efficitur nisi in tempor. Donec nulla quam, pretium ut dapibus
 vestibulum, iaculis ac ante. Ut facilisis ante ac imperdiet viverra. Vivamus
 lectus lectus, fermentum non turpis quis, facilisis congue metus. Nullam ut
@@ -347,7 +358,10 @@ tellus vulputate, mattis est vitae, dapibus orci. Integer condimentum quis risus
 ac fringilla. Quisque efficitur posuere eleifend. Cras eget neque eget ante
 scelerisque imperdiet. Proin lorem lorem, malesuada non condimentum eu, accumsan
 at odio. Integer laoreet venenatis lacus, at iaculis massa venenatis ac.
+EOL
+	fi
 
+	cat <<EOL >> "${1}"
 Vivamus iaculis et neque eu porta. Duis quam felis, placerat eu rhoncus a,
 feugiat nec neque. Duis rhoncus justo non lectus sollicitudin vulputate. Vivamus
 ac libero finibus, commodo lacus a, suscipit mi. Praesent lacinia ex arcu, at
@@ -368,6 +382,26 @@ lectus arcu ac est. Maecenas vestibulum risus eu lacinia blandit. Sed vel est
 sapien. Vestibulum et ullamcorper est, fermentum elementum sem. Aliquam et
 placerat sapien.
 EOL
+}
+
+prepare_lus_home_blue_stripe() {
+	if [ -f "${LUS_HOME}"/blue-stripe ]; then
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+This exercise uses the directory ${LUS_HOME}/blue-stripe, which already exists as a file.  You will need to move it or
+rename it by executing "mv $LUS_HOME/blue-stripe newname", then executing "learn" again.
+EOL
+
+		complete_exercise
+		exit 1
+	fi
+
+	mkdir -p "${LUS_HOME}/blue-stripe/"
+}
+
+blue_stripe_lorem_ipsum() {
+	prepare_lus_home
+	prepare_lus_home_blue_stripe
+	lorem "${LUS_HOME}/blue-stripe/vi-intro.txt"
 }
 
 # (End vim fold) }}}
@@ -1028,7 +1062,7 @@ EOL
 }
 
 yellow_stripe_exercise_mkdir_and_relative_paths() { # The "mkdir" Command and Relative Paths
-	prepareLusHome
+	prepare_lus_home
 
 	if [ -d "${LUS_HOME}/parent" ]; then
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
@@ -1119,7 +1153,7 @@ EOL
 }
 
 yellow_stripe_exercise_special_characters() { # Special Characters in Filenames and Directory Names
-	prepareLusHome
+	prepare_lus_home
 	
 	if [ -f "$LUS_HOME/yellow" ]; then
 		less -R -P "$less_prompt_move_on" $fmt_file
@@ -1195,7 +1229,7 @@ EOL
 }
 
 yellow_stripe_exercise_file() { # The "file" Command and Magic
-	prepareLusHome
+	prepare_lus_home
 	
 	if [ ! -f "$LUS_HOME/yellow" ]; then
 		less -R -P "$less_prompt_move_on" $fmt_file
@@ -1234,7 +1268,7 @@ EOL
 }
 
 yellow_stripe_exercise_cat_less() { # Comparing "cat" and "less"
-	prepareLusHome
+	prepare_lus_home
 	
 	if [ ! -f "$LUS_HOME/yellow" ]; then
 		less -R -P "$less_prompt_move_on" $fmt_file
@@ -1918,7 +1952,7 @@ EOL
 }
 
 create_lists() {
-	prepareLusHome
+	prepare_lus_home
 	
 	if [ -f $LUS_HOME/list ]; then
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
@@ -2686,17 +2720,8 @@ EOL
 
 # Blue stripe exercises (Start vim fold) {{{
 blue_stripe_exercise_archive_files() { # Archive Files
-	prepareLusHome
-
-	if [ -f "${LUS_HOME}"/blue-stripe ]; then
-		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-This exercise uses the directory ${LUS_HOME}/blue-stripe, which already exists as a file.  You will need to move it or
-rename it by executing "mv $LUS_HOME/blue-stripe newname", then executing "learn" again.
-EOL
-
-		complete_exercise
-		exit 1
-	fi
+	prepare_lus_home
+	prepare_lus_home_blue_stripe
 
 	mkdir -p "${LUS_HOME}/blue-stripe/to-archive/dir1"
 	mkdir -p "${LUS_HOME}/blue-stripe/to-archive/dir2"
@@ -2904,7 +2929,7 @@ EOL
 }
 
 blue_stripe_exercise_archive_files_extract() { # Extracting Archive Files
-	prepareLusHome
+	prepare_lus_home
 
 	if [ -f "${LUS_HOME}"/blue-stripe ]; then
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
@@ -3175,7 +3200,8 @@ In normal mode, you can use the arrow keys or "hjkl" to get you where you need t
 character and "i" to insert more text.
 
 In normal mode, press colon to start an ex command.  We looked at "q!" before, which quits even if there are changes.
-Use the ex command "wq" to write and quit vi.  That's the bare minimum of what you need to make and save changes.
+Use the ex command "wq" to write and quit vi.  Putting it all together:  to save the buffer to a file, start in normal
+mode, type a colon, type "wq" and Enter.  That's the bare minimum of what you need to make and save changes.
 
 ex commands:
 EOL
@@ -3205,8 +3231,8 @@ blue_stripe_exercise_searching_in_vi() { # Searching in vi
 Now we'll do something a little bit more structured:  remove two specific words from a file.  To do that, we'll need
 to search for them.
 
-To search in vi, press slash ( / ).  On most keyboards, it's on the same key with question mark and next to the space
-key.
+To search in vi, press slash ( / ).  On most keyboards, it's on the same key with question mark and next to the Right
+Shift key.
 
 Don't confuse it with backslash ( \ ), which is usually above the Enter or Return key.
 
@@ -3215,22 +3241,30 @@ match from the cursor position as you type each character.  For now, avoid using
 characters (anything except letters, numbers, and spaces) need to be escaped, and it's not done the same way you escape
 characters for your shell.
 
-Open the same file as before in vi ("${LUS_HOME}/blue-stripe/vi-intro.txt").  This time, press slash in normal mode (vi
-starts in normal mode).  Look for the words "in tempor", delete them by pressing "x" (in normal mode) until they're
-gone.  Save the file and quit.
+We created a file that you can work on.  The text was generated by a Lorum Ipsum generator.  Lorem Ipsum has been used
+for centuries (going back to the printing press) as filler, dummy, or placeholder text.
+
+Execute the following command.
+
+vi "${LUS_HOME}/blue-stripe/vi-intro.txt"
+
+Once vi opens the file, press slash in normal mode (vi starts in normal mode).  Look for the words "in tempor", delete
+them by pressing "x" (in normal mode) until they're gone.  Save the file and quit.
 EOL
 
 	complete_exercise
 }
 
 blue_stripe_exercise_wrap_up_of_vi() { # Wrap Up of vi
-	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+	# Use an underscore as a "poor man's" non-breaking space.
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL | sed 's/_/ /g' >> $fmt_file
 You may be thinking of vi as a relic of the past, and it is.  But it can also be very powerful and fast.  In normal
 mode, every lowercase letter does something and every uppercase letter does something.  If you don't like what they do,
-you can change it.  You can provide a "motion" to most commands that can be complex, like "d2w" to delete two words
-or "y2w" to "yank" (copy) two words.  Paste the text by pressing "p" (or "P" for before the cursor position).
-Turn on even more speed by typing Ctrl+[ instead of Escape so you don't have to move your hands every time you leave
-insert mode.
+you can change them, but then you have to move your settings to every computer where you might want to run vi.
+
+You can provide a "motion" to most commands that can be complex, like "d2w" to delete two words or "y2w" to "yank"
+(copy) two words.  Paste the text by pressing "p" (or "P" for before the cursor position).  Go faster by typing Ctrl+[
+instead of Escape so you don't have to move your hands every time you leave insert mode.
 
 Set a bookmark with two keystrokes.  Go there with two keystrokes.  A single period lets you repeat what you just did
 somewhere else at the place where your cursor is now.  Ex commands let you delete all lines matching (or not matching)
@@ -3242,7 +3276,7 @@ you didn't intend to make.  Modern clones and descendants have an unlimited undo
 you can press Escape, check the Caps Lock key, and undo the changes by pressing "u" until you're done.  If you're
 suddenly somewhere you didn't expect to be in your file, type two backticks to go back to where you were.
 
-The backtick ( \` ) is usually on the same key as tilde ( ~ ), just above Tab.
+The backtick (_\`_) is usually on the same key as tilde_(_~_), just above Tab.
 
 If vi is something you'd like to master (now or later) open vi, type ":help" (without the quotes) and Enter.
 
@@ -3386,7 +3420,7 @@ EOL
 }
 
 blue_belt_exercise_redirection() { # Redirection with >
-	prepareLusHome
+	prepare_lus_home
 	prepareBlueBelt
 
 	if [ -f "${LUS_HOME}/blue-belt/bash-names" ]; then
@@ -3422,7 +3456,7 @@ EOL
 }
 
 blue_belt_exercise_tee() { # Tee
-	prepareLusHome
+	prepare_lus_home
 	prepareBlueBelt
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
@@ -3446,7 +3480,7 @@ EOL
 }
 
 blue_belt_exercise_cat_revisited() { # The Cat Came Back
-	prepareLusHome
+	prepare_lus_home
 	prepareBlueBelt
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
@@ -3872,8 +3906,8 @@ EOL
 }
 
 red_stripe_exercise_du() { # Introduction to du
-	prepareLusHome
-	prepareRedStripe
+	prepare_lus_home
+	prepare_lus_home_red_stripe
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 To get a full list of all files and directories from a particular directory down and how much space they take up, we use
@@ -4080,9 +4114,23 @@ EOL
 	complete_exercise
 }
 
+red_stripe_exercise_diff() { # Introduction to diff
+	prepare_lus_home
+	prepare_lus_home_red_stripe
+
+	lorem "${LUS_HOME}/red-stripe/lorem1"
+	lorem "${LUS_HOME}/red-stripe/lorem2" 2
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Lorem!
+EOL
+
+	complete_exercise
+}
+
 red_stripe_exercise_rm_rf() { # Introduction to rm -rf
-	prepareLusHome
-	prepareRedStripe
+	prepare_lus_home
+	prepare_lus_home_red_stripe
 
 	# Use an underscore as a "poor man's" non-breaking space.
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL | sed 's/_/ /g' >> $fmt_file
