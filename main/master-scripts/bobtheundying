@@ -4,9 +4,38 @@ set -e -o nounset
 
 if [ "${1:-}" != "--yes-really" ]; then
 	echo "Bob should only be awoken as part of the red belt exercises."
-	echo "If you're ready, run this script as 'bobtheundying --yes-really'."
+	echo "If you're ready, execute 'bobtheundying --yes-really'."
 	exit 1
 fi
 
-exec bob --yes-really &
+TAKE_THAT[0]="Better luck next time!"
+TAKE_THAT[1]="You missed!  I could do this all day!"
+TAKE_THAT[2]="You can't kill me in a way that matters!"
+TAKE_THAT[3]="You can't kill me!  I will not die!"
+TAKE_THAT[4]="You can't kill me!  I am invincible!"
+TAKE_THAT[5]="You can't kill me!  I will rise again!"
+TAKE_THAT[6]="You can't kill me, I'll make a copy of myself!"
+
+you_cannot_kill_me() {
+	size=${#TAKE_THAT[@]}
+	index=$(($RANDOM % $size))
+	echo "${TAKE_THAT[$index]}"
+
+#	if [ -n "${SLEEP_PID:-}" ]; then
+#		kill $SLEEP_PID
+#	fi
+
+	exec bobtheundying --yes-really &
+}
+
+echo "I am Bob!  I live again!"
+
+# It's a trap!
+trap you_cannot_kill_me SIGTERM
+
+bobsleep &
+# SLEEP_PID=$!
+wait
+
+echo "Bob has died of old age."
 

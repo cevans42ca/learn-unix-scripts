@@ -46,9 +46,11 @@ main/dist/bin/%: main/master-scripts/%
 	cp main/master-scripts/$* main/dist/bin/$*
 
 # Copy the scripts that don't need replacement to main/dist/bin
-nonreplacescripts: there-yet df-20 df-40
+nonreplacescripts: there-yet df-20 df-40 bobtheundying bobsleep
+
 nonreplace: $(nonreplacescripts:%=main/dist/bin/%)
-nonreplacedocker: main/docker/bin/there-yet main/docker/bin/df-20 main/docker/bin/df-40
+
+nonreplacedocker: main/docker/bin/there-yet main/docker/bin/df-20 main/docker/bin/df-40 main/docker/bin/bobtheundying main/docker/bin/bobsleep
 
 install: flags/replacetarget nonreplace
 	@# Quotes around the install path are already added by the configure script.
