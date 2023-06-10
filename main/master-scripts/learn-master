@@ -187,7 +187,7 @@ print_rank() {
 
 		belt=$(getBeltWithColours $RANK)
 		printf "You are reviewing the exercises for ${belt}.  "
-		printf 'To return to where you were, execute "learn --return".\n\n'
+		printf 'To return to where you were, execute "learn return".\n\n'
 	else
 		if [ "$RANK" == "white_belt" ]; then
 			printf "Your current rank is `getBeltWithColours white_belt`.\n"
@@ -395,7 +395,7 @@ double quote, are important and must be typed before pressing Enter.
 
 At the end of a sentence, you will see: "scp myserver101:/tmp/file.txt .".
 
-To see the overview of what is covered in each belt, execute "learn --welcome".
+To see the overview of what is covered in each belt, execute "learn welcome".
 
 The exerices leading to your yellow stripe will have more reading and rote completion.  As you rise through the ranks,
 fewer steps will be directly stated.  This script will provide resources for you to reference to finish the exercises.
@@ -4257,7 +4257,7 @@ EOL
 	printf "\n`getBeltWithColours red_stripe title`\n" >> $fmt_file
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-  Finding large files and dirs with du, sort, and head; mv; rm -Rf; diff
+  Finding large files and dirs with du, sort, and head; mv; rm -rf; diff
 EOL
 
 	printf "\n`getBeltWithColours red_belt title`\n" >> $fmt_file
@@ -4409,7 +4409,7 @@ EOL
 	exit 0
 fi
 
-if [ "${1:-}" == "--welcome" ]; then
+if [ "${1:-}" == "welcome" ]; then
 	welcome
 
 	if [ -z "${RANK:-}" ]; then
@@ -4419,7 +4419,7 @@ if [ "${1:-}" == "--welcome" ]; then
 	exit 0
 fi
 
-if [ "${1:-}" == "--return" ]; then
+if [ "${1:-}" == "return" ]; then
 	if [ -z "${SAVED_RANK:-}" ] || [ -z "${SAVED_EXERCISE:-}" ]; then
 		echo "There is no saved progress to return to."
 		exit 3
@@ -4549,11 +4549,11 @@ EOL
 	updateDotFile
 
 	# Fall out of the if and continue with the requested lesson.
-elif [ -n "${1:-}" ] && [ "${1:-}" != "--return" ]; then
+elif [ -n "${1:-}" ] && [ "${1:-}" != "return" ]; then
 	# There was an argument passed but we couldn't figure out what the user wanted.
 	echo "Usage:"
 	echo ""
-	echo "learn --welcome"
+	echo "learn welcome"
 	echo "  To see which skills fall under which belts"
 	echo "learn white belt"
 	echo "  To review the white belt exercises"
@@ -4563,7 +4563,7 @@ elif [ -n "${1:-}" ] && [ "${1:-}" != "--return" ]; then
 	echo "  To see a list of white belt exercises"
 	echo "learn white belt 6"
 	echo "  To start reviewing at a particular exercise"
-	echo "learn --return"
+	echo "learn return"
 	echo "  If you're reviewing exercises, return to where you were."
 
 	exit 1
