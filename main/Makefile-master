@@ -1,6 +1,8 @@
-.PHONY: clean dist distclean install configure run replacetarget nonreplacescripts nonreplace
+.PHONY: clean dist distclean install configure run replacetarget nonreplace
 
 include config.status
+
+nonreplacescripts = there-yet df-20 df-40 bobtheundying bobsleep bobparent
 
 run: configure
 
@@ -46,11 +48,9 @@ main/dist/bin/%: main/master-scripts/%
 	cp main/master-scripts/$* main/dist/bin/$*
 
 # Copy the scripts that don't need replacement to main/dist/bin
-nonreplacescripts: there-yet df-20 df-40 bobtheundying bobsleep bob
+nonreplace: $(addprefix main/dist/bin/,$(nonreplacescripts))
 
-nonreplace: $(nonreplacescripts:%=main/dist/bin/%)
-
-nonreplacedocker: main/docker/bin/there-yet main/docker/bin/df-20 main/docker/bin/df-40 main/docker/bin/bobtheundying main/docker/bin/bobsleep
+nonreplacedocker: main/docker/bin/there-yet main/docker/bin/df-20 main/docker/bin/df-40 main/docker/bin/bobtheundying main/docker/bin/bobsleep main/docker/bin/bobparent
 
 install: flags/replacetarget nonreplace
 	@# Quotes around the install path are already added by the configure script.
