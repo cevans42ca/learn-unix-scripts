@@ -22,18 +22,15 @@ you_cannot_kill_me() {
 	echo "${TAKE_THAT[$index]}"
 
 	# It's a trap!
-	exec bobtheundying --yes-really &
-	trap - EXIT
+	exec bobtheundying --yes-really
 }
 
 fork_function() {
-	(
-		trap you_cannot_kill_me EXIT
-		bobsleep &
-		wait
-		trap - EXIT
-		echo "Bob has died of old age."
-	)
+	trap you_cannot_kill_me EXIT
+	bobsleep &
+	wait
+	trap - EXIT
+	echo "Bob has died of old age."
 }
 
 echo "I am Bob!  I live again!"
