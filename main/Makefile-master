@@ -46,7 +46,7 @@ main/dist/bin/%: main/master-scripts/%
 	cp main/master-scripts/$* main/dist/bin/$*
 
 # Copy the scripts that don't need replacement to main/dist/bin
-nonreplacescripts: there-yet df-20 df-40 bobtheundying bobsleep
+nonreplacescripts: there-yet df-20 df-40 bobtheundying bobsleep bob
 
 nonreplace: $(nonreplacescripts:%=main/dist/bin/%)
 
