@@ -2037,6 +2037,59 @@ red_stripe_exercise_du_sort_head() {
 	keep_going
 }
 
+red_stripe_exercise_rm_rf() {
+	if [ ! -d $LUS_HOME/red-stripe ]; then
+		good_work
+	else
+		sorry
+	fi
+}
+
+red_stripe_exercise_final() {
+	luc_correct_answers=0
+
+	# Question 1
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 1/3
+
+Which command will sort lines with human readable numbers largest to smallest?
+
+EOL
+
+	luc_answers=( 'sort -r' 'sort -hr' 'sort -h' 'sort' 'sort --help' )
+	handle_answer 'sort -hr'
+
+	# Question 2
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 2/3
+
+Which command will show you the top ten largest files and directories in the current directory (recursively)?
+
+EOL
+
+	luc_answers=(
+		'sort -hr | head | du -ah'
+		'sort -hr | du -ah | head'
+		'du -ah | sort -hr | head'
+		'du -ah | head | sort -hr'
+		'head | sort -hr | du -ah'
+		'head | du -ah | sort -hr'
+		'du head sort'
+	)
+	do_shuffle=
+	handle_answer 'du -ah | sort -hr | head'
+	do_shuffle=1
+
+	# Final check
+	if [ "$luc_correct_answers" == "3" ]; then
+		good_work
+	else
+		echo "Results:  $luc_correct_answers out of 3 correct"
+		echo ""
+		sorry
+	fi
+}
+
 ####################
 # End of exercises #
 ####################

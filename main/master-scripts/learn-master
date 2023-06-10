@@ -1161,7 +1161,8 @@ with a dash.  For example, the copy command "cp" takes an argument "-R" for copy
 to a new location.  The "R" stands for recursive.  Recursion is a problem solving technique where we split a request
 into slightly smaller requests until we have everything we need to answer the question, solve the problem, or finish the
 request.  Each directory we recurse into is a slightly smaller part of the overall request.  When we ask a program
-to recurse into a directory, it keeps recursing until there are no more directories to recurse into.
+to recurse into a directory, it keeps recursing until there are no more directories to recurse into.  Many Unix programs
+take -r or -R as an argument.  Make a note of that and what recursive means.
 
 Getting back on track, with "cp", we use the "-R" option for that.  The source is first and the destination is second.
 
@@ -4074,6 +4075,58 @@ we would stop the application server and move or compress the file, then start t
 also out of scope for this course).
 
 Try out "du -ah | sort -hr | head" in "${LUS_HOME}/red-stripe".
+EOL
+
+	complete_exercise
+}
+
+red_stripe_exercise_rm_rf() { # Introduction to rm -rf
+	prepareLusHome
+	prepareRedStripe
+
+	# Use an underscore as a "poor man's" non-breaking space.
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL | sed 's/_/ /g' >> $fmt_file
+In blue stripe, we looked at the zip and tar commands.  Used incorrectly and without appropriate caution, they can
+overwrite files.  They're like the gun you don't think is loaded.
+
+Extending our metaphor, now it's time to deal with a loaded gun:  "rm_-rf".
+
+When you use the "-rf" options with the "rm" program and give it a directory, it will delete the directory and any
+files and folders under it.  The "-r" is for recursive and the "-f" means force, which will complete the operation
+without it asking you if you're sure about each file and directory.  The "-f" option also won't warn you if what
+you asked it to delete doesn't exist.
+
+The "rm" on most Unix systems supports both "-R" and "-r" for recursive, so "rm_-Rf" is as common as "rm_-rf".
+
+For now, never use an asterisk ( * ) as an argument to rm (in other words, don't type "rm_-Rf_*" or "rm_-Rf_red*" and
+press Enter).  Always type the full directory name you want to delete or use command-line completion.  After you gain
+familiarity and confidence, you might want to do these.
+
+If you want to delete all the hidden (or dot) files in a directory, you might accidentally run "rm_-rf_.*".  Never do
+that.  The parent directory ("..") is included in ".*".  With the recursive option, "rm" will attempt to delete the
+files in all the parent directories, which will extend to all files on all mounted drives.  The Mac and FreeBSD versions
+of rm do not have this issue (but don't get into the habit of counting on it).
+
+Execute the following.  Be careful.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+cd "${LUS_HOME}"
+rm -rf red-stripe
+EOL
+
+	complete_exercise
+}
+
+red_stripe_exercise_final() { # Final Exam
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+If you want more experience with "rm -rf", you can go back to the previous exercise, which will recreate the
+directories.  You can make your own directories with "mkdir" and files with "cat > file" (press Ctrl+d when you're done
+entering lines).  Please don't change anything under "${LUS_HOME}" that has a colour in it except as part of an
+exercise.
+
+Source the check script for your final exam.
 EOL
 
 	complete_exercise

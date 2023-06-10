@@ -125,6 +125,8 @@ exercises["red_stripe_$((i++))"]="storage_size_terms"
 exercises["red_stripe_$((i++))"]="du"
 exercises["red_stripe_$((i++))"]="du_sort"
 exercises["red_stripe_$((i++))"]="du_sort_head"
+exercises["red_stripe_$((i++))"]="rm_rf"
+exercises["red_stripe_$((i++))"]="final"
 
 declare -A belt_to_number
 belt_to_number["white_belt"]=0
