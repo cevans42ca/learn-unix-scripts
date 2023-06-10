@@ -8,5 +8,5 @@ if [ "${1:-}" != "--yes-really" ]; then
 	exit 1
 fi
 
-exec bobtheundying --yes-really &
+bobtheundying --yes-really &
 

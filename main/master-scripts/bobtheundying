@@ -22,7 +22,7 @@ you_cannot_kill_me() {
 	echo "${TAKE_THAT[$index]}"
 
 	# It's a trap!
-	exec bob --yes-really &
+	exec bobtheundying --yes-really &
 	trap - EXIT
 }
 
