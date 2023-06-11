@@ -4118,12 +4118,53 @@ red_stripe_exercise_diff() { # Introduction to diff
 	prepare_lus_home
 	prepare_lus_home_red_stripe
 
-	lorem "${LUS_HOME}/red-stripe/lorem1"
-	lorem "${LUS_HOME}/red-stripe/lorem2" 2
+	if [ ! -d "${LUS_HOME}/red-stripe/diff" ]; then
+		mkdir "${LUS_HOME}/red-stripe/diff"
+	fi
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-Lorem!
+If you need to compare two files to see the differences, you should start with "diff".  The diff program can compare directories,
+but we'll look at files for now.
+
+The diff program has a few different ways to show differences:  "normal" diffs, ed scripts, RCS, two-column format, and
+unified.  RCS stands for Revision Control System (which is out of scope for this course).  The diff on your system will
+likely have additional options.  If you like, execute "man diff" and "info diff".
+
+We're going to look some of the more common output formats of diff.  The text we'll be working with for the next few
+exercises is an extract from and is inspired by "Honor Societies" (http://xkcd.com/703/) by Randall Munroe.  There is
+also a Monty Python reference.
+
+(Astute readers will notice that many of the following statements are merely redundant and not true Scotsman, I mean true
+tautologies.  I offer you the smug statisfaction that you are right.)
+
 EOL
+
+	cat <<EOL > "${LUS_HOME}/red-stripe/diff/rules.txt"
+(1) The first rule of tautology club is the first rule of tautology club.
+(2) The second rule of tautology club is what it is.
+(3) If you're bringing a friend to tautology club, please RSVP.
+(4) The fourth rule of tautology club either is or it isn't.
+(5) You've got to do what you've got to do is the fifth rule of tautology club.
+(6) Rule six:  there is no rule six.
+(7) The sixth rule of tautology club demands joint participation in meetings as a necessary requirement.
+(8) It is our usual, habitual custom that meetings will begin with a short summary of the agenda.
+(9) Any changes to the rules must pass a completely and totally unanimous vote.
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+user@host [~/lus/red-stripe/diff]$ cat rules.txt
+EOL
+
+	# Double space the file, format it, then remove the spaces, ensuring lines are split but not joined.
+	sed '/^$/d;G' "${LUS_HOME}/red-stripe/diff/rules.txt" | fmt ${FMT_OPTIONS:-}$WIDTH | sed '/^$/d' >> $fmt_file
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Since rule #4 "either is or it isn't", we're going to remove it.
+EOL
+	
+
+	lorem "${LUS_HOME}/red-stripe/lorem1"
+	lorem "${LUS_HOME}/red-stripe/lorem2" 2
 
 	complete_exercise
 }
