@@ -285,14 +285,14 @@ EOL
 	fi
 
 	if [ ! -d "${LUS_HOME}/red-stripe" ]; then
-		mkdir -p "${LUS_HOME}/red-stripe/foo"
-		dd if=/dev/zero of="${LUS_HOME}/red-stripe/foo/one.txt" bs=1K count=1
-		dd if=/dev/zero of="${LUS_HOME}/red-stripe/foo/two.txt" bs=2K count=1
-		dd if=/dev/zero of="${LUS_HOME}/red-stripe/foo/three.txt" bs=3K count=1
-		mkdir -p "${LUS_HOME}/red-stripe/bar"
-		dd if=/dev/zero of="${LUS_HOME}/red-stripe/bar/four.txt" bs=1M count=1
-		dd if=/dev/zero of="${LUS_HOME}/red-stripe/bar/five.txt" bs=2M count=1
-		mkdir -p "${LUS_HOME}/red-stripe/baz"
+		mkdir -p "${LUS_HOME}/red-stripe/du/foo"
+		dd if=/dev/zero of="${LUS_HOME}/red-stripe/du/foo/one.txt" bs=1K count=1
+		dd if=/dev/zero of="${LUS_HOME}/red-stripe/du/foo/two.txt" bs=2K count=1
+		dd if=/dev/zero of="${LUS_HOME}/red-stripe/du/foo/three.txt" bs=3K count=1
+		mkdir -p "${LUS_HOME}/red-stripe/du/bar"
+		dd if=/dev/zero of="${LUS_HOME}/red-stripe/du/bar/four.txt" bs=1M count=1
+		dd if=/dev/zero of="${LUS_HOME}/red-stripe/du/bar/five.txt" bs=2M count=1
+		mkdir -p "${LUS_HOME}/red-stripe/du/baz"
 	fi
 }
 
@@ -3922,7 +3922,7 @@ sizes.  We're also going to use the -a option to print all files and directories
 EOL
 
 cat <<EOL >> $fmt_file
-user@host [red-stripe]$ du -ah
+user@host [~/lus/red-stripe/du]$ du -ah
 4.0K    ./foo/two.txt
 4.0K    ./foo/three.txt
 4.0K    ./foo/one.txt
@@ -3945,7 +3945,7 @@ Here's the output of "ls -lR" on the same parent directory.
 EOL
 
 cat <<EOL >> $fmt_file
-user@host [red-stripe]$ ls -lR
+user@host [~/lus/red-stripe/du]$ ls -lR
 total 0
 drwx------  4 user    staff  128 May 22 10:35 bar
 drwx------  2 user    staff   64 May 22 10:35 baz
@@ -3999,7 +3999,7 @@ Here is the output from "du -ah" again for reference.
 EOL
 
 cat <<EOL >> $fmt_file
-user@host [red-stripe]$ du -ah
+user@host [~/lus/red-stripe/du]$ du -ah
 4.0K    ./foo/two.txt
 4.0K    ./foo/three.txt
 4.0K    ./foo/one.txt
@@ -4018,7 +4018,7 @@ We hope you spotted the following differences.
 EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL | sed '/^$/d'  >> $fmt_file
-* "du" shows the actual space used (blocks) and "ls -l" shows file sizes.
+* "du" shows the actual space used (in full blocks) and "ls -l" shows file sizes.
 
 * du's output is much more compact.
 
@@ -4030,14 +4030,14 @@ files and folders.
 * "ls" prints the directory before the files in it, with the total number of bytes before the contents of the directory.
 EOL
 
-	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL | sed '/^$/d'  >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
-These files have been created in "${LUS_HOME}/red-stripe".  Try out "ls -lR" and "du -ah".
+These files have been created in "${LUS_HOME}/red-stripe/du/".  Try out "ls -lR" and "du -ah".
 EOL
 
 	complete_exercise
 }
-	
+
 red_stripe_exercise_du_sort() { # du Redux:  Sorting Human Readable Output
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 The sort program can work with the human readable output of du with its own -h option.  We're going to do a reversed
@@ -4046,7 +4046,7 @@ sort so that the biggest files and directories are listed first.  Putting that t
 EOL
 
 cat <<EOL >> $fmt_file
-user@host [red-stripe]$ du -ah | sort -hr
+user@host [~/lus/red-stripe/du]$ du -ah | sort -hr
 3.0M    ./bar
 3.0M    .
 2.0M    ./bar/five.txt
@@ -4108,7 +4108,7 @@ the scope of the coloured belt exercises).  If we were out of space on the mount
 we would stop the application server and move or compress the file, then start the application server back up (which is
 also out of scope for this course).
 
-Try out "du -ah | sort -hr | head" in "${LUS_HOME}/red-stripe".
+Try out "du -ah | sort -hr | head" in "${LUS_HOME}/red-stripe/du".
 EOL
 
 	complete_exercise
