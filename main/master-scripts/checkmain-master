@@ -2074,7 +2074,7 @@ EOL
 		'du -ah | head | sort -hr'
 		'head | sort -hr | du -ah'
 		'head | du -ah | sort -hr'
-		'du head sort'
+		'du hast sort'
 	)
 	do_shuffle=
 	handle_answer 'du -ah | sort -hr | head'
