@@ -4334,6 +4334,32 @@ EOL
 	complete_exercise
 }
 
+red_stripe_exercise_mv() { # Introduction to "mv"
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+It's time to move.  We're going to look at the "mv" or "move" program.  This program is also responsible for renaming
+files and directories.
+
+Before we do, it's important to mention that Unix will let you move, rename, and delete files that are open, unlike
+Microsoft Windows.  What happens when you move, rename, or delete a file is that the existing file is removed from the
+directory (so any programs looking for it won't find it) and then the contents are deleted once no programs have the
+file open.
+
+Let's say a program went off the rails and started logging tons of data into a log file.  One of your coworkers is
+looking at the log file, trying to figure out what happened.  Another coworker noticed that the drive is full and
+deleted the log file.  If the file is still open, the space it takes up won't be reclaimed.  In particular, "ls" and
+"du" will show that the file is gone, but "df" will show that the space is still being taken up.
+
+This situation is more common than you might think.  If you have a program that sends log data to a central host to
+speed up searching, it likely has all log files open.  If you have to delete or move a log file, you'll also need to
+restart the program or service you use to consolidate your logs.
+
+If you're a sysadmin for a host, it's important to be aware of what other sysadmins are doing, and you need to
+understand what services are running on your hosts.
+EOL
+
+	complete_exercise
+}
+
 #	lorem "${LUS_HOME}/red-stripe/lorem1"
 #	lorem "${LUS_HOME}/red-stripe/lorem2" 2
 
