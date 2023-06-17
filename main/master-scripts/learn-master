@@ -294,6 +294,27 @@ EOL
 		dd if=/dev/zero of="${LUS_HOME}/red-stripe/du/bar/five.txt" bs=2M count=1
 		mkdir -p "${LUS_HOME}/red-stripe/du/baz"
 	fi
+
+	if [ ! -d "${LUS_HOME}/red-stripe/diff" ]; then
+		mkdir "${LUS_HOME}/red-stripe/diff"
+	fi
+
+	cat <<EOL > "${LUS_HOME}/red-stripe/diff/rules.txt"
+(1) The first rule of tautology club is the first rule of tautology club.
+(2) The second rule of tautology club is what it is.
+(3) If you're bringing a friend to tautology club, please RSVP.
+(4) The fourth rule of tautology club either is or it isn't.
+(5) You've got to do what you've got to do is the fifth rule of tautology club.
+(6) Rule six:  there is no rule six.
+(7) The seventh rule of tautology club demands joint participation in meetings as a necessary requirement.
+(8) Any changes to the rules must pass a completely and totally unanimous vote.
+EOL
+
+	grep -v "^(4)" "${LUS_HOME}/red-stripe/diff/rules.txt" > "${LUS_HOME}/red-stripe/diff/rules-no-4.txt"
+	sed 's/If you/"If you/;s/please RSVP/please RSVP" is the third rule of tautology club/' "${LUS_HOME}/red-stripe/diff/rules.txt" > "${LUS_HOME}/red-stripe/diff/rules-changed-3.txt"
+	sed 's/^(8)/(9)/' "${LUS_HOME}/red-stripe/diff/rules.txt" | sed '8i\
+(8) It is our usual, habitual custom that meetings will begin with a short summary of the agenda.\
+' > "${LUS_HOME}/red-stripe/diff/rules-added-8.txt"
 }
 
 show_script_path_in_path() {
@@ -4118,13 +4139,9 @@ red_stripe_exercise_diff() { # Introduction to diff
 	prepare_lus_home
 	prepare_lus_home_red_stripe
 
-	if [ ! -d "${LUS_HOME}/red-stripe/diff" ]; then
-		mkdir "${LUS_HOME}/red-stripe/diff"
-	fi
-
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-If you need to compare two files to see the differences, you should start with "diff".  The diff program can compare directories,
-but we'll look at files for now.
+If you need to compare two files to see the differences, you should start with "diff".  The diff program can compare
+directories, but we'll look at files for now.
 
 The diff program has a few different ways to show differences:  "normal" diffs, ed scripts, RCS, two-column format, and
 unified.  RCS stands for Revision Control System (which is out of scope for this course).  The diff on your system will
@@ -4138,19 +4155,6 @@ also a Monty Python reference.
 tautologies.  I offer you the smug statisfaction that you are right.)
 
 EOL
-
-	cat <<EOL > "${LUS_HOME}/red-stripe/diff/rules.txt"
-(1) The first rule of tautology club is the first rule of tautology club.
-(2) The second rule of tautology club is what it is.
-(3) If you're bringing a friend to tautology club, please RSVP.
-(4) The fourth rule of tautology club either is or it isn't.
-(5) You've got to do what you've got to do is the fifth rule of tautology club.
-(6) Rule six:  there is no rule six.
-(7) The seventh rule of tautology club demands joint participation in meetings as a necessary requirement.
-(8) Any changes to the rules must pass a completely and totally unanimous vote.
-EOL
-
-	grep -v "^(4)" "${LUS_HOME}/red-stripe/diff/rules.txt" "${LUS_HOME}/red-stripe/diff/rules-no-4.txt"
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 user@host [~/lus/red-stripe/diff]$ cat rules.txt
@@ -4184,23 +4188,154 @@ EOL
 < (4) The fourth rule of tautology club either is or it isn't.
 EOL
 
-	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+	# Use an underscore as a "poor man's" non-breaking space.
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL | sed 's/_/ /g' >> $fmt_file
 
-Yes, that's all of it.  Normal diffs are very terse.  The first line of diff's output is "4d3".  Lines from the first
-file are on the left (before the d) and lines from the second file are on the right (after the d).  All together:  the
-fourth line of the first file was deleted, and it matches up with the third line of the second file.
+Yes, that's all of it.  Normal diffs are very terse.  We'll be looking at other output formats very shortly.  The first
+line of diff's output is "4d3".  Lines from the first file are on the left (before the d) and lines from the second file
+are on the right (after the d).  All together:  the fourth line of the first file was deleted, and it matches up with
+the third line of the second file.
 
-The second line of output that diff gives us is the line that was deleted.  There's a left angle bracket, which
+The second line of output that diff gives us is the line that was deleted.  There's a left_angle_bracket_(_<_), which
 will be a little bit clearer when we look at changes (i.e. not adds or deletes).
-EOL
 
-	lorem "${LUS_HOME}/red-stripe/lorem1"
-	lorem "${LUS_HOME}/red-stripe/lorem2" 2
+The rules.txt file and rules-no-4.txt file are in "${LUS_HOME}/red-stripe/diff".  Use the diff program to get a normal
+diff of these files.  If you need help with the command, review this lesson.
+EOL
 
 	complete_exercise
 }
 
-#(8) It is our usual, habitual custom that meetings will begin with a short summary of the agenda.
+red_stripe_exercise_diff_u() { # diff -u:  Unified diffs
+	prepare_lus_home
+	prepare_lus_home_red_stripe
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+You can get a popular diff output format that's much more readable with -u, called a unified diff.
+
+user@host [~/lus/red-stripe/diff]$ diff -u rules.txt rules-no-4.txt
+EOL
+
+	set +e
+	diff -u "${LUS_HOME}/red-stripe/diff/rules.txt" "${LUS_HOME}/red-stripe/diff/rules-no-4.txt" >> $fmt_file
+	set -e
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+This format has quite a bit more information, including:
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL | sed '/^$/d'  >> $fmt_file
+* The file names and last modified date and time at the top
+
+* A set of line numbers for each file
+
+* Lines that are shared between both files (called "context")
+
+* Instead of < and > at the beginning of the line like a "normal" diff, you see the more user friendly + and -.
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+This format of output is used by many version control systems.  Version control systems are used by programmers to keep
+track of changes and to allow multiple people to work on the same project.  You can also use output like the one above
+with the "patch" program to update a file or directory.
+
+Get a unified diff of these same files as we did above.
+EOL
+
+	complete_exercise
+}
+
+red_stripe_exercise_diff_changes() { # diff:  Changes
+	prepare_lus_home
+	prepare_lus_home_red_stripe
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Let's look again at normal diffs, but this time with changes (not adds or deletes).
+
+
+user@host [~/lus/red-stripe/diff]$ diff rules.txt rules-changed-3.txt
+EOL
+
+
+	set +e
+	diff "${LUS_HOME}/red-stripe/diff/rules.txt" "${LUS_HOME}/red-stripe/diff/rules-changed-3.txt" >> $fmt_file
+	set -e
+
+	# Use an underscore as a "poor man's" non-breaking space.
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL | sed 's/_/ /g' >> $fmt_file
+
+
+Here, there's a left angle bracket_(_<_) and a right angle bracket_(_>_).  The left angle bracket means the line it's
+associated with belongs to the file on the left (the one we gave first).  The right angle bracket associates that line
+with the file on the right (the second file we gave on the command line).
+
+Three hyphens separate the line from the first file from the line from the second file.  This separator is a bit more
+useful when there are more lines changed.
+
+If you like, take a look at "${LUS_HOME}/red-stripe/diff/rules-changed-3.txt" with cat.  Get a unified diff of the
+rules.txt and rules-changed-3.txt files.  If you like, get a normal diff first.
+EOL
+
+	complete_exercise
+}
+
+red_stripe_exercise_diff_adds() { # diff:  Adds
+	prepare_lus_home
+	prepare_lus_home_red_stripe
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Let's look again at normal diffs with an addition.  We're going to add a new rule (8) and push the existing rule
+(8) to (9).
+
+user@host [~/lus/red-stripe/diff]$ cat rules-added-8.txt
+EOL
+
+	# Double space the file, format it, then remove the spaces, ensuring lines are split but not joined.
+	sed '/^$/d;G' "${LUS_HOME}/red-stripe/diff/rules-added-8.txt" | fmt ${FMT_OPTIONS:-}$WIDTH | sed '/^$/d' >> $fmt_file
+
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+
+user@host [~/lus/red-stripe/diff]$ diff rules.txt rules-added-8.txt
+EOL
+
+	set +e
+	diff "${LUS_HOME}/red-stripe/diff/rules.txt" "${LUS_HOME}/red-stripe/diff/rules-added-8.txt" >> $fmt_file
+	set -e
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+
+The first line of diff output is "8c8,9".  The "c" means it was a change (and not an add or delete).  Line 8 from the
+left (first) file matches up with lines 8 and 9 of the right (second) file.
+
+Get a unified diff of the rules.txt and rules-added-8.txt files.  If you like, get a normal diff first.
+EOL
+
+	complete_exercise
+}
+
+red_stripe_exercise_diff_extras() { # diff:  Extras
+	prepare_lus_home
+	prepare_lus_home_red_stripe
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Your diff likely supports many more options.  Take a look at "man diff" or "info diff".
+
+Try out "-y" for two column output, "-c" for copied context, and anything else you like.
+Take a look at the differences between "-c" and "-u".
+
+The check script doesn't check for anything this time.  Continue when you're ready.
+EOL
+
+	complete_exercise
+}
+
+#	lorem "${LUS_HOME}/red-stripe/lorem1"
+#	lorem "${LUS_HOME}/red-stripe/lorem2" 2
 
 red_stripe_exercise_rm_rf() { # Introduction to rm -rf
 	prepare_lus_home
@@ -4637,7 +4772,7 @@ EOL
 			exit 3
 		elif ((${new_exercise} == $current_exercise)); then
 			fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
-You're already working on that exercise.
+You're already working on that exercise.  Execute "learn return" to go back to it.
 EOL
 			exit 3
 		fi

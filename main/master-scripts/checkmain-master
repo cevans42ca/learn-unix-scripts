@@ -2037,8 +2037,96 @@ red_stripe_exercise_du_sort_head() {
 	keep_going
 }
 
+red_stripe_exercise_diff() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*diff.*rules.*rules ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
+red_stripe_exercise_diff_u() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*diff.*-u.*rules.*rules ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
+red_stripe_exercise_diff_changes() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*diff.*-u.*rules.*rules-changed ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+
+		if [[ "$item" =~ ^[\ ]*diff.*-u.*rules-changed.*rules ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
+red_stripe_exercise_diff_adds() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*diff.*-u.*rules.*rules-added ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+
+		if [[ "$item" =~ ^[\ ]*diff.*-u.*rules-added.*rules ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
+red_stripe_exercise_diff_extras() {
+	keep_going
+}
+
 red_stripe_exercise_rm_rf() {
-	if [ ! -d $LUS_HOME/red-stripe ]; then
+	if [ ! -d "$LUS_HOME/red-stripe" ]; then
 		good_work
 	else
 		sorry
