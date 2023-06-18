@@ -2258,7 +2258,7 @@ EOL
 	if [ "$luc_correct_answers" == "6" ]; then
 		good_work
 	else
-		echo "Results:  $luc_correct_answers out of 3 correct"
+		echo "Results:  $luc_correct_answers out of 6 correct"
 		echo ""
 		sorry
 	fi
