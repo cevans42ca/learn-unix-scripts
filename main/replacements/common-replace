@@ -135,6 +135,10 @@ exercises["red_stripe_$((i++))"]="mv_wrap_up"
 exercises["red_stripe_$((i++))"]="rm_rf"
 exercises["red_stripe_$((i++))"]="final"
 
+i=1
+exercises["red_belt_$((i++))"]="processes"
+exercises["red_belt_$((i++))"]="processes_man_info"
+
 declare -A belt_to_number
 belt_to_number["white_belt"]=0
 belt_to_number["yellow_stripe"]=1

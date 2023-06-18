@@ -941,6 +941,7 @@ EOL
 
 	echo "" >> $fmt_file
 
+	# Some of the text below (dealing with processes) is reproduced in red belt.
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 The last thing to teach you before you get your yellow stripe is why you need to add the dot and space at the beginning
 of the "check" script.  Normally, when you run a program, it runs in its own process, but the dot changes that.  Let's
@@ -4485,6 +4486,55 @@ EOL
 }
 
 # }}}
+
+# Red belt exercises (Start vim fold) {{{
+red_belt_processes() {
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Congratulations on your red belt!
+
+In the previous belt, red stripe, we looked at how to find large files and directories, and how to clean them up.  We
+also looked at "diff", which can help us find differences between files.  If there are multiple versions of a file
+that are slightly different, "diff" can help us determine which file to keep if we need to do some cleanup.  Since we
+can redirect any output to a file, "diff" can be used in all kinds of ways.
+
+In this belt, we'll be looking at processes and how to clean up misbehaving ones.
+
+We introduced processes all the way back in white belt.  Since that was probably a long time ago, we have reproduced
+the important text below.
+
+Unix systems allow many people to do work on the same computer at the same time.  At any point in time, multiple people
+might be running an "ls" command.  We don't want these to get mixed up.  A process is a running* copy of a program.
+Processes allow Unix to keep the different running copies (or instances) of programs straight.
+
+Unix creates an entry in the process table for each copy or instance of all running programs.  You can think of the
+process table as a spreadsheet or work sheet, where each process has a row.  There are many columns:  a unique ID, the
+user ID that started it, what directory it was started in, and many other details.  The process table is stored in
+memory.
+
+* If a program has finished running, it will have an exit code, which is stored in the process table.  Processes
+stick around until their parent (the program that started them) requests their exit code:  these are called zombie
+processes.  In Unix, zombies are part of the normal lifecycle of processes, but in a properly functioning system, they
+don't last long.
+
+If you execute "ps" as a non-root user, you will see a list of all your processes.  The "ps" program varies from
+system to system.  You might see more information or less by default.  The options vary quite a bit as well.
+
+Execute "ps".
+EOL
+
+	complete_exercise
+}
+
+red_belt_processes_man_info() {
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Execute "man ps" and "info ps" to learn more about your version of ps.  Take note of any options that you find
+interesting or potentially helpful.  Feel free to skim the documentation:  remember that you can return to it at any
+time.
+EOL
+
+	complete_exercise
+}
+# (End vim fold) }}}
 
 ####################
 # End of exercises #

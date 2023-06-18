@@ -2264,6 +2264,28 @@ EOL
 	fi
 }
 
+red_belt_processes() {
+	IFS='
+'
+
+	for item in "${luc_history[@]}"
+	do
+		if [[ "$item" =~ ^[\ ]*ps([ ]|$) ]]; then
+			good_work
+			unset IFS
+			return
+		fi
+	done
+
+	sorry
+	unset IFS
+	return
+}
+
+red_belt_processes_man_info() {
+	keep_going
+}
+
 ####################
 # End of exercises #
 ####################
