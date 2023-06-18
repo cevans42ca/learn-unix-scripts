@@ -2125,6 +2125,18 @@ red_stripe_exercise_diff_extras() {
 	keep_going
 }
 
+red_stripe_exercise_mv() {
+	if [ -f "${LUS_HOME}/red-stripe/mv/lorem-ipsum" ] && [ ! -f "${LUS_HOME}/red-stripe/mv/lorem" ]; then
+		good_work
+	else
+		sorry
+	fi
+}
+
+red_stripe_exercise_mv_wrap_up() {
+	keep_going
+}
+
 red_stripe_exercise_rm_rf() {
 	if [ ! -d "$LUS_HOME/red-stripe" ]; then
 		good_work
@@ -2138,7 +2150,7 @@ red_stripe_exercise_final() {
 
 	# Question 1
 	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
-Question 1/3
+Question 1/6
 
 Which command will sort lines with human readable numbers largest to smallest?
 
@@ -2149,7 +2161,7 @@ EOL
 
 	# Question 2
 	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
-Question 2/3
+Question 2/6
 
 Which command will show you the top ten largest files and directories in the current directory (recursively)?
 
@@ -2168,8 +2180,82 @@ EOL
 	handle_answer 'du -ah | sort -hr | head'
 	do_shuffle=1
 
+	# Question 3
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 3/6
+
+Which program would you use to see if two text files have different contents?
+
+EOL
+
+	luc_answers=(
+		'du'
+		'df'
+		'mv'
+		'rm'
+		'diff'
+		'help!'
+	)
+	handle_answer 'diff'
+
+	# Question 4
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 4/6
+
+The "diff" program gave you the following output.  What does it mean?
+
+EOL
+
+	cat <<EOL
+4d3
+< (4) The fourth rule of tautology club either is or it isn't.
+
+EOL
+
+	luc_answers=(
+		'The fourth line of the first file was deleted.'
+		'The third line of the first file was deleted.'
+		'Four lines from the first file were deleted.'
+		'Three lines from the first file were deleted.'
+		'The end is nigh.'
+	)
+	handle_answer 'The fourth line of the first file was deleted.'
+
+	# Question 5
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 5/6
+
+Which command renames the directory named "my-stuff" to "our-stuff"?
+
+EOL
+
+	luc_answers=(
+		'mv -r my-stuff our-stuff'
+		'mv -R my-stuff our-stuff'
+		'mv my-stuff our-stuff'
+		'marriage'
+	)
+	handle_answer 'mv my-stuff our-stuff'
+
+	# Question 6
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 6/6
+
+Which command, in some circumstances, will cause the "rm" program to attempt to delete all files and directories?
+
+EOL
+
+	luc_answers=(
+		'rm -rf .*'
+		'rm -rf .'
+		'rm .*'
+		'rm'
+		'make world'
+	)
+	handle_answer 'rm -rf .*'
+
 	# Final check
-	if [ "$luc_correct_answers" == "3" ]; then
+	if [ "$luc_correct_answers" == "6" ]; then
 		good_work
 	else
 		echo "Results:  $luc_correct_answers out of 3 correct"

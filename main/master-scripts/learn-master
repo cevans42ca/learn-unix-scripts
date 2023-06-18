@@ -464,7 +464,8 @@ EOL
 		if [[ "${x}" =~ ^bash.* ]]; then
 			fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Here are some examples of prompts.  Real prompts will have 'user', 'host', and 'directory' filled in with the real
-values based on who is logged in, the current hostname, and the directory the user is in.
+values based on who is logged in, the current hostname, and the directory the user is in.  We'll go over what a host is
+in a few exercises.  For now, you can think of a host as a computer.
 EOL
 			echo >> $fmt_file
 			echo "[user:host directory]$" >> $fmt_file
@@ -627,10 +628,10 @@ EOL
 }
 
 white_belt_exercise_common_root_directories() { # Explanation of Directories Under Root
-	# The existence of /opt can't be counted on, but it's hard to imagine the rest would be missing on any modern
-	# Unix derivative.  Maybe this script is being run in a Docker container.  Handling missing directories, formatting
-	# to the TTY size, and paging the whole thing was a chance to sharpen my skills.
-	# It's also a good reference for redirecting output from a program that already has a heredoc coming in.
+	# In this exercise, we check for the existence of many common directories.  It might be overkill, but
+	# handling missing directories, formatting to the TTY size, and paging the whole thing was a chance to
+	# sharpen my skills in bash scripting.  It's also a good reference for redirecting output from a
+	# program that already has a heredoc coming in.
 
 	set +e
 	ROOT_USERNAME=$(bash -c 'getent passwd "0" 2> /dev/null | cut -d: -f1')
@@ -643,10 +644,32 @@ white_belt_exercise_common_root_directories() { # Explanation of Directories Und
 
 	# $ROOT_TEXT should be at the end of the line so the formatting works out.
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Depending on what directories are present on your system, some of the following notes may use the word "host".  In the
+past, a host referred to a computer, usually without a keyboard, mouse, and monitor, only available over a network.
+Computers with a keyboard, mouse, and monitor are generally called "workstations" though they may also be called
+"hosts".  Now, hosts can be virtualized.  Virtualization is extremely popular, so you're likely to see it.  Let's look
+at what it is.
+
+In the beginning, computers could process text.  By typing text into a computer, we could move chunks of text around,
+edit it, email it to multiple people, and print it.  These things are hard or impossible to do with a real physical book.
+
+In the 1980s and 1990s, we could scan photographs into a computer.  When a photograph becomes a file in a computer, we
+can do all kinds of things with it that would be difficult or impossible with a physical photo.
+
+Now, entire computers can be a file in another computer.  We can copy them, start them up, stop them, and freeze them at
+a particular moment in time to save backups or snapshots.  In some cases, we can move virtualized computers from
+running on one host to another host while they're being used.  By virtualizing computers, we can create computers in
+minutes instead of days or weeks.  We gain flexibility that wouldn't be possible otherwise.
+
+Many people refer to a host as a server, but the term "server" can also be used as a short form for "application server"
+or "app server".  An application server is a program that responds to specific kinds of requests, almost always over a
+network.  A host is a computer, which may be virtualized, which means it's running on another computer.
+
 For the following notes, keep in mind that the root user (usually simply called "root") is the administrator account.  $ROOT_TEXT
 The root user has access to everything and is allowed to do everything, unless permissions have been deliberately given up.
 A simple example is making a file read only.  The root user can put up blocks to make things more difficult to do, but the
 root user could remove them at any time.
+
 EOL
 
 	printf "\nHere are some of the things you saw.\n" >> $fmt_file
@@ -654,7 +677,8 @@ EOL
 	if [ -d "/bin" ]; then
 		printf "\n${underline}/bin${no_underline}\n" >> $fmt_file
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-  Stands for BINaries (programs that aren't scripts).  The core binaries are here, like "ls". 
+  Stands for BINaries (programs that aren't scripts).  The core binaries are here, like "ls".  In the beginning, only
+  binaries were in the /bin directory, but in some recent flavours of Unix you might also find some scripts here.
 EOL
 	fi
 
@@ -669,8 +693,8 @@ EOL
 		printf "\n${underline}/home${no_underline}\n" >> $fmt_file
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
   Each user's home directory is under here.  Your home directory (${HOME}) contains everything that's only for you,
-  especially configuration files.  In most Unix enviroments, your home directory is shared across multiple servers so your
-  configuration settings are available across multiple servers.  On Macs, this directory (if it exists) will usually be
+  especially configuration files.  In most Unix enviroments, your home directory is shared across multiple hosts so your
+  configuration settings are available across those hosts.  On Macs, this directory (if it exists) will usually be
   empty, and all the users' home directories will be in /Users instead.
 EOL
 	fi
@@ -678,7 +702,7 @@ EOL
 	if [ -d "/opt" ]; then
 		printf "\n${underline}/opt${no_underline}\n" >> $fmt_file
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-  Sometimes seen on Red Hat Linux servers, the /opt directory is for OPTional software that's not part of the distribution.
+  Sometimes seen on Red Hat Linux hosts, the /opt directory is for OPTional software that's not part of the distribution.
   (If you want, you can look up what a Linux distribution is.)  You might find an Oracle DB instance or a Dynatrace OneAgent
   installed here.
 EOL
@@ -1995,7 +2019,7 @@ EOL
 
 	if [ ! -d "$LUS_HOME/list/count" ]; then
 		mkdir -p "$LUS_HOME/list/count"
-		# I'd like to make these relative to the time they're made, but it's hard to do that in a portable way.
+		# TODO:  I'd like to make these relative to the time they're made, but it's hard to do that in a portable way.
 		touch -t 202203010000 "$LUS_HOME/list/count/one"
 		touch -t 202203020000 "$LUS_HOME/list/count/two"
 		touch -t 202203030000 "$LUS_HOME/list/count/three"
@@ -3926,7 +3950,7 @@ EOL
 	complete_exercise
 }
 
-red_stripe_exercise_du() { # Introduction to du
+red_stripe_exercise_du() { # Introduction to "du"
 	prepare_lus_home
 	prepare_lus_home_red_stripe
 
@@ -4100,8 +4124,8 @@ red_stripe_exercise_du_sort_head() { # Looking for Large Files and Directories
 If we're looking at a real example with lots of files and directories, we can list only the top 10 results by piping the
 output through the "head" program.  By default, head returns the first 10 lines of input.
 
-The example below requires some knowledge of how much space directories normally take.  If you're planning to be a
-sysadmin for a particular host, you should have a sense of what things look like when everything's fine.  In the
+The example below requires some knowledge of how much space directories normally take.  If you're planning to become a
+root user for a particular host, you should have a sense of what things look like when everything's fine.  In the
 example below, we get a list of all the large files and directories under /usr.
 
 EOL
@@ -4122,12 +4146,12 @@ EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
-If you were a sysadmin for this particular host, you would know that about 2 GB for the lib and local directories is
-about right.  The problem here is the 1 GB log file in /usr/local/apache-tomcat-9.0/logs/.  Again, it takes some
-knowledge of what is normal to diagnose issues.  To solve this issue, we would set up log rotation (but that's beyond
-the scope of the coloured belt exercises).  If we were out of space on the mount and needed to do something immediately,
-we would stop the application server and move or compress the file, then start the application server back up (which is
-also out of scope for this course).
+A root user on this particular host should know that about 2 GB for the lib and local directories is about right.  The
+problem here is the 1 GB log file in /usr/local/apache-tomcat-9.0/logs/.  Again, it takes some knowledge of what is
+normal to diagnose issues.  To solve this issue, we would set up log rotation (but that's beyond the scope of the
+coloured belt exercises).  If we were out of space on the mount and needed to do something immediately, we would stop
+the application server and move or compress the file, then start the application server back up (which is also out of
+scope for this course).
 
 Try out "du -ah | sort -hr | head" in "${LUS_HOME}/red-stripe/du".
 EOL
@@ -4135,7 +4159,7 @@ EOL
 	complete_exercise
 }
 
-red_stripe_exercise_diff() { # Introduction to diff
+red_stripe_exercise_diff() { # Introduction to "diff"
 	prepare_lus_home
 	prepare_lus_home_red_stripe
 
@@ -4335,6 +4359,16 @@ EOL
 }
 
 red_stripe_exercise_mv() { # Introduction to "mv"
+	prepare_lus_home
+	prepare_lus_home_red_stripe
+
+	if [ ! -d "$LUS_HOME/red-stripe/mv" ]; then
+		mkdir -p "$LUS_HOME/red-stripe/mv"
+	fi
+
+	lorem "${LUS_HOME}/red-stripe/mv/lorem"
+	rm -f "${LUS_HOME}/red-stripe/mv/lorem-ipsum"
+
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 It's time to move.  We're going to look at the "mv" or "move" program.  This program is also responsible for renaming
 files and directories.
@@ -4353,8 +4387,43 @@ This situation is more common than you might think.  If you have a program that 
 speed up searching, it likely has all log files open.  If you have to delete or move a log file, you'll also need to
 restart the program or service you use to consolidate your logs.
 
-If you're a sysadmin for a host, it's important to be aware of what other sysadmins are doing, and you need to
-understand what services are running on your hosts.
+If you're a root user (or system admin, or sysadmin) for a host, it's important to be aware of what other sysadmins are
+doing, and you need to understand what services are running on your hosts.
+
+To move or rename a file, give the "mv" program the source and then the destination (the same as the "cp" program).
+
+Execute the mv program now to rename the file "${LUS_HOME}/red-stripe/mv/lorem" to "${LUS_HOME}/red-stripe/mv/lorem-ipsum".
+There are several ways to do that.  You might cd to the directory and use only the filenames.  You might use pushd and popd.
+If "${LUS_HOME}" is under your home directory, you might use a tilde ( ~ ) as a shortcut.
+EOL
+
+	complete_exercise
+}
+
+red_stripe_exercise_mv_wrap_up() { # "mv" Wrap Up
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+You can move or rename directories the same way.  You don't provide a -R or -r option when moving or renaming a directory,
+as you do when copying directories with "cp".
+
+Create some directories under "${LUS_HOME}/red-stripe/mv" with the "mkdir" program.  Rename and move them into and out
+of other directories.  Check what you've done with "ls" and "ls -R".  The check script isn't checking anything this time.
+
+Here are some suggestions to get you started.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+cd "${LUS_HOME}/red-stripe/mv"
+mkdir one
+mkdir two
+mv one two
+cd two
+mv one ..
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+In the next exercise, we will delete the red-stripe directory and everything in it.
 EOL
 
 	complete_exercise
