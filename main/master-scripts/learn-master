@@ -70,6 +70,8 @@ get_rows_and_columns() {
 	else
 		WIDTH=$STTY_COLUMNS
 	fi
+
+	WIDTH_BULLET=$(expr $WIDTH - 2)
 }
 
 get_rows_and_columns
@@ -1721,7 +1723,7 @@ EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
-Do you see how starting with a quote will finish part of the filename but won't help you after that?
+Do you see how starting with a single quote will finish part of the filename but won't help you after that?
 
 Try the two kinds of quotes again, but this time, if you started with a double quote, use another double quote at the end
 to close the quotation (and the same for single quotes).  Then try pressing Tab again.  Press Tab two more times to see
@@ -1854,21 +1856,23 @@ Once you've found the command you want, you have multiple options.
 
 EOL
 
-	fmt ${FMT_OPTIONS:-} -c --width=$WIDTH <<EOL >> $fmt_file
-  * You can run the command as is right now (which will also add it to your history as the last command run).  To do that,
-    simply press enter.
+	# Cross platform formatting of bullet points is problematic, so use sed to bump all lines that don't start with
+	# a bullet over two characters.  Use a WIDTH two characters shorter so bumping them over doesn't cause wrapping.
+	fmt ${FMT_OPTIONS:-}$WIDTH_BULLET <<EOL | sed 's/^\([^*]\)/  \1/' >> $fmt_file
+* You can run the command as is right now (which will also add it to your history as the last command run).  To do that,
+simply press enter.
 
-  * You can add the command line as the last command line in your history (to make it easier to find) and without running
-    it by making it a comment.  To do that, go to the beginning of the line, type the pound sign, and press Enter.
-    When you find it later, if you want to run it, you'll need to remove the pound sign with the Delete key or the Backspace
-    key.
+* You can add the command line as the last command line in your history (to make it easier to find) and without running
+it by making it a comment.  To do that, go to the beginning of the line, type the pound sign, and press Enter.
+When you find it later, if you want to run it, you'll need to remove the pound sign with the Delete key or the Backspace
+key.
 
-  * You can make changes to it.  Type any keystroke that will let you move around (without going up or down) like Left, Right,
-    Ctrl+a, Ctrl+e, Ctrl+f, or Ctrl+b.  After you do that you'll be out of search mode and you can change anything you like.
-    To execute it, press Enter.  To save it for later, go the beginning of the line, type a pound sign, and press Enter.
+* You can make changes to it.  Type any keystroke that will let you move around (without going up or down) like Left, Right,
+Ctrl+a, Ctrl+e, Ctrl+f, or Ctrl+b.  After you do that you'll be out of search mode and you can change anything you like.
+To execute it, press Enter.  To save it for later, go the beginning of the line, type a pound sign, and press Enter.
 
-  * You can change your mind.  Type Ctrl+c and the search will stop, whatever you found so far will be gone, and you'll
-    get a fresh new prompt.  You can also get out of search mode with Ctrl+g, but Ctrl+c is easier to remember.
+* You can change your mind.  Type Ctrl+c and the search will stop, whatever you found so far will be gone, and you'll
+get a fresh new prompt.  You can also get out of search mode with Ctrl+g, but Ctrl+c is easier to remember.
 EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
@@ -1934,7 +1938,8 @@ change "mkdir" to "cd".
 
 If you want to check it first, use "echo !$".  Since the last argument is the same, you can still use "cd !$" after "echo !$".
 
-Try out "!$" now.  If you create any directories under $LUS_HOME, please remove them before continuing.
+Try out "!$" now.  If you create any directories under $LUS_HOME (with mkdir) please remove them before continuing (with
+rmdir).
 
 When you're done, execute ". check" for your final exam.
 EOL
