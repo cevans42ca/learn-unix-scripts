@@ -4653,7 +4653,7 @@ EOL
 	printf "\n`getBeltWithColours yellow_belt title`\n" >> $fmt_file
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-  More speed!  Reducing the annoyanances that can come with working on a command line
+  More speed!  Reducing the annoyanances that can come with working with a command line
 EOL
 
 	echo "" >> $fmt_file
