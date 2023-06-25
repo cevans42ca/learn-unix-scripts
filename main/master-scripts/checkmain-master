@@ -714,7 +714,11 @@ EOL
 	fi
 }
 
-yellow_belt_exercise_speed_and_lists() {
+yellow_belt_exercise_terminals_and_shells() {
+	keep_going
+}
+
+yellow_belt_exercise_asterisk() {
 	if [[ `pwd` == "$LUS_HOME/complete" ]]; then
 		good_work
 		echo ""

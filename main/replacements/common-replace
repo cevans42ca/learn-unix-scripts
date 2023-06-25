@@ -66,7 +66,8 @@ exercises["yellow_stripe_$((i++))"]="escaping_quotes"
 exercises["yellow_stripe_$((i++))"]="quote_finale"
 
 i=1
-exercises["yellow_belt_$((i++))"]="speed_and_lists"
+exercises["yellow_belt_$((i++))"]="terminals_and_shells"
+exercises["yellow_belt_$((i++))"]="asterisk"
 exercises["yellow_belt_$((i++))"]="unquoted_tab_completion"
 exercises["yellow_belt_$((i++))"]="unquoted_tab_completion_two_options"
 exercises["yellow_belt_$((i++))"]="quoted_tab_completion"

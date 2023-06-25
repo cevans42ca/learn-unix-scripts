@@ -1472,13 +1472,13 @@ EOL
 # (End vim fold) }}}
 
 # Yellow belt exercises (Start vim fold) {{{
-yellow_belt_exercise_speed_and_lists() { # More Speed!  Using Asterisk
+yellow_belt_exercise_terminals_and_shells() { # More Speed!  Using Asterisk
 	if [ ! -d "$LUS_HOME/complete" ]; then
 		mkdir -p "$LUS_HOME/complete"
 	fi
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-To get your green stripe, we will be looking at two things:  speed, and more about file listings.
+To get your green stripe, we will be looking at speed:  how to type fewer characters and accomplish the same thing.
 
 The speed part will be partly up to you, for a few reasons.  It's not possible for a script to check that you're doing them
 correctly.  It's time for you to take it on yourself.  All the exercises so far will work on many different versions and
@@ -1490,9 +1490,10 @@ be checked.  If you accidentally skip an exercise, you can review a previous exe
 exercise 4 (for example).  You can also see a list of exercises with "learn yellow belt list".  If you complete all the
 exercises up to the one you're on, you'll see a message, and your progress will be tracked from that point.
 
-We've been using the words "terminal" and "shell" without defining them, since the exact meaning wasn't necessary to understand.
-Perhaps you looked them up.  In the 1970s, it was easy to tell the difference between a terminal and a shell, because
-the terminal was a big box that sat on a desk with a keyboard and screen.  Now, both are software.
+We've been using the words "terminal" and "shell" without defining them, since the exact meaning wasn't necessary to
+understand.  Perhaps you looked them up.  We'll define them now.  In the 1970s, it was easy to tell the difference
+between a terminal and a shell, because the terminal was a big box that sat on a desk with a keyboard and screen.  Now,
+both are software.
 
 Your terminal:
 EOL
@@ -1508,29 +1509,55 @@ if [ "${enable_tput}" == "1" ]; then
 	no_underline_code="$(tput rmul)"
 fi
 
-	fmt ${FMT_OPTIONS:-} --prefix="  * " --width=$WIDTH <<EOL >> $fmt_file
-  * Has a size measured in rows and columns
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL | sed '/^$/d' | sed "s/colour/${set_color}colour${clear_color}/" | sed "s/formatting/${underline_code}formatting${no_underline_code}/" >> $fmt_file
+* Has a size measured in rows and columns
 
-  * Controls the font and font size (how the characters look)
+* Controls the font and font size (how the characters look)
 
-  * Sends what you type to your shell and displays the output from your shell
+* Sends what you type to your shell and displays the output from your shell
 
-  * Accepts special sequences of characters that change the ${set_color}colour${clear_color} or ${underline_code}formatting${no_underline_code}
+* Accepts special sequences of characters that change the colour or formatting
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
 Your shell:
-  * Accepts characters from your terminal and figures out what you're asking it to do
+EOL
 
-  * Runs any programs you asked it to run
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL | sed '/^$/d'  >> $fmt_file
+* Accepts characters from your terminal and figures out what you're asking it to do
 
-  * Sends the output from those programs to your terminal so you can see it (or gives you another prompt if there was no output)
+* Runs any programs you asked it to run
+
+* Sends the output from those programs to your terminal so you can see it (or gives you another prompt if there was no output)
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
 Different shells are almost always available, but these scripts only work with the "bash" shell (short for "Bourne Again
 Shell").  Depending on what Unix system you're using and how you're connecting to it, you may have a choice of terminal.
 
 What you type is interpreted by your terminal before it gets to your shell.  Since these scripts require you to use the
-bash shell, if these don't work, it's likely due to your terminal or your terminal settings, so you will need to find someone
-knowledgable in the terminal you're using or have to use.
+bash shell, if these don't work, it's likely due to your terminal or your terminal settings, so if something doesn't work the
+way you want it to, you will probably need to find someone knowledgable in the terminal you're using or have to use.
 
+You almost certainly have a mouse, and your terminal is probably configured to work with it.  Your terminal will likely
+allow you to select some text and copy and paste it.  That can be handy for coping a link and pasting it in a browser
+window, but in many cases, a mouse will only slow you down.  You may also be in a situation where your terminal and mouse
+aren't working well together.  We want to prepare you to work quickly and effectively no matter the situation.
+
+All that said, the tips and tricks in this belt are not, strictly speaking, essential.  You may find that some of these tricks
+"click", "resonate", or "sink in" better than others.  You need to know these tricks in order to pass the exam, but if
+something fundamentally doesn't work for you, don't try to force yourself to use it.
+
+The check script doesn't check anything for this lesson.  Source the check script as usual to continue.
+EOL
+
+	complete_exercise
+}
+
+yellow_belt_exercise_asterisk() { # More Speed!  Asterisk
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 The first way to boost your speed is tab completion.  In many cases, tab completion can eliminate the need for quoting a
 file name.  After going through those tricky questions in the last belt, are you angry?  Annoyed?  Relieved?  Always be
 ready to properly quote a filename.  If you need notes for it, keep them with you.  It could come up when you least expect it.
@@ -1539,19 +1566,21 @@ You can use tab completion to complete filenames, directory names, program names
 
 Before we do tab completion of a filename, we'll look at what you can do if it's not available.
 
-Go to $LUS_HOME and execute "ls".  From there you're going to cd to the "complete" directory, but you're not going
-to type all the letters.  Type "cd", a space, the letter "c", and an asterisk ( * ) which is usually Shift+8.  Press Enter.
-You can use this trick with files and directories (but not commands or command line arguments).
+We'll be looking at the asterisk ( * ) which you can usually type with Shift+8.  The asterisk is often called a "star".
 
-The asterisk is often called a "star".
+The asterisk will let you type fewer characters to do what you want.
 
-If there are other directories that start with "c" and you type "cd c*", then your shell will change your current directory
-to the first one in alphabetical order.  Tab is better than asterisk, because you get to see where you're going before you
-go and change your mind.
+Depending on your operating system, different things will happen if you type "cd c*" and there are two directories under
+the current directory that start with "c".  On BSD-based systems you will get an error.  On Linux-based systems you
+will cd to the first directory in alphabetical order.
+
+Go to $LUS_HOME and execute "ls".  From there you're going to cd to the "complete" directory, but you're not going to
+type all the letters.  Type "cd", a space, the letter "c", and an asterisk.  Press Enter.  You can use this trick with
+files and directories (but not commands or command line arguments).
 
 Here, we're using an asterisk to speed up typing a single file name.  Later, we'll look at using it for multiple filenames.
 
-After trying all that out, remember to execute ". check".
+Once you've completed that, remember to execute ". check".
 EOL
 
 	complete_exercise
@@ -1670,19 +1699,16 @@ yellow_belt_exercise_quoted_tab_completion() { # Tab Completion with a Quote
 When you pressed Tab before, you had typed part of a filename but you didn't use a single or double quote.  In this
 exercise, you're going to see what happens if you do.
 
-If you start a filename with a single or double quote, it's likely that your shell won't help you finish the filename like
-it did before, nor will it tell you what the valid options are.  In other words, if you start with a double quote, your
-shell won't be as helpful.  Worse, if you put an asterisk ( * ) inside a quotation, your shell will treat it as a literal
-asterisk, so you can't use it as a filename short cut unless you first close the quotation you started with another quote.
+If you accidentally start a filename with a single or double quote, it's likely that your shell won't help you finish
+the filename like it did before, nor will it tell you what the valid options are.  To complete a filename that starts
+with a single quote:  type a double quote, a single quote, and a double quote, then press Tab.  To complete a filename
+that starts with a double quote:  type a single quote, a double quote, a single quote, and press Tab.
 
-That's what you should do if you run into that situation.
-
-If you start the filename with a single or double quote and press Tab, and your shell fills in part of the filename,
-you should type a matching quote and press Tab.  Your shell will convert the quotation to a series of escapes instead,
-and now your shell will be a little more helpful letting you finish the filename.
+If tab completion is enabled and working, your shell will convert the quotation to a series of escapes instead,
+and now your shell will be a more helpful with the rest of the filename.
 
 If pressing Tab hasn't done anything at all, you can use an asterisk to complete part of the filename, just make sure it's
-not in either kind of quotes.
+not inside either kind of quotes.
 
 Make sure you're in $LUS_HOME/complete.  Type in each command line below and then press Tab three times.  To go onto the
 next one, hold down Backspace until it's all gone or press Ctrl+c.
@@ -4488,7 +4514,7 @@ EOL
 # }}}
 
 # Red belt exercises (Start vim fold) {{{
-red_belt_processes() {
+red_belt_exercise_processes() {
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Congratulations on your red belt!
 
@@ -4525,11 +4551,10 @@ EOL
 	complete_exercise
 }
 
-red_belt_processes_man_info() {
+red_belt_exercise_processes_man_info() {
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Execute "man ps" and "info ps" to learn more about your version of ps.  Take note of any options that you find
-interesting or potentially helpful.  Feel free to skim the documentation:  remember that you can return to it at any
-time.
+interesting or potentially helpful.  Feel free to skim the documentation:  remember that you can return to it later.
 EOL
 
 	complete_exercise
@@ -4613,6 +4638,8 @@ EOL
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
   In a martial arts club (or dojo) a student gets their white belt when they buy a uniform and sign up for classes.  In this
   case, a student gets their white belt when they run the learn script and choose to get started.
+
+  White belts learn about environment variables and how to use the "more" and "less" programs.
 EOL
 
 	echo "" >> $fmt_file
@@ -4620,13 +4647,13 @@ EOL
 	printf "`getBeltWithColours yellow_stripe title`\n" >> $fmt_file
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-  Understanding \$PATH and environment variables.
+  Creating and deleting directories; . and ..; pwd; cd; file types and magic
 EOL
 
 	printf "\n`getBeltWithColours yellow_belt title`\n" >> $fmt_file
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-  Creating and deleting directories; . and ..; pwd; cd; file types and magic
+  More speed!  Reducing the annoyanances that can come with working on a command line
 EOL
 
 	echo "" >> $fmt_file
@@ -4958,7 +4985,7 @@ elif [ -n "${1:-}" ] && [ "${1:-}" != "return" ]; then
 	echo "learn welcome"
 	echo "  To see which skills fall under which belts"
 	echo "learn white belt"
-	echo "  To review the white belt exercises"
+	echo "  To review the white belt exercises from the beginning"
 	echo "learn yellow stripe"
 	echo "  To review the yellow stripe exercises from the beginning"
 	echo "learn white belt list"
