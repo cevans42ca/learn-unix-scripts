@@ -176,30 +176,15 @@ set_num_exercises_for_review() {
 print_rank() {
 	# Use an extra ${nc} to fix an issue with PuTTY.
 	if [ -n "${SAVED_RANK:-}" ]; then
-		if [ "$SAVED_RANK" == "white_belt" ]; then
-			printf "Your current rank is `getBeltWithColours white_belt`.\n"
-			printf "You are working toward your `getBeltWithColours yellow_stripe`.\n\n"
-		elif [ "$SAVED_RANK" == "yellow_stripe" ]; then
-			printf "Your current rank is `getBeltWithColours yellow_stripe`.\n"
-			printf "You are working toward your `getBeltWithColours yellow_belt`.\n\n"
-		elif [ "$SAVED_RANK" == "yellow_belt" ]; then
-			printf "Your current rank is `getBeltWithColours yellow_belt`.\n"
-			printf "You are working toward your `getBeltWithColours green_stripe`.\n\n"
-		fi
-
-		belt=$(getBeltWithColours $RANK)
-		printf "You are reviewing the exercises for ${belt}.  "
+		printf "Your current rank is $(getBeltWithColours ${SAVED_RANK}).\n"
+		printf "You are reviewing the exercises for $(getBeltWithColours $RANK).  "
 		printf 'To return to where you were, execute "learn return".\n\n'
 	else
-		if [ "$RANK" == "white_belt" ]; then
-			printf "Your current rank is `getBeltWithColours white_belt`.\n"
-			printf "You are working toward your `getBeltWithColours yellow_stripe`.\n\n"
-		elif [ "$RANK" == "yellow_stripe" ]; then
-			printf "Your current rank is `getBeltWithColours yellow_stripe`.\n"
-			printf "You are working toward your `getBeltWithColours yellow_belt`.\n\n"
-		elif [ "$RANK" == "yellow_belt" ]; then
-			printf "Your current rank is `getBeltWithColours yellow_belt`.\n"
-			printf "You are working toward your `getBeltWithColours green_stripe`.\n\n"
+		if [ -n "${RANK:-}" ]; then
+			next_belt=$(getNextBelt $RANK)
+
+			printf "Your current rank is $(getBeltWithColours $RANK).\n"
+			printf "You are working toward your $(getBeltWithColours $next_belt).\n\n"
 		fi
 	fi
 }
@@ -2106,36 +2091,36 @@ EOL
 
 	echo '[user@host:~/example]$ ls -l' >> $fmt_file
 	echo 'total 4' >> $fmt_file
-	echo 'drwxrwxr-x 2 user ug 4096 Nov  8 08:40 zero' >> $fmt_file
-	echo '-rw-rw-r-- 1 user ug    0 Jan  1  2021 one' >> $fmt_file
-	echo '-rw-rw-r-- 1 user ug    0 Jan  2  2021 two' >> $fmt_file
+	echo 'drwxrwxr-x 2 user ug 4096 Nov  8 08:40 first' >> $fmt_file
+	echo '-rw-rw-r-- 1 user ug    0 Jan  1  2021 second' >> $fmt_file
+	echo '-rw-rw-r-- 1 user ug    0 Jan  2  2021 third' >> $fmt_file
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
 The first thing that "ls -l" prints is a total, in this case, "total 4".  That means that the files and directories here
 take up 4 blocks.  The size of a block can vary from filesystem to filesystem, but is rarely more than 4 KB (4,096
 bytes), and very rarely less than 512 bytes (1/2 KB).  We will be looking at more helpful ways to display this "total"
-later.
+later.  This example is from a Linux-based system.
 
 The next three lines tell us information about what's in this directory.
 
-We'll begin at the end.  On the far right are the file and directory names:  "zero", "one", and "two".
+We'll begin at the end.  On the far right are the file and directory names:  "first", "second", and "third".
 
 We'll go through the rest of the fields from left to right.  The first part of the output shows the permissions
-(drwxrwxr-x).  We'll be looking at what these mean and how to change them quite a bit later.  Right now, look at the
+(drwxrwxr-x).  We'll be looking at what these mean and how to change them much later.  Right now, look at the
 first character.  If it's a directory, the first character will be "d".  If it's a regular file, it will be a hyphen.
-So "zero" is a directory, and "one" and "two" are not directories.
+So "first" is a directory, and "second" and "third" are regular files.
 
 The next part is who owns the file.  In this example, the user ID is "user".
 
 The part after that is what group owns the file.  In this case, that's "ug".
 
-Fourth, we have the size of the file.  The files "one" and "two" have a size of 0, so they're empty files.  Empty files
-can serve as flags to indicate something has been completed, and to provide a timestamp of when it completed.  The
-"zero" directory is taking up 4,096 bytes of space.  Directories always take up at least one block (which may be larger
-or smaller than 4,096 bytes).  If the number of files in a directory grows so large that the list of files can't fit
-inside one block, then the size of the directory will grow.  A directory's size is based on the number of files and the
-lengths of their filenames, and doesn't have to do with the size of the files.
+Fourth, we have the size of the file.  The files "second" and "third" have a size of 0, so they're empty files.  Empty
+files can serve as flags to indicate something has been completed, and to provide a timestamp of when it completed.  The
+"first" directory is taking up 4,096 bytes of space.  On Linux-based systems, directories always take up at least one
+block (which may be larger or smaller than 4,096 bytes).  If the number of files in a directory grows so large that the
+list of files can't fit inside one block, then the size of the directory will grow.  A directory's size is based on the
+number of files and the lengths of their filenames, and doesn't have to do with the size of the files.
 
 Second last, we have the date (and maybe the time).  If a file is very recent, you'll see a date and time.  If it's older,
 you'll see a month, day, and year.
@@ -2183,8 +2168,8 @@ number of options.  While it's open, use slash to search through the options to 
 the files in order.  Once you've found some options that will help, close the man page with "q" as usual and try them
 out.  Once you have a listing of the files in $LUS_HOME/list/count in numerical order, execute ". check".
 
-Only the short options will be considered correct, as they work with both BSD and GNU "ls".  Also, please put the options before
-the directory name (if you use one).
+Only the short options will be considered correct, as they work with both BSD and GNU "ls".  Also, please put the
+options before the directory name (if you use one).
 EOL
 
 	complete_exercise
@@ -2241,7 +2226,7 @@ to draw your eye to them.  This colour is not in the original.
 
 EOL
 
-	${GREP_BIN} --color=always "\(\/dev\/sda[1-9]\|\)" <<EOL >> $fmt_file
+	${GREP_BIN} --color=always '\(\/dev\/sda[1-9]\|$\)' <<EOL >> $fmt_file
 Filesystem      Size  Used Avail Use% Mounted on
 udev            445M     0  445M   0% /dev
 tmpfs            99M  1.2M   98M   2% /run
@@ -2269,7 +2254,7 @@ Here's what you might see on a FreeBSD system:
 
 EOL
 
-	${GREP_BIN} --color=always "\(100.\|\)" <<EOL >> $fmt_file
+	${GREP_BIN} --color=always "\(100.\|$\)" <<EOL >> $fmt_file
 Filesystem         Size    Used   Avail Capacity  Mounted on
 /dev/gpt/rootfs    9.7G    5.5G    3.4G    62%    /
 devfs              1.0K    1.0K      0B   100%    /dev
@@ -2293,7 +2278,7 @@ Unfortunately, it won't all fit with your current terminal settings, so some or 
 EOL
 	fi
 
-	${GREP_BIN} --color=always "\(%iused\|iused\|ifree\|\)" <<EOL >> $fmt_file
+	${GREP_BIN} --color=always "\(%iused\|iused\|ifree\|$\)" <<EOL >> $fmt_file
 Filesystem       Size   Used  Avail Capacity iused      ifree %iused  Mounted on
 /dev/disk1s6s1  466Gi   22Gi  227Gi     9%  501138 2383102400    0%   /
 devfs           199Ki  199Ki    0Bi   100%     690          0  100%   /dev
