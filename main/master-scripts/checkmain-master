@@ -2268,7 +2268,7 @@ EOL
 	fi
 }
 
-red_belt_processes() {
+red_belt_exercise_processes() {
 	IFS='
 '
 
@@ -2286,7 +2286,7 @@ red_belt_processes() {
 	return
 }
 
-red_belt_processes_man_info() {
+red_belt_exercise_processes_man_info() {
 	keep_going
 }
 
