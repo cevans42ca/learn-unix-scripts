@@ -225,9 +225,9 @@ date_minus() {
 
 	# We can't just % 86400 because that will be midnight UTC.
 	if [[ "${BSD_DATE:-}" -eq "1" ]]; then
-		date -r ${offset} +"%Y-%m-%d 00:00:00"
+		date -r ${offset} +"%Y-%m-%dT00:00:00"
 	else
-		date -d@${offset} +"%Y-%m-%d 00:00:00"
+		date -d@${offset} +"%Y-%m-%dT00:00:00"
 	fi
 }
 
