@@ -2268,7 +2268,52 @@ EOL
 	fi
 }
 
-red_belt_exercise_processes() {
+red_belt_exercise_programs_vs_commands() {
+	luc_correct_answers=0
+
+	# Question 1
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 1/2
+
+Which of the following is a valid command by itself?
+
+EOL
+
+	luc_answers=( 'cp' 'mv' 'ls' 'rm' 'aaaiiieee' )
+	handle_answer 'ls'
+
+	# Question 2
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 2/2
+
+Which of the following is a program?
+
+EOL
+
+	luc_answers=(
+		'du -ah | sort -hr | head'
+		'ls -l'
+		'cp one.txt two.txt'
+		'file'
+		'cat tail'
+	)
+	handle_answer 'file'
+
+	# Final check
+	if [ "$luc_correct_answers" == "2" ]; then
+		good_work
+	else
+		echo "Results:  $luc_correct_answers out of 2 correct"
+		echo ""
+		sorry
+	fi
+}
+
+red_belt_exercise_introduction_to_find() {
+	keep_going
+}
+
+black_stripe_exercise_processes() {
 	IFS='
 '
 
@@ -2286,7 +2331,7 @@ red_belt_exercise_processes() {
 	return
 }
 
-red_belt_exercise_processes_man_info() {
+black_stripe_exercise_processes_man_info() {
 	keep_going
 }
 

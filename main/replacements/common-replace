@@ -137,8 +137,12 @@ exercises["red_stripe_$((i++))"]="rm_rf"
 exercises["red_stripe_$((i++))"]="final"
 
 i=1
-exercises["red_belt_$((i++))"]="processes"
-exercises["red_belt_$((i++))"]="processes_man_info"
+exercises["red_belt_$((i++))"]="programs_vs_commands"
+exercises["red_belt_$((i++))"]="introduction_to_find"
+
+i=1
+exercises["black_stripe_$((i++))"]="processes"
+exercises["black_stripe_$((i++))"]="processes_man_info"
 
 declare -A belt_to_number
 belt_to_number["white_belt"]=0

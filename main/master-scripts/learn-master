@@ -219,6 +219,18 @@ random_midnight_date() {
 	updateDotFile
 }
 
+date_minus() {
+	current_epoch=$(awk 'BEGIN{srand();print(srand())}')
+	offset=$(( $current_epoch - ( 86400 * $1 ) ))
+
+	# We can't just % 86400 because that will be midnight UTC.
+	if [[ "${BSD_DATE:-}" -eq "1" ]]; then
+		date -r ${offset} +"%Y-%m-%d 00:00:00"
+	else
+		date -d@${offset} +"%Y-%m-%d 00:00:00"
+	fi
+}
+
 prepare_lus_home() {
 	if [[ "${INSIDE_DOCKER:-0}" == "0" ]]; then
 		if [ ! -d "${LUS_HOME}" ]; then
@@ -302,6 +314,29 @@ EOL
 	sed 's/^(8)/(9)/' "${LUS_HOME}/red-stripe/diff/rules.txt" | sed '8i\
 (8) It is our usual, habitual custom that meetings will begin with a short summary of the agenda.\
 ' > "${LUS_HOME}/red-stripe/diff/rules-added-8.txt"
+}
+
+prepare_lus_home_red_belt() {
+	if [ -f "${LUS_HOME}/red-belt" ]; then
+		fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+We need ${LUS_HOME}/red-belt to be a directory, but it's a file.
+Is it OK to overwrite it (y/N)?
+EOL
+
+		read CHOICE
+
+		if [[ ! "$CHOICE" =~ ^\s*[Yy].* ]]; then
+			exit 2
+		fi
+
+		rm -f "${LUS_HOME}/red-belt"
+	fi
+
+	if [ ! -d "${LUS_HOME}/red-belt" ]; then
+		mkdir -p "${LUS_HOME}/red-belt/time"
+	fi
+
+	touch -d"$(date_minus 3)" "${LUS_HOME}/red-belt/time/old" 
 }
 
 show_script_path_in_path() {
@@ -2016,7 +2051,7 @@ EOL
 create_lists() {
 	prepare_lus_home
 	
-	if [ -f $LUS_HOME/list ]; then
+	if [ -f "$LUS_HOME/list" ]; then
 		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 This exercise involves creating the directory $LUS_HOME/list, which already exists.  You will need to move it or rename
 it by executing "mv $LUS_HOME/list newname", then executing "learn" again.
@@ -4139,7 +4174,8 @@ EOL
 red_stripe_exercise_du_sort_head() { # Looking for Large Files and Directories
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 If we're looking at a real example with lots of files and directories, we can list only the top 10 results by piping the
-output through the "head" program.  By default, head returns the first 10 lines of input.
+output through the "head" program.  By default, head returns the first 10 lines of input.  There is a corresponding
+program that prints the last 10 lines (by default) called "tail".
 
 The example below requires some knowledge of how much space directories normally take.  If you're planning to become a
 root user for a particular host, you should have a sense of what things look like when everything's fine.  In the
@@ -4504,14 +4540,59 @@ EOL
 # }}}
 
 # Red belt exercises (Start vim fold) {{{
-red_belt_exercise_processes() {
+red_belt_exercise_programs_vs_commands() {
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Congratulations on your red belt!
 
-In the previous belt, red stripe, we looked at how to find large files and directories, and how to clean them up.  We
-also looked at "diff", which can help us find differences between files.  If there are multiple versions of a file
-that are slightly different, "diff" can help us determine which file to keep if we need to do some cleanup.  Since we
-can redirect any output to a file, "diff" can be used in all kinds of ways.
+In the previous belt, we looked at one way to find large files and directories.  We also looked at "diff", which can
+help us find differences between files.  If there are multiple versions of a file that are slightly different, "diff"
+can help us determine which file to keep if we need to do some cleanup.  Since we can redirect any output to a file,
+"diff" can be used to compare all kinds of things.
+
+We're going to look at some more flexible ways of finding and taking actions with files now, but first, it's time
+to shift the terminology a little to better reflect how words are used in most cases.
+
+Although the word "host" is clear in most cases, it's not a word that's used much currently.  The most common term
+is "server", but it can be confused with an "application server" or "app server".  In this course, we won't be
+dealing with application servers, so the distinction shouldn't be confusing.
+
+The difference between a "program" and a "command" isn't likely to be confusing in this course either, but we want you
+to know how to use these terms correctly if you need to be clear.  A command consists of one or more programs, each
+of which might have arguments.  If you run a command that is a single program with no arguments, then the program
+is also a valid command.  For example, "clear" and "ls" are both programs and valid commands.
+
+Before we switch the terminology to be more in line with what you're likely to see in the real world, we're going to
+test your ability to tell the difference between these terms.
+EOL
+
+	complete_exercise
+}
+
+red_belt_exercise_introduction_to_find() {
+	prepare_lus_home
+	prepare_lus_home_red_belt
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Let's look at the "find" command, which helps you find files.  Common things that find will help you find are:
+old files, new files, files with a specific phrase in them, files bigger than or smaller than a particular size,
+and files that contain a particular name.
+
+You can combine "find" with another program to perform an action on all the files.
+EOL
+
+	complete_exercise
+}
+# (End vim fold) }}}
+
+# Black stripe exercises (Start vim fold) {{{
+black_stripe_exercise_processes() {
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Congratulations on your black stripe!
+
+In the previous two belts, we looked at how to find files and directories.  We also looked at "diff", which can help us
+find differences between files.  If there are multiple versions of a file that are slightly different, "diff" can help
+us determine which file to keep if we need to do some cleanup.  Since we can redirect any output to a file, "diff" can
+be used to compare all kinds of things.
 
 In this belt, we'll be looking at processes and how to clean up misbehaving ones.
 
@@ -4532,8 +4613,8 @@ stick around until their parent (the program that started them) requests their e
 processes.  In Unix, zombies are part of the normal lifecycle of processes, but in a properly functioning system, they
 don't last long.
 
-If you execute "ps" as a non-root user, you will see a list of all your processes.  The "ps" program varies from
-system to system.  You might see more information or less by default.  The options vary quite a bit as well.
+If you execute "ps" as a non-root user, you will see a list of all your processes.  The "ps" program varies considerably
+from system to system.  You might see more information or less by default.  The options vary quite a bit as well.
 
 Execute "ps".
 EOL
@@ -4541,7 +4622,7 @@ EOL
 	complete_exercise
 }
 
-red_belt_exercise_processes_man_info() {
+black_stripe_exercise_processes_man_info() {
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Execute "man ps" and "info ps" to learn more about your version of ps.  Take note of any options that you find
 interesting or potentially helpful.  Feel free to skim the documentation:  remember that you can return to it later.
@@ -4589,10 +4670,8 @@ welcome() {
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL > $fmt_file
 Welcome to the Learn Unix Scripts interactive course.
 
-Let's begin with navigation.
-
-Every exercise has something to read and something to do.  When you see a prompt like "Press h for help; Enter for
-more", press Enter for one more line and Space for one more page.
+Every exercise has something to read and most exercises have something to do.  When you see a prompt like "Press h for
+help; Enter for more", press Enter for one more line and Space for one more page.
 
 There are two possibilities we need to cover for each exercise.  Either the text for an exercise will fit in your
 terminal or it won't.  (We'll go over what a terminal is later.)
@@ -4604,7 +4683,10 @@ the text, the prompt will change, asking you to press "q" to move on (or quit if
 If all the text fits in your terminal, you'll immediately see "Press h for help; q to move on" or "Press h for help; q
 to quit".  Pressing Enter, Space, or the arrow keys will have no effect.
 
-Even if all the text fits now, remember that many exercises won't.  Make sure you understand what to do in both cases.
+Even if all the text fits now, remember that the text for many exercises won't fit.  Make sure you understand what to do
+in both cases.
+
+You might not be able to see this text again until you complete the first exercise.
 
 Once you're done reading all the text in an exercise (and right now) press "q".
 EOL
@@ -4682,13 +4764,13 @@ EOL
 	printf "\n`getBeltWithColours red_belt title`\n" >> $fmt_file
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-  Signals; stopping processes; ps; pgrep vs grep
+  Finding files with contents with find and grep; doing something with them with xargs
 EOL
 
 	printf "\n`getBeltWithColours black_stripe title`\n" >> $fmt_file
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-  Foreground and background tasks, jobs and &
+  Signals; stopping processes; ps; pgrep vs grep; fg and bg; jobs and &
 EOL
 
 	printf "\n`getBeltWithColours black_belt title`\n" >> $fmt_file
