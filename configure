@@ -105,12 +105,14 @@ case "${luc_choice}" in
 	sed 's/^run:.*/run: configure dockerrun/' main/Makefile-master > Makefile
 	DOCKER=1
 	echo "export DOCKER=1" >> config.status
+	echo "export INSTALL_PATH=main/docker/bin" >> config.status
 	echo "export SHARED_VOLUME=single" >> main/docker/config.status
 	;;
 *4*)
 	sed 's/^run:.*/run: configure dockerrun/' main/Makefile-master > Makefile
 	DOCKER=1
 	echo "export DOCKER=1" >> config.status
+	echo "export INSTALL_PATH=main/docker/bin" >> config.status
 	echo "export SHARED_VOLUME=shared" >> docker/config.status
 
 	# Remove any spaces.
