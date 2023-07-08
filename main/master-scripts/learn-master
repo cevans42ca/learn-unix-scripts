@@ -336,7 +336,9 @@ EOL
 		mkdir -p "${LUS_HOME}/red-belt/time"
 	fi
 
+	touch "${LUS_HOME}/red-belt/time/new" 
 	touch -d"$(date_minus 3)" "${LUS_HOME}/red-belt/time/old" 
+	touch -d"$(date_minus 14)" "${LUS_HOME}/red-belt/time/older" 
 }
 
 show_script_path_in_path() {
@@ -2071,10 +2073,11 @@ EOL
 
 	if [ ! -d "$LUS_HOME/list/count" ]; then
 		mkdir -p "$LUS_HOME/list/count"
-		# TODO:  I'd like to make these relative to the time they're made, but it's hard to do that in a portable way.
-		touch -t 202203010000 "$LUS_HOME/list/count/one"
-		touch -t 202203020000 "$LUS_HOME/list/count/two"
-		touch -t 202203030000 "$LUS_HOME/list/count/three"
+
+		yesteryear=$(( $(date +"%Y") - 1))
+		touch -t ${yesteryear}03010000 "$LUS_HOME/list/count/one"
+		touch -t ${yesteryear}03020000 "$LUS_HOME/list/count/two"
+		touch -t ${yesteryear}03030000 "$LUS_HOME/list/count/three"
 	fi
 }
 
