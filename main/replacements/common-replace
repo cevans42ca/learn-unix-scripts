@@ -139,6 +139,8 @@ exercises["red_stripe_$((i++))"]="final"
 i=1
 exercises["red_belt_$((i++))"]="programs_vs_commands"
 exercises["red_belt_$((i++))"]="introduction_to_find"
+exercises["red_belt_$((i++))"]="find_glob"
+exercises["red_belt_$((i++))"]="find_type"
 
 i=1
 exercises["black_stripe_$((i++))"]="processes"

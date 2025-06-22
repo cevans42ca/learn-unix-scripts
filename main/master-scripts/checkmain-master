@@ -2025,6 +2025,7 @@ EOL
 	fi
 }
 
+# Red stripe exercises (Start vim fold) {{{
 red_stripe_exercise_storage_size_terms() {
 	keep_going
 }
@@ -2267,7 +2268,9 @@ EOL
 		sorry
 	fi
 }
+# (End vim fold) }}}
 
+# Red belt exercises (Start vim fold) {{{
 red_belt_exercise_programs_vs_commands() {
 	luc_correct_answers=0
 
@@ -2313,6 +2316,16 @@ red_belt_exercise_introduction_to_find() {
 	keep_going
 }
 
+red_belt_exercise_find_glob() {
+	keep_going
+}
+
+red_belt_exercise_find_type() {
+	keep_going
+}
+# (End vim fold) }}}
+
+# Black belt exercises (Start vim fold) {{{
 black_stripe_exercise_processes() {
 	IFS='
 '
@@ -2334,6 +2347,7 @@ black_stripe_exercise_processes() {
 black_stripe_exercise_processes_man_info() {
 	keep_going
 }
+# }}}
 
 ####################
 # End of exercises #

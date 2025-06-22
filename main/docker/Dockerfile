@@ -1,4 +1,5 @@
-ARG SHARED_VOLUME=single
+ARG BASE_IMAGE_NAME=branch-version-single
+
 FROM alpine as base
 
 ARG D_GID=10000
@@ -28,7 +29,7 @@ RUN apk add zip
 
 # Various documentation
 RUN apk add mandoc man-pages mandoc-apropos less less-doc zip-doc unzip-doc
-RUN apk add bash-doc busybox-doc mandoc-apropos coreutils-doc
+RUN apk add bash-doc busybox-doc mandoc-apropos coreutils-doc findutils-doc
 
 FROM base AS branch-version-single
 COPY etc-profile.sh /etc/profile.d/exports.sh
@@ -36,7 +37,7 @@ COPY etc-profile.sh /etc/profile.d/exports.sh
 FROM base AS branch-version-shared
 COPY etc-profile-shared.sh /etc/profile.d/exports.sh
 
-FROM "branch-version-${SHARED_VOLUME}" as final
+FROM ${BASE_IMAGE_NAME} as final
 
 #RUN sed -i "1s;^;export DARK_MODE=${DARK_MODE}\n;" /etc/profile.d/exports.sh
 

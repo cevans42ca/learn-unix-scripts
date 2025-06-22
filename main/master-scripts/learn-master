@@ -339,6 +339,19 @@ EOL
 	touch "${LUS_HOME}/red-belt/time/new" 
 	touch -d"$(date_minus 3)" "${LUS_HOME}/red-belt/time/old" 
 	touch -d"$(date_minus 14)" "${LUS_HOME}/red-belt/time/older" 
+
+	mkdir -p "${LUS_HOME}/red-belt/find"
+
+	touch "${LUS_HOME}/red-belt/find/foo" 
+	touch "${LUS_HOME}/red-belt/find/Foo" 
+	touch "${LUS_HOME}/red-belt/find/FOO" 
+	touch "${LUS_HOME}/red-belt/find/bar" 
+	touch "${LUS_HOME}/red-belt/find/BAR" 
+	touch "${LUS_HOME}/red-belt/find/baz" 
+	touch "${LUS_HOME}/red-belt/find/BAZ" 
+	touch "${LUS_HOME}/red-belt/find/qux" 
+	touch "${LUS_HOME}/red-belt/find/quux" 
+	touch "${LUS_HOME}/red-belt/find/quuux" 
 }
 
 show_script_path_in_path() {
@@ -4543,7 +4556,7 @@ EOL
 # }}}
 
 # Red belt exercises (Start vim fold) {{{
-red_belt_exercise_programs_vs_commands() {
+red_belt_exercise_programs_vs_commands() { # Programs vs Commands
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Congratulations on your red belt!
 
@@ -4571,20 +4584,66 @@ EOL
 	complete_exercise
 }
 
-red_belt_exercise_introduction_to_find() {
+red_belt_exercise_introduction_to_find() { # Introduction to "find"
 	prepare_lus_home
 	prepare_lus_home_red_belt
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-Let's look at the "find" command, which helps you find files.  Common things that find will help you find are:
-old files, new files, files with a specific phrase in them, files bigger than or smaller than a particular size,
-and files that contain a particular name.
+Let's look at the "find" command, which helps you find files and directories.  Common things that find will help you
+find are: old files, new files, files with a specific phrase in them, files bigger than or smaller than a particular
+size, and files that contain a particular name.
 
-You can combine "find" with another program to perform an action on all the files.
+You can also combine "find" with another program to perform an action on all the files, which we'll look at soon.
+
+Some versions of "find" require you to specify a directory to look in.  For these versions of "find", you can provide
+the "." directory (the current directory) if that's where you want to look (and it usually is).  We're including that
+in the command below and it works in more cases.
+
+Let's begin with the most common thing you'll do with "find", which is to find a file by its filename.  Use
+"name" for a case-sensitive match or "iname" for a case-insensitive match.
+
+Go to $LUS_HOME and execute 'find . -iname "foo"' with both "iname" and "name".
 EOL
 
 	complete_exercise
 }
+
+red_belt_exercise_find_glob() { # Using "find" with Globs
+	prepare_lus_home
+	prepare_lus_home_red_belt
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+You can use globs with name and iname too.
+
+Go to $LUS_HOME and execute 'find . -name "q*x"'.
+EOL
+
+	complete_exercise
+}
+
+red_belt_exercise_find_type() { # Using the "type" Argument with "find"
+	prepare_lus_home
+	prepare_lus_home_red_belt
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Let's take a look at another common argument:  type.  Use "-type d" to look for directories and
+"-type f" to look for files (not folders!).  If you don't find what you're looking for, double
+check that you're not using "-type f" incorrectly.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+Go to $LUS_HOME and execute both of these.
+find . -iname "foo" -type f
+find . -iname "red-belt" -type d
+EOL
+
+	complete_exercise
+}
+
+# -mtime
+# -size
+
 # (End vim fold) }}}
 
 # Black stripe exercises (Start vim fold) {{{
