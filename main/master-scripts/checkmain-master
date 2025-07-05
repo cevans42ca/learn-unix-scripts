@@ -2529,6 +2529,10 @@ red_belt_exercise_find_cleanup() {
 	keep_going
 }
 
+red_belt_exercise_intro_to_symlinks() {
+	keep_going
+}
+
 red_belt_exercise_final_exam() {
 	if ask_review_final_exam; then
 		keep_going
@@ -2538,7 +2542,44 @@ red_belt_exercise_final_exam() {
 	luc_correct_answers=0
 
 	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
-Question x/x
+Question 1/x
+
+What does the following command do (on Linux)?
+
+find . -iname "*secret*" -print0 | xargs -0 mv -t ~/vault
+
+EOL
+
+	luc_answers=( 
+"It searches for all files with 'secret' in their name (case-insensitive) in the current directory (and all subdirectories) and moves them to the 'vault' directory inside your home directory."
+"It searches for all files with 'secret' in their name (case-insensitive) in the current directory (and all subdirectories) and renames them to be 'vault' inside your home directory."
+"It creates a new directory named 'secret' inside ~/vault and copies all files from the current directory that have 'secret' in their name into it."
+"It deputizes your computer as a highly efficient 'secret' agent, tasked with rounding up all files with 'secret' in their name (because they can't keep one!) and sending them to the ~/vault for highly classified re-education on discretion."
+)
+
+	handle_answer "It searches for all files with 'secret' in their name (case-insensitive) in the current directory (and all subdirectories) and moves them to the 'vault' directory inside your home directory."
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 2/x
+
+What does the following command do?
+
+find . -type f \\! \\( -iname "*secret*" -o -iname "*hidden*" \\)
+
+EOL
+
+	luc_answers=( 
+"It finds all files in the current directory (and all subdirectories) that contain neither 'secret' nor 'hidden' in their name (case-insensitive)."
+"It finds all files in the current directory (and all subdirectories) that contain either 'secret' or 'hidden' in their name (case-insensitive)."
+"It finds all files in the current directory (and all subdirectories) that contain neither 'secret' nor 'hidden' in their name (case-sensitive)."
+"It finds all files in the current directory (and all subdirectories) that contain either 'secret' or 'hidden' in their name (case-sensitive)."
+"It diligently searches your current location for all files that haven't mastered the art of being 'secret' or 'hidden,' so they can be registered for remedial camouflage classes."
+)
+
+	handle_answer "It finds all files in the current directory (and all subdirectories) that contain neither 'secret' nor 'hidden' in their name (case-insensitive)."
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 3/x
 
 What does the following command do?
 
@@ -2554,26 +2595,6 @@ EOL
 "It helps your computer locate its long-lost 'webapp' child, who ran away to join the 'apps' circus, ensuring it's safely returned to its home directory before sundown."
 )
 	handle_answer "It searches for files and directories that have '/apps/webapp/' somewhere in their path."
-
-	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
-Question 2/3
-
-With some terminals, what keystrokes do you need to go to the beginning and end of the current command line?
-
-EOL
-
-	luc_answers=( 'Ctrl+a and Ctrl+e' 'Ctrl+f and Ctrl+b' 'Ctrl+1 and Ctrl+9' 'The Home and End keys work everywhere!' )
-	handle_answer 'Ctrl+a and Ctrl+e'
-
-	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
-Question 3/3
-
-If you want to keep what you've typed so far but not run it, what should you do?
-
-EOL
-
-	luc_answers=( 'Type Ctrl+a, #, Enter' "Just press Enter, there are errors so it won't run" 'Type Ctrl+h' 'Type Ctrl+s' )
-	handle_answer 'Type Ctrl+a, #, Enter'
 
 	if [ "$luc_correct_answers" == "3" ]; then
 		good_work

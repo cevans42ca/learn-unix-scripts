@@ -5119,6 +5119,75 @@ EOL
 	complete_exercise
 }
 
+red_belt_exercise_intro_to_symlinks() { # Intro to symlinks
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Let's move on to the next topic.
+
+A symlink, symbolic link, or soft link is a special type of file that points to another file or directory.  It's vaguely
+like a shortcut on Windows, but all programs can use symlinks without having to do anything special.  Special handling
+is required for a program to use a shortcut.
+
+A symlink is almost as good as a file or directory being in two places at once.  (And for that, there are hard links,
+but those are outside the scope of this course.)  Being in more than one place at once is helpful in several ways.
+Symlinks can also span filesystems, so you can make a directory on an SD card appear to be on a hard drive.
+
+Here are some of the things symlinks can do in terms of helping you stay organized.  They offer convenient access to
+files/directories from multiple locations without duplicating data.  This is useful for user convenience (e.g., easy
+access to network shares), application configuration (pointing expected paths elsewhere), and centralizing
+data/configurations for easier updates and consistency.  Symlinks can provide shorter entry points for deeply nested
+directories.  They enable logical file system changes without physically relocating large amounts of data, preventing
+broken references.  They can facilitate sharing common resources across users or environments without duplication.
+
+The can be helpful in several ways for software development and deployment as well, but in particular, by pointing to
+the active version of a library or tool, allowing updates by simply re-pointing the symlink.
+
+In terms of system admin and maintenance, symlinks can help with managing log files, configuring web servers, system
+backups, managing disk space, and more.
+
+You create a symlink with the "ln" command.
+
+You might find the "ln" command's argument order a bit counterintuitive at first glance, so we're going to work up to
+it.  Many users, even experienced ones, occasionally mix up the source and target.  However, it's consistent with other
+common Unix commands like cp (copy) and mv (move).  Let's look at some examples.
+
+"cp source_file destination": You copy source_file to destination. source_file must exist, and destination is what gets
+created.
+
+"mv source_file destination": You move source_file to destination. source_file must exist, and destination is where it
+ends up (or what it's renamed to).
+
+"ln source_file link_name": You create a link (link_name) to source_file. source_file must exist, and link_name is what
+gets created.
+
+In all these commands (cp, mv, ln), the pattern is as follows.
+
+[Existing_item] [New_item_or_location]
+
+The first argument is the source (the thing that already exists or is being referenced), and the second argument is the
+target (the new file, new name, or new link that is being created).
+
+While it might feel odd when you think of "ln" as "linking X to Y" and you instinctively (and incorrectly) put X first,
+there is a consistency to it if you think about it.  If you're unsure, think about "cp" and "mv" and think in terms of
+"existing item, new item" or check the man or info page.
+
+EOL
+
+	complete_exercise
+}
+
+red_belt_exercise_final_exam() { # Final Exam
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+In red belt, we looked at how to use the "find" command to find and print out files and directories and then do things
+with them using "xargs".
+
+TODO:  Finish summarizing red belt
+
+Source the check script for your final exam.
+EOL
+
+	complete_exercise
+}
+
 # (End vim fold) }}}
 
 # Black stripe exercises (Start vim fold) {{{
