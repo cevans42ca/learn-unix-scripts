@@ -5119,8 +5119,6 @@ EOL
 	complete_exercise
 }
 
-# find with partial path
-
 # (End vim fold) }}}
 
 # Black stripe exercises (Start vim fold) {{{
