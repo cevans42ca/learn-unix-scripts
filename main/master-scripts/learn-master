@@ -223,12 +223,29 @@ date_minus() {
 	current_epoch=$(awk 'BEGIN{srand();print(srand())}')
 	offset=$(( $current_epoch - ( 86400 * $1 ) ))
 
-	# We can't just % 86400 because that will be midnight UTC.
+	# We can't just % 86400 because that will be midnight UTC.  We want midnight local time.
 	if [[ "${BSD_DATE:-}" -eq "1" ]]; then
+                # BSD date: -r for reference time (epoch seconds)
 		date -r ${offset} +"%Y-%m-%dT00:00:00"
 	else
+                # GNU date: -d@ for epoch seconds
 		date -d@${offset} +"%Y-%m-%dT00:00:00"
 	fi
+}
+
+date_minus_preserving_time() {
+	current_epoch=$(awk 'BEGIN{srand();print(srand())}')
+	offset=$(( $current_epoch - ( 86400 * $1 ) ))
+
+        if [[ "${BSD_DATE:-}" -eq "1" ]]; then
+                # BSD date: -r for reference time (epoch seconds)
+                # Use %H:%M:%S to preserve the time of day
+                date -r "${offset}" +"%Y-%m-%dT%H:%M:%S"
+        else
+                # GNU date: -d@ for epoch seconds
+                # Use %H:%M:%S to preserve the time of day
+                date -d@"${offset}" +"%Y-%m-%dT%H:%M:%S"
+        fi
 }
 
 prepare_lus_home() {
@@ -336,9 +353,10 @@ EOL
 		mkdir -p "${LUS_HOME}/red-belt/time"
 	fi
 
-	touch "${LUS_HOME}/red-belt/time/new" 
-	touch -d"$(date_minus 3)" "${LUS_HOME}/red-belt/time/old" 
-	touch -d"$(date_minus 14)" "${LUS_HOME}/red-belt/time/older" 
+	touch "${LUS_HOME}/red-belt/time/brand-new" 
+	touch -d"$(date_minus_preserving_time 3)" "${LUS_HOME}/red-belt/time/new" 
+	touch -d"$(date_minus_preserving_time 6)" "${LUS_HOME}/red-belt/time/old" 
+	touch -d"$(date_minus_preserving_time 14)" "${LUS_HOME}/red-belt/time/older" 
 
 	mkdir -p "${LUS_HOME}/red-belt/find"
 
@@ -352,6 +370,77 @@ EOL
 	touch "${LUS_HOME}/red-belt/find/qux" 
 	touch "${LUS_HOME}/red-belt/find/quux" 
 	touch "${LUS_HOME}/red-belt/find/quuux" 
+
+	mkdir -p "${LUS_HOME}/red-belt/size"
+
+	lorem "${LUS_HOME}/red-belt/size/lorem"
+	lorem "${LUS_HOME}/red-belt/size/lorem2" 2
+
+        rm -Rf "${LUS_HOME}/red-belt/src"
+        rm -Rf "${LUS_HOME}/red-belt/vault"
+	mkdir -p "${LUS_HOME}/red-belt/src"
+	mkdir -p "${LUS_HOME}/red-belt/vault"
+
+        touch "${LUS_HOME}/red-belt/src/The Secret Message"
+        touch "${LUS_HOME}/red-belt/src/Secret Project Files"
+        touch "${LUS_HOME}/red-belt/src/Classified Secret Data"
+        touch "${LUS_HOME}/red-belt/src/Top Secret Document"
+        touch "${LUS_HOME}/red-belt/src/Secret Mission Briefing"
+        touch "${LUS_HOME}/red-belt/src/Hidden Secret Plans"
+        touch "${LUS_HOME}/red-belt/src/Secret Codes List"
+        touch "${LUS_HOME}/red-belt/src/Agent's Secret Notes"
+        touch "${LUS_HOME}/red-belt/src/Secret Hideout Map"
+        touch "${LUS_HOME}/red-belt/src/Final Secret Objective"
+
+        touch "${LUS_HOME}/red-belt/src/Meeting Minutes"
+        touch "${LUS_HOME}/red-belt/src/Quarterly Report"
+        touch "${LUS_HOME}/red-belt/src/Project Schedule"
+        touch "${LUS_HOME}/red-belt/src/Company Policy Manual"
+        touch "${LUS_HOME}/red-belt/src/User Instructions"
+        touch "${LUS_HOME}/red-belt/src/Daily Activity Log"
+        touch "${LUS_HOME}/red-belt/src/Client Agreement"
+        touch "${LUS_HOME}/red-belt/src/Final Summary"
+        touch "${LUS_HOME}/red-belt/src/Team Presentation"
+        touch "${LUS_HOME}/red-belt/src/Office Correspondence"
+
+	mkdir -p "${LUS_HOME}/red-belt/or"
+
+        touch "${LUS_HOME}/red-belt/or/report"
+        touch "${LUS_HOME}/red-belt/or/secret_plans"
+        touch "${LUS_HOME}/red-belt/or/archive"
+        touch "${LUS_HOME}/red-belt/or/document_final"
+        touch "${LUS_HOME}/red-belt/or/hidden_treasure_map"
+        touch "${LUS_HOME}/red-belt/or/data_backup"
+        touch "${LUS_HOME}/red-belt/or/meeting_notes"
+        touch "${LUS_HOME}/red-belt/or/secret_recipe_v2"
+        touch "${LUS_HOME}/red-belt/or/project_timeline"
+        touch "${LUS_HOME}/red-belt/or/important_memo"
+        touch "${LUS_HOME}/red-belt/or/hidden_message_encrypted"
+        touch "${LUS_HOME}/red-belt/or/invoice_2025"
+        touch "${LUS_HOME}/red-belt/or/old_photos"
+        touch "${LUS_HOME}/red-belt/or/secret_lair_blueprints"
+        touch "${LUS_HOME}/red-belt/or/configuration"
+        touch "${LUS_HOME}/red-belt/or/hidden_chamber_key"
+        touch "${LUS_HOME}/red-belt/or/financial_records"
+        touch "${LUS_HOME}/red-belt/or/presentation_draft"
+        touch "${LUS_HOME}/red-belt/or/secret_code_segment"
+        touch "${LUS_HOME}/red-belt/or/personal_journal"
+        touch "${LUS_HOME}/red-belt/or/access_log"
+        touch "${LUS_HOME}/red-belt/or/hidden_compartment_contents"
+        touch "${LUS_HOME}/red-belt/or/temporary_file"
+        touch "${LUS_HOME}/red-belt/or/secret_garden_map"
+        touch "${LUS_HOME}/red-belt/or/user_settings"
+        touch "${LUS_HOME}/red-belt/or/hidden_passageway_diagram"
+        touch "${LUS_HOME}/red-belt/or/draft_email"
+        touch "${LUS_HOME}/red-belt/or/secret_notes_on_project_X"
+        touch "${LUS_HOME}/red-belt/or/system_info"
+        touch "${LUS_HOME}/red-belt/or/hidden_message_from_the_past"
+
+        mkdir -p "${LUS_HOME}/red-belt"/clients/client_alpha/projects/project_X/{src,docs,build}
+        mkdir -p "${LUS_HOME}/red-belt"/clients/client_alpha/projects/project_Y/data
+        mkdir -p "${LUS_HOME}/red-belt"/clients/client_alpha/projects/project_Y/temp
+        mkdir -p "${LUS_HOME}/red-belt"/clients/client_beta/apps/{webapp/{frontend,backend},mobile_app}
+        mkdir -p "${LUS_HOME}/red-belt"/clients/client_beta/archive/apps/{webapp/{frontend,backend},mobile_app}
 }
 
 show_script_path_in_path() {
@@ -2020,10 +2109,11 @@ as long as they pay (and continue to pay) The Open Group for the privilege.  Ven
 operating systems "Unix-like", or don't say that it's Unix at all, officially.  For the sake of simplicity, when we
 refer to Unix going forward, that will include "Unix-like" operating systems as well.
 
-Last (but certainly not least) is Linux in all of its many shapes and sizes.  It runs phones (Android) and supercomputers
-(all of the fastest 500 as of November 2017).  Linux cannot trace its ancestry back to the original Unix because that was the
-whole point.  When it was written, Unix cost a lot of money.  All of the core tools ("cp", "mv", "ls", etc.) were provided
-by GNU to make Linux a complete and fully--functioning operating system.
+Last (but certainly not least) is Linux in all of its many shapes and sizes.  It runs phones (Android) and
+supercomputers (all of the fastest 500 as of November 2017).  Linux cannot trace its ancestry back to the original Unix
+because that was the whole point.  When it was written, Unix cost a lot of money.  The GNU Project provided the
+essential tools, utilities, and libraries that, when combined with Linus Torvalds' independently developed Linux kernel,
+formed a complete and usable operating system.  Many people feel that the contribution of GNU remains unsung.
 
 GNU, BSD, and the commerical Unixes do things differently.
 
@@ -2033,7 +2123,7 @@ If you're using a Mac (now, or you plan to fully immerse yourself in using the c
 take note that Macs are based on BSD and won't work the same way Linux does.  In particular, long options don't appear very
 often in the core BSD tools.  If you don't want to use the command-line features of Macs, that's certainly an option as well.
 
-No matter which platform you're using or will be using, programmers can still do short and long options however they want.
+No matter which platform you're using or will be using, it's up to programmers to do short and long options however they want.
 Some Linux programs don't have any short options and long options have one dash, not two (like Java).  Some programs
 don't have any options at all and only take mandatory arguments (like most scripts).  Some programs only have long options
 (like this script).  A lot of programs require you to put all the options first, but some let you put them anywhere.
@@ -3448,7 +3538,7 @@ EOL
 # }}}
 
 # Blue belt exercises (Start vim fold) {{{
-blue_belt_exercise_intro_to_pipes() { # Introduction to Pipes
+blue_belt_exercise_intro_to_pipes() { # Introduction to Pipes (and "wc")
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Congratulations on your blue belt!
 
@@ -4557,6 +4647,9 @@ EOL
 
 # Red belt exercises (Start vim fold) {{{
 red_belt_exercise_programs_vs_commands() { # Programs vs Commands
+	prepare_lus_home
+	prepare_lus_home_red_belt
+
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Congratulations on your red belt!
 
@@ -4590,17 +4683,22 @@ red_belt_exercise_introduction_to_find() { # Introduction to "find"
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Let's look at the "find" command, which helps you find files and directories.  Common things that find will help you
-find are: old files, new files, files with a specific phrase in them, files bigger than or smaller than a particular
-size, and files that contain a particular name.
+find are: old files, new files, files bigger than or smaller than a particular size, and files that contain a particular
+name.
 
-You can also combine "find" with another program to perform an action on all the files, which we'll look at soon.
+You can also combine "find" with another program to look for text in files and to perform an action on all the files,
+which we'll look at soon.  These are the exercises worthy of red belt.
 
 Some versions of "find" require you to specify a directory to look in.  For these versions of "find", you can provide
 the "." directory (the current directory) if that's where you want to look (and it usually is).  We're including that
-in the command below and it works in more cases.
+in the command below because it works in more cases.
 
-Let's begin with the most common thing you'll do with "find", which is to find a file by its filename.  Use
-"name" for a case-sensitive match or "iname" for a case-insensitive match.
+Let's begin with the most common thing you'll do with "find", which is to find a file by its filename.  Use "name" for a
+case-sensitive match or "iname" for a case-insensitive match.
+
+Some BSD-like systems require you to add "-print" as well if you want output to the terminal.  If you're not getting
+any output, try adding it.  If that works, you'll need to keep adding it to all your "find" commands, both in this
+course and out of this course.
 
 Go to $LUS_HOME and execute 'find . -iname "foo"' with both "iname" and "name".
 EOL
@@ -4611,6 +4709,16 @@ EOL
 red_belt_exercise_find_glob() { # Using "find" with Globs
 	prepare_lus_home
 	prepare_lus_home_red_belt
+
+	if [[ "${INSIDE_DOCKER:-0}" == "1" ]]; then
+		fmt ${FMT_OPTIONS:-}$WIDTH <<EOL > $fmt_file
+You're running the Docker version of the Learn Unix Scripts.  You might have tried running the command from the previous
+exercise in your home directory ($HOME), and you might have been surprised that it didn't work, since $LUS_HOME is under
+$HOME.  The "find" command doesn't follow symbolic links by default, and the "lus" directory is a symbolic link.
+You can add "-L" to follow symbolic links.  We'll get to symbolic links (or symlinks) in a bit.
+
+EOL
+	fi
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 You can use globs with name and iname too.
@@ -4628,7 +4736,7 @@ red_belt_exercise_find_type() { # Using the "type" Argument with "find"
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Let's take a look at another common argument:  type.  Use "-type d" to look for directories and
 "-type f" to look for files (not folders!).  If you don't find what you're looking for, double
-check that you're not using "-type f" incorrectly.
+check that you're using "-type f" correctly.
 
 EOL
 
@@ -4641,8 +4749,377 @@ EOL
 	complete_exercise
 }
 
-# -mtime
-# -size
+red_belt_exercise_find_mtime() { # Using the "mtime" Argument with "find"
+	prepare_lus_home
+	prepare_lus_home_red_belt
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+The "-mtime" argument to "find" can trip up seasoned Unix admins.  It's used to find files modified a certain number of
+days ago.  However, this depends on the current time.  If it's 10 am when you run "find", all the days are going to be
+relative to 10 am.  If we're looking for files created one day ago, then that's yesterday at 10 am to now, not yesterday
+all day, yesterday at midnight (00:00) to now, or today at midnight (00:00) to now.
+
+This lesson is crucial as "find" with "mtime" is usually the backbone of archival and cleanup scripts.
+
+Take your time with this one, and consider the following commands.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+find . -mtime 6
+find . -mtime +6
+find . -mtime -6
+EOL
+
+	# Use an underscore as a "poor man's" non-breaking space.
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL | sed 's/_/ /g' >> $fmt_file
+
+Keep in mind that one day is 24 * 60 * 60 = 86400 seconds.
+
+Using 6 without a sign means, "Equal to 6 days old.  Modified between 'now_-_6_*_86400' and 'now_-_7_*_86400' (because
+fractional days are discarded)."
+
+Using -6 means, "Less than 6 days old.  Modified on or after 'now_-_6_*_86400'".
+
+Using +6 means, "More than 6 days old.  Modified on or before 'now_-_7_*_86400' (where the 7 is a little unexpected, perhaps)."
+
+Disclaimer:  Parts of this text have been sourced from https://stackoverflow.com/a/25599430 with minor punctuation
+changes.  The Stack Overflow answer was provided by Jonathan Leffler
+(https://stackoverflow.com/users/15168/jonathan-leffler) under CC BY-SA 4.0, which is one-way compatible with GPL 3.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+Execute all of these in $LUS_HOME/red-belt and $LUS_HOME/red-belt/time.
+find . -mtime 6
+find . -mtime +6
+find . -mtime -6
+EOL
+
+	complete_exercise
+}
+
+red_belt_exercise_find_size() { # Using the "size" Argument with "find"
+	prepare_lus_home
+	prepare_lus_home_red_belt
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+If you're looking for large files, you may be better off with du, sort, and head, which we looked at in the previous
+belt.  If you want to do something with them once you've found them, "find" is going to be a better choice.
+
+FreeBSD and Mac require a number in bytes or blocks, whereas Linux allows specifying a size in KB, MB, and GB.  Let's
+look at how to specify a size larger or smaller than a specific number of bytes, which works on all platforms.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+Try these out in $LUS_HOME/red-belt/size.
+find . -size +2900c
+find . -size -2900c
+EOL
+
+	complete_exercise
+}
+
+red_belt_exercise_find_grep() { # Using "grep" with "find"
+	prepare_lus_home
+	prepare_lus_home_red_belt
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Did you notice that the current directory also showed up in one of the lists?  Which one it was printed in depends on
+multiple factors.  On Linux, directories usually take a whole block, and a block is usually 4 KiB (or 4096 bytes).
+On other systems, a whole block isn't necessary to store a directory.
+
+There's one last thing we want to cover before we do things with the files we're finding, and that's using "find"
+with "grep".  These programs allow you to find text across multiple files.  We looked at "grep" briefly in blue belt.
+
+See how to review previous exercises by running "learn help".
+
+EOL
+
+	cat <<EOL >> $fmt_file
+Consider the following command.
+
+find . -type f -exec grep -Hin "iaculis ac ante" {} \;
+
+EOL
+
+	# Use an underscore as a "poor man's" non-breaking space.
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL | sed 's/_/ /g' >> $fmt_file
+
+The "-exec" argument tells "find" to run a program for each match.  In this case, we're running "grep" on each match,
+so we want to make sure all matches are files, so we add "-type f".
+
+We're passing the arguments "-Hin" to "grep":  "-H" shows filenames, which is critical here, otherwise we don't know
+what files we found; "i" is case-insensitve, which you'll use often; and "n" shows line numbers.
+
+The filename that matched is provided as an argument to the program where the braces ("{}") are.  For example, if "find"
+finds the file /home/user/lus/red-belt/foo, find will put the filename where the braces ("{}") are and will run
+'grep_-Hin_"iaculis_ac_ante"_/home/user/lus/red-belt/foo'.
+
+The braces are often at the end of the "-exec" command, but they don't have to be.  Finally, we have the "\;" at the
+very end of the whole command, which tells "find" that the "-exec" is done.  It's possible to add more options to "find"
+after the "\;", though that doesn't come up often.
+
+If there are matches, you'll see output as follows, with the filename, a colon, the line number, a colon, and the line
+that matches.  Some versions of grep could highlight the text that matched in the line, or have an option to do so.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+./path/to/file:17:before text match after text
+./path/to/file2:34:different before text match different after text
+
+Execute the following command in $LUS_HOME/red-belt/.
+
+find . -type f -exec grep -Hin "iaculis ac ante" {} \;
+
+EOL
+
+	complete_exercise
+}
+
+red_belt_exercise_find_xargs() { # Using "xargs" with "find"
+	prepare_lus_home
+	prepare_lus_home_red_belt
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+It's time to kick it up into high gear.  Let's do something truly worthy of red belt:  xargs.
+
+The "xargs" command reads items from standard in.  They can be delimited by blanks (which can be protected with double
+or single quotes or backslashes) or newlines.  We'll also see how we can use the special null character to handle filenames
+that contain newlines (an unusual case, but theoretically possible).
+
+What that means is:  you can take a list of filenames produced by another program (like "find") and use xargs to do
+something with them.  It's fine to use "find" with "-exec" for dealing with dozens or thousands of files, but if you need
+to move or delete 10,000 files or more, you need a more efficient strategy.
+
+This scale of clean up happens more often than you'd think.  A web application that generates five log files a day (web
+server access log, web server error log, application server standard out, application server standard error, application
+log) can get to 9,130 files over 5 years (assuming one leap year).  Applications typically have no reason to get a file
+list of the log directory:  they ask to open and write files knowing the filename.  Given the stability and reliability
+of Unix-like operating systems, an application like that can run with no apparent problems and no apparent slowdown for
+years until someone types "ls" in the log directory.
+
+Consider the following command (Linux only).
+
+find . -iname "*secret*" -print0 | xargs -0 mv -t ~/vault
+
+We're moving all files with "secret" in the filename (case insensitive) to ~/vault (the vault directory under the current
+user's home directory).  The option "-t" to "mv" lets us put the destination directory first, as normally it's last.
+The "xargs" command can then add as many arguments from "find" as will fit in one command.  Commands have a maximum length
+determined by the platform, install configuration, and settings.  Remember that this is a pipe, so we can pipe in contents
+of a file with "cat", or anything else you can imagine.
+
+The "-print0" option for "find" and "-0" option for "xargs" lets us use a null character to separate each file.  In
+Unix, there are only two characters that you can't use in a filename (or directory name):  slash and null.  Since we're
+using null to tell where filenames begin and end, we can handle any filename.  If the filenames are newline delimited,
+we'll need another approach (stay tuned).
+
+FreeBSD and Mac don't have "mv -t".  There's a way to get around that with "-I" and "-J", but at that point we're back
+to running one command at a time.  There isn't a solution for it with common commands:  you're running one command at a
+time, which can take a long time if you're cleaning up tens of thousands of files.  For our purposes, it will be fine.
+If you find yourself in this situation, you may consider rsync, which is beyond the scope of this course.
+
+find . -iname "*secret*" -print0 | xargs -0 -I {} mv {} ~/vault
+
+Move all files with "secret" in them (case insensitive) from $LUS_HOME/red-belt/src to $LUS_HOME/red-belt/vault.
+
+(If you look at any red belt lesson, including this one, the files will be reset.  Make sure you source the check script
+immediately after completing the lesson.)
+EOL
+
+	complete_exercise
+}
+
+red_belt_exercise_cat_xargs() { # Using "xargs" with "cat"
+	prepare_lus_home
+	prepare_lus_home_red_belt
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Let's look at how to use "xargs" with "cat".  Let's say we've created a file that contains filenames, one per line.  We
+want to move them to the "vault" directory under your home directory.  First, let's look at how to use backslash to
+join multiple lines.
+
+The backslash allows us to break a long command or pipeline onto multiple lines.  When you run this first line, your
+shell will give you a special prompt to let you know you need to finish what you started.  In most cases, that's a
+greater than sign (">").  We looked at another case of this prompt all the way back in yellow stripe, when you start
+a quote but don't finish it.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+[user@host ~]$ cat your_file_with_filenames | \\
+>
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+If you didn't intend to type the backslash, you can type Ctrl+c.  If you did, continue with the next part.
+
+The Linux version of "xargs" has a "-d" option to specify the delimiter.  That lets us tell xargs that
+we're using newline as a delimiter.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+cat your_file_with_filenames | \\
+  xargs -d '\n' mv -t ~/vault
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+FreeBSD requires more.  We need to quote any existing double quotes and handle other special characters that double
+quotes don't protect against, then put double quotes around all the lines.  These characters are very unusual for
+filenames, but we want this course to prepare you for everything.  We can do the quoting with "sed".
+
+EOL
+
+	cat <<EOL >> $fmt_file
+cat your_file_with_filenames | \\
+  sed -e 's/["\`\\$]/\\&/g' -e 's/.*/"&"/' | \\
+  xargs -I {} mv {} ~/vault
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+If you're not on FreeBSD, it could still be helpful to break this pipeline down to use in other cases.  The first
+command in the pipeline is cat.  No surprises there.  At the end of the first line, we have a pipe and a backslash,
+which we've covered already.  Let's move on to the second line.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+  sed -e 's/["\`\\$]/\\&/g' -e 's/.*/"&"/'
+
+We're running two different sed commands here.
+-e 's/["\`\\$]/\\&/g'
+-e 's/.*/"&"/'
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+Both of these sed commands are substitutions.  We're replacing the first part with the second using the global option
+(s/first/second/g).  The global option changes all matches rather than just the first one on each line.
+
+The first sed command adds a backslash to the front of all double quotes, backticks, backslashes, and dollar signs,
+which are all the special characters that the double quotes don't handle (or "allow through" if you like).  The backtick
+and backslash must also be escaped here, so they each have their own backslash.  We're replacing the match with \\&.
+The & is the matched part, so sed will add a backslash (it's escaped, so we're adding one, not two) before the match.
+Putting it all together, the first sed command adds a backslash in front of all double quotes, backticks, backslashes,
+and dollar signs.
+
+The second sed command replaces .* with "&".  We're matching everything ("." for any character and "*" as many times
+as sed can match), and then as a replacement, we're adding a double quote to the beginning and end.
+
+It's not on the test, but if you want to be ready for anything, make a note of it.
+
+This exercise requires nothing more.  As always, source the check script to continue.
+EOL
+
+	complete_exercise
+}
+
+red_belt_exercise_find_or() { # Using "or" with "find"
+	prepare_lus_home
+	prepare_lus_home_red_belt
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+If you combine arguments to "find", it will look for files or directories that match all the conditions.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+
+find . -type f -iname "*secret*"
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Above, we're looking for files with a filename that contains "secret" (case insensitive).
+
+Let's look at how to combine options where we have two options and either one is good enough.
+EOL
+
+	cat <<EOL >> $fmt_file
+
+find . -type f \\( -iname "*secret*" -o -iname "*hidden*" \\)
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+Either (1) go to "$LUS_HOME/red-belt/or" or (2) run find with that path as an argument and match all files with both
+"secret" and "hidden" in them.  Pipe the result into "wc" to get the number of files.  We looked at "wc" back
+in blue belt.  See how to review exercises by executing "learn help".
+EOL
+
+	complete_exercise
+}
+
+red_belt_exercise_find_or_not() { # Using "or" and "not" with "find"
+	prepare_lus_home
+	prepare_lus_home_red_belt
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Let's find all the other files by adding a "not" to the beginning of our "or".
+EOL
+
+	cat <<EOL >> $fmt_file
+
+find . -type f \\! \\( -iname "*secret*" -o -iname "*hidden*" \\)
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+Let's fill in a bit of terminology:  "-type f", "-mtime 6", and "-iname secret" are all called tests.
+We can use a "not" in front of any test.
+
+Use "find" and "wc" to count all the files in "$LUS_HOME/red-belt/or" with filenames that don't have "secret" and don't
+have "hidden" in them.
+EOL
+
+	complete_exercise
+}
+
+red_belt_exercise_find_paths() { # Finding Paths with "find"
+	prepare_lus_home
+	prepare_lus_home_red_belt
+
+        fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Run the following commands, and see how the differences in each command changes the output.  Once you're clear on what
+each one of these commands does, move on as usual.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+find "$LUS_HOME/red-belt/clients"
+find "$LUS_HOME/red-belt/clients" | sort
+find "$LUS_HOME/red-belt/clients" -path "*/apps/webapp"
+find "$LUS_HOME/red-belt/clients" -path "*/apps/webapp/*"
+find "$LUS_HOME/red-belt/clients" -path "*/projects/project_Y"
+find "$LUS_HOME/red-belt/clients" -path "*/projects/project_Y/*"
+EOL
+
+	complete_exercise
+}
+
+red_belt_exercise_find_cleanup() { # Explore "find" On Your Own
+	prepare_lus_home
+	prepare_lus_home_red_belt
+
+        fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+We're going to move on to a new topic now, so if you want to check out "man find" and/or "info find" and try out some
+other things with "find" while it's still fresh in your mind, now is the time.  Source the check script as usual to
+move on.
+EOL
+
+	complete_exercise
+}
+
+# find with partial path
 
 # (End vim fold) }}}
 
@@ -4826,7 +5303,7 @@ EOL
 	printf "\n`getBeltWithColours red_belt title`\n" >> $fmt_file
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-  Finding files with contents with find and grep; doing something with them with xargs
+  Finding files with contents with find and grep; xargs; symlinks
 EOL
 
 	printf "\n`getBeltWithColours black_stripe title`\n" >> $fmt_file
