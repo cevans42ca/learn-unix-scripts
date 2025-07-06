@@ -253,7 +253,9 @@ prepare_lus_home() {
 		if [ ! -d "${LUS_HOME}" ]; then
 			mkdir -p "${LUS_HOME}"
 			if [[ "${SHARED_VOLUME:-}" == "1" ]]; then
-				chmod go-rwx
+				# FIXME:  Fix this
+				echo FIXME
+				#chmod go-rwx
 			fi
 		fi
 	else
@@ -4930,7 +4932,8 @@ find . -iname "*secret*" -print0 | xargs -0 -I {} mv {} ~/vault
 Move all files with "secret" in them (case insensitive) from $LUS_HOME/red-belt/src to $LUS_HOME/red-belt/vault.
 
 (If you look at any red belt lesson, including this one, the files will be reset.  Make sure you source the check script
-immediately after completing the lesson.)
+immediately after completing the lesson.  We're assuming that if you have trouble with any of the exercises and need to
+see the lesson again that you want to reset things.)
 EOL
 
 	complete_exercise
@@ -5180,17 +5183,18 @@ data/configurations for easier updates and consistency.  Symlinks can provide sh
 directories.  They enable logical file system changes without physically relocating large amounts of data, preventing
 broken references.  They can facilitate sharing common resources across users or environments without duplication.
 
-The can be helpful in several ways for software development and deployment as well, but in particular, by pointing to
-the active version of a library or tool, allowing updates by simply re-pointing the symlink.
+They can be helpful in several ways for software development and deployment as well.  In particular, they can
+point to the active version of a library or tool, allowing updates by simply re-pointing the symlink.
 
 In terms of system admin and maintenance, symlinks can help with managing log files, configuring web servers, system
 backups, managing disk space, and more.
 
-You create a symlink with the "ln" command.
+You create a symlink with the "ln" command and the "-s" symbolic option.  If you forget the "-s", you'll create a
+hard link instead.  Hard links can be deleted (removed) the same way as any other file, with "rm".
 
-You might find the "ln" command's argument order a bit counterintuitive at first glance, so we're going to work up to
-it.  Many users, even experienced ones, occasionally mix up the source and target.  However, it's consistent with other
-common Unix commands like cp (copy) and mv (move).  Let's look at some examples.
+The "ln" command's argument order might be counterintuitive at first glance, so we're going to work up to it.  Many
+users, even experienced ones, occasionally mix up the source and target.  However, it's consistent with other common
+Unix commands like cp (copy) and mv (move).  Let's look at some examples.
 
 "cp source_file destination": You copy source_file to destination. source_file must exist, and destination is what gets
 created.
@@ -5203,7 +5207,7 @@ gets created.
 
 In all these commands (cp, mv, ln), the pattern is as follows.
 
-[Existing_item] [New_item_or_location]
+program [Existing_item] [New_item_or_location]
 
 The first argument is the source (the thing that already exists or is being referenced), and the second argument is the
 target (the new file, new name, or new link that is being created).
@@ -5212,7 +5216,10 @@ While it might feel odd when you think of "ln" as "linking X to Y" and you insti
 there is a consistency to it if you think about it.  If you're unsure, think about "cp" and "mv" and think in terms of
 "existing item, new item" or check the man or info page.
 
-In "$LUS_HOME/red-belt/link", create a link from a file called "source" to the file called "target".
+Create a symlink from "$LUS_HOME/red-belt/link/source" to "$LUS_HOME/red-belt/link/target".
+
+Looking at any exercise in red belt (including looking at this one again) will reset the "$LUS_HOME/red-belt/link/"
+directory, so be sure to source the check script as soon as you've created the link.
 EOL
 
 	complete_exercise
