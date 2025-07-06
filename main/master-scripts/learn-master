@@ -441,6 +441,10 @@ EOL
         mkdir -p "${LUS_HOME}/red-belt"/clients/client_alpha/projects/project_Y/temp
         mkdir -p "${LUS_HOME}/red-belt"/clients/client_beta/apps/{webapp/{frontend,backend},mobile_app}
         mkdir -p "${LUS_HOME}/red-belt"/clients/client_beta/archive/apps/{webapp/{frontend,backend},mobile_app}
+
+        rm -rf "${LUS_HOME}/red-belt/link"
+        mkdir "${LUS_HOME}/red-belt/link"
+	touch "${LUS_HOME}/red-belt/link/target"
 }
 
 show_script_path_in_path() {
@@ -5119,8 +5123,11 @@ EOL
 	complete_exercise
 }
 
-red_belt_exercise_intro_to_symlinks() { # Intro to symlinks
-	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+red_belt_exercise_symlinks_and_canonical_paths() { # Intro to Symlinks and Canonical Paths
+	prepare_lus_home
+	prepare_lus_home_red_belt
+
+        fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Let's move on to the next topic.
 
 A symlink, symbolic link, or soft link is a special type of file that points to another file or directory.  It's vaguely
@@ -5131,6 +5138,41 @@ A symlink is almost as good as a file or directory being in two places at once. 
 but those are outside the scope of this course.)  Being in more than one place at once is helpful in several ways.
 Symlinks can also span filesystems, so you can make a directory on an SD card appear to be on a hard drive.
 
+With symlinks, one of these places is the place where the file "actually is".  The technical term for this "real" place
+is the "canonical path", and you can get it with the realpath command.
+
+First, remember what a path is:  it's a string of names separated by slashes (/) that tells the operating system
+where to find a file or directory.
+
+Absolute Paths start with / (e.g., /home/user/documents/report.txt). They specify the location from the root of the
+filesystem.
+
+Relative Paths do not start with / (e.g., ../data/spreadsheet.xls). They specify the location relative to your current
+working directory.
+
+Imagine your computer's filesystem is a giant library.  Every book (or file) has a unique ID number and is stored in a
+specific physical location in the library.  A symbolic link is like a note on one shelf that says, "For 'Research
+Paper', go to 'Main Reading Room, Shelf 5B'."  The note itself is a separate item, and it only tells you where to look.
+
+A canonical path is the most direct, unambiguous, and absolute path to a file or directory, resolving all possible
+indirections.  Think of it as finding the single, true physical address of a book in the library, no matter how many
+notes, shortcuts, or alternate catalog entries might point to it.
+
+Canonical paths also apply when you use the special directory "..".  For example, the canonical path of
+"/home/user/mystuff/.." is "/home/user".
+
+Most programs support multiple slashes in paths.  These are removed when finding the canonical path.  For example, the
+canonical path of "/home///user//projects" is "/home/user/projects".
+EOL
+
+	complete_exercise
+}
+
+red_belt_exercise_symlinks() { # Symlinks
+	prepare_lus_home
+	prepare_lus_home_red_belt
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Here are some of the things symlinks can do in terms of helping you stay organized.  They offer convenient access to
 files/directories from multiple locations without duplicating data.  This is useful for user convenience (e.g., easy
 access to network shares), application configuration (pointing expected paths elsewhere), and centralizing
@@ -5170,6 +5212,7 @@ While it might feel odd when you think of "ln" as "linking X to Y" and you insti
 there is a consistency to it if you think about it.  If you're unsure, think about "cp" and "mv" and think in terms of
 "existing item, new item" or check the man or info page.
 
+In "$LUS_HOME/red-belt/link", create a link from a file called "source" to the file called "target".
 EOL
 
 	complete_exercise
@@ -5178,9 +5221,10 @@ EOL
 red_belt_exercise_final_exam() { # Final Exam
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 In red belt, we looked at how to use the "find" command to find and print out files and directories and then do things
-with them using "xargs".
+with them using "xargs".  We looked at the syntax to search for something or something else, and the syntax for "not".
 
-TODO:  Finish summarizing red belt
+We looked at canonical paths with symbolic links and the special directory "..".  We went through examples of how
+symbolic links are used.
 
 Source the check script for your final exam.
 EOL

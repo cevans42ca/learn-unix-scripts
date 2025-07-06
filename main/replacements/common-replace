@@ -150,7 +150,8 @@ exercises["red_belt_$((i++))"]="find_or"
 exercises["red_belt_$((i++))"]="find_or_not"
 exercises["red_belt_$((i++))"]="find_paths"
 exercises["red_belt_$((i++))"]="find_cleanup"
-exercises["red_belt_$((i++))"]="intro_to_symlinks"
+exercises["red_belt_$((i++))"]="symlinks_and_canonical_paths"
+exercises["red_belt_$((i++))"]="symlinks"
 exercises["red_belt_$((i++))"]="final_exam"
 
 i=1

@@ -215,7 +215,9 @@ handle_answer() {
 			luc_correct_answers=$((luc_correct_answers+1))
 			break
 		elif [[ "$luc_processed_choice" == "0" ]]; then
-			echo "Your answer should be a number from 1 to 6."
+			echo "Your answer should be a number from 1 to ${#luc_answers[@]}."
+		elif [[ "$luc_processed_choice" > "${#luc_answers[@]}" ]]; then
+			echo "Your answer should be a number from 1 to ${#luc_answers[@]}."
 		else
 			break
 		fi
@@ -2529,8 +2531,63 @@ red_belt_exercise_find_cleanup() {
 	keep_going
 }
 
-red_belt_exercise_intro_to_symlinks() {
+red_belt_exercise_symlinks_and_canonical_paths() {
 	keep_going
+}
+
+red_belt_exercise_symlinks() {
+	SOURCE_PATH="$LUS_HOME/red-belt/link/source"
+	TARGET_PATH="$LUS_HOME/red-belt/link/target"
+	if [ -L "$SOURCE_PATH" ]; then
+		# Get the *canonical, absolute* target of the symbolic link,
+		# resolving all components including bind mounts/chroots.
+		# This also covers the Docker container.
+		ACTUAL_CANONICAL_TARGET=$(realpath "$SOURCE_PATH")
+		EXIT_CODE_ACTUAL=$?
+
+		# Get the *canonical, absolute* path of the expected target,
+		# also resolving all components including bind mounts/chroots.
+		EXPECTED_CANONICAL_TARGET=$(realpath "$TARGET_PATH")
+		EXIT_CODE_EXPECTED=$?
+
+		if [ $EXIT_CODE_ACTUAL -eq 0 ] && [ -n "$ACTUAL_CANONICAL_TARGET" ] && \
+				[ $EXIT_CODE_EXPECTED -eq 0 ] && [ -n "$EXPECTED_CANONICAL_TARGET" ]; then
+			# Compare the canonical actual target with the canonical expected target
+			if [ "$ACTUAL_CANONICAL_TARGET" = "$EXPECTED_CANONICAL_TARGET" ]; then
+				echo "Success! '$SOURCE_PATH' is a symbolic link and correctly points to the expected canonical target."
+				good_work
+			else
+				echo "Almost there! '$SOURCE_PATH' is a symbolic link, but its actual canonical target is '$ACTUAL_CANONICAL_TARGET'."
+				echo "It should canonically point to '$EXPECTED_CANONICAL_TARGET'."
+				echo "This might mean the link points to a similar file on a different underlying mount point."
+				sorry
+			fi
+		else
+			echo "Error: Could not determine the canonical paths for comparison."
+			echo "This might happen if the link is broken or the target doesn't exist."
+			echo "Please ensure the link and its target are valid."
+			sorry
+		fi
+	elif [ -f "$SOURCE_PATH" ]; then
+		# Get inode numbers
+		original_inode=$(ls -i "$SOURCE_PATH" 2>/dev/null | awk '{print $1}')
+		link_inode=$(ls -i "$TARGET_PATH" 2>/dev/null | awk '{print $1}')
+
+		if [ "$TARGET_PATH" -eq "$SOURCE_PATH" ]; then
+			echo "'$SOURCE_PATH' has the same inode number ($original_inode) as '$TARGET_PATH'."
+			echo "This means you created a hard link, not a symbolic link."
+		else
+			echo "'$SOURCE_PATH' exists, but it's a regular file, not a symbolic link."
+			echo "Remember to use 'ln -s' for symbolic links."
+		fi
+
+		sorry
+	else
+		echo "'$SOURCE_PATH' does not exist."
+		echo "Please ensure you create the link with the correct name"
+		echo "and in the correct location."
+		sorry
+	fi
 }
 
 red_belt_exercise_final_exam() {
@@ -2542,7 +2599,25 @@ red_belt_exercise_final_exam() {
 	luc_correct_answers=0
 
 	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
-Question 1/x
+Question 1/7
+
+Which command finds files that have the word "secret" in the file's data, case-sensitive, in the current directory and
+all subdirectories?
+
+EOL
+
+	luc_answers=( 
+'find . -type f -exec grep secret {} \;'
+"find . -type f -iname '*secret*'"
+"find . -type f -name '*secret*'"
+"find . -type f -exec grep secret {}"
+"find all secrets"
+)
+
+	handle_answer 'find . -type f -exec grep secret {} \;'
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 2/7
 
 What does the following command do (on Linux)?
 
@@ -2554,17 +2629,18 @@ EOL
 "It searches for all files with 'secret' in their name (case-insensitive) in the current directory (and all subdirectories) and moves them to the 'vault' directory inside your home directory."
 "It searches for all files with 'secret' in their name (case-insensitive) in the current directory (and all subdirectories) and renames them to be 'vault' inside your home directory."
 "It creates a new directory named 'secret' inside ~/vault and copies all files from the current directory that have 'secret' in their name into it."
-"It deputizes your computer as a highly efficient 'secret' agent, tasked with rounding up all files with 'secret' in their name (because they can't keep one!) and sending them to the ~/vault for highly classified re-education on discretion."
+"It deputizes your computer as a highly efficient 'secret' agent, tasked with rounding up all files with 'secret' in their name (because they can't keep one) and sending them to the ~/vault for highly classified re-education on discretion."
 )
 
 	handle_answer "It searches for all files with 'secret' in their name (case-insensitive) in the current directory (and all subdirectories) and moves them to the 'vault' directory inside your home directory."
 
-	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
-Question 2/x
+	# Use single quotes around EOL to treat the content of the here-document literally.
+	fmt ${FMT_OPTIONS:-}$luc_width <<'EOL'
+Question 3/7
 
 What does the following command do?
 
-find . -type f \\! \\( -iname "*secret*" -o -iname "*hidden*" \\)
+find . -type f \! \( -iname "*secret*" -o -iname "*hidden*" \)
 
 EOL
 
@@ -2579,7 +2655,7 @@ EOL
 	handle_answer "It finds all files in the current directory (and all subdirectories) that contain neither 'secret' nor 'hidden' in their name (case-insensitive)."
 
 	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
-Question 3/x
+Question 4/7
 
 What does the following command do?
 
@@ -2588,18 +2664,70 @@ find ~ -path "*/apps/webapp/*"
 EOL
 
 	luc_answers=( 
-"It searches for files and directories that have '/apps/webapp/' somewhere in their path."
+"It searches for files and directories that have '/apps/webapp/' somewhere in their path under your home directory."
 "It searches for files that contain the string 'webapp' in their content, specifically within 'apps' directories under your home directory."
 "It finds all files and folders that are named 'webapp' and are located anywhere within an 'apps' directory under your home directory."
 "It finds all subdirectories named 'webapp' that exist within any 'apps' directory under your home directory."
 "It helps your computer locate its long-lost 'webapp' child, who ran away to join the 'apps' circus, ensuring it's safely returned to its home directory before sundown."
 )
-	handle_answer "It searches for files and directories that have '/apps/webapp/' somewhere in their path."
 
-	if [ "$luc_correct_answers" == "3" ]; then
+	handle_answer "It searches for files and directories that have '/apps/webapp/' somewhere in their path under your home directory."
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 5/7
+
+What is the canonical path of "/home/user/documents/projects/../.."?
+
+EOL
+
+	luc_answers=( 
+"/home/user"
+"/home"
+"/home/user/documents"
+"/home/user/documents/projects"
+"There is no canonical path."
+)
+
+	handle_answer "/home/user"
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 6/7
+
+What is the canonical path of "/home///user//documents/projects/"?
+
+EOL
+
+	luc_answers=( 
+"/home/user/documents/projects"
+"/"
+"/home/documents"
+"/home/projects"
+"No resolution to a canonical path is possible."
+)
+
+	handle_answer "/home/user/documents/projects"
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 7/7
+
+Which command creates a symbolic link from a file called source to a file called target?
+
+EOL
+
+	luc_answers=( 
+"ln -s target source"
+"ln -s source target"
+"ln target source"
+"ln source target"
+"ln -s imagination real-life"
+)
+
+	handle_answer "ln -s target source"
+
+	if [ "$luc_correct_answers" == "7" ]; then
 		good_work
 	else
-		echo "Results:  $luc_correct_answers out of 3 correct"
+		echo "Results:  $luc_correct_answers out of 7 correct"
 		echo ""
 		sorry
 	fi
