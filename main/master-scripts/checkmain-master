@@ -2599,6 +2599,10 @@ red_belt_exercise_final_exam() {
 	luc_correct_answers=0
 
 	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+It's getting close to the end now.  You're going for your black stripe belt.  This exam is likely to be harder than
+anything you've faced before.  Don't be embarrased or ashamed if it takes you multiple atttempts, or if you have to
+review previous exercises.
+
 Question 1/7
 
 Which command finds files that have the word "secret" in the file's data, case-sensitive, in the current directory and
@@ -2728,6 +2732,8 @@ EOL
 		good_work
 	else
 		echo "Results:  $luc_correct_answers out of 7 correct"
+		echo ""
+		echo "See how to look at previous exercises by executing 'learn help'."
 		echo ""
 		sorry
 	fi
