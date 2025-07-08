@@ -192,7 +192,9 @@ handle_answer() {
 	luc_num=1
 	for item in "${luc_shuffled_answers[@]}"
 	do
-		echo "(${luc_num}) $item"
+		fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+(${luc_num}) $item
+EOL
 		if [[ "$item" == "${1}" ]]; then
 			luc_correct_answer=$luc_num
 		fi
