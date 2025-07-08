@@ -234,8 +234,8 @@ if [ "${enable_tput}" == "1" ]; then
 	belt_to_first_colour_light["blue_belt"]="$(tput setaf 4)$(tput bold)"
 	belt_to_first_colour_light["red_stripe"]="$(tput setaf 1)$(tput bold)"
 	belt_to_first_colour_light["red_belt"]="$(tput setaf 1)$(tput bold)"
-	belt_to_first_colour_light["black_stripe"]="$(tput setaf 15)$(tput setab 0)$(tput bold)"
-	belt_to_first_colour_light["black_belt"]="$(tput setaf 15)$(tput setab 0)$(tput bold)"
+	belt_to_first_colour_light["black_stripe"]="$(tput setaf 7)$(tput setab 0)$(tput bold)"
+	belt_to_first_colour_light["black_belt"]="$(tput setaf 7)$(tput setab 0)$(tput bold)"
 else
 	belt_to_first_colour_light["white_belt"]=""
 	belt_to_first_colour_light["yellow_stripe"]=""
