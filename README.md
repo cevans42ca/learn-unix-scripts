@@ -27,10 +27,9 @@ If you plan on using these exercises in a classroom setting, you will need to in
 
 If you want to try these scripts out in a Docker container, and you have Docker installed, you can use the following commands to set up a volume to save your progress and run them.
 
-The following commands are for a standard Docker installation.  
-[Click Here](#Try-the-Scripts-out-with-a-Rootless-Docker-Setup-or-Podman) if you have a rootless Docker setup or Podman.
+The following commands are for a standard Docker installation.  [Click Here](#Try-the-Scripts-out-with-a-Rootless-Docker-Setup-or-Podman) if you have a rootless Docker setup or Podman.
 
-### Setup Commands for Standard Docker:  Run them Once
+### Setup Commands:  Run them Once
 	docker volume create lus
 	docker run --mount src=lus,target=/mnt/vol -u 0 alpine /bin/sh -c "mkdir -p /mnt/vol/testuser;chgrp 1000 /mnt/vol/testuser;chmod g+w /mnt/vol/testuser"
 
