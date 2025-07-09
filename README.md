@@ -27,6 +27,8 @@ If you plan on using these exercises in a classroom setting, you will need to in
 
 If you want to try these scripts out in a Docker container, and you have Docker installed, you can use the following commands to set up a volume to save your progress and run them.
 
+The following commands are for a standard Docker installation.  [Click here](#Try-the-Scripts-out-with-a-Rootless-Docker-Setup-or-Podman) if you have a rootless Docker setup or Podman.
+
 ### Setup Commands:  Run them Once
 	docker volume create lus
 	docker run --mount src=lus,target=/mnt/vol -u 0 alpine /bin/sh -c "mkdir -p /mnt/vol/testuser;chgrp 1000 /mnt/vol/testuser;chmod g+w /mnt/vol/testuser"
@@ -40,4 +42,18 @@ If you want to try these scripts out in a Docker container, and you have Docker 
 # Installing Locally
 
 If you want to run the scripts directly on your own host, clone this repo and run the ./configure script, which will ask you if you want to use Docker.  Follow the prompts from there to set up the scripts to run directly in your environment or create your own site-specific Docker image.
+
+# Try the Scripts out with a Rootless Docker Setup or Podman
+
+The following commands are for a rootless Docker installation or Podman.  If you have a standard Docker installation, [Click here](#Try-them-Out-in-Docker).
+
+### Setup Commands:  Run them Once
+	docker volume create lus
+	docker run --mount type=volume,src=lus,target=/mnt/vol -u 0 alpine /bin/sh -c "mkdir -p /mnt/vol/testuser;chmod ug w /mnt/vol/testuser"
+
+### Run this one if you have "traditional" white text on black terminal settings
+	docker run -it --rm --mount type=volume,src=lus,target=/mnt/vol cevans42ca/learn-unix-scripts
+
+### Run this one for black text on white
+	docker run -it --rm --mount type=volume,src=lus,target=/mnt/vol --env DARK_MODE=0 cevans42ca/learn-unix-scripts
 
