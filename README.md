@@ -45,7 +45,7 @@ If you want to run the scripts directly on your own host, clone this repo and ru
 
 # Try the Scripts out with a Rootless Docker Setup or Podman
 
-The following commands are for a rootless Docker installation or Podman.  If you have a standard Docker installation, [Click here](#Try-them-Out-in-Docker).
+The following commands are for a rootless Docker installation or Podman.  If you have a standard Docker installation, [click here](#Try-them-Out-in-Docker).
 
 ### Setup Commands:  Run them Once
 	docker volume create lus
