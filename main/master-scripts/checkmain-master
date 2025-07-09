@@ -2932,9 +2932,9 @@ EOL
 			RANK=yellow_stripe
 			EXERCISE=1
 		fi
-	elif [ $RANK == "yellow_stripe" || $RANK == "yellow_belt" || $RANK == "green_stripe" || $RANK == "green_belt" ]; then
+	elif [[ $RANK == "yellow_stripe" || $RANK == "yellow_belt" || $RANK == "green_stripe" || $RANK == "green_belt" ]]; then
 		belt_complete
-	elif [ $RANK == "blue_stripe" || $RANK == "blue_belt" || $RANK == "red_stripe" || $RANK == "red_belt" ]; then
+	elif [[ $RANK == "blue_stripe" || $RANK == "blue_belt" || $RANK == "red_stripe" || $RANK == "red_belt" ]]; then
 		belt_complete
 	else
 		rank_exercises_completed=$RANK
