@@ -27,7 +27,7 @@ If you plan on using these exercises in a classroom setting, you will need to in
 
 If you want to try these scripts out in a Docker container, and you have Docker installed, you can use the following commands to set up a volume to save your progress and run them.
 
-The following commands are for a standard Docker installation.  [Click Here](#Try-the-Scripts-out-with-a-Rootless-Docker-Setup-or-Podman) if you have a rootless Docker setup or Podman.
+The following commands are for a standard Docker installation.  [Click here](#Try-the-Scripts-out-with-a-Rootless-Docker-Setup-or-Podman) if you have a rootless Docker setup or Podman.
 
 ### Setup Commands:  Run them Once
 	docker volume create lus
@@ -44,6 +44,8 @@ The following commands are for a standard Docker installation.  [Click Here](#Tr
 If you want to run the scripts directly on your own host, clone this repo and run the ./configure script, which will ask you if you want to use Docker.  Follow the prompts from there to set up the scripts to run directly in your environment or create your own site-specific Docker image.
 
 # Try the Scripts out with a Rootless Docker Setup or Podman
+
+The following commands are for a rootless Docker installation or Podman.  If you have a standard Docker installation, [Click here](#Try-them-Out-in-Docker).
 
 ### Setup Commands:  Run them Once
 	docker volume create lus
