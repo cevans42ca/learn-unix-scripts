@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+
+# bobsleep - not nearly as long as the Odinsleep.
+# Checks periodically if its parent has died, and if so, gives up.
+
+SLEEP_TIME=10
+
+# 60 * 10 = 600 seconds (10 minutes)
+SLEEP_COUNT=60
+
+CUR_COUNT=0
+
+set -x
+
+get_parent_process_name() {
+    local process_name
+
+    echo "sleep1"
+
+    # --- Attempt 1: Try /proc filesystem (Linux-specific, works on Alpine, Ubuntu) ---
+    if [ -d "/proc/$PARENT_PID" ]; then
+	    echo "sleep2"
+        # Read the command name from /proc/<PID>/cmdline
+        # This is the most reliable way on Linux, especially BusyBox
+	ls /proc/
+        process_name=$(cat "/proc/$PARENT_PID/cmdline" 2>/dev/null)
+        if [ -n "$process_name" ]; then # Check if we got a name
+            echo "$process_name"
+            return 0
+        fi
+    fi
+
+    # --- Attempt 2: Try standard 'ps -p PID -o comm=' (for Ubuntu, FreeBSD, macOS) ---
+    # This will fail gracefully on BusyBox due to `2>/dev/null`
+    # and the subsequent empty check.
+    process_name=$(ps -p "$PARENT_PID" -o comm= 2>/dev/null)
+    if [ -n "$process_name" ]; then # Check if we got a name
+        echo "$process_name"
+        return 0
+    fi
+
+    # If neither method worked, fail.
+    return 1
+}
+
+# 1. Fail if no arguments are provided
+if [ -z "$1" ]; then
+    echo "Error: No parent PID provided as argument." >&2
+    exit 1
+fi
+
+# The PID we are interested in is the first argument
+PARENT_PID=$1
+
+while (($CUR_COUNT < $SLEEP_COUNT));
+do
+	# If we've been reparented (adopted by) the init process, then bob is gone.
+	if [ "$PPID" == "1" ]; then
+		exit 0
+	fi
+
+	# Example usage (as before):
+	PARENT_PROCESS_NAME=$(get_parent_process_name)
+
+	if [ "$?" -eq 0 ]; then
+		echo "Parent process name: '$PARENT_PROCESS_NAME'"
+		if [[ "$PARENT_PROCESS_NAME" == *"bobtheundying"* ]]; then
+			echo "The parent process name contains 'bobtheundying'."
+		else
+			echo "The parent process name doesn't contain 'bobtheundying'."
+			exit 0
+		fi
+	else
+	    echo "Failed to retrieve parent process name."
+	    exit 0
+	fi
+
+	CUR_COUNT=`expr $CUR_COUNT + 1`
+	sleep $SLEEP_TIME
+done

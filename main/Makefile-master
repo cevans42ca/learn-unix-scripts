@@ -2,7 +2,8 @@
 
 include config.status
 
-nonreplacescripts = there-yet df-20 df-40 bobtheundying bobsleep bobparent
+#nonreplacescripts = there-yet df-20 df-40 bobtheundying bobsleep bobparent
+nonreplacescripts = there-yet df-20 df-40 bobtheundying.c
 
 run: configure
 
@@ -50,7 +51,8 @@ main/dist/bin/%: main/master-scripts/%
 # Copy the scripts that don't need replacement to main/dist/bin
 nonreplace: $(addprefix main/dist/bin/,$(nonreplacescripts))
 
-nonreplacedocker: main/docker/bin/there-yet main/docker/bin/df-20 main/docker/bin/df-40 main/docker/bin/bobtheundying main/docker/bin/bobsleep main/docker/bin/bobparent
+#nonreplacedocker: main/docker/bin/there-yet main/docker/bin/df-20 main/docker/bin/df-40 main/docker/bin/bobtheundying main/docker/bin/bobsleep main/docker/bin/bobparent
+nonreplacedocker: main/docker/bin/there-yet main/docker/bin/df-20 main/docker/bin/df-40 main/docker/bin/bobtheundying.c
 
 install: flags/replacetarget nonreplace
 	@# Quotes around the install path are already added by the configure script.

@@ -3,7 +3,7 @@
 set -e -o nounset
 
 if [ "${1:-}" != "--yes-really" ]; then
-	echo "Bob should only be awoken as part of the red belt exercises."
+	echo "Bob should only be awoken as part of the black stripe exercises."
 	echo "If you're ready, execute 'bobparent --yes-really'."
 	exit 1
 fi
@@ -27,7 +27,11 @@ you_cannot_kill_me() {
 
 fork_function() {
 	trap you_cannot_kill_me EXIT
-	bobsleep &
+	echo "My PID:  $$"
+	echo "Parent PID:  $PPID"
+	ps -o ppid,pid,comm -T
+	ls /proc/
+	bobsleep "$$" &
 	wait
 	trap - EXIT
 	echo "Bob has died of old age."
