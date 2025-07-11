@@ -49,11 +49,11 @@ The following commands are for a rootless Docker installation or Podman.  If you
 
 ### Setup Commands:  Run them Once
 	docker volume create lus
-	docker run --mount type=volume,src=lus,target=/mnt/vol -u 0 alpine /bin/sh -c "mkdir -p /mnt/vol/testuser;chmod ug w /mnt/vol/testuser"
+	docker run --mount type=volume,src=lus,target=/mnt/vol --userns=keep-id alpine /bin/sh -c "mkdir -p /mnt/vol/testuser"
+	docker run --mount type=volume,src=lus,target=/mnt/vol -u 0 alpine /bin/sh -c "chmod ug+w /mnt/vol/testuser"
 
 ### Run this one if you have "traditional" white text on black terminal settings
-	docker run -it --rm --mount type=volume,src=lus,target=/mnt/vol cevans42ca/learn-unix-scripts
+	docker run -it --rm --userns=keep-id --mount type=volume,src=lus,target=/mnt/vol cevans42ca/learn-unix-scripts
 
 ### Run this one for black text on white
-	docker run -it --rm --mount type=volume,src=lus,target=/mnt/vol --env DARK_MODE=0 cevans42ca/learn-unix-scripts
-
+	docker run -it --rm --userns=keep-id --mount type=volume,src=lus,target=/mnt/vol --env DARK_MODE=0 cevans42ca/learn-unix-scripts
