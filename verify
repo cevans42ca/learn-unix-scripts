@@ -177,6 +177,16 @@ if [ ! -r / ]; then
 	echo "realize that they can move on after failing."
 fi
 
+if which gcc > /dev/null; then
+	echo "gcc found"
+elif which cc > /dev/null; then
+	echo "cc found"
+else
+	echo "Neither gcc nor cc were found on the path."
+	echo "Please install one or the other and ensure it's on the path."
+	exit 21
+fi
+
 echo 
 echo 
 echo "Verify that some of the words in this sentence are red.  (Checks grep --color.)" | ${GREP_BIN} --color=always "some of the words"
