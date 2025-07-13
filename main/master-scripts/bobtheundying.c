@@ -8,12 +8,11 @@
 // Array of taunts
 const char *TAKE_THAT[] = {
     "Better luck next time!",
-    "You missed! I could do this all day!",
+    "You missed!  I could do this all day!",
     "You can't kill me in a way that matters!",
-    "You can't kill me! I will not die!",
-    "You can't kill me! I am invincible!",
-    "You can't kill me! I will rise again!",
-    "You can't kill me, I'll make a copy of myself!"
+    "You can't kill me!  I will not die!",
+    "You can't kill me!  I am invincible!",
+    "You can't kill me!  I will rise again!"
 };
 const int NUM_TAUNTS = sizeof(TAKE_THAT) / sizeof(TAKE_THAT[0]);
 
