@@ -55,9 +55,39 @@ main/dist/bin/bobtheundying: main/master-scripts/bobtheundying.c
 
 nonreplacedocker: main/docker/bin/there-yet main/docker/bin/df-20 main/docker/bin/df-40 main/docker/bin/bobtheundying.c
 
+# If none of the files already exist, we don't have to worry about overwriting anything.
+# If all the files exist, assume we previously installed this project.
+# If some exist, perhaps one or more of the files are from a different project:  don't overwrite.
 install: flags/replacetarget nonreplace
 	@# Quotes around the install path are already added by the configure script.
-	cp main/dist/bin/* ${INSTALL_PATH}
+	@install_path="${INSTALL_PATH}" ; \
+	install_files="$(replaced_scripts) $(addprefix main/dist/bin/,$(nonreplacescripts))" ; \
+	existing_count=0 ; \
+	total_files=0 ; \
+	files_to_delete="" ; \
+	for f in $$install_files ; do \
+	    base_name=$$(basename $$f) ; \
+	    total_files=$$(expr $$total_files + 1) ; \
+	    if [ -f "$$install_path/$$base_name" ] ; then \
+	        existing_count=$$(expr $$existing_count + 1) ; \
+	        files_to_delete="$$files_to_delete $$install_path/$$base_name" ; \
+	    fi ; \
+	done ; \
+	if [ $$existing_count -eq 0 ] ; then \
+	    echo "No existing files found. Performing a clean installation." ; \
+	    cp main/dist/bin/* "$$install_path" ; \
+	elif [ $$existing_count -eq $$total_files ] ; then \
+	    echo "All files already exist in $$install_path. Overwriting existing installation." ; \
+	    cp main/dist/bin/* "$$install_path" ; \
+	else \
+	    echo "ERROR: Installation aborted. A partial installation was detected." ; \
+	    echo "The following files already exist in $$install_path and conflict with the new installation:" ; \
+	    for ef in $$files_to_delete ; do \
+	        echo "  - $$ef" ; \
+	    done ; \
+	    echo "Please delete these files manually or run 'make clean-install' (if such a target existed) to proceed." ; \
+	    exit 1 ; \
+	fi
 
 dockerrun: dockerinstall
 	cd main/docker && make createuservolume
