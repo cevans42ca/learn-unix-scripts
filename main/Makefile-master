@@ -2,8 +2,7 @@
 
 include config.status
 
-#nonreplacescripts = there-yet df-20 df-40 bobtheundying bobsleep bobparent
-nonreplacescripts = there-yet df-20 df-40 bobtheundying.c
+nonreplacescripts = there-yet df-20 df-40
 
 run: configure
 
@@ -51,7 +50,9 @@ main/dist/bin/%: main/master-scripts/%
 # Copy the scripts that don't need replacement to main/dist/bin
 nonreplace: $(addprefix main/dist/bin/,$(nonreplacescripts))
 
-#nonreplacedocker: main/docker/bin/there-yet main/docker/bin/df-20 main/docker/bin/df-40 main/docker/bin/bobtheundying main/docker/bin/bobsleep main/docker/bin/bobparent
+main/dist/bin/bobtheundying: main/master-scripts/bobtheundying.c
+	gcc main/master-scripts/bobtheundying.c -o main/dist/bin/bobtheundying
+
 nonreplacedocker: main/docker/bin/there-yet main/docker/bin/df-20 main/docker/bin/df-40 main/docker/bin/bobtheundying.c
 
 install: flags/replacetarget nonreplace
