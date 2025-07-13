@@ -1024,7 +1024,7 @@ with small, simple programs that create text files and perform operations on the
 perhaps with multiple commands and multiple pipes, we can accomplish a wide variety of tasks.
 
 But before we get there, we need to cover more of the basics:  working with directories, ways to speed up what
-you're doing so you're not typing the same things over and over, and archive files (which are espeically useful
+you're doing so you're not typing the same things over and over, and archive files (which are especially useful
 if you need to ask for help from someone).
 
 We're going to look at one specific environment variable now:  \$PATH.  Environment variables are usually printed
