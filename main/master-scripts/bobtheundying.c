@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
     // Seed the random number generator
     srand(time(NULL));
 
-    printf("Bob the Undying (PID: %d) started. Ignoring SIGTERM...\n", getpid());
+    printf("Bob the Undying (PID: %d):  I am Bob!  I live again!\n", getpid());
 
     // Register the signal handler for SIGTERM
     if (signal(SIGTERM, sigterm_handler) == SIG_ERR) {
