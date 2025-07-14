@@ -119,15 +119,14 @@ case "${luc_choice}" in
 	luc_choice=4
 	;;
 *5*)
-	sed 's/^run:.*/run: configure flags\/replacetarget/' main/Makefile-master | sed 's|^install:\(.*\)|install:\1 main/dist/bin/bobtheundying|' > Makefile-inter
+	sed 's/^run:.*/run: configure flags\/replacetarget/' main/Makefile-master | sed 's|^install:\(.*\)|install:\1 main/dist/bin/bobtheundying|' > Makefile
 
 	if which gcc > /dev/null; then
 		echo "gcc found"
-		mv Makefile-inter Makefile
+		echo "export CC=gcc" >> config.status
 	elif which cc > /dev/null; then
 		echo "cc found"
-		sed 's/gcc /cc /' Makefile-inter > Makefile
-		rm Makefile-inter
+		echo "export CC=cc" >> config.status
 	else
 		echo "Neither gcc nor cc were found on the path."
 		echo "Please install one or the other and ensure it's on the path."

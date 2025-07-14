@@ -51,7 +51,7 @@ main/dist/bin/%: main/master-scripts/%
 nonreplace: $(addprefix main/dist/bin/,$(nonreplacescripts))
 
 main/dist/bin/bobtheundying: main/master-scripts/bobtheundying.c
-	gcc main/master-scripts/bobtheundying.c -o main/dist/bin/bobtheundying
+	$(CC) main/master-scripts/bobtheundying.c -o main/dist/bin/bobtheundying
 
 nonreplacedocker: main/docker/bin/there-yet main/docker/bin/df-20 main/docker/bin/df-40 main/docker/bin/bobtheundying.c
 
