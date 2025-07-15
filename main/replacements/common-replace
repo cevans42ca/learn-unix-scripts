@@ -157,6 +157,8 @@ exercises["red_belt_$((i++))"]="final_exam"
 i=1
 exercises["black_stripe_$((i++))"]="processes"
 exercises["black_stripe_$((i++))"]="processes_man_info"
+exercises["black_stripe_$((i++))"]="process_states"
+exercises["black_stripe_$((i++))"]="signals"
 
 declare -A belt_to_number
 belt_to_number["white_belt"]=0

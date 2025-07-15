@@ -2119,7 +2119,8 @@ Last (but certainly not least) is Linux in all of its many shapes and sizes.  It
 supercomputers (all of the fastest 500 as of November 2017).  Linux cannot trace its ancestry back to the original Unix
 because that was the whole point.  When it was written, Unix cost a lot of money.  The GNU Project provided the
 essential tools, utilities, and libraries that, when combined with Linus Torvalds' independently developed Linux kernel,
-formed a complete and usable operating system.  Many people feel that the contribution of GNU remains unsung.
+formed a complete and usable operating system.  Many people feel that the contribution of GNU remains unsung.  (We'll
+look at what the kernel is and does in green belt.)
 
 GNU, BSD, and the commerical Unixes do things differently.
 
@@ -2551,10 +2552,12 @@ something happened.  We'll be going into more detail about signals in red belt. 
 between 1 and 33, and what each number means is well established.  (Mac has 31, Linux has 30, and FreeBSD has 33.)
 
 These signal numbers also have names starting with "SIG", because humans remember words more easily than numbers.
-Signal 2 (SIGINT) is sent to a program when the user types Ctrl+c (and in other cases).  Although signal handling
-follows a general pattern, programs can do whatever they like with these signals, except for 9 (SIGKILL), which
-kills the process.  Programs never actually receive SIGKILL:  the operating system handles it.  Only a program
-running as the same user as the running program, the operating system, or root can send SIGKILL to a process.
+SIGINT (signal 2) is sent to a program when the user types Ctrl+c (and in other cases).  Although signal handling
+follows a general pattern, programs can do whatever they like with these signals, except for two of them.
+
+First, SIGKILL (9), kills the process.  Programs never actually receive SIGKILL:  the operating system handles it.  Only
+a program running as the same user as the running program, the operating system, or root can send SIGKILL to a process.
+Second, SIGSTOP (17 on macOS and FreeBSD, 19 on Linux, 23 on Solaris) suspends a process.  It can be resumed later.
 
 At some point, perhaps soon, you're going to need to stop a process that's taking too long, or perhaps you realized that
 you didn't actually want to run it.  If we were getting a file listing, and it was taking too long because there were
@@ -5287,6 +5290,172 @@ EOL
 
 	complete_exercise
 }
+
+black_stripe_exercise_process_states() {
+	INDENT_STRING="    "
+	INDENT_LENGTH=${#INDENT_STRING}
+	ADJUSTED_FMT_WIDTH=$((WIDTH - INDENT_LENGTH))
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Let's dive in to some specifics.
+
+A program is a list of instructions to the computer, similar to a recipe.  Unlike a recipe, if the software and hardware
+are working correctly, a program will always produce the exact same output given the same input.  Also unlike a recipe,
+the operating system or a user might suspend a process for a variety of reasons, and if the program is resumed, it
+will produce the same output unless some part of the input or environment changed.
+
+Depending on the number of CPUs in a computer and what kind they are, a computer may be able to run multiple programs
+at the same time.  In the beginning, computers had only one CPU and could only run one program at once, but could switch
+between them quickly enough that it seemed to a human that more than one program was running at once.  That's called
+"context switching".  Many CPUs now have "hyper-threading" or "simultaneous multithreading" which allows one CPU to run
+two different programs at once (with certain drawbacks).
+
+If there are more programs to be run than the available hardware allows, context switching will happen, usually without
+any indication of it to the people using the system.  The ratio of work to be done and available resources to run it is
+called a "load average".  For a computer with four CPUs that aren't hyper-threaded, you want the load average to be
+equal to or less than four.  If there's no work to be done (the computer is idle) then the load average will be 0.
+You can see the load average with the "top" command.
+
+Example:  load average: 0.06, 0.11, 0.09
+
+The load average for the past 1 minute is 0.06, for 5 minutes is 0.11, and for 15 minutes is 0.09.
+
+Load averages are not a simple arithmetic average.  Instead, they are calculated as an exponentially weighted moving
+average.  This means that more recent activity has a greater impact on the load average than older activity.  The
+decay rate is different for each of the three numbers, giving the 1-minute average more weight on recent activity, and
+the 15-minute average reflecting a broader trend.
+
+Before we move on to process states, let's review what the kernel does.
+
+An operating system's kernel is usually described (and shown in diagrams) as running on top of the hardware.
+It acts as a personal assistant to the hardware, drawing up a schedule of meetings (determining who gets how much
+CPU time) and making sure the hardware isn't too heavily loaded.  The kernel decides who gets access to how much
+memory and swap space.  Swap space is dedicated space on a drive used to improve efficiency.
+
+A kernel also handles signals, both sending them when a user requests one and sending them as a result of an event,
+such as low memory.
+
+Let's move on.
+
+Processes go through a series of states during their lifecycle, from creation to termination.  These states help the
+kernel manage and schedule processes efficiently.
+
+Here are the primary process states you'll encounter.  These have single letter short forms that you'll see in "ps",
+"top", and in the /proc filesystem (if it exists on your OS).
+
+Running / Runnable (R):
+
+EOL
+
+fmt ${FMT_OPTIONS:-} --width="$ADJUSTED_FMT_WIDTH" << 'EOL' | sed "s/^/$INDENT_STRING/" >> "$fmt_file"
+Running: The process is currently executing instructions on the CPU.
+
+Runnable: The process is ready to execute but is waiting for the CPU scheduler to allocate CPU time to it. It's in the
+"run queue," waiting for its turn.
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Sleeping (S or D): When a process needs to wait for an event or a resource to become available before it can continue
+its execution, it enters a sleeping state. There are two main types:
+
+EOL
+
+fmt ${FMT_OPTIONS:-} --width="$ADJUSTED_FMT_WIDTH" << 'EOL' | sed "s/^/$INDENT_STRING/" >> "$fmt_file"
+Interruptible Sleep (S): The process is waiting for an event (like I/O completion, a timer, or a signal) and can be
+interrupted by signals. Most common sleeping processes fall into this category. If you send a SIGKILL (kill -9) to a
+process in this state, it will usually terminate immediately.
+
+Uninterruptible Sleep (D): The process is waiting for a critical event, usually low-level I/O operations (like reading
+from a disk or network). It cannot be interrupted by signals until the operation completes. If a process gets stuck in
+this state for a long time, it often indicates a problem with the underlying hardware or driver, and you typically can't
+kill it without rebooting the system.
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+Stopped (T): A process in the stopped state has been suspended from execution. This can happen due to:
+
+EOL
+
+fmt ${FMT_OPTIONS:-} --width="$ADJUSTED_FMT_WIDTH" << 'EOL' | sed "s/^/$INDENT_STRING/" >> "$fmt_file"
+A user sending a SIGTSTP signal (e.g., by pressing Ctrl+Z in a terminal)
+
+A debugger temporarily pausing the process
+
+A process receiving a SIGSTOP signal
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+A stopped process can be resumed later by sending a SIGCONT signal, or terminated with SIGKILL.
+
+
+Zombie (Z): When a process terminates, it releases most of its resources, but its entry in the process table remains
+until its parent process collects its exit status.  This brief period, before the parent calls wait() or waitpid() to
+"reap" the child, is when the process is in the zombie state.  Zombie processes don't consume CPU time or memory (beyond
+their entry in the process table), but too many can indicate a bug in the parent process (not cleaning up its children)
+and potentially fill up the process table.  Zombie processes cannot be killed directly with signals because they are
+already dead:  only their parent can clear them.  A program sticks around as a zombie not because of something it did,
+but because of something its parent didn't do.
+
+
+New / Created: This is an initial, transient state when a process is being created but is not yet ready to run.
+Resources are being allocated and initialized.
+
+EOL
+
+	complete_exercise
+}
+
+black_stripe_exercise_signals() {
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+This exercise is a sort of mirror image of the previous one, now looking at things from the signal side.  Some of this
+content will also be a review from green belt.  It's OK if you feel a little bit of deja vu as we bring things together,
+especially if you're moving quickly through the exercises.
+
+In Unix, signals are a fundamental mechanism for communication between processes.  Signals can be sent using the kill
+command (even if you're sending a signal that doesn't kill a process) and by the operating system itself.
+
+Programmers can decide how they want their programs to deal with or handle each type of signal.  They can leave the
+default settings, have a program do nothing with a signal, or do something not related to what would normally be
+expected.  Despite that, nearly all programs follow generally accepted guidelines.
+
+Signals have a number and a name.  Both the list of signals and their numbers can vary from system to system, but many
+are unchanged across different Unix operating systems.
+
+There are two signals that cannot be caught, blocked, or ignored:  SIGKILL (9) and SIGSTOP (17 on macOS and FreeBSD, 19
+on Linux, 23 on Solaris).
+
+SIGKILL kills the process.  The process doesn't get the opportunity to save anything, clean up anything it's working on,
+or properly return any shared resources it might have been using.  The process is not informed as to what's happening in
+any way:  the signal never reaches the process.  It's a last resort.
+
+SIGSTOP stops (or suspends) the process.  Stopping a process is reversible:  it may be continued later.  Stopping
+processes can be useful for debugging:  developers might want to pause a process at a specific point for inspection.
+Also, the kernel might need to temporarily stop processes to manage CPU time or other resources.  These are a few examples.
+Many other scenarios involve stopping processes.
+
+When a process receives SIGSTOP, the following happens.
+
+* The process's execution is entirely suspended.
+
+* It consumes no CPU time.
+
+* It remains in memory, preserving its state (anything it's working on).
+
+* The only signals it will respond to are SIGCONT (to resume execution) or SIGKILL (to terminate it forcibly). Other
+signals sent to a stopped process will typically become pending and will only be delivered once the process is resumed
+with SIGCONT.
+
+EOL
+
+	complete_exercise
+}
+
+# Signals; stopping processes; ps; pgrep vs grep; fg and bg; jobs and &
+
 # (End vim fold) }}}
 
 ####################

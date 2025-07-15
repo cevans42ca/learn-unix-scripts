@@ -2764,6 +2764,14 @@ black_stripe_exercise_processes() {
 black_stripe_exercise_processes_man_info() {
 	keep_going
 }
+
+black_stripe_exercise_process_states() {
+	keep_going
+}
+
+black_stripe_exercise_signals() {
+	keep_going
+}
 # }}}
 
 ####################
