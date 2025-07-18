@@ -50,7 +50,7 @@ RUN apk add zip
 
 # Various documentation
 RUN apk add mandoc man-pages mandoc-apropos less less-doc zip-doc unzip-doc
-RUN apk add bash-doc busybox-doc mandoc-apropos coreutils-doc findutils-doc
+RUN apk add bash-doc busybox-doc mandoc-apropos coreutils-doc findutils-doc procps-doc
 
 FROM base AS branch-version-single
 COPY etc-profile.sh /etc/profile.d/exports.sh
