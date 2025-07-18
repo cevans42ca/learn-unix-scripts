@@ -2772,6 +2772,18 @@ black_stripe_exercise_process_states() {
 black_stripe_exercise_signals() {
 	keep_going
 }
+
+black_stripe_exercise_ctrl_c_redux() {
+	keep_going
+}
+
+black_stripe_exercise_ctrl_z_redux() {
+	keep_going
+}
+
+black_stripe_exercise_ctrl_z_wrap_up() {
+	keep_going
+}
 # }}}
 
 ####################

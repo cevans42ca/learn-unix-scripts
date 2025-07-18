@@ -5245,7 +5245,7 @@ EOL
 # (End vim fold) }}}
 
 # Black stripe exercises (Start vim fold) {{{
-black_stripe_exercise_processes() {
+black_stripe_exercise_processes() { # Processes Review
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Congratulations on your black stripe!
 
@@ -5282,8 +5282,41 @@ EOL
 	complete_exercise
 }
 
-black_stripe_exercise_processes_man_info() {
+black_stripe_exercise_processes_man_info() { # Understanding "ps" output
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+On a Mac, you'll see something like the following.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+Macintosh:learn-unix-scripts user$ ps
+  PID TTY           TIME CMD
+ 1524 ttys000    0:00.23 -bash
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+In this example, the program "bash" (your shell) is running and it has the process ID 1524.  All processes have an ID
+that's unique at that time from other processes.  The IDs are usually reused when a process terminates.  The "-" in
+front of "bash" means that it's a login shell.  (Login shells are out of scope for this course.)
+
+Here's an example of what you'd see if you're using Docker for this course.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+duser1@docker:~$ ps
+PID   USER     TIME  COMMAND
+    1 duser1    0:00 bash
+    9 duser1    0:00 ps
+EOL
+
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Here, bash is not a login shell.  Also, ps appears in its own output in Docker but not on Mac, which is typical.  On
+Mac, it's highly likely that by the time ps finishes collecting the data and is ready to display it, its own process has
+already completed and exited.  Therefore, it won't appear in its own output.
+
 Execute "man ps" and "info ps" to learn more about your version of ps.  Take note of any options that you find
 interesting or potentially helpful.  Feel free to skim the documentation:  remember that you can return to it later.
 EOL
@@ -5291,7 +5324,7 @@ EOL
 	complete_exercise
 }
 
-black_stripe_exercise_process_states() {
+black_stripe_exercise_process_states() { # Process States
 	INDENT_STRING="    "
 	INDENT_LENGTH=${#INDENT_STRING}
 	ADJUSTED_FMT_WIDTH=$((WIDTH - INDENT_LENGTH))
@@ -5404,14 +5437,16 @@ but because of something its parent didn't do.
 New / Created: This is an initial, transient state when a process is being created but is not yet ready to run.
 Resources are being allocated and initialized.
 
+
+This exercise doesn't have anything for you to complete.  Move on as usual.
 EOL
 
 	complete_exercise
 }
 
-black_stripe_exercise_signals() {
+black_stripe_exercise_signals() { # Review of Signals
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-This exercise is a sort of mirror image of the previous one, now looking at things from the signal side.  Some of this
+This exercise is a sort of mirror image of the previous one, where we look at things from the signal side.  Some of this
 content will also be a review from green belt.  It's OK if you feel a little bit of deja vu as we bring things together,
 especially if you're moving quickly through the exercises.
 
@@ -5449,12 +5484,103 @@ When a process receives SIGSTOP, the following happens.
 signals sent to a stopped process will typically become pending and will only be delivered once the process is resumed
 with SIGCONT.
 
+
+In the next few exercises, you'll send signals to processes.
 EOL
 
 	complete_exercise
 }
 
-# Signals; stopping processes; ps; pgrep vs grep; fg and bg; jobs and &
+black_stripe_exercise_ctrl_c_redux() { # Ctrl+c Redux
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Let's use "sleep" as a safe process to work with for now.  Execute "sleep 10" (for 10 seconds) and interrupt it before
+it's done with Ctrl+c.  Use a higher number if you want to or need to, but keep it to a minute or less so the process
+will clean itself up soon.
+
+EOL
+
+	complete_exercise
+}
+
+black_stripe_exercise_ctrl_z_redux() { # Ctrl+z Redux
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Now, we're going to stop (or suspend) "sleep".  Execute sleep again, giving it the same number of seconds that worked
+last time.  This time, type Ctrl+z to stop the process.  Execute "fg" to bring it back to the foreground.  Try
+bringing the "sleep" process back to the foreground with different timing and see how it behaves.
+EOL
+
+	complete_exercise
+}
+
+black_stripe_exercise_ctrl_z_wrap_up() { # Ctrl+z Wrap Up
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Your terminal session should've looked something like the following.
+EOL
+
+	cat <<EOL >> $fmt_file
+
+duser1@docker:~$ sleep 10
+^Z
+[1]+  Stopped                 sleep 10
+duser1@docker:~$ fg
+sleep 10
+duser1@docker:~$
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+We hope you noticed that "sleep" will end after the time requested regardless of whether or not it was stopped.  More
+specifically, if we start "sleep 10" and stop the process for 20 seconds, it will end as soon as it gets the continue
+signal rather than waiting 30 seconds to complete.
+
+We can also send a process to the background with the "bg" command.  Backgrounding processes only works well with
+commands that don't produce a lot of output, because the output of the command is going to print to the terminal as
+you're trying to use it.  You can see the list of stopped and backgrounded jobs with the "jobs" command.  If there are
+no jobs, you'll see no output.
+
+The jobs system dates back to the first version of Unix in 1969.  There are better ways now to do more than one thing in
+one terminal session, like "tmux" and GNU "screen".  Although these are outside the scope of this course, serious Unix
+admins know these, and you should too.
+
+We're covering "jobs", "fg", and "bg" not because they will be very useful, but because it's all too easy to type Ctrl+z
+by accident.  They're also useful in terms of learning and using signals.  Most importantly, stopped jobs will prevent
+you from logging out, as in the following example.
+EOL
+
+	cat <<EOL >> $fmt_file
+
+duser1@docker:~$ sleep 10
+^Z
+[1]+  Stopped                 sleep 10
+duser1@docker:~$ (User presses Ctrl+d to exit the shell)
+exit
+There are stopped jobs.
+duser1@docker:~$
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Adding an ampersand "&" to the end of a command will send it straight to the background.  Often, this happens
+accidentally.  When you do it, you'll see a job number and process ID.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+duser1@docker:~$ sleep 10 &
+[1] 263
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+
+Try out "sleep", "jobs", "fg", "bg", and "sleep 10 &" now.
+EOL
+
+	complete_exercise
+}
+
+# Signals; stopping processes; ps; fg and bg; jobs and &
+# kill
+# pgrep vs grep; 
 
 # (End vim fold) }}}
 
