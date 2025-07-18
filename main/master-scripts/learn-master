@@ -5572,7 +5572,7 @@ EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
-Try out "sleep", "jobs", "fg", "bg", and "sleep 10 &" now.
+You tried out "sleep", "Ctrl+z", and "fg" before.  Now add "jobs", "bg", and "sleep 10 &".
 EOL
 
 	complete_exercise
