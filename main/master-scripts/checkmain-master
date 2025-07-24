@@ -2784,6 +2784,10 @@ black_stripe_exercise_ctrl_z_redux() {
 black_stripe_exercise_ctrl_z_wrap_up() {
 	keep_going
 }
+
+black_stripe_exercise_kill() {
+	keep_going
+}
 # }}}
 
 ####################

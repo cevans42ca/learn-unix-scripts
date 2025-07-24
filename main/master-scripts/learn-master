@@ -5572,15 +5572,43 @@ EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
-You tried out "sleep", "Ctrl+z", and "fg" before.  Now add "jobs", "bg", and "sleep 10 &".
+You tried out "sleep 10", "Ctrl+z", and "fg" before.  Now add "jobs", "bg", and "sleep 10 &".  If you use another number as
+an argument to "sleep", try to keep it to 60 or less.
 EOL
 
 	complete_exercise
 }
 
-# Signals; stopping processes; ps; fg and bg; jobs and &
-# kill
-# pgrep vs grep; 
+black_stripe_exercise_kill() { # Kill
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+The "kill" command sends a signal to a process.  The default signal sent is SIGTERM.  This signal allows a process to clean up
+and return any shared resources before it ends.
+
+To send SIGTERM to process ID 12345, execute "kill 12345".
+
+Remember that "sleep 10 &" gives you the job ID followed by the process ID.
+
+Try "sleep 30 &" and see if you can kill the process by sending SIGTERM before it ends normally.  Make sure you don't
+kill the wrong process!
+
+You should see something like the following.  Make sure to substitute the process ID when you do it.  If the process
+doesn't immediately exit, you might have to wait a few seconds and then hit Enter.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+mac:~ user$ sleep 10 &
+[1] 12345
+mac:~ user$ kill 12345
+[1]+  Terminated: 15          sleep 10
+mac:~ user$
+EOL
+
+	complete_exercise
+}
+
+# kill -9 with bob
+# pgrep vs grep
 
 # (End vim fold) }}}
 

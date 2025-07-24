@@ -162,6 +162,7 @@ exercises["black_stripe_$((i++))"]="signals"
 exercises["black_stripe_$((i++))"]="ctrl_c_redux"
 exercises["black_stripe_$((i++))"]="ctrl_z_redux"
 exercises["black_stripe_$((i++))"]="ctrl_z_wrap_up"
+exercises["black_stripe_$((i++))"]="kill"
 
 declare -A belt_to_number
 belt_to_number["white_belt"]=0
