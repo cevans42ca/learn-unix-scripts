@@ -431,30 +431,25 @@ blue_stripe_lorem_ipsum() {
 white_belt_exercise_what_execute_means() { # What "Execute" Means, and Your Prompt
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Welcome to the first exercise, which includes how to use the "learn" and "check" scripts, so it's longer than most exercises.
-EOL
-
-	printf "\n${underline}The Bare Essentials${no_underline}\n\n" >> $fmt_file
-
-	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-In the United States and Canada, grammar rules say to put the period inside the double quotes.
-
-    He told me, "You need to go to the store."
-
-We will follow https://en.wikipedia.org/wiki/Quotation_marks_in_English#Logical_quotation
-rules (also called British practice, British style, and logical punctuation).
-
-If this script says to execute "set", that means to type the letters s, e, t, and press Enter.  Don't type the double quotes.
-
-If an exercise asks you to execute "scp myserver101:/tmp/file.txt ." then the space and dot at the end, before the final
-double quote, are important and must be typed before pressing Enter.
-
-At the end of a sentence, you will see: "scp myserver101:/tmp/file.txt .".
-
-To see the overview of what is covered in each belt, execute "learn welcome".
 
 The exerices leading to your yellow stripe will have more reading and rote completion.  As you rise through the ranks,
-fewer steps will be directly stated.  This script will provide resources for you to reference to finish the exercises.
+fewer steps will be directly stated.  Later, this script will provide resources for you to reference to finish the exercises.
 In particular, this exercise has the most reading and the least to do.
+
+We're hoping that these exercises will to be useful to a wide audience.  For more difficult concepts, we may include
+multiple analogies or examples.  Don't worry if you don't understand all of them, as long as one works for you.
+
+References to Microsoft Windows are provided sometimes since most people have some experience with it, but knowledge of
+Windows is not required.
+EOL
+
+	printf "\n\n${underline}Common Pitfalls${no_underline}\n\n" >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+If you've used Windows for a long time, you may find yourself typing a few things without thinking about it.  The typical
+keystrokes for Save and Undo will cause issues.  We'll go over what these keystrokes are meant to do and how to fix your
+terminal after typing them in this exercise and the next one.
+
+Until then, type carefully and thoughtfully.  Try to avoid pressing either Ctrl key until you finish the next exercise.
 EOL
 
 	printf "\n\n${underline}Your Prompt${no_underline}\n\n" >> $fmt_file
@@ -490,17 +485,44 @@ from a simple dollar sign to multi-line creations.  You should expect your promp
 (or hosts) run by the same people (like your school or work) but different as you move elsewhere.
 EOL
 
-	printf "\n\n${underline}I'm Stuck!${no_underline}\n\n" >> $fmt_file
+	printf "\n\n${underline}The Bare Essentials${no_underline}\n\n" >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+In the United States and Canada, grammar rules say to put the period inside the double quotes.
+
+    He told me, "You need to go to the store."
+
+We will follow https://en.wikipedia.org/wiki/Quotation_marks_in_English#Logical_quotation
+rules (also called British practice, British style, and logical punctuation).
+
+If this script says to execute "set", that means to type the letters s, e, t, and press Enter (at a prompt).  Don't type
+the double quotes.
+
+If an exercise asks you to execute "scp myserver101:/tmp/file.txt ." then the space and dot at the end, before the final
+double quote, are important and must be typed before pressing Enter.
+
+At the end of a sentence, you will see: "scp myserver101:/tmp/file.txt .".
+
+To see the overview of what is covered in each belt, execute "learn welcome".
+
+To see how to review past exercises, execute "learn help".
+EOL
+
+	printf "\n\n${underline}Take Notes${no_underline}\n\n" >> $fmt_file
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 It's always a good idea to take notes, because it helps with recall.  But there a few things this script will specifically
-call out for you to make a note of, things you're always going to want to have handy.  Take them down in whatever style you
+call out for you to make a note of:  things you're always going to want to have handy.  Take them down in whatever style you
 like (Evernote, a personal wiki, on your phone, Microsoft OneNote, a mind map, or good old pen and paper) but make sure it
 will be available whenever you're at a Unix terminal.
 
-The first thing we're going to cover is the first thing you need to try when your terminal seems to be stuck.  It's
-called your interrupt character.  Characters include letters, numbers, and punctuation.  Space is a character.  There
-are non-printable characters like tab, carriage return, and Ctrl+a through Ctrl+z.  We're not going to get into Chinese,
-Japanese, and Korean, where things are even more complicated.
+We recommend that you make a note of "learn welcome" and "learn help".
+EOL
+
+	printf "\n\n${underline}I'm Stuck!${no_underline}\n\n" >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Let's look at how to clear issues with your terminal and get back to a prompt.  The first thing to try is called your
+interrupt character.  Characters include letters, numbers, and punctuation.  Space is a character.  There are non-printable
+characters like tab, carriage return, and Ctrl+a through Ctrl+z.  We're not going to get into Chinese, Japanese, and Korean,
+where things are even more complicated.
 
 Your interrupt character is Ctrl+c (don't type it now, but in order to type it, hold one of the Ctrl keys down and press
 the "c" key.  Do not use either Shift key.)  There are only a few cases where typing Ctrl+c will not stop what's happening
@@ -510,7 +532,6 @@ and what to do.
 
 For now, it's a good thing that Ctrl+c will get you out of most situations.  Later, you will learn to be more careful
 about using Ctrl+c, and we will go over other things you might want to try first.
-
 EOL
 
 	printf "\n\n${underline}Moving On${no_underline}\n\n" >> $fmt_file
@@ -555,6 +576,50 @@ that way, but there are generally better options available now that allow progra
 looking at something.
 
 Please make a note of these now.  There will be a question later about it.  (The history lesson is not on the test.)
+
+Execute ". check".
+EOL
+
+	complete_exercise
+}
+
+white_belt_exercise_background() { # Accidentally Backgrounding Tasks
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+You'll also need to be careful with accidentally typing Ctrl+z (this combination is often used for Undo).  If you do
+this while a long-running program is doing its work, your shell will pause the program.  In Unix terminology, it's called
+"stopping" a program.  Remember:  stopping a program is like pausing a program, but terminating a program tells the program
+to clean up and exit.  If you stopped (or paused) a program and try to logout (with Ctrl+d, exit, or logout), you'll get
+an error message that there are stopped jobs.  Here's what you might see.
+
+EOL
+
+cat <<EOL >> $fmt_file
+[user@host] directory$ cp source destination
+(User types Ctrl+z)
+[1]+  Stopped                 cp source destination
+[user@host] directory$ exit
+There are stopped jobs.
+[user@host] directory$
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+In this example, a long running copy (cp) is still running when the user types Ctrl+z.  The shell then
+shows the following line.
+
+EOL
+
+cat <<EOL >> $fmt_file
+[1]+  Stopped                 cp source destination
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+The first bit, "[1]+", means that the shell has created a new job, and its ID is 1.  What you should
+do for now is start the process going again with "fg", which brings the job to the "foreground".
+Make a note of this one.  We'll look at processes later, and what else you can do with jobs much later.
+
+Once the job is back in the foreground, you can interrupt it with Ctrl+c (if you have to).
 
 Execute ". check".
 EOL

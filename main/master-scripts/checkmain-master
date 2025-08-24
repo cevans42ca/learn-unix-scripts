@@ -264,6 +264,15 @@ Execute "learn" for your next task or to pick up where you left off.
 EOL
 }
 
+white_belt_exercise_background() {
+	# For this exercise, we're only confirming this script was run, so there's nothing to check.
+	good_work
+	echo ""
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Execute "learn" for your next task or to pick up where you left off.
+EOL
+}
+
 white_belt_exercise_cd_root() {
 	if [[ `pwd` == "/" ]]; then
 		good_work
