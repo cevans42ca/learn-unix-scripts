@@ -43,6 +43,7 @@ i=1
 declare -A exercises
 exercises["white_belt_$((i++))"]="what_execute_means"
 exercises["white_belt_$((i++))"]="stuck"
+exercises["white_belt_$((i++))"]="background"
 exercises["white_belt_$((i++))"]="cd_root"
 exercises["white_belt_$((i++))"]="ls_root"
 exercises["white_belt_$((i++))"]="common_root_directories"
