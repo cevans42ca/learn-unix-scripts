@@ -3039,7 +3039,7 @@ one type of archive.  Let's look at why archive files are useful.
 
 EOL
 
-	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL | sed '/^$/d'  >> $fmt_file
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL | sed '/^$/d' >> $fmt_file
 * Archive files are easier to back up, and in some cases it's required.  Many drives that are specifically for
 backups or archival require one file to be written or read from them.
 
@@ -5374,8 +5374,8 @@ duser1@docker:~$ ps
 PID   USER     TIME  COMMAND
     1 duser1    0:00 bash
     9 duser1    0:00 ps
-EOL
 
+EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Here, bash is not a login shell.  Also, ps appears in its own output in Docker but not on Mac, which is typical.  On
@@ -5449,7 +5449,7 @@ fmt ${FMT_OPTIONS:-} --width="$ADJUSTED_FMT_WIDTH" << 'EOL' | sed "s/^/$INDENT_S
 Running: The process is currently executing instructions on the CPU.
 
 Runnable: The process is ready to execute but is waiting for the CPU scheduler to allocate CPU time to it. It's in the
-"run queue," waiting for its turn.
+"run queue" waiting for its turn.
 
 EOL
 
@@ -5478,7 +5478,7 @@ Stopped (T): A process in the stopped state has been suspended from execution. T
 EOL
 
 fmt ${FMT_OPTIONS:-} --width="$ADJUSTED_FMT_WIDTH" << 'EOL' | sed "s/^/$INDENT_STRING/" >> "$fmt_file"
-A user sending a SIGTSTP signal (e.g., by pressing Ctrl+Z in a terminal)
+A user sending a SIGTSTP signal (e.g., by pressing Ctrl+z in a terminal)
 
 A debugger temporarily pausing the process
 
@@ -5490,13 +5490,14 @@ EOL
 A stopped process can be resumed later by sending a SIGCONT signal, or terminated with SIGKILL.
 
 
-Zombie (Z): When a process terminates, it releases most of its resources, but its entry in the process table remains
-until its parent process collects its exit status.  This brief period, before the parent calls wait() or waitpid() to
-"reap" the child, is when the process is in the zombie state.  Zombie processes don't consume CPU time or memory (beyond
-their entry in the process table), but too many can indicate a bug in the parent process (not cleaning up its children)
-and potentially fill up the process table.  Zombie processes cannot be killed directly with signals because they are
-already dead:  only their parent can clear them.  A program sticks around as a zombie not because of something it did,
-but because of something its parent didn't do.
+Zombie (Z): When a process terminates, it releases most of its resources, but its entry in the process table remains until its
+parent process collects its exit status.  This brief period, before the parent calls wait() or waitpid() to "reap" the child,
+is when the process is in the zombie state.  Zombie processes don't consume CPU time or memory (beyond their entry in the
+process table), but too many can indicate a bug in the parent process (not cleaning up its children) and potentially fill
+up the process table.  Zombie processes cannot be killed directly with signals because they are already dead:  only their
+parent can clear them.  A program sticks around as a zombie not because of something it did, but because of something its
+parent didn't do.  To remove a zombie process, you need to kill its parent process.  You can use "ps" to find a process's
+parent process.  In a well-functioning system, it doesn't come up very often.  Make a note of it.
 
 
 New / Created: This is an initial, transient state when a process is being created but is not yet ready to run.
@@ -5594,9 +5595,8 @@ EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 
-We hope you noticed that "sleep" will end after the time requested regardless of whether or not it was stopped.  More
-specifically, if we start "sleep 10" and stop the process for 20 seconds, it will end as soon as it gets the continue
-signal rather than waiting 30 seconds to complete.
+If we start "sleep 10" in a Docker container and stop the process for 20 seconds, it will end as soon as it gets the continue
+signal rather than waiting an additional 20 seconds to complete.  Did you see something different on your system?
 
 We can also send a process to the background with the "bg" command.  Backgrounding processes only works well with
 commands that don't produce a lot of output, because the output of the command is going to print to the terminal as
@@ -5646,8 +5646,12 @@ EOL
 
 black_stripe_exercise_kill() { # Kill
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-The "kill" command sends a signal to a process.  The default signal sent is SIGTERM.  This signal allows a process to clean up
-and return any shared resources before it ends.
+The "kill" command sends a signal to a process you own.  The default signal sent is SIGTERM.  This signal allows a process
+to clean up and return any shared resources before it ends.  The "kill" command doesn't stick around to see what happened.
+Complex databases may take 20-30 seconds to properly shut down, or longer if there's an active transaction and work needs
+to be rolled back.  The "kill" program has no way of knowing what the process is going to do with a signal or how long
+it's going to take, so you will usually see no warning or error if something went wrong.  You'll have to check the state
+of things with a "ps" command.
 
 To send SIGTERM to process ID 12345, execute "kill 12345".
 
@@ -5656,8 +5660,14 @@ Remember that "sleep 10 &" gives you the job ID followed by the process ID.
 Try "sleep 30 &" and see if you can kill the process by sending SIGTERM before it ends normally.  Make sure you don't
 kill the wrong process!
 
-You should see something like the following.  Make sure to substitute the process ID when you do it.  If the process
-doesn't immediately exit, you might have to wait a few seconds and then hit Enter.
+You should see something like the following.  Make sure to substitute the process ID when you do it.  If the process doesn't
+immediately exit, you might have to wait a few seconds and then hit Enter.  Running commands will print to the terminal
+whenever there's output, but bash will only print updated information about jobs when you get a new prompt.  So you may need to press Enter for a new prompt.  Wait a few seconds before each one.
+
+Although it may look like programs are writing their output at your prompt, bash will not execute that text.  If you're unsure,
+you can type Ctrl+l (lowercase L) to refresh your screen.  For commands with a lot of output, it's better to redirect the
+output to a file and periodically check the file with the "tail" command.  We looked at redirection in blue belt and "tail"
+in red stripe.
 
 EOL
 
@@ -5672,8 +5682,62 @@ EOL
 	complete_exercise
 }
 
-# kill -9 with bob
-# pgrep vs grep
+black_stripe_exercise_finding_processes() { # Finding Processes
+	# Use an underscore as a "poor man's" non-breaking space.
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL | sed 's/_/ /g' >> $fmt_file
+
+Most of the time, you'll need a process's ID to do something with it.  You can use "ps", "grep", and "pgrep" to find processes.
+The "ps" command has a wide variety of formats and defaults across various systems.  The commands that are most likely to
+be helpful are "ps axf" and "ps ef", but you'll need to explore "man ps" and/or "info ps" to see what's available.  In some
+cases, you'll get different behaviour if you include a dash_(_-_).  The manual and/or info pages will tell you what's available.
+
+Like before, you can pipe the output of ps through grep to find a keyword, or the name of a program, as in "ps_axf_|_grep_bash".
+On Linux systems, sometimes the "grep" process that you're running will also show up in the output.  On Mac and FreeBSD,
+the grep process is often already done before it shows up in the output.  You can avoid this issue by using "pgrep" instead,
+by piping it through another grep, by adjusting your search, or you can simply recognize it might be there and ensure you
+don't take the wrong process ID.  The "pgrep" command is more than simply "grep" without finding itself:  it has options
+to do specific types of process searches.
+
+Use the tools available to you to familiarize yourself with how ps and pgrep work on your system.  Don't read the documentation
+word for word.  Skim it, but focus on things you think will be helpful to you.  Experiment with "sleep 30 &" and see if
+you can and get the process ID with ps, ps and grep, and pgrep (individually) before it ends each time.
+
+If your system has a /proc filesystem, you can find more information about process ID 12345 with "ls /proc/12345" and
+"cat /proc/12345/cmdline".  If your version of "ps" doesn't print the whole command line, these commands can be another
+way of getting that information.  Try it out if it's available to you.
+EOL
+
+	complete_exercise
+}
+
+black_stripe_exercise_bob_and_final_part_one() { # Meet Bob (the Undying), Exam Part One
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+In order for you to get some experience working with misbehaving processes, we've provided one for you.  It's time to
+meet Bob the Undying.  Instead of terminating like a well-behaved process when you try to kill him, he will tell you off.
+Awaken Bob with "bobtheundying --yes-really &".  Take note of the PID when you run the preceding command, just in case you
+have trouble finding it another way.  Experiment with various ways to find Bob's PID.
+
+If Bob's PID happens to be 12345, try "kill 12345" a few times, and when you're done, kill Bob for good with "kill -9 12345".
+If all else fails, Bob will die of "old age" in 5 minutes.
+
+Your final exam is up next.  We covered a lot of very similar but different terms in this belt, so you may want to review
+previous exercises.
+
+Source the check script for your final exam.  It's split into two parts.
+EOL
+
+	complete_exercise
+}
+
+black_stripe_exercise_final_part_two() { # Exam Part Two
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Source the check script for Part Two of your final exam.
+
+We covered a lot of terms with subtle distinctions.  Take your time, and watch out for tricks.
+EOL
+
+	complete_exercise
+}
 
 # (End vim fold) }}}
 
