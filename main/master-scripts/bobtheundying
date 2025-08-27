@@ -2,8 +2,6 @@
 
 # bobtheundying:  A bash script that "resists" termination signals
 
-# Parts of this script were written by Google Gemini.
-
 set -o nounset
 
 LOCK_FILE="$HOME/.bobtheundying.lock"
