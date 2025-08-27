@@ -2797,6 +2797,261 @@ black_stripe_exercise_ctrl_z_wrap_up() {
 black_stripe_exercise_kill() {
 	keep_going
 }
+
+black_stripe_exercise_finding_processes() {
+	keep_going
+}
+
+black_stripe_exercise_bob_and_final_part_one() {
+	if ask_review_final_exam; then
+		keep_going
+		return 0
+	fi
+
+	luc_correct_answers=0
+
+	cat <<EOL
+Final Exam - Part I
+===================
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 1/7
+
+Which command shows a list of processes?
+
+EOL
+
+	luc_answers=( "ps" "grep" "ls" "xs" )
+
+	handle_answer "ps"
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 2/7
+
+When you add "&" at the end of a command, what does it do?
+
+EOL
+
+	luc_answers=( "It runs the command as a background job." "It sends the output to a file." "It makes the process survive the user logging out." "It runs the command and waits for it to finish, then runs the next command." "It adds the command to your personal to-do list, to be completed at a later time when you're feeling more motivated." )
+
+	handle_answer "It runs the command as a background job."
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 3/7
+
+What are jobs?
+
+EOL
+
+	luc_answers=(
+"They let you run and manage multiple command lines at the same time with one shell."
+"A job is a program that has completed its execution and is waiting to be cleaned up by the system."
+"Automated, scheduled tasks that run at a specific time without user intervention"
+"A temporary alias that allows a user to run a long command using a shorter name"
+)
+
+	handle_answer "They let you run and manage multiple command lines at the same time with one shell."
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 4/7
+
+What are zombies?
+
+EOL
+
+	luc_answers=(
+"Programs that have finished executing but their parent hasn't obtained their exit code"
+"Programs that have been intentionally put into a paused state by a user and can be resumed later"
+"Malicious programs that have taken over a legitimate processes to hide themselves from the user"
+"Services that failed to start correctly and are now consuming system resources without doing any work"
+"What's left after your computer has been left on all weekend with no caffeine"
+)
+
+	handle_answer "Programs that have finished executing but their parent hasn't obtained their exit code"
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 5/7
+
+Are zombies bad?
+
+EOL
+
+	luc_answers=(
+"Sometimes.  Zombies are part of the lifecycle of processes, but if there are too many hanging around too long, that might be a symptom of a problem."
+"Yes.  They consume significant CPU and memory resources and can slow down the entire system."
+"No, they are a normal and essential part of the system's process management lifecycle."
+"It depends on whether they're the slow, shambling kind or the fast, agile kind from the new movies."
+)
+
+	handle_answer "Sometimes.  Zombies are part of the lifecycle of processes, but if there are too many hanging around too long, that might be a symptom of a problem."
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 6/7
+
+How do you get rid of a zombie?
+
+EOL
+
+	luc_answers=(
+"Kill the zombie's parent."
+'With the "kill" command'
+'You must log in as admin and run a special command to "reanimate" the process so you can then terminate it properly.' 
+"Turn off the computer and never turn it back on."
+)
+
+	handle_answer "Kill the zombie's parent."
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 7/7
+
+What does it mean if a process is in a state of uninterruptible sleep?
+
+EOL
+
+	luc_answers=(
+"The process can't be killed because it's in a special protected state to prevent data corruption.  The only way to remove it is often to resolve the underlying hardware or network issue or, as a last resort, to reboot the system."
+"Uninterruptible sleep is a state where a process is intentionally paused by a user and can only be resumed by a specific command."
+"It's a process state used by the kernel to prevent a process from consuming too much CPU time."
+"It's a state where a process is waiting for user input, such as a keystroke or a mouse click."
+"It's what happens when your computer is so tired it can't even be bothered to respond to a kill signal."
+)
+
+	handle_answer "The process can't be killed because it's in a special protected state to prevent data corruption.  The only way to remove it is often to resolve the underlying hardware or network issue or, as a last resort, to reboot the system."
+
+	if [ "$luc_correct_answers" == "7" ]; then
+		good_work
+		echo "You've completed Part I of the exam."'  Execute "learn" for some final notes.'
+	else
+		echo "Results:  $luc_correct_answers out of 7 correct"
+		echo ""
+		echo "See how to look at previous exercises by executing 'learn help'."
+		echo ""
+		sorry
+	fi
+}
+
+black_stripe_exercise_final_part_two() {
+	if ask_review_final_exam; then
+		keep_going
+		return 0
+	fi
+
+	luc_correct_answers=0
+
+	cat <<EOL
+Final Exam - Part II
+====================
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 1/6
+
+What is the "kill" command for?
+
+EOL
+
+	luc_answers=(
+"It kills a process."
+"It sends a signal to a process."
+"The kill command is used to suspend a program and prevent it from running again until you manually resume it."
+"The kill command is used to get a process to stop what it's doing, go home, and get a good night's sleep."
+)
+
+	handle_answer "It sends a signal to a process."
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 2/6
+
+When you stop a process, what happens?
+
+EOL
+
+	luc_answers=(
+"The process is paused or suspended."
+"The process finishes what it's doing and terminates."
+"The process is removed from memory without getting a chance to clean up."
+"It becomes a zombie process, waiting for its parent to retrieve its exit status."
+"It enters a cat-like state and immediately falls asleep in the sunniest spot it can find."
+)
+
+	handle_answer "The process is paused or suspended."
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 3/6
+
+If you send SIGTERM to a stopped process, what happens?
+
+EOL
+
+	luc_answers=(
+"The process only receives the signal when it has resumed."
+"The system will automatically resume the process and then terminate it gracefully."
+"The signal is ignored, and the process will continue to run in the background as if nothing happened."
+"The stopped process will become a zombie, since it cannot receive the signal to terminate."
+'The process writes a passive-aggressive note saying, "I'"'"'ll do it later," and sticks it on its virtual refrigerator.'
+)
+
+	handle_answer "The process only receives the signal when it has resumed."
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 4/6
+
+What happens when you're waiting for a program to finish running and type Ctrl+c?
+
+EOL
+
+	luc_answers=(
+"The shell sends SIGINT to the foreground process.  By default, this signal causes the program to terminate gracefully."
+"The shell sends a SIGKILL signal, which immediately and forcibly terminates the process without any cleanup."
+"The program's output is redirected to a temporary file, and the process continues to run in the background."
+"The process is paused and can be resumed later using the fg or bg commands."
+"It sends a signal that makes the program drop everything and go on strike until you buy it a faster CPU."
+)
+
+	handle_answer "The shell sends SIGINT to the foreground process.  By default, this signal causes the program to terminate gracefully."
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 5/6
+
+What happens when you're waiting for a program to finish running and type Ctrl+z?
+
+EOL
+
+	luc_answers=(
+"The shell sends a stop signal to the process."
+"The shell sends a terminate signal to the process."
+"The shell sends SIGKILL to the process."
+"The program is moved to a background queue to be executed when the CPU is available."
+"The program is sent to a digital time-out corner to think about what it did wrong."
+)
+
+	handle_answer "The shell sends a stop signal to the process."
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 6/6
+
+You were waiting for a program to finish running and accidentally typed Ctrl+z.  How
+do you get the program back to the foreground?
+
+EOL
+
+	luc_answers=( "fg" "bg" "fore" "gg" )
+
+	handle_answer "fg"
+
+	if [ "$luc_correct_answers" == "6" ]; then
+		good_work
+	else
+		echo "Results:  $luc_correct_answers out of 6 correct"
+		echo ""
+		echo "See how to look at previous exercises by executing 'learn help'."
+		echo ""
+		sorry
+	fi
+}
 # }}}
 
 ####################

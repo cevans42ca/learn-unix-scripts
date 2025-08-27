@@ -1,0 +1,85 @@
+#!/bin/bash
+
+# bobtheundying:  A bash script that "resists" termination signals
+
+# Parts of this script were written by Google Gemini.
+
+set -o nounset
+
+LOCK_FILE="$HOME/.bobtheundying.lock"
+
+if [ "${1:-}" != "--yes-really" ]; then
+  echo "Bob should only be awoken as part of the black stripe exercises,"
+  echo "which will teach you how to get rid of him."
+  echo "If you're ready, execute 'bobtheundying --yes-really &'."
+  exit 1
+fi
+
+TAKE_THAT[0]="Better luck next time!"
+TAKE_THAT[1]="You missed!  I could do this all day!"
+TAKE_THAT[2]="You can't kill me in a way that matters!"
+TAKE_THAT[3]="You can't kill me!  I will not die!"
+TAKE_THAT[4]="You can't kill me!  I am invincible!"
+TAKE_THAT[5]="You can't kill me!  I will rise again!"
+TAKE_THAT[6]="You can't kill me, I'll make a copy of myself!"
+
+you_cannot_kill_me() {
+  size=${#TAKE_THAT[@]}
+  index=$(($RANDOM % $size))
+  echo "${TAKE_THAT[$index]}"
+  if [ -n "$pid" ]; then
+    kill $pid
+  fi
+}
+
+# The 'exec' command replaces the current shell process with another command.
+# Here, we're using it to run the rest of the script within the context of a
+# file lock.
+# The '>>' redirects the output of the lock acquisition to the lock file itself.
+# This is a common idiom to ensure that the lock file is created and open.
+# The '200>' part is a file descriptor redirection. We are associating the lock
+# with a new file descriptor (200 in this case) for the remainder of the script.
+# The `flock -n 200` command attempts to acquire a non-blocking exclusive lock.
+# -n: Non-blocking. If the lock is already held, `flock` will fail immediately
+#     instead of waiting.
+# -x: Exclusive. Only one process can hold this lock at a time.
+#
+# The '|| exit 1' part is crucial. If `flock -n -x 200` fails (because the lock
+# is already held), the script will exit with a status code of 1.
+# The `&&` part ensures that the subsequent command block runs only if the lock
+# was successfully acquired.
+
+exec 200>>"$LOCK_FILE" && flock -n -x 200 || {
+  echo "There can be only one Bob (per user)."
+  echo "Exiting..."
+  exit 1
+}
+
+# ------------------------------------------------------------------------------
+# BEGIN CRITICAL SECTION
+# The code below this line will only execute if the lock was successfully
+# acquired.  This is the main part that can only be run once simultaneously per
+# user.
+# ------------------------------------------------------------------------------
+
+# Trap SIGTERM and print a "take that".
+trap you_cannot_kill_me SIGTERM
+
+echo "I am Bob!  I live again!"
+
+# A loop to keep the script running for 5 minutes
+for i in {1..30}; do
+  sleep 10 &
+  pid=$!
+  wait $pid
+done
+
+echo "Bob has died of old age."
+
+# ------------------------------------------------------------------------------
+# END CRITICAL SECTION
+# ------------------------------------------------------------------------------
+
+# The lock is automatically released when the script exits.
+echo "Script finished. Lock released."
+exit 0
