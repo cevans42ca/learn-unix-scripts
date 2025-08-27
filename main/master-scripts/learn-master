@@ -5741,6 +5741,37 @@ EOL
 
 # (End vim fold) }}}
 
+# Assistant Black Belt exercises (Start vim fold) {{{
+assistant_black_belt_exercise_intro_to_file_permissions() { # Intro to File Permissions
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Congratulations on your assistant black belt!
+
+In Korean (taekwondo is from Korea) this rank is called "bo dan".
+
+This belt is all about file permissions.
+
+You've probably noticed that "ls -l" shows groups of letters and dashes at the beginning of each line corresponding to a
+file or directory.
+
+EOL
+
+	cat <<EOL | ${GREP_BIN} --color=always -E "|drwxrwxr-x|-rw-rw-r--" >> $fmt_file
+[user@host:~/example]$ ls -l
+total 4
+drwxrwxr-x 2 user ug 4096 Nov  8 08:40 first
+-rw-rw-r-- 1 user ug    0 Jan  1  2021 second
+-rw-rw-r-- 1 user ug    0 Jan  2  2021 third
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+These letters and dashes are a representation of the file or directory permissions.
+EOL
+
+	complete_exercise
+}
+# }}}
+
 ####################
 # End of exercises #
 ####################
@@ -5882,7 +5913,7 @@ EOL
   Signals; stopping processes; ps; pgrep vs grep; fg and bg; jobs and &
 EOL
 
-	printf "\n`getBeltWithColours black_belt title`\n" >> $fmt_file
+	printf "\n`getBeltWithColours assistant_black_belt title`\n" >> $fmt_file
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
   User and group ownership; permissions; ls -ld; stat; namei
@@ -6042,7 +6073,7 @@ if [ "${1:-}" == "return" ]; then
 	fi
 fi
 
-if [[ ! "${RANK}" =~ ^(white|yellow|green|blue|red|black)_(stripe|belt)$ ]]; then
+if [[ ! "${RANK}" =~ ^(assistant_black_belt|(white|yellow|green|blue|red|black)_(stripe|belt))$ ]]; then
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
 It looks like the "${LUS_PROGRESS}" file has become corrupted.  If it can't be repaired, you may have no choice but to delete it
 and start over.  Sorry about that.

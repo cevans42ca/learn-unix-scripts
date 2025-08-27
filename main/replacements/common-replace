@@ -168,6 +168,9 @@ exercises["black_stripe_$((i++))"]="finding_processes"
 exercises["black_stripe_$((i++))"]="bob_and_final_part_one"
 exercises["black_stripe_$((i++))"]="final_part_two"
 
+i=1
+exercises["assistant_black_belt_$((i++))"]="intro_to_file_permissions"
+
 declare -A belt_to_number
 belt_to_number["white_belt"]=0
 belt_to_number["yellow_stripe"]=1
@@ -179,7 +182,8 @@ belt_to_number["blue_belt"]=6
 belt_to_number["red_stripe"]=7
 belt_to_number["red_belt"]=8
 belt_to_number["black_stripe"]=9
-belt_to_number["black_belt"]=10
+belt_to_number["assistant_black_belt"]=10
+belt_to_number["first_degree_black_belt"]=11
 
 declare -A number_to_belt
 number_to_belt[0]="white_belt"
@@ -192,7 +196,8 @@ number_to_belt[6]="blue_belt"
 number_to_belt[7]="red_stripe"
 number_to_belt[8]="red_belt"
 number_to_belt[9]="black_stripe"
-number_to_belt[10]="black_belt"
+number_to_belt[10]="assistant_black_belt"
+number_to_belt[11]="first_degree_black_belt"
 
 declare -A belt_to_first_text
 belt_to_first_text["white_belt"]="White"
@@ -205,7 +210,8 @@ belt_to_first_text["blue_belt"]="Blue"
 belt_to_first_text["red_stripe"]="Red"
 belt_to_first_text["red_belt"]="Red"
 belt_to_first_text["black_stripe"]="Black"
-belt_to_first_text["black_belt"]="Black"
+belt_to_first_text["assistant_black_belt"]="Assistant Black"
+belt_to_first_text["first_degree_black_belt"]="First Degree Black"
 
 declare -A belt_to_second_text
 belt_to_second_text["white_belt"]="Belt"
@@ -218,7 +224,8 @@ belt_to_second_text["blue_belt"]="Belt"
 belt_to_second_text["red_stripe"]="Stripe"
 belt_to_second_text["red_belt"]="Belt"
 belt_to_second_text["black_stripe"]="Stripe"
-belt_to_second_text["black_belt"]="Belt"
+belt_to_second_text["assistant_black_belt"]="Belt"
+belt_to_second_text["first_degree_black_belt"]="Belt"
 
 declare -A belt_to_first_colour_dark
 belt_to_first_colour_dark["white_belt"]="${bright_white_on_black}"
@@ -231,7 +238,8 @@ belt_to_first_colour_dark["blue_belt"]="${blue_on_black}"
 belt_to_first_colour_dark["red_stripe"]="${red_on_black}"
 belt_to_first_colour_dark["red_belt"]="${red_on_black}"
 belt_to_first_colour_dark["black_stripe"]="${black_on_white}"
-belt_to_first_colour_dark["black_belt"]="${black_on_white}"
+belt_to_first_colour_dark["assistant_black_belt"]="${black_on_white}"
+belt_to_first_colour_dark["first_degree_black_belt"]="${black_on_white}"
 
 declare -A belt_to_first_colour_light
 if [ "${enable_tput}" == "1" ]; then
@@ -245,7 +253,8 @@ if [ "${enable_tput}" == "1" ]; then
 	belt_to_first_colour_light["red_stripe"]="$(tput setaf 1)$(tput bold)"
 	belt_to_first_colour_light["red_belt"]="$(tput setaf 1)$(tput bold)"
 	belt_to_first_colour_light["black_stripe"]="$(tput setaf 7)$(tput setab 0)$(tput bold)"
-	belt_to_first_colour_light["black_belt"]="$(tput setaf 7)$(tput setab 0)$(tput bold)"
+	belt_to_first_colour_light["assistant_black_belt"]="$(tput setaf 7)$(tput setab 0)$(tput bold)"
+	belt_to_first_colour_light["first_degree_black_belt"]="$(tput setaf 7)$(tput setab 0)$(tput bold)"
 else
 	belt_to_first_colour_light["white_belt"]=""
 	belt_to_first_colour_light["yellow_stripe"]=""
@@ -257,7 +266,8 @@ else
 	belt_to_first_colour_light["red_stripe"]=""
 	belt_to_first_colour_light["red_belt"]=""
 	belt_to_first_colour_light["black_stripe"]=""
-	belt_to_first_colour_light["black_belt"]=""
+	belt_to_first_colour_light["assistant_black_belt"]=""
+	belt_to_first_colour_light["first_degree_black_belt"]=""
 fi
 
 # Some extra ${nc}s are added to fix an issue with PuTTY.
@@ -273,7 +283,8 @@ if [ "${enable_tput}" == "1" ]; then
 	belt_to_second_colour_dark["red_stripe"]="${blue_on_black}"
 	belt_to_second_colour_dark["red_belt"]=""
 	belt_to_second_colour_dark["black_stripe"]="${red_on_black}"
-	belt_to_second_colour_dark["black_belt"]=""
+	belt_to_second_colour_dark["assistant_black_belt"]=""
+	belt_to_second_colour_dark["first_degree_black_belt"]=""
 else
 	belt_to_second_colour_dark["white_belt"]=""
 	belt_to_second_colour_dark["yellow_stripe"]=""
@@ -285,7 +296,8 @@ else
 	belt_to_second_colour_dark["red_stripe"]=""
 	belt_to_second_colour_dark["red_belt"]=""
 	belt_to_second_colour_dark["black_stripe"]=""
-	belt_to_second_colour_dark["black_belt"]=""
+	belt_to_second_colour_dark["assistant_black_belt"]=""
+	belt_to_second_colour_dark["first_degree_black_belt"]=""
 fi
 
 # Some extra ${nc}s are added to fix an issue with PuTTY.
@@ -301,7 +313,8 @@ if [ "${enable_tput}" == "1" ]; then
 	belt_to_second_colour_light["red_stripe"]="$(tput setaf 4)"
 	belt_to_second_colour_light["red_belt"]=""
 	belt_to_second_colour_light["black_stripe"]="${red_on_black}"
-	belt_to_second_colour_light["black_belt"]=""
+	belt_to_second_colour_light["assistant_black_belt"]=""
+	belt_to_second_colour_light["first_degree_black_belt"]=""
 else
 	belt_to_second_colour_light["white_belt"]=""
 	belt_to_second_colour_light["yellow_stripe"]=""
@@ -312,8 +325,8 @@ else
 	belt_to_second_colour_light["blue_belt"]=""
 	belt_to_second_colour_light["red_stripe"]=""
 	belt_to_second_colour_light["red_belt"]=""
-	belt_to_second_colour_light["black_stripe"]=""
-	belt_to_second_colour_light["black_belt"]=""
+	belt_to_second_colour_light["assistant_black_belt"]=""
+	belt_to_second_colour_light["first_degree_black_belt"]=""
 fi
 
 # Resetting the colour here fixes issues with debugging (PS4='Line ${LINENO}: ' bash -x learn)
