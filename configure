@@ -121,18 +121,6 @@ case "${luc_choice}" in
 *5*)
 	sed 's/^run:.*/run: configure flags\/replacetarget/' main/Makefile-master | sed 's|^install:\(.*\)|install:\1 main/dist/bin/bobtheundying|' > Makefile
 
-	if which gcc > /dev/null; then
-		echo "gcc found"
-		echo "export CC=gcc" >> config.status
-	elif which cc > /dev/null; then
-		echo "cc found"
-		echo "export CC=cc" >> config.status
-	else
-		echo "Neither gcc nor cc were found on the path."
-		echo "Please install one or the other and ensure it's on the path."
-		exit 1
-	fi
-
 	if [ -n "${BASH_BIN:-}" ]; then
 		# This variable will be used by make, so we can't include quotes.
 		echo "export BASH_BIN=${BASH_BIN}" >> config.status
