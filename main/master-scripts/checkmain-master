@@ -2751,7 +2751,7 @@ EOL
 }
 # (End vim fold) }}}
 
-# Black belt exercises (Start vim fold) {{{
+# Black stripe exercises (Start vim fold) {{{
 black_stripe_exercise_processes() {
 	IFS='
 '
@@ -3054,6 +3054,29 @@ EOL
 }
 # }}}
 
+# Black belt exercises (Start vim fold) {{{
+assistant_black_belt_exercise_intro_to_file_permissions() {
+	permissions_string=$(ls -l "$LUS_HOME/black-belt/chmod/one" | awk '{print $1}')
+	echo $permissions_string
+
+	if [[ "$permissions_string" == "-rw-rw----" ]]; then
+		good_work
+		return
+	fi
+
+	sorry
+	return
+}
+# }}}
+
+# First degree black belt exercises (Start vim fold) {{{
+first_degree_black_belt_exercise_next_steps() {
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+There are no more exercises, but you can execute "learn" to see what other things you might want to persue on your way
+to mastery.
+EOL
+}
+
 ####################
 # End of exercises #
 ####################
@@ -3106,7 +3129,7 @@ fi
 # luc = Learn Unix Check
 luc_width=`expr $3 - 5`
 
-if [[ ! "${RANK}" =~ ^(white|yellow|green|blue|red|black)_(stripe|belt)$ ]]; then
+if [[ ! "${RANK}" =~ ^(first_degree_black_belt|assistant_black_belt|(white|yellow|green|blue|red|black)_(stripe|belt))$ ]]; then
 	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
 It looks like the ${LUS_PROGRESS} file has become corrupted.  If it can't be repaired, you may have no choice but to delete it
 and start over.  Sorry about that.
@@ -3224,6 +3247,23 @@ EOL
 		belt_complete
 	elif [[ $RANK == "blue_stripe" || $RANK == "blue_belt" || $RANK == "red_stripe" || $RANK == "red_belt" ]]; then
 		belt_complete
+	elif [[ $RANK == "assistant_black_belt" ]]; then
+		if [ -z "${SAVED_RANK:-}" ]; then
+			printf "Congratulations!  You have now attained your `getBeltWithColours first_degree_black_belt`.\n"
+
+			fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+There are no more exercises, but you can execute "learn" to see what other things you might want to persue on your way
+to mastery.
+
+You can, as always, also review past exercises.
+EOL
+
+			RANK=first_degree_black_belt
+			EXERCISE=1
+		else
+			printf "You have reviewed all the exercises in `getBeltWithColours assistant_black_belt`.\n"
+			printf "Execute 'learn return'.\n\n"
+		fi
 	else
 		rank_exercises_completed=$RANK
 		rank_attained=$(getNextBelt $RANK)

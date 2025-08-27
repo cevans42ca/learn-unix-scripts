@@ -180,7 +180,9 @@ print_rank() {
 		printf "You are reviewing the exercises for $(getBeltWithColours $RANK).  "
 		printf 'To return to where you were, execute "learn return".\n\n'
 	else
-		if [ -n "${RANK:-}" ]; then
+		if [ "${RANK:-}" == "first_degree_black_belt" ]; then
+			printf "You have your $(getBeltWithColours $RANK).\n\n"
+		elif [ -n "${RANK:-}" ]; then
 			next_belt=$(getNextBelt $RANK)
 
 			printf "Your current rank is $(getBeltWithColours $RANK).\n"
@@ -447,6 +449,30 @@ EOL
         rm -rf "${LUS_HOME}/red-belt/link"
         mkdir "${LUS_HOME}/red-belt/link"
 	touch "${LUS_HOME}/red-belt/link/target"
+}
+
+prepare_lus_home_black_belt() {
+	if [ -f "${LUS_HOME}/black-belt" ]; then
+		fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+We need ${LUS_HOME}/black-belt to be a directory, but it's a file.
+Is it OK to overwrite it (y/N)?
+EOL
+
+		read CHOICE
+
+		if [[ ! "$CHOICE" =~ ^\s*[Yy].* ]]; then
+			exit 2
+		fi
+
+		rm -f "${LUS_HOME}/black-belt"
+	fi
+
+	if [ ! -d "${LUS_HOME}/black-belt" ]; then
+		mkdir -p "${LUS_HOME}/black-belt/chmod"
+	fi
+
+	touch "${LUS_HOME}/black-belt/chmod/one" 
+	chmod 640 "${LUS_HOME}/black-belt/chmod/one"
 }
 
 show_script_path_in_path() {
@@ -5743,6 +5769,9 @@ EOL
 
 # Assistant Black Belt exercises (Start vim fold) {{{
 assistant_black_belt_exercise_intro_to_file_permissions() { # Intro to File Permissions
+	prepare_lus_home
+	prepare_lus_home_black_belt
+
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Congratulations on your assistant black belt!
 
@@ -5765,12 +5794,125 @@ drwxrwxr-x 2 user ug 4096 Nov  8 08:40 first
 EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-These letters and dashes are a representation of the file or directory permissions.
+These letters and dashes contain information about the file or directory permissions.  But the first character is different.
+In this example, we have "d" and "-".  A "d" means it's a directory.  A "-" means the file is a "regular file", or you
+might think of it as not being any type of special file.  Here are some of the other things you might see.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+-:  A regular file
+d:  A directory
+l:  A symbolic link
+b:  A block device file
+c:  A character device file
+s:  A socket file
+p:  A named pipe
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+This filesystem file type is stored with the file metadata, such as the permissions, who owns the file, and the last
+modification time.  It's not part of the file's contents and isn't determined by the file's contents.
+
+After the filesystem file type, we have the permissions.  These are broken out into three parts:  owner, group, and other
+(or others).  All files have an owner (which is a user) and a group.  Basic file permissions don't allow a file to belong
+to more than one group, but a user can be in any number of groups.  You might think that it would be very restrictive,
+but it doesn't pose much of a problem in the real world.  In the few cases where it's a problem, you can use ACLs.
+For more on those, check the documentation on "getfacl" and "setfacl".  They won't be covered in this course.
+
+Let's dive into "drwxrwxr-x".  We pop off the first character and look at the rest:  "rwxrwxr-x".  Then we split them
+into three parts:  rwx rwx r-x.  The first group is for the user that owns the file:  "rwx".  The owner can read, write,
+and "execute" the directory (more on that below).  Anyone in the directory's group can also read, write, and execute it.
+All other users can read and execute it but not write to it.
+
+The execute bit (bits can be either on or off) means something special when it comes to a directory.
+
+The execute bit is required to use the "cd" command to change your current working directory to that location. If you don't
+have execute permission, you'll get a "Permission denied" error when you try to enter it.
+
+It allows you to access the metadata of files within the directory, such as their size, modification time, and ownership,
+as displayed by ls -l.  Without the execute bit, you can still list the file names if you have the read bit (r), but the
+rest of the information will appear as question marks.
+
+If you know the exact name of a file, the execute bit lets you access it directly. For example, you could cat dir/file.txt
+if you have read permission on file.txt, even if you can't list the directory's contents.
+
+If you have write permission on a file, but not on the directory it's in, you can modify the file's contents, but you cannot
+delete the file or create a new one in that directory.  You can edit the file and save your changes, append new data to
+the end of the file, and truncate the file, setting its size to zero.
+
+The write bit on a directory controls the directory's contents.  It gives you permission to change the list of files and
+subdirectories. This includes creating new files or directories (touch, mkdir), deleting existing files or directories (rm,
+rmdir), renaming files or directories (mv), and moving a file into or out of the directory (also mv).
+
+When it comes to regular files, the execute bit means that the file is something that can be run (a script or binary program).
+
+There may be an additional character after the "-rw-rw-r--" part.  It might be "t" or "+".
+
+When the sticky bit ("t") is set on a directory, it means that a file within that directory can only be deleted or renamed
+by the file's owner, the directory's owner, or the root user. This is commonly seen on the /tmp directory, which allows
+all users to create files there but prevents them from deleting or renaming each other's files.
+
+If there's a "+" at the end, that means there are ACLs set (again, those are out of scope for this course).
+
+Change permissions with the "chmod" ("ch"ange file "mod"e bits) command.  There are two forms, a numeric one (chmod 744) and a non-numeric one (chmod g+w).
+
+For the numeric one, read is 4, write is 2, and execute is 1.  To get user, group, and other permissions, add each one up.
+Assuming a file is not executable:  read and write for user, read (but not write) for group, and no permissions for other users is 640.
+
+You can always use the non-numeric form with chmod, but some commands (like ssh) are picky about permissions for security
+reasons and will tell you the ones to use in numeric format.  Also, the numeric form is common in documentation.  You should
+know both.
+
+Take a look at the documentation for "chmod".
+
+We created a file:  "$LUS_HOME/black-belt/chmod/one".  Give this file group write permissions.
+
+Looking at any exercise in black belt (including looking at this one again) will reset all files in the black-belt directory,
+so be sure to source the check script as soon as you've done it.
 EOL
 
 	complete_exercise
 }
+
+# User and group ownership; permissions; ls -ld; stat; namei
+
 # }}}
+
+# First Degree Black Belt exercises (Start vim fold) {{{
+first_degree_black_belt_exercise_next_steps() { # Next Steps
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+There are no more exercises, but here are some ideas of what you can take a look at on your way to mastery.
+
+EOL
+
+	cat <<EOL >> $fmt_file
+* Prompt customization
+* Saving aliases in your .bashrc file
+* su, sudo, dzdo
+* chown 
+* find with -prune
+* Regexes
+* cron and anacron
+* rsync
+* Mounting
+* Hard links
+* strace/dtrace
+* logrotate
+* ACLs
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+* GNU screen and tmux (see https://superuser.com/questions/236158/tmux-vs-screen)
+
+Good luck on your mastery of Unix skills.
+EOL
+# }}}
+
+	complete_exercise
+}
+
 
 ####################
 # End of exercises #
@@ -6008,10 +6150,11 @@ EOL
 	fi
 }
 
+# }}}
+
 ###############################
 # End of function definitions #
 ###############################
-# }}}
 
 # Script execution will begin here.  (Vim fold) {{{
 
@@ -6073,7 +6216,7 @@ if [ "${1:-}" == "return" ]; then
 	fi
 fi
 
-if [[ ! "${RANK}" =~ ^(assistant_black_belt|(white|yellow|green|blue|red|black)_(stripe|belt))$ ]]; then
+if [[ ! "${RANK}" =~ ^(first_degree_black_belt|assistant_black_belt|(white|yellow|green|blue|red|black)_(stripe|belt))$ ]]; then
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL
 It looks like the "${LUS_PROGRESS}" file has become corrupted.  If it can't be repaired, you may have no choice but to delete it
 and start over.  Sorry about that.

@@ -171,6 +171,9 @@ exercises["black_stripe_$((i++))"]="final_part_two"
 i=1
 exercises["assistant_black_belt_$((i++))"]="intro_to_file_permissions"
 
+i=1
+exercises["first_degree_black_belt_$((i++))"]="next_steps"
+
 declare -A belt_to_number
 belt_to_number["white_belt"]=0
 belt_to_number["yellow_stripe"]=1
