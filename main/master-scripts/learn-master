@@ -468,11 +468,14 @@ EOL
 	fi
 
 	if [ ! -d "${LUS_HOME}/black-belt" ]; then
-		mkdir -p "${LUS_HOME}/black-belt/chmod"
+		mkdir -p "${LUS_HOME}/black-belt/perms"
 	fi
 
-	touch "${LUS_HOME}/black-belt/chmod/one" 
-	chmod 640 "${LUS_HOME}/black-belt/chmod/one"
+	touch "${LUS_HOME}/black-belt/perms/one"
+	chmod 640 "${LUS_HOME}/black-belt/perms/one"
+
+	mkdir -p "${LUS_HOME}/black-belt/perms/dir"
+	chmod 700 "${LUS_HOME}/black-belt/perms/dir"
 }
 
 show_script_path_in_path() {
@@ -5114,7 +5117,8 @@ and dollar signs.
 The second sed command replaces .* with "&".  We're matching everything ("." for any character and "*" as many times
 as sed can match), and then as a replacement, we're adding a double quote to the beginning and end.
 
-It's not on the test, but if you want to be ready for anything, make a note of it.
+It's not on the test, but if you want to be ready for anything, make a note of it.  Another option is to make sure the
+filenames are properly quoted.
 
 This exercise requires nothing more.  As always, source the check script to continue.
 EOL
@@ -5779,16 +5783,34 @@ In Korean (taekwondo is from Korea) this rank is called "bo dan".
 
 This belt is all about file permissions.
 
-You've probably noticed that "ls -l" shows groups of letters and dashes at the beginning of each line corresponding to a
-file or directory.
+We took a look at the output from  "ls -l" back in green stripe.  We're going to use that same example again, but this time, we're going to dive into the permissions.  The user and group are in the third and fourth column.
 
 EOL
 
-	cat <<EOL | ${GREP_BIN} --color=always -E "|drwxrwxr-x|-rw-rw-r--" >> $fmt_file
+	cat <<EOL | ${GREP_BIN} --color=always -E "|user ug" >> $fmt_file
 [user@host:~/example]$ ls -l
 total 4
 drwxrwxr-x 2 user ug 4096 Nov  8 08:40 first
 -rw-rw-r-- 1 user ug    0 Jan  1  2021 second
+-rw-rw-r-- 1 user ug    0 Jan  2  2021 third
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+In this case, the user is "user" and the group is "ug".
+
+In Unix, permissions can be applied to three categories:  the user who owns the file, the group that owns the file, and
+everyone else.
+
+Let's break down the first column.
+
+EOL
+
+	cat <<EOL | ${GREP_BIN} --color=always -E "|drwxrwxr-x|-rwxr-x---|-rw-rw-r--" >> $fmt_file
+[user@host:~/example]$ ls -l
+total 4
+drwxrwxr-x 2 user ug 4096 Nov  8 08:40 first
+-rwxr-x--- 1 user ug    0 Jan  1  2021 my_script
 -rw-rw-r-- 1 user ug    0 Jan  2  2021 third
 
 EOL
@@ -5812,8 +5834,13 @@ p:  A named pipe
 EOL
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-This filesystem file type is stored with the file metadata, such as the permissions, who owns the file, and the last
-modification time.  It's not part of the file's contents and isn't determined by the file's contents.
+This filesystem file type, file system type, or filesystem type is stored with the file metadata, such as the permissions,
+who owns the file, and the last modification time.  It's not part of the file's contents and isn't determined by the
+file's contents.  It's different from what the "file" command (from yellow stripe) shows.  The "file" command determines
+the file's type (or content type) from the contents of the file.  These are two different things which will only coincide
+if the file is actually a directory.
+
+We looked at symbolic links in red belt.  The others are out of scope for this course.
 
 After the filesystem file type, we have the permissions.  These are broken out into three parts:  owner, group, and other
 (or others).  All files have an owner (which is a user) and a group.  Basic file permissions don't allow a file to belong
@@ -5821,19 +5848,39 @@ to more than one group, but a user can be in any number of groups.  You might th
 but it doesn't pose much of a problem in the real world.  In the few cases where it's a problem, you can use ACLs.
 For more on those, check the documentation on "getfacl" and "setfacl".  They won't be covered in this course.
 
-Let's dive into "drwxrwxr-x".  We pop off the first character and look at the rest:  "rwxrwxr-x".  Then we split them
-into three parts:  rwx rwx r-x.  The first group is for the user that owns the file:  "rwx".  The owner can read, write,
-and "execute" the directory (more on that below).  Anyone in the directory's group can also read, write, and execute it.
-All other users can read and execute it but not write to it.
+EOL
 
-The execute bit (bits can be either on or off) means something special when it comes to a directory.
+	# Use an underscore as a "poor man's" non-breaking space.
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL | sed 's/_/ /g' >> $fmt_file
+Let's dive into "-rw-rw-r--".  We pop off the first character, and the rest is:  "rw-rw-r--".  Then we split it into three
+parts:  rw-_rw-_r--.  The first three characters are for the user that owns the file:  "rw-".  The owner can read and write
+the file but not execute it.  The next three characters are the same:  rw-.  Anyone in the file's group can also read and
+write it, but not execute it.  All other users can read it but not write to it or execute it.
 
-The execute bit is required to use the "cd" command to change your current working directory to that location. If you don't
-have execute permission, you'll get a "Permission denied" error when you try to enter it.
+Finally, let's look at "-rwxr-x---".  The first character means we're looking at a regular file, and then we have rwx_r-x_---.
+The user has permissions to read, write, and execute (run) the file.  Users in the file's group have access to read and
+execute the file (but not write).  Other users have no permissions.
+EOL
 
-It allows you to access the metadata of files within the directory, such as their size, modification time, and ownership,
-as displayed by ls -l.  Without the execute bit, you can still list the file names if you have the read bit (r), but the
-rest of the information will appear as question marks.
+	complete_exercise
+}
+
+assistant_black_belt_exercise_dir_permissions() { # Directory Permissions
+	prepare_lus_home
+	prepare_lus_home_black_belt
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Read, write, and execute permissions are all bits.  Numbers are infinite, but bits can only be 0 or 1, on or off, true or false.
+
+The execute bit means something special when it comes to a directory.
+
+The execute bit is required to use the "cd" command to change your current working directory to that location. If you
+don't have execute permission, you'll get a "Permission denied" error when you try to enter it.  It allows you to access
+the metadata of files within the directory, such as their size, modification time, and ownership, as displayed by ls -l.
+Without the execute bit, you can still list the file names if you have the read bit (r), but the rest of the information
+will appear as question marks.
+
+TODO:  verify that last bit on Linux, FreeBSD, Mac
 
 If you know the exact name of a file, the execute bit lets you access it directly. For example, you could cat dir/file.txt
 if you have read permission on file.txt, even if you can't list the directory's contents.
@@ -5856,7 +5903,8 @@ all users to create files there but prevents them from deleting or renaming each
 
 If there's a "+" at the end, that means there are ACLs set (again, those are out of scope for this course).
 
-Change permissions with the "chmod" ("ch"ange file "mod"e bits) command.  There are two forms, a numeric one (chmod 744) and a non-numeric one (chmod g+w).
+Change permissions with the "chmod" ("ch"ange file "mod"e bits) command.  There are two forms, a numeric one (chmod 744)
+and a non-numeric one (chmod g+w).  (These two commands aren't equivalent.  They're simply examples of each.)
 
 For the numeric one, read is 4, write is 2, and execute is 1.  To get user, group, and other permissions, add each one up.
 Assuming a file is not executable:  read and write for user, read (but not write) for group, and no permissions for other users is 640.
@@ -5867,7 +5915,7 @@ know both.
 
 Take a look at the documentation for "chmod".
 
-We created a file:  "$LUS_HOME/black-belt/chmod/one".  Give this file group write permissions.
+We created a file:  "$LUS_HOME/black-belt/perms/one".  Give group write permissions to this file.
 
 Looking at any exercise in black belt (including looking at this one again) will reset all files in the black-belt directory,
 so be sure to source the check script as soon as you've done it.
@@ -5876,7 +5924,46 @@ EOL
 	complete_exercise
 }
 
-# User and group ownership; permissions; ls -ld; stat; namei
+assistant_black_belt_exercise_ls_ld() { # ls -ld
+	prepare_lus_home
+	prepare_lus_home_black_belt
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+If you want to see a directory's permissions and use "ls -l", you'll see what's in the directory instead.  To see the entry
+for the directory itself, you need to use "ls -ld".  By default, it will give you the information for the current directory.  You can also give it a path, or more than one path.
+
+Does the "${LUS_HOME}/black-belt/perms/dir" directory have group write permissions?  Give your answer to the check script.
+EOL
+
+	complete_exercise
+}
+
+assistant_black_belt_exercise_file_details_with_stat() { # stat:  File Details
+	prepare_lus_home
+	prepare_lus_home_black_belt
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+You can find a "stat" command across Linux and BSD operating systems, though the output and arguments will be a little different.
+
+You may see a "Modify" timestamp and a "Change" timestamp.
+
+The Modify timestamp, or "mtime", is the timestamp of the last time the file's contents were modified. This means the data blocks
+within the file were changed.  Doing any of these will change the mtime:  editing a file with a text editor and saving it,
+writing to a file with a command like echo "new text" >> file.txt, or any operation that changes the data stored in the file.
+
+The Change timestamp, or "ctime", is the timestamp of the last time the file's metadata was changed.  Metadata is all the
+information about a file that is stored in its inode, separate from the file's actual contents, like size, modification time,
+and ownership.  Doing any of these things will update the ctime:  changing file permissions (e.g., chmod), changing file
+ownership or group (e.g., chown, chgrp), or renaming or moving the file.  Any event that updates the Modify time will also
+update the Change time, because modifying the file's contents is considered a change to its metadata (specifically, its size).
+
+Try out the "stat" command with files and directories of your choice.
+EOL
+
+	complete_exercise
+}
+
+# namei
 
 # }}}
 
@@ -5893,7 +5980,7 @@ EOL
 * su, sudo, dzdo
 * chown 
 * find with -prune
-* Regexes
+* Regexes with sed and grep
 * cron and anacron
 * rsync
 * Mounting
@@ -5908,11 +5995,10 @@ EOL
 
 Good luck on your mastery of Unix skills.
 EOL
-# }}}
 
 	complete_exercise
 }
-
+# }}}
 
 ####################
 # End of exercises #
@@ -6058,7 +6144,7 @@ EOL
 	printf "\n`getBeltWithColours assistant_black_belt title`\n" >> $fmt_file
 
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
-  User and group ownership; permissions; ls -ld; stat; namei
+  User and group ownership; permissions; ls -ld; stat; namei; scripts
 EOL
 
 	echo "" >> $fmt_file
@@ -6234,10 +6320,18 @@ fi
 
 all_args="$*"
 all_args=${all_args,,}
-if [[ "${all_args}" =~ (white|yellow|green|blue|red|black).*(stripe|belt)[^0-9]*([0-9]*) ]]; then
+if [[ "${all_args}" =~ (white|yellow|green|blue|red|black|assistant black|first degree black).*(stripe|belt)[^0-9]*([0-9]*) ]]; then
 	# The $LUS_PROGRESS file must exist.  If it didn't, we would be running welcome().
 
 	new_rank="${BASH_REMATCH[1]}_${BASH_REMATCH[2]}"
+
+	# Default to assistant_black_belt, since that's the one with the exercises.
+	if [[ "${new_rank}" == "black_belt" ]]; then
+		new_rank="assistant_black_belt"
+	fi
+
+	# Fix the underscore in assistant_black_belt and first_degree_black_belt.
+	new_rank="${new_rank// /_}"
 
 	# No underscore.
 	new_rank_for_echo="${BASH_REMATCH[1]} ${BASH_REMATCH[2]}"

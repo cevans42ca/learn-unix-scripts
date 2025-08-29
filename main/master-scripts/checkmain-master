@@ -3055,8 +3055,44 @@ EOL
 # }}}
 
 # Black belt exercises (Start vim fold) {{{
+
 assistant_black_belt_exercise_intro_to_file_permissions() {
-	permissions_string=$(ls -l "$LUS_HOME/black-belt/chmod/one" | awk '{print $1}')
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 1/1
+
+EOL
+
+	cat <<EOL
+[user@host:~/example]$ ls -l
+total 4
+drwxrwxr-x 2 user ug 4096 Nov  8 08:40 first
+-rw-rw-r-- 1 user ug    0 Jan  1  2021 second
+-rw-rw-r-- 1 user ug    0 Jan  2  2021 third
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+If a user is in the "ug" group, what permissions will they have to the second file?
+
+EOL
+
+	luc_correct_answers=0
+	luc_answers=( 'read' 'read and write' 'read, write, and execute' 'phenomenal cosmic powers' )
+	handle_answer 'read and write'
+
+	# Final check
+	if [ "$luc_correct_answers" == "1" ]; then
+		good_work
+
+	else
+		echo "Results:  $luc_correct_answers out of 1 correct"
+		echo ""
+		sorry
+	fi
+}
+
+assistant_black_belt_exercise_dir_permissions() {
+	permissions_string=$(ls -l "$LUS_HOME/black-belt/perms/one" | awk '{print $1}')
 	echo $permissions_string
 
 	if [[ "$permissions_string" == "-rw-rw----" ]]; then
@@ -3067,6 +3103,33 @@ assistant_black_belt_exercise_intro_to_file_permissions() {
 	sorry
 	return
 }
+
+assistant_black_belt_exercise_ls_ld() {
+	fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Question 1/1
+
+Does the "${LUS_HOME}/black-belt/perms/dir" directory have group write permissions?
+
+EOL
+
+	luc_correct_answers=0
+	luc_answers=( 'yes' 'no' 'ask the audience' )
+	handle_answer 'no'
+
+	# Final check
+	if [ "$luc_correct_answers" == "1" ]; then
+		good_work
+
+	else
+		echo "Results:  $luc_correct_answers out of 1 correct"
+		echo ""
+		sorry
+	fi
+}
+
+assistant_black_belt_exercise_file_details_with_stat() {
+	keep_going
+}
 # }}}
 
 # First degree black belt exercises (Start vim fold) {{{
@@ -3076,6 +3139,7 @@ There are no more exercises, but you can execute "learn" to see what other thing
 to mastery.
 EOL
 }
+# }}}
 
 ####################
 # End of exercises #
@@ -3143,6 +3207,29 @@ It looks like the ${LUS_PROGRESS} file has become corrupted.  If it can't be rep
 and start over.  Sorry about that.
 EOL
 	exit 2
+fi
+
+# Prevent intentional and accidental skipping of checks, which can happen in cases where the check script isn't actually
+# checking anything.
+
+last_line="${luc_history[-1]}"
+# Check if the last line of history is ". check":  if not, something weird is going on.  Don't worry about it.
+if [[ "$last_line" == ". check" ]]; then
+        # Search for a previous ". check" in the history
+        for ((i=${#luc_history[@]}-2; i>=0; i--)); do
+                current_line="${luc_history[i]}"
+
+                # If we find a ". check", then fail.
+                if [[ "$current_line" == ". check" ]]; then
+                        echo "Execute 'learn' to continue."
+                        exit 1
+                fi
+
+                # If we find "learn", then succeed.
+                if [[ "$current_line" == "learn" ]]; then
+                        break # Exit the loop, we found "learn" in between.
+                fi
+        done
 fi
 
 luc_regex="'"
