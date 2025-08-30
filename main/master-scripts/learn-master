@@ -471,6 +471,8 @@ EOL
 		mkdir -p "${LUS_HOME}/black-belt/perms"
 	fi
 
+	touch "${LUS_HOME}/black-belt/foo"
+
 	touch "${LUS_HOME}/black-belt/perms/one"
 	chmod 640 "${LUS_HOME}/black-belt/perms/one"
 
@@ -1130,7 +1132,7 @@ EOL
 	echo "" >> $fmt_file
 
 	# From https://stackoverflow.com/questions/4774054/reliable-way-for-a-bash-script-to-get-the-full-path-to-itself
-	script_name=`basename $0`
+	script_name=`basename "$0"`
 	# Don't resolve symlinks, as /home is symlinked to /usr/home on FreeBSD.
 	script_path=$(dirname "${0}")
 
@@ -5872,7 +5874,29 @@ assistant_black_belt_exercise_dir_permissions() { # Directory Permissions
 	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
 Read, write, and execute permissions are all bits.  Numbers are infinite, but bits can only be 0 or 1, on or off, true or false.
 
-The execute bit means something special when it comes to a directory.
+It might seem silly at first to have write access to a file or directory but not read access, but there are a few cases
+where it can be useful.
+
+The classic use case is a directory set up like a dropbox. Users can add files (write permission on the directory) but
+cannot view the files already there (no read permission on the directory). This is useful for anonymous file submissions
+or a shared collection folder where you don't want people to see what others have submitted. For example, a company could
+have a folder where employees submit expense reports, but they can't see the reports submitted by others.
+
+Another common use is for log files.  You might grant a process write-only access to a log file.  This allows the process
+to add new entries to the log without being able to read or modify existing entries.  This is a crucial security measure
+because it prevents a compromised application from deleting or altering its own log history to hide its tracks.  The log
+file's integrity is maintained, and only an administrator (with read permissions) can view the full contents.
+
+On Unix-like systems, everything is treated as a file, including hardware devices.  Some device files are designed to
+be write-only.  For example, a device file for a printer or a speaker would have write permissions (to send data to it)
+but not read permissions (because you can't read data from a printer or speaker).
+
+Our last example is one-way communication.  In some system programming contexts, a process might need to write data to
+another process or kernel component without receiving a response.  Special files in /proc or /sys are sometimes configured
+as write-only for this purpose, acting as a one-way command channel.
+
+Let's move on from the read and write bits and talk about the execute bit.  The execute bit means something special when
+it comes to a directory.
 
 The execute bit is required to use the "cd" command to change your current working directory to that location. If you
 don't have execute permission, you'll get a "Permission denied" error when you try to enter it.  It allows you to access
@@ -5963,7 +5987,149 @@ EOL
 	complete_exercise
 }
 
-# namei
+assistant_black_belt_exercise_namei() { # Permissions with Multiple Directories:  namei -l
+	prepare_lus_home
+	prepare_lus_home_black_belt
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+If you want to look at a file in /home/ec2-user/lus/black-belt/foo, you need execute permissions on all the directories as
+well as read permissions on the file itself.  If you're given the exact location, you don't need read permissions on all
+the directories.
+
+Linux-based systems will likely have the "namei" command.  Using the "-l" (lowercase L) argument gives you the long format,
+which is ideal for finding permissions issues along a path.
+
+Execute namei -l "${LUS_HOME}/black-belt/foo" now, and if it doesn't work, hang on.  We're going to write a script to give
+us the same information, something that should work anywhere.
+EOL
+
+	complete_exercise
+}
+
+assistant_black_belt_exercise_intro_to_scripting() { # Intro to Scripting
+	prepare_lus_home
+	prepare_lus_home_black_belt
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+A shell script has a special line at the beginning indicating which shell to use.  We're going to write a shell script with
+the most basic shell (called "sh") so that it can run on basically any Unix system.
+
+The first two characters of a shell script must be "#!".  This is usually pronounced "shebang", from "hash" and "bang".
+The "#" symbol has many names, including hash.  This word was immortalised in "hashtags" in 2007 on the platform then
+called Twitter.  The term "bang" for the exclamation point "!" dates back to the last 19th century as printer's slang.
+
+These symbols must come first in a shell script.  There can't be any spaces or any other characters before them.
+
+Our first line, also called the "shebang line", will be "#!/bin/sh".
+
+Our second line will be "echo 'Hello, World!'".  Starting to program in a new language by printing out "Hello world" is a
+time honoured tradition going back to 1972 with B (the precursor to the C programming language).
+
+When you look at your file with cat or in an editor, you should see the following.
+
+#!/bin/sh
+echo 'Hello, World!'
+
+We looked at the vi, nano, and ee editors in blue stripe.  Use one of them now to create the script in
+"${LUS_HOME}/black-belt/namei-alt.sh" now, and make sure you can execute it.  Try to run it.  Remember that it isn't on your
+path, so you'll need to run it as "${LUS_HOME}/black-belt/namei-alt.sh" (or "./namei-alt.sh" if your current directory is
+"${LUS_HOME}/black-belt/").  We looked at how to run programs that aren't in your path all the way back in white belt.
+EOL
+
+	complete_exercise
+}
+
+assistant_black_belt_exercise_scripting_variables() { # Scripting: Variables and Default Values
+	prepare_lus_home
+	prepare_lus_home_black_belt
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Next, we're going to replace the "echo" line with the following two lines.
+EOL
+
+	cat <<'EOL' >> $fmt_file
+dir=${1:-$(pwd)}
+ls -ld "$dir"
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<'EOL' >> $fmt_file
+
+The first line sets the value of the variable "dir".  If an argument is provided to the script (the first argument is 1)
+it will use that as the directory.  If no argment is provided, then we'll use the value of $(pwd), the current (working)
+directory.  The $() syntax tells the shell to run the command and provide the output in its place.  The ${varone:-vartwo}
+syntax tells the shell to use the value of "varone" if it's set and "vartwo" if not.  When we combine these together, we get
+"${1:-$(pwd)}".
+
+The second line is much simpler.  It executes "ls -ld" with the value of "dir".
+
+Go ahead and make these changes to the script now, and try running it.
+EOL
+
+	complete_exercise
+}
+
+assistant_black_belt_exercise_scripting_loops() { # Scripting: Loops
+	prepare_lus_home
+	prepare_lus_home_black_belt
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+The next step is to loop over each directory until we get to the root directory ("/").
+
+We're also going to add some comments.  Anything after a hash "#" is ignored by the shell.
+
+You can add whatever comments you like to your script.  The check script only checks that the output is correct.
+
+EOL
+
+	cat <<'EOL' >> $fmt_file
+#!/bin/sh
+
+# Get the provided argument or use the current directory.
+dir=${1:-$(pwd)}
+
+# Loop as long as the directory is not the root directory.
+while [ "$dir" != "/" ]; do
+    ls -ld "$dir"
+    # Move up to the parent directory.
+    dir=$(dirname "$dir")
+done
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<'EOL' >> $fmt_file
+
+We use a while loop to continue looping until the "$dir" variable is the root directory.
+
+Each time we loop, we execute "ls -ld" on "$dir" and assign the value of "$dir" to its parent directory (using the dirname
+command).
+EOL
+
+	complete_exercise
+}
+
+assistant_black_belt_exercise_scripting_wrap_up() { # Scripting: Wrap Up
+	prepare_lus_home
+	prepare_lus_home_black_belt
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+The final step is to show the permissions for the root directory.  Although these are not likely to be wrong, the output
+might be confusing without it.  We're going to take the existing script and add a line at the end.
+
+EOL
+
+	cat <<'EOL' >> $fmt_file
+ls -ld /
+
+EOL
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<'EOL' >> $fmt_file
+
+If you like, you can add a comment as well.
+
+Run the updated script and move on as usual.
+EOL
+
+	complete_exercise
+}
 
 # }}}
 

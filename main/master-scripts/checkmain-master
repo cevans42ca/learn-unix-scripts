@@ -87,6 +87,7 @@ good_work() {
 	index=$(($RANDOM % $size))
 	echo ${luc_good_work_array[$index]}
 
+	CHECK_VALUE=1
 	EXERCISE=`expr $EXERCISE + 1`
 }
 
@@ -107,6 +108,9 @@ sorry() {
 	index=$(($RANDOM % $size))
 	echo ${luc_sorry_array[$index]}
 	echo "Run the learn script again if you need to."
+
+	# If there's an issue, allow another attempt without the user having to execute "learn" again.
+	CHECK_VALUE=0
 }
 
 process_choice() {
@@ -3130,6 +3134,128 @@ EOL
 assistant_black_belt_exercise_file_details_with_stat() {
 	keep_going
 }
+
+assistant_black_belt_exercise_namei() {
+	keep_going
+}
+
+assistant_black_belt_exercise_intro_to_scripting() {
+	if [ ! -f "${LUS_HOME}/black-belt/namei-alt.sh" ]; then
+		echo 'Please create the file "'${LUS_HOME}/black-belt/namei-alt.sh'".'
+		sorry
+	elif [ ! -x "${LUS_HOME}/black-belt/namei-alt.sh" ]; then
+		echo 'The file "'${LUS_HOME}/black-belt/namei-alt.sh"' isn't executable by you."
+		echo "Use chmod to make it executable."
+		sorry
+	else
+		# Capture the output of the script
+		OUTPUT=$("${LUS_HOME}/black-belt/namei-alt.sh" 2>&1)
+
+		# Check if the captured output is an empty string
+		if echo "$OUTPUT" | grep -i "hello.*world"; then
+			good_work
+		elif [[ -z "${OUTPUT:-}" ]]; then
+			echo "The script exists and is executable,"
+			echo "but it didn't provide any output."
+			echo
+			echo "Expected output:"
+			echo 'Hello, World!'
+			echo
+			sorry
+		else
+			echo "The script exists and is executable,"
+			echo "but it didn't provide the right output."
+			echo "Expected output:"
+			echo 'Hello, World!'
+			echo
+			echo "Actual output:"
+			echo "$OUTPUT"
+			echo
+			sorry
+		fi
+	fi
+}
+
+assistant_black_belt_exercise_scripting_variables() {
+	# Define the expected output.
+	EXPECTED_OUTPUT=$(ls -ld "${LUS_HOME}/black-belt/")
+
+	# Capture the actual output of the script.
+	ACTUAL_OUTPUT=$("${LUS_HOME}/black-belt/namei-alt.sh" "${LUS_HOME}/black-belt/")
+
+	# Check if the script's output contains the expected output using pattern matching.
+	if [[ "$ACTUAL_OUTPUT" == *"$EXPECTED_OUTPUT"* ]]; then
+		good_work
+	else
+		echo "The script's output doesn't contain the expected result."
+		echo "Expected output was:"
+		echo "$EXPECTED_OUTPUT"
+		echo
+		echo "Actual output was:"
+		echo "$ACTUAL_OUTPUT"
+		sorry
+	fi
+}
+
+assistant_black_belt_exercise_scripting_loops() {
+	# Define the expected output, starting with defining the argument.
+	dir="${LUS_HOME}/black-belt/"
+
+	# Capture the expected output by redirecting the entire loop's output.
+	EXPECTED_OUTPUT=$(
+		while [ "$dir" != "/" ]; do
+			ls -ld "$dir"
+			dir=$(dirname "$dir")
+		done
+	)
+
+	# Capture the actual output of the script.
+	ACTUAL_OUTPUT=$("${LUS_HOME}/black-belt/namei-alt.sh" "${LUS_HOME}/black-belt/")
+
+	# Check if the script's output contains the expected output using pattern matching.
+	if [[ "$ACTUAL_OUTPUT" == *"$EXPECTED_OUTPUT"* ]]; then
+		good_work
+	else
+		echo "The script's output doesn't contain the expected result."
+		echo "Expected output was:"
+		echo "$EXPECTED_OUTPUT"
+		echo
+		echo "Actual output was:"
+		echo "$ACTUAL_OUTPUT"
+		sorry
+	fi
+}
+
+assistant_black_belt_exercise_scripting_wrap_up() {
+	# Define the expected output, starting with defining the argument.
+	dir="${LUS_HOME}/black-belt/"
+
+	# Capture the expected output by redirecting the entire output.
+	EXPECTED_OUTPUT=$(
+		while [ "$dir" != "/" ]; do
+			ls -ld "$dir"
+			dir=$(dirname "$dir")
+		done
+
+		ls -ld /
+	)
+
+	# Capture the actual output of the script.
+	ACTUAL_OUTPUT=$("${LUS_HOME}/black-belt/namei-alt.sh" "${LUS_HOME}/black-belt/")
+
+	# Check if the script's output contains the expected output using pattern matching.
+	if [[ "$ACTUAL_OUTPUT" == *"$EXPECTED_OUTPUT"* ]]; then
+		good_work
+	else
+		echo "The script's output doesn't contain the expected result."
+		echo "Expected output was:"
+		echo "$EXPECTED_OUTPUT"
+		echo
+		echo "Actual output was:"
+		echo "$ACTUAL_OUTPUT"
+		sorry
+	fi
+}
 # }}}
 
 # First degree black belt exercises (Start vim fold) {{{
@@ -3220,7 +3346,7 @@ if [[ "$last_line" == ". check" ]]; then
                 current_line="${luc_history[i]}"
 
                 # If we find a ". check", then fail.
-                if [[ "$current_line" == ". check" ]]; then
+                if [[ "$current_line" == ". check" ]] && [[ "${CHECK_VALUE:-}" != "0" ]]; then
                         echo "Execute 'learn' to continue."
                         exit 1
                 fi
@@ -3279,6 +3405,7 @@ fi
 if [ "${EXERCISE:-}" == "${SAVED_EXERCISE:-}" ] && [ "${SAVED_RANK:-}" == "${RANK:-}" ]; then
 	SAVED_RANK=""
 	SAVED_EXERCISE=""
+	CHECK_VALUE=""
 	updateDotFile
 
 	fmt ${FMT_OPTIONS:-}$luc_width <<EOL

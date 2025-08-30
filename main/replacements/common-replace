@@ -173,6 +173,11 @@ exercises["assistant_black_belt_$((i++))"]="intro_to_file_permissions"
 exercises["assistant_black_belt_$((i++))"]="dir_permissions"
 exercises["assistant_black_belt_$((i++))"]="ls_ld"
 exercises["assistant_black_belt_$((i++))"]="file_details_with_stat"
+exercises["assistant_black_belt_$((i++))"]="namei"
+exercises["assistant_black_belt_$((i++))"]="intro_to_scripting"
+exercises["assistant_black_belt_$((i++))"]="scripting_variables"
+exercises["assistant_black_belt_$((i++))"]="scripting_loops"
+exercises["assistant_black_belt_$((i++))"]="scripting_wrap_up"
 
 i=1
 exercises["first_degree_black_belt_$((i++))"]="next_steps"
@@ -402,6 +407,7 @@ updateDotFile() {
 	if [ ! -f "${LUS_PROGRESS}" ]; then
 		echo "RANK=$RANK" > "${LUS_PROGRESS}"
 		echo "EXERCISE=$EXERCISE" >> "${LUS_PROGRESS}"
+		echo "CHECK_VALUE=" >> "${LUS_PROGRESS}"
 	else
 		make_temp_progress
 		file_clean_up_array+=($progress_file)
@@ -410,6 +416,7 @@ updateDotFile() {
 		echo "EXERCISE=${EXERCISE}" >> "${progress_file}"
 		echo "SAVED_RANK=${SAVED_RANK:-}" >> "${progress_file}"
 		echo "SAVED_EXERCISE=${SAVED_EXERCISE:-}" >> "${progress_file}"
+		echo "CHECK_VALUE=${CHECK_VALUE:-}" >> "${progress_file}"
 		if [ -n "${LUS_SECRET:-}" ]; then
 			echo "LUS_SECRET=${LUS_SECRET}" >> "${progress_file}"
 		fi
