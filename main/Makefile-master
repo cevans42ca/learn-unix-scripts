@@ -50,10 +50,7 @@ main/dist/bin/%: main/master-scripts/%
 # Copy the scripts that don't need replacement to main/dist/bin
 nonreplace: $(addprefix main/dist/bin/,$(nonreplacescripts))
 
-main/dist/bin/bobtheundying: main/master-scripts/bobtheundying.c
-	$(CC) main/master-scripts/bobtheundying.c -o main/dist/bin/bobtheundying
-
-nonreplacedocker: main/docker/bin/there-yet main/docker/bin/df-20 main/docker/bin/df-40 main/docker/bin/bobtheundying.c
+nonreplacedocker: main/docker/bin/there-yet main/docker/bin/df-20 main/docker/bin/df-40 main/docker/bin/bobtheundying
 
 # If none of the files already exist, we don't have to worry about overwriting anything.
 # If all the files exist, assume we previously installed this project.

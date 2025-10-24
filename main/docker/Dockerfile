@@ -11,15 +11,6 @@ RUN apk add --no-cache build-base
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the C source code into the build stage
-COPY bin/bobtheundying.c .
-
-# Compile the C program
-# -o specifies the output executable name
-# -static links standard libraries statically, making the executable self-contained
-# This is crucial for portability to a minimal base image.
-RUN gcc -o bobtheundying bobtheundying.c -static
-
 # --- Stage 2: Runtime Environment ---
 FROM alpine as base
 
@@ -80,8 +71,6 @@ RUN addgroup ${D_USERNAME} lus
 
 RUN chown root:lus /usr/local/bin/launch_lus.sh
 RUN chmod g+rx /usr/local/bin/launch_lus.sh
-
-COPY --from=builder /app/bobtheundying /usr/local/bin/bobtheundying
 
 USER ${D_USERNAME}
 WORKDIR /home/${D_USERNAME}
