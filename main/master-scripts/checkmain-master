@@ -3139,7 +3139,7 @@ assistant_black_belt_exercise_namei() {
 	keep_going
 }
 
-assistant_black_belt_exercise_intro_to_scripting() {
+assistant_black_belt_exercise_intro_to_scripting_namei() {
 	if [ ! -f "${LUS_HOME}/black-belt/namei-alt.sh" ]; then
 		echo 'Please create the file "'${LUS_HOME}/black-belt/namei-alt.sh'".'
 		sorry
@@ -3176,7 +3176,7 @@ assistant_black_belt_exercise_intro_to_scripting() {
 	fi
 }
 
-assistant_black_belt_exercise_scripting_variables() {
+assistant_black_belt_exercise_scripting_namei_variables() {
 	# Define the expected output.
 	EXPECTED_OUTPUT=$(ls -ld "${LUS_HOME}/black-belt/")
 
@@ -3197,7 +3197,7 @@ assistant_black_belt_exercise_scripting_variables() {
 	fi
 }
 
-assistant_black_belt_exercise_scripting_loops() {
+assistant_black_belt_exercise_scripting_namei_loops() {
 	# Define the expected output, starting with defining the argument.
 	dir="${LUS_HOME}/black-belt/"
 
@@ -3226,7 +3226,7 @@ assistant_black_belt_exercise_scripting_loops() {
 	fi
 }
 
-assistant_black_belt_exercise_scripting_wrap_up() {
+assistant_black_belt_exercise_scripting_namei_wrap_up() {
 	# Define the expected output, starting with defining the argument.
 	dir="${LUS_HOME}/black-belt/"
 
@@ -3254,6 +3254,101 @@ assistant_black_belt_exercise_scripting_wrap_up() {
 		echo "Actual output was:"
 		echo "$ACTUAL_OUTPUT"
 		sorry
+	fi
+}
+
+assistant_black_belt_exercise_scripting_backup_one() {
+	archive_file="${LUS_HOME}/black-belt/backup.tar.gz"
+	if [ -f "${archive_file}" ]; then
+		file_type=$(file "${archive_file}")
+		if [[ "${file_type}" =~ "gzip compressed data" ]]; then
+			inner_file_type=$(gunzip -c "${archive_file}" | file -)
+			if [[ "${inner_file_type}" =~ "tar archive" ]]; then
+				set +e
+				diff -q <( tar tzf "${archive_file}" | sort ) <(cat <<EOL
+backup/
+backup/docs/
+backup/docs/file1.txt
+backup/docs/file2.txt
+backup/src/
+backup/src/hello.sh
+EOL
+) > /dev/null
+				diff_result=$?
+				set -e
+				if [ "${diff_result}" == "0" ]; then
+					echo "You have successfully created the backup archive!"
+					good_work
+				else
+					sorry
+					echo "The archive contains the following, but we were expecting something else."
+					tar tzf "${archive_file}" | sort
+				fi
+			else
+				sorry
+				echo "The file \"${archive_file}\" is not a valid tar archive."
+			fi
+		else
+			sorry
+			echo "The file \"${archive_file}\" is not gzip compressed."
+		fi
+	else
+		sorry
+		echo "We couldn't find the file \"${archive_file}\"."
+	fi
+}
+
+assistant_black_belt_exercise_scripting_backup_two() {
+	archive_file="${LUS_HOME}/black-belt/backup-auto.tar.gz"
+	script_file="${LUS_HOME}/black-belt/backup.sh"
+
+	if [ ! -f "${script_file}" ]; then
+		sorry
+		echo "We couldn't find your script at \"${script_file}\"."
+		return
+	fi
+
+	if [ ! -x "${script_file}" ]; then
+		sorry
+		echo "Your script is not executable.  Use chmod +x \"${script_file}\" to fix this."
+		return
+	fi
+
+	if [ -f "${archive_file}" ]; then
+		file_type=$(file "${archive_file}")
+		if [[ "${file_type}" =~ "gzip compressed data" ]]; then
+			inner_file_type=$(gunzip -c "${archive_file}" | file -)
+			if [[ "${inner_file_type}" =~ "tar archive" ]]; then
+				set +e
+				diff -q <( tar tzf "${archive_file}" | sort ) <(cat <<EOL
+backup/
+backup/docs/
+backup/docs/file1.txt
+backup/docs/file2.txt
+backup/src/
+backup/src/hello.sh
+EOL
+) > /dev/null
+				diff_result=$?
+				set -e
+				if [ "${diff_result}" == "0" ]; then
+					echo "Your script successfully created the backup!"
+					good_work
+				else
+					sorry
+					echo "The archive created by your script doesn't contain the expected files."
+				fi
+			else
+				sorry
+				echo "The file created by your script is not a valid tar archive."
+			fi
+		else
+			sorry
+			echo "The file created by your script is not gzip compressed."
+		fi
+	else
+		sorry
+		echo "We couldn't find the file \"${archive_file}\".  Did you run your script?"
 	fi
 }
 # }}}

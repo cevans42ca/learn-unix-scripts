@@ -481,6 +481,12 @@ EOL
 
 	mkdir -p "${LUS_HOME}/black-belt/perms/dir"
 	chmod 700 "${LUS_HOME}/black-belt/perms/dir"
+
+	mkdir -p "${LUS_HOME}/black-belt/backup/docs"
+	lorem "${LUS_HOME}/black-belt/backup/docs/file1.txt"
+	lorem "${LUS_HOME}/black-belt/backup/docs/file2.txt" 1
+	mkdir -p "${LUS_HOME}/black-belt/backup/src"
+	echo "echo 'Hello'" > "${LUS_HOME}/black-belt/backup/src/hello.sh"
 }
 
 show_script_path_in_path() {
@@ -6009,7 +6015,8 @@ EOL
 	complete_exercise
 }
 
-assistant_black_belt_exercise_intro_to_scripting() { # Intro to Scripting
+
+assistant_black_belt_exercise_intro_to_scripting_namei() { # Intro to Scripting
 	prepare_lus_home
 	prepare_lus_home_black_belt
 
@@ -6042,7 +6049,7 @@ EOL
 	complete_exercise
 }
 
-assistant_black_belt_exercise_scripting_variables() { # Scripting: Variables and Default Values
+assistant_black_belt_exercise_scripting_namei_variables() { # Scripting: Variables and Default Values
 	prepare_lus_home
 	prepare_lus_home_black_belt
 
@@ -6071,7 +6078,7 @@ EOL
 	complete_exercise
 }
 
-assistant_black_belt_exercise_scripting_loops() { # Scripting: Loops
+assistant_black_belt_exercise_scripting_namei_loops() { # Scripting: Loops
 	prepare_lus_home
 	prepare_lus_home_black_belt
 
@@ -6109,7 +6116,7 @@ EOL
 	complete_exercise
 }
 
-assistant_black_belt_exercise_scripting_wrap_up() { # Scripting: Wrap Up
+assistant_black_belt_exercise_scripting_namei_wrap_up() { # Scripting: Wrap Up
 	prepare_lus_home
 	prepare_lus_home_black_belt
 
@@ -6129,6 +6136,53 @@ EOL
 If you like, you can add a comment as well.
 
 Run the updated script and move on as usual.
+EOL
+
+	complete_exercise
+}
+
+assistant_black_belt_exercise_scripting_backup_one() { # Scripting: Backup Part One
+	prepare_lus_home
+	prepare_lus_home_black_belt
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Now that we've seen how scripting can help us recreate the "namei" command, let's look at another practical use case:
+creating backups. We've used the "tar" command before in blue stripe to archive files. Now, we're going to use it to
+create a backup of a directory.  Scripting "tar" opens up some useful things.  Since tar options can be a pain to
+remember and it's important to be careful, a script allows us to be careful once and confidently use it multiple
+times.  Another thing we can do is schedule the script to run every week or every month (or whatever schedule makes
+sense).  We can also combine the archive with other steps in a script.
+
+In "${LUS_HOME}/black-belt/backup", you'll find "docs" and "src" directories. Your task is to create a compressed tar
+archive of the "backup" directory.
+
+The archive should be named "backup.tar.gz" and it should be located in "${LUS_HOME}/black-belt/".
+
+When you create the archive, make sure you are in the "${LUS_HOME}/black-belt/" directory, and archive the "backup"
+directory.  Remember not to make a tar bomb.
+
+Before we create the script, execute the tar command now.  If you need a refresher on blue belt, execute "learn help".
+EOL
+
+	complete_exercise
+}
+
+assistant_black_belt_exercise_scripting_backup_two() { # Scripting: Backup Part Two
+	prepare_lus_home
+	prepare_lus_home_black_belt
+
+	fmt ${FMT_OPTIONS:-}$WIDTH <<EOL >> $fmt_file
+Now that you know how to create the backup manually, let's automate it. We're going to write a
+very simple script that does this for us.
+
+Create a script named "${LUS_HOME}/black-belt/backup.sh".
+
+The script should:
+1. Start with the shebang line: #!/bin/sh
+2. Change the directory to "${LUS_HOME}/black-belt/"
+3. Execute the tar command to create "backup-auto.tar.gz" with the "backup" directory.
+
+Once you've created the script, make it executable and run it.
 EOL
 
 	complete_exercise
