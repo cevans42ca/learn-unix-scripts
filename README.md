@@ -3,9 +3,9 @@ A set of bash scripts for teaching Unix in general in an interactive way
 
 This project is in alpha status.  I am requesting comments to help shape it into something useful to many people.
 
-Although this project uses bash exclusively, only a few exerices focus on it specifically, making it straightforward to adjust the exercises to work with other shells.  Bash can be installed nearly everywhere.  It also has consistent keybindings that work in everything from Docker containers attached in Windows Command Prompt to Terminus running on an iPhone.  It also has access to a command history by default, which is sometimes the only way to verify specific commands have been run.
+Although this project uses bash exclusively, only a few exercises focus on it specifically, making it straightforward to adjust the exercises to work with other shells.  Bash can be installed nearly everywhere.  It also has consistent keybindings that work in everything from Docker containers attached in Windows Command Prompt to Terminus running on an iPhone.  It also has access to a command history by default, which is sometimes the only way to verify specific commands have been run.
 
-I have broken down a series of critical Unix skills into belts that match my taekwondo school's progression.  I have a roadmap set down from white belt to black belt.  About 75% of the exercises are complete.  I have ideas about black belt exercises.
+I have broken down a series of critical Unix skills into belts that match my taekwondo school's progression.  I have a roadmap set down from white belt to black belt.  There's a complete set of exercises for all belt levels, but I'm still making adjustments.
 
 In the sections below, I will use the term "student" loosely to refer to someone who wants to use these scripts to learn Unix concepts and programs.
 
@@ -15,13 +15,13 @@ In the sections below, I will use the term "student" loosely to refer to someone
 
 Students run the "learn" script, which shows the student the current lesson.  The scripts format the text for the student's terminal and use "less" as a pager.  "Less" is required as the prompts are customized.  Each exercise asks the student to do something.  The student then sources the check script with ". check" (the first lesson guides the student in that).  If they need to step away, they run "learn" again the next time they're connected.
 
-A terminal of 100x30 is recommended, though an 80x24 terminal won't have much text getting improperly wrapped (in the middle of words).  It's possible to use Terminus on iPhone to connect to a server where the scripts are installed and use the 61x28 terminal that Terminus provides in portrait mode, but there are some issues with improperly wrapped text, and scrolling may be required on occasion.
+A terminal of 100x30 is recommended, though an 80x24 terminal will have a small amount of text getting improperly wrapped (in the middle of words).  It's possible to use Terminus on iPhone to connect to a server where the scripts are installed and use the 61x28 terminal that Terminus provides in portrait mode, but there are more issues with improperly wrapped text, and scrolling may be required on occasion.
 
 # Security
 
-There is nothing hidden or encrypted in this project.  The project is mostly written in bash.  There are also Makefiles, one perl script that's used if grep -P doesn't work, one C program to help with understanding processes and jobs (with source), and documentation.  The included scripts are more suited to a corporate environment where a measure of trust on behalf of students is implied or expected, and/or where an audit of the scripts is required or desired.  Students adept at Unix have many possible ways to give themselves a belt they didn't earn.  Finding possible ways to do so also represents understanding of Unix and should be encouraged, as long as students don't misrepresent their knowledge or completion of the exercises.
+There is nothing hidden or encrypted in this project.  The project is mostly written in bash.  There are also Makefiles, one perl script used if grep -P doesn't work, one C program to help with understanding processes and jobs (with source), and documentation.  The included scripts are more suited to a corporate environment where a measure of trust on behalf of students is implied or expected, and/or where an audit of the scripts is required or desired.  Students adept at Unix have many possible ways to give themselves a belt they didn't earn.  Finding possible ways to do so also represents understanding of Unix and should be encouraged, as long as students don't misrepresent their knowledge or completion of the exercises.
 
-If you plan on using these exercises in a classroom setting, you will need to include traditional testing in order to confirm understanding, or you might consider a project with different goals, such as GameShell.  (Disclaimer:  I have no experience with GameShell and don't have a personal or professional relationship with any of the team members.)
+If you plan on using these exercises in a classroom setting, you will need to include traditional testing to confirm understanding, or you might consider a project with different goals, such as GameShell.  (Disclaimer:  I have no experience with GameShell and don't have a personal or professional relationship with any of the team members.)
 
 # Try them Out in Docker
 

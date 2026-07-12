@@ -2,17 +2,17 @@ If you came to this page first, you might be interested in the [project overview
 
 This project runs on a variety of operating systems and configurations.  The scripts can also handle small terminal sizes (smaller than 80 columns) though the text may wrap in certain cases.
 
-The first screen shown to the student describes and demonstrates how the material will be presented.  It tries to cover everything the student might see depending on their terminal size.  The first screenshot is from Cygwin running on Windows 10.  Newer versions of Cygwin require ncurses and tput.  It's not particularly pretty output.  In fact, it's a dancing bear.  
+The first screen shown to the student describes and demonstrates how the material will be presented.  It tries to cover everything the student might see depending on their terminal size.  The first screenshot is from Cygwin running on Windows 10.  Newer versions of Cygwin require ncurses and tput.  It's not a particularly pretty output.  In fact, it's a dancing bear.  
 
 > The marvel is not that the bear dances well, but that the bear dances at all.
 
 &mdash; Russian proverb
 
-![A screenshot of the very first screen the user sees](./Welcome-Cygwin-Windows-10.png?raw=true)
+![A screenshot of the very first screen the user sees](./Welcome-Cygwin-Windows-10.png)
 
-The second screenshot is what the user sees after pressing "q".  It's from Terminus on an iPhone (with the Pro theme) connected to an Ubuntu server running in AWS.  You might notice that the previous screenshot didn't have "Beginner Ranks" underlined but the next screenshot does have "Advanced Ranks" underlined.  What features are available are up to the terminal and terminal settings.  You can use the verify script to check terminal features that are required for the exercises.
+The second screenshot is what the user sees after pressing "q".  It's from Terminus on an iPhone (with the Pro theme) connected to an Ubuntu server running in AWS.  You might notice that the previous screenshot didn't have "Beginner Ranks" underlined, but the next screenshot does have "Advanced Ranks" underlined.  What features are available are up to the terminal and terminal settings.  You can use the "verify" script to check terminal features that are required for the exercises.
 
-<p align="center">
+<p style="text-align: center;">
 <img src="./Terminus-iPhone-Welcome-Beginner.png" alt="Beginner Material Summary" width="600"/>
 </p>
 
