@@ -59,6 +59,11 @@ Verification can take several forms:
 - **GUID Markers**: Use `# insert <GUID>` or `# replace start <GUID>` / `# replace end <GUID>` for site-specific or shared logic.
 - **Common Logic**: Shared belt definitions and ranks reside in `main/replacements/common-replace`.
 
+### File Organization and Vim Folds
+- **Vim Folds**: Master scripts are organized using Vim folds (e.g., `# Section Name (Start vim fold) {{{` and `# (End vim fold) }}}` or just `# }}}`).
+- **Respect Boundaries**: When adding or modifying code, ensure you stay within the appropriate fold and never delete or malform the fold markers.
+- **Maintain Structure**: If you create a new section that is large, consider wrapping it in a Vim fold to maintain consistency with the rest of the project.
+
 ### Exercise Mapping
 New exercises must be added to the `exercises` associative array in `common-replace` under the appropriate belt:
 ```bash
@@ -73,3 +78,4 @@ The function name in the master scripts should then follow the pattern `belt_nam
 - [ ] Did I add the exercise to `common-replace`?
 - [ ] Did I implement both the `learn` function and the `check` function?
 - [ ] Does it work on Bash 4.0?
+- [ ] Did I respect and maintain all Vim fold markers (`{{{`, `}}}`)?
