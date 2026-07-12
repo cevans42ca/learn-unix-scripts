@@ -39,6 +39,7 @@ The `learn-unix-scripts` project is an interactive, shell-based tutorial system 
 4.  Use `main/docker/Dockerfile` to build a standardized learning environment.
 
 ### AI Agent Guidelines
+- **IMPORTANT**: Read [LLM_GUIDE.md](LLM_GUIDE.md) for detailed instructions on tone, structure, and technical requirements for new material.
 - When suggesting changes to exercises, modify the `*-master` files in `main/master-scripts/` rather than the generated files in `main/dist/bin`.
 - Respect the GUID markers (`# insert <GUID>`, `# replace start <GUID>`) as they are used by the `replace-all` script.
 - Ensure any new shell features are compatible with Bash 4.0+.

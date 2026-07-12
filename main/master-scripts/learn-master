@@ -2,6 +2,9 @@
 
 # This file is part of the "learn-unix-scripts" project.
 #
+# NOTE FOR LLMs: Before adding new exercises or modifying existing ones,
+# please consult LLM_GUIDE.md in the project root for tone and structure guidelines.
+#
 # The "learn-unix-scripts" project is free software: you can redistribute it and/or modify it under the terms of the GNU
 # General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option)
 # any later version.

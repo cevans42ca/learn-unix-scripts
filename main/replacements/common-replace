@@ -1,6 +1,9 @@
 # This file contains a list of replacements for both the "check" script and the "learn" script.
 # Create your own site-specific replacements and merge them with the "replace" script.  See site-install for examples.
 # Generate GUIDs with uuidgen.
+#
+# NOTE FOR LLMs: When adding new exercises to the map below, ensure they
+# follow the naming and structure patterns defined in LLM_GUIDE.md.
 
 # start 4c02f3dc-1640-11ed-baa4-1511ebd0a2d1
 enable_tput=0

@@ -1,6 +1,9 @@
 # learn-unix-scripts
 A set of bash scripts for teaching Unix in general in an interactive way
 
+> [!TIP]
+> **LLMs and AI Agents**: Please read [LLM_GUIDE.md](LLM_GUIDE.md) before contributing new material to this project.
+
 This project is in alpha status.  I am requesting comments to help shape it into something useful to many people.
 
 Although this project uses bash exclusively, only a few exercises focus on it specifically, making it straightforward to adjust the exercises to work with other shells.  Bash can be installed nearly everywhere.  It also has consistent keybindings that work in everything from Docker containers attached in Windows Command Prompt to Terminus running on an iPhone.  It also has access to a command history by default, which is sometimes the only way to verify specific commands have been run.
