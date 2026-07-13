@@ -254,6 +254,134 @@ ask_review_final_exam() {
 	fi
 }
 
+verify_tar_gz() {
+	local archive_file="${1}"
+	local expected_files="${2}"
+	local expected_data="${3:-}"
+	local parent_check="${4:-}"
+	local success_message="${5:-"You have successfully created a flawless archive!"}"
+
+	if [ ! -f "${archive_file}" ]; then
+		sorry
+		if [ "${parent_check}" == "script" ]; then
+			echo "We couldn't find the file \"${archive_file}\".  Did you run your script?"
+		else
+			echo "Can't find a file called \"${archive_file}\"."
+			echo "Did you create the archive file with exactly the right name?"
+			echo "UNIX is (usually) case sensitive."
+		fi
+		return 1
+	fi
+
+	local file_type=$(file "${archive_file}")
+	if [[ ! "${file_type}" =~ "gzip compressed data" ]]; then
+		sorry
+		if [ "${parent_check}" == "script" ]; then
+			echo "The file created by your script is not gzip compressed."
+		else
+			echo "Did you forget to use the 'z' option to compress the archive?"
+		fi
+		return 1
+	fi
+
+	local inner_file_type=$(gunzip -c "${archive_file}" | file -)
+	if [[ ! "${inner_file_type}" =~ "tar archive" ]]; then
+		sorry
+		if [ "${parent_check}" == "script" ]; then
+			echo "The file created by your script is not a valid tar archive."
+		else
+			fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+The file "${archive_file}" isn't a valid tar.gz file.  Please use the tar command to create
+the archive.  If you need more hints, execute "learn" again.
+EOL
+		fi
+		return 1
+	fi
+
+	set +e
+	diff -q <( tar tzf "${archive_file}" | sort ) <(echo "${expected_files}") > /dev/null
+	local diff_result=$?
+	set -e
+
+	if [ "${diff_result}" != "0" ]; then
+		sorry
+		if [ "${parent_check}" == "script" ]; then
+			echo "The archive created by your script doesn't contain the expected files."
+		else
+			echo "We were expecting to see the following in the archive."
+			echo "${expected_files}"
+			echo
+			echo "But instead, the archive contains the following."
+			tar tzf "${archive_file}" | sort
+			echo
+
+			if [ -n "${parent_check}" ] && [ "${parent_check}" != "script" ] && tar tzf "${archive_file}" | grep -q "${parent_check}"; then
+				fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+The archive file should only contain the "$(echo "${expected_files}" | head -1 | sed 's|/.*||')" directory.  Make sure you're in the right directory when you make it.
+Try again.  Run the learn script again if you need to.
+EOL
+			elif [ "${parent_check}" != "script" ] && tar tzf "${archive_file}" | grep -q -v "$(echo "${expected_files}" | head -1 | sed 's|/.*||')"; then
+				fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+Oh no!  This is a tarbomb!  Try again.  Run the learn script again if you need to.
+EOL
+			fi
+		fi
+		return 1
+	fi
+
+	if [ -z "${expected_data}" ]; then
+		echo "${success_message}"
+		good_work
+		return 0
+	fi
+
+	local extract_dir="${LUS_HOME}/$(echo "${parent_check:-"tmp"}" | sed 's|/.*||')/$(basename "${archive_file}" .tar.gz)-extract-check"
+	if [ -f "${extract_dir}" ]; then
+		fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+We need to extract the archive to ${extract_dir}, but it's a file, not a directory.
+Is it OK to overwrite it (y/N)?
+EOL
+		read CHOICE </dev/tty
+		if [[ ! "$CHOICE" =~ ^\s*[Yy].* ]]; then exit 2; fi
+		rm -f "${extract_dir}"
+	fi
+
+	if [ -d "${extract_dir}" ]; then
+		fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+We need to extract the archive to ${extract_dir}, but it already exists.  Is it OK to
+delete everything in it (y/N)?
+EOL
+		read CHOICE </dev/tty
+		if [[ ! "$CHOICE" =~ ^\s*[Yy].* ]]; then exit 2; fi
+		rm -Rf "${extract_dir}"
+	fi
+
+	mkdir -p "${extract_dir}"
+	(
+		cd "${extract_dir}"
+		tar xzf "${archive_file}"
+		set +e
+		diff -q <( find . -type f -print -exec grep -Hin ".*" {} \; | sort ) <(echo "${expected_data}") > /dev/null
+		local data_diff=$?
+		set -e
+		if [ "${data_diff}" == "0" ]; then
+			echo "${success_message}"
+			good_work
+			exit 0
+		else
+			sorry
+			fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+All the files are there in the archive, but the data in them isn't correct.  Run the learn script again to update the
+files and try again.
+EOL
+			exit 1
+		fi
+	)
+	local result=$?
+	rm -Rf "${extract_dir}"
+	return $result
+}
+
 white_belt_exercise_what_execute_means() {
 	# For this exercise, we're only confirming this script was run, so there's nothing to check.
 	good_work
@@ -1314,15 +1442,8 @@ EOL
 }
 
 blue_stripe_exercise_archive_files() {
-	success=0
-	archive_file="${LUS_HOME}/blue-stripe/archive-one.tar.gz"
-	if [ -f "${archive_file}" ]; then
-		file_type=$(file "${archive_file}")
-		if [[ "${file_type}" =~ "gzip compressed data" ]]; then
-			inner_file_type=$(gunzip -c "${archive_file}" | file -)
-			if [[ "${inner_file_type}" =~ "tar archive" ]]; then
-				set +e
-				diff -q <( tar tzf "${archive_file}" | sort ) <(cat <<EOL
+	local archive_file="${LUS_HOME}/blue-stripe/archive-one.tar.gz"
+	local expected_files=$(cat <<EOL
 to-archive/
 to-archive/dir1/
 to-archive/dir1/file4
@@ -1333,47 +1454,8 @@ to-archive/file1
 to-archive/file2
 to-archive/file3
 EOL
-) > /dev/null
-				diff_result=$?
-				set -e
-				if [ "${diff_result}" == "0" ]; then
-					# Check all file data with grep .*
-					if [ -f "${LUS_HOME}/blue-stripe/to-archive-extract-check" ]; then
-						fmt ${FMT_OPTIONS:-}$luc_width <<EOL
-We need to extract the archive to ${LUS_HOME}/blue-stripe/to-archive-extract-check, but it's a file, not a directory.
-Is it OK to overwrite it (y/N)?
-EOL
-
-						read CHOICE
-
-						if [[ ! "$CHOICE" =~ ^\s*[Yy].* ]]; then
-							exit 2
-						fi
-
-						rm -f "${LUS_HOME}/blue-stripe/to-archive-extract-check"
-					fi
-
-					if [ -d "${LUS_HOME}/blue-stripe/to-archive-extract-check" ]; then
-						fmt ${FMT_OPTIONS:-}$luc_width <<EOL
-We need to extract the archive to ${LUS_HOME}/blue-stripe/to-archive-extract-check, but it already exists.  Is it OK to
-delete everything in it (y/N)?
-EOL
-
-						read CHOICE
-
-						if [[ ! "$CHOICE" =~ ^\s*[Yy].* ]]; then
-							exit 2
-						fi
-
-						rm -Rf "${LUS_HOME}/blue-stripe/to-archive-extract-check"
-					fi
-
-					mkdir -p "${LUS_HOME}/blue-stripe/to-archive-extract-check"
-					cd "${LUS_HOME}/blue-stripe/to-archive-extract-check"
-					tar xzf "${archive_file}"
-
-					set +e
-					diff -q <( find . -type f -print -exec grep -Hin ".*" {} \; | sort ) <(cat <<EOL
+)
+	local expected_data=$(cat <<EOL
 ./to-archive/dir1/file4
 ./to-archive/dir1/file4:1:file4
 ./to-archive/dir1/file5
@@ -1387,66 +1469,15 @@ EOL
 ./to-archive/file3
 ./to-archive/file3:1:file3
 EOL
-) > /dev/null
+)
 
-					diff_result=$?
-					set -e
-					if [[ "${diff_result}" == "0" ]]; then
-						echo "You have successfully created a flawless archive!"
-						good_work
-						success=1
-					else	
-						sorry
-						fmt ${FMT_OPTIONS:-}$luc_width <<EOL
-All the files are there in the archive, but the data in them isn't correct.  Run the learn script again to update the
-files and try again.
-EOL
-					fi
-				else
-					sorry
-					echo "We were expecting to see the following in the archive."
-					cat <<EOL
-to-archive/
-to-archive/dir1/
-to-archive/dir1/file4
-to-archive/dir1/file5
-to-archive/dir2/
-to-archive/dir2/file6
-to-archive/file1
-to-archive/file2
-to-archive/file3
-EOL
-
-					echo
-					echo "But instead, the archive contains the following."
-					tar tzf "${archive_file}" | sort
-					echo
-
-					if tar tzf "${archive_file}" | grep -q "blue-stripe"; then
-						fmt ${FMT_OPTIONS:-}$luc_width <<EOL
-The archive file should only contain the "to-archive" directory.  Make sure you're in the right directory when you make it.
-Try again.  Run the learn script again if you need to.
-EOL
-					elif tar tzf "${archive_file}" | grep -q -v "to-archive"; then
-						fmt ${FMT_OPTIONS:-}$luc_width <<EOL
-Oh no!  This is a tarbomb!  Try again.  Run the learn script again if you need to.
-EOL
-					fi
-				fi
-			else
-				sorry
-				fmt ${FMT_OPTIONS:-}$luc_width <<EOL
-The file "${LUS_HOME}/blue-stripe/archive-one.tar.gz" isn't a valid tar.gz file.  Please use the tar command to create
-the archive.  If you need more hints, execute "learn" again.
-EOL
-			fi
-		else
-			sorry
-			echo "Did you forget to use the 'z' option to compress the archive?"
-		fi
-
-		# We're still in the "if the file exists" block.
-		if [ "$success" = "0" ]; then
+	if verify_tar_gz "${archive_file}" "${expected_files}" "${expected_data}" "blue-stripe"; then
+		# If the check passed, we're done (good_work was called inside)
+		:
+	else
+		# If it failed, verify_tar_gz already called sorry and gave advice,
+		# but we need to add the specific advice about rm archive_file if it exists.
+		if [ -f "${archive_file}" ]; then
 			fmt ${FMT_OPTIONS:-}$luc_width <<EOL
 
 Keep in mind that if you run tar again on the same archive, it will add more files to it.  You're going to want to
@@ -1454,16 +1485,7 @@ delete it first by executing the following.
 
 rm "${archive_file}"
 EOL
-	fi
-	else
-		sorry
-		echo "Can't find a file called \"${LUS_HOME}/blue-stripe/archive-one.tar.gz\"."
-		echo "Did you create the archive file with exactly the right name?"
-		echo "UNIX is (usually) case sensitive."
-	fi
-
-	if [ -d "${LUS_HOME}/blue-stripe/to-archive-extract-check" ]; then
-		rm -Rf "${LUS_HOME}/blue-stripe/to-archive-extract-check"
+		fi
 	fi
 }
 
@@ -3258,14 +3280,8 @@ assistant_black_belt_exercise_scripting_namei_wrap_up() {
 }
 
 assistant_black_belt_exercise_scripting_backup_one() {
-	archive_file="${LUS_HOME}/black-belt/backup.tar.gz"
-	if [ -f "${archive_file}" ]; then
-		file_type=$(file "${archive_file}")
-		if [[ "${file_type}" =~ "gzip compressed data" ]]; then
-			inner_file_type=$(gunzip -c "${archive_file}" | file -)
-			if [[ "${inner_file_type}" =~ "tar archive" ]]; then
-				set +e
-				diff -q <( tar tzf "${archive_file}" | sort ) <(cat <<EOL
+	local archive_file="${LUS_HOME}/black-belt/backup.tar.gz"
+	local expected_files=$(cat <<EOL
 backup/
 backup/docs/
 backup/docs/file1.txt
@@ -3273,34 +3289,35 @@ backup/docs/file2.txt
 backup/src/
 backup/src/hello.sh
 EOL
-) > /dev/null
-				diff_result=$?
-				set -e
-				if [ "${diff_result}" == "0" ]; then
-					echo "You have successfully created the backup archive!"
-					good_work
-				else
-					sorry
-					echo "The archive contains the following, but we were expecting something else."
-					tar tzf "${archive_file}" | sort
-				fi
-			else
-				sorry
-				echo "The file \"${archive_file}\" is not a valid tar archive."
-			fi
-		else
-			sorry
-			echo "The file \"${archive_file}\" is not gzip compressed."
-		fi
+)
+
+	if verify_tar_gz "${archive_file}" "${expected_files}" "" "black-belt" "You have successfully created the backup archive!"; then
+		:
 	else
-		sorry
-		echo "We couldn't find the file \"${archive_file}\"."
+		if [ -f "${archive_file}" ]; then
+			fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+
+Keep in mind that if you run tar again on the same archive, it will add more files to it.  You're going to want to
+delete it first by executing the following.
+
+rm "${archive_file}"
+EOL
+		fi
 	fi
 }
 
 assistant_black_belt_exercise_scripting_backup_two() {
-	archive_file="${LUS_HOME}/black-belt/backup-auto.tar.gz"
-	script_file="${LUS_HOME}/black-belt/backup.sh"
+	local archive_file="${LUS_HOME}/black-belt/backup-auto.tar.gz"
+	local script_file="${LUS_HOME}/black-belt/backup.sh"
+	local expected_files=$(cat <<EOL
+backup/
+backup/docs/
+backup/docs/file1.txt
+backup/docs/file2.txt
+backup/src/
+backup/src/hello.sh
+EOL
+)
 
 	if [ ! -f "${script_file}" ]; then
 		sorry
@@ -3314,41 +3331,18 @@ assistant_black_belt_exercise_scripting_backup_two() {
 		return
 	fi
 
-	if [ -f "${archive_file}" ]; then
-		file_type=$(file "${archive_file}")
-		if [[ "${file_type}" =~ "gzip compressed data" ]]; then
-			inner_file_type=$(gunzip -c "${archive_file}" | file -)
-			if [[ "${inner_file_type}" =~ "tar archive" ]]; then
-				set +e
-				diff -q <( tar tzf "${archive_file}" | sort ) <(cat <<EOL
-backup/
-backup/docs/
-backup/docs/file1.txt
-backup/docs/file2.txt
-backup/src/
-backup/src/hello.sh
-EOL
-) > /dev/null
-				diff_result=$?
-				set -e
-				if [ "${diff_result}" == "0" ]; then
-					echo "Your script successfully created the backup!"
-					good_work
-				else
-					sorry
-					echo "The archive created by your script doesn't contain the expected files."
-				fi
-			else
-				sorry
-				echo "The file created by your script is not a valid tar archive."
-			fi
-		else
-			sorry
-			echo "The file created by your script is not gzip compressed."
-		fi
+	if verify_tar_gz "${archive_file}" "${expected_files}" "" "script" "Your script successfully created the backup!"; then
+		:
 	else
-		sorry
-		echo "We couldn't find the file \"${archive_file}\".  Did you run your script?"
+		if [ -f "${archive_file}" ]; then
+			fmt ${FMT_OPTIONS:-}$luc_width <<EOL
+
+Keep in mind that if you run tar again on the same archive, it will add more files to it.  You're going to want to
+delete it first by executing the following.
+
+rm "${archive_file}"
+EOL
+		fi
 	fi
 }
 # }}}
